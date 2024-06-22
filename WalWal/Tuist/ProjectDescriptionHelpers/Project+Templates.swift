@@ -25,11 +25,11 @@ extension Project {
                          infoPlist: [String: Plist.Value],
                          iOSTargetVersion: String,
                          dependencies: [TargetDependency] = []) -> Project {
-   let targetsForApp = makeAppTargets(name: name,
-                                platform: platform,
-                                iOSTargetVersion: iOSTargetVersion,
-                                infoPlist: infoPlist,
-                                dependencies: dependencies)
+    let targetsForApp = makeAppTargets(name: name,
+                                       platform: platform,
+                                       iOSTargetVersion: iOSTargetVersion,
+                                       infoPlist: infoPlist,
+                                       dependencies: dependencies)
     return Project(name: name,
                    organizationName: organizationName,
                    targets: targetsForApp)
@@ -41,14 +41,14 @@ extension Project {
                                infoPlist: [String: Plist.Value] = [:],
                                iOSTargetVersion: String,
                                dependencies: [TargetDependency] = []) -> Project {
-      let targetsForFramework = makeFrameworkTargets(name: name,
-                                         platform: platform,
-                                         iOSTargetVersion: iOSTargetVersion,
-                                         infoPlist: infoPlist,
-                                         dependencies: dependencies)
-      return Project(name: name,
-                     organizationName: organizationName,
-                     targets: targetsForFramework)
+    let targetsForFramework = makeFrameworkTargets(name: name,
+                                                   platform: platform,
+                                                   iOSTargetVersion: iOSTargetVersion,
+                                                   infoPlist: infoPlist,
+                                                   dependencies: dependencies)
+    return Project(name: name,
+                   organizationName: organizationName,
+                   targets: targetsForFramework)
   }
   
   //MARK: - 빠르게 UI체크 할 DemoApp (Framework + App) -> Feature 단위로 테스트할 수 있게
@@ -74,30 +74,136 @@ extension Project {
   
   
   
+  /// 현재 경로 내부의 Implement, Interface 두개의 디렉토리에 각각 Target을 가지는 Project를 만듭니다.
+  /// interface와 implement에 필요한 dependency를 각각 주입해줍니다.
+  /// implement는 자동으로 interface에 대한 종속성을 가지고 있습니다.
+  public static func invertedDualTargetProject(
+    name: String,
+    platform: Platform = .iOS,
+    iOSTargetVersion: String = "16.0.0",
+    interfaceDependencies: [TargetDependency] = [],
+    implementDependencies: [TargetDependency] = [],
+    infoPlist: InfoPlist = .default
+  ) -> Project {
+    
+    let interfaceTarget = makeInterfaceDynamicFrameworkTarget(
+      name: name,
+      platform: platform,
+      iOSTargetVersion: iOSTargetVersion,
+      dependencies: interfaceDependencies
+    )
+    
+    let implementTarget = makeImplementStaticLibraryTarget(
+      name: name,
+      platform: platform,
+      iOSTargetVersion: iOSTargetVersion,
+      dependencies: implementDependencies + [.target(name: name)]
+    )
+    
+    let targets: [Target] = [interfaceTarget, implementTarget]
+    
+    let settings: Settings = .settings(configurations: [
+      .debug(name: "Debug", xcconfig: .relativeToRoot("Config/Debug.xcconfig")),
+      .release(name: "Release", xcconfig: .relativeToRoot("Config/Release.xcconfig")),
+    ])
+    
+    return Project(name: name,
+                   organizationName: organizationName,
+                   settings: settings,
+                   targets: targets)
+  }
   
+  /// 현재 경로 내부의 Implement, Interface, DemoApp 세개의 디렉토리에 각각 Target을 가지는 Project를 만듭니다.
+  /// interface와 implement에 필요한 dependency를 각각 주입해줍니다.
+  /// implement는 자동으로 interface에 대한 종속성을 가지고 있습니다.
+  ///
+  public static func invertedDualTargetProjectWithDemoApp(
+    name: String,
+    platform: Platform = .iOS,
+    iOSTargetVersion: String = "16.0.0",
+    interfaceDependencies: [TargetDependency] = [],
+    implementDependencies: [TargetDependency] = [],
+    demoAppDependencies: [TargetDependency] = [],
+    infoPlist: InfoPlist = .default,
+    isUserInterface: Bool = true
+  ) -> Project {
+    
+    let interfaceTarget = makeInterfaceDynamicFrameworkTarget(
+      name: name,
+      platform: platform,
+      iOSTargetVersion: iOSTargetVersion,
+      dependencies: interfaceDependencies
+    )
+    let implementTarget = makeImplementStaticLibraryTarget(
+      name: name,
+      platform: platform,
+      iOSTargetVersion: iOSTargetVersion,
+      dependencies: implementDependencies + [.target(name: name)],
+      isUserInterface: isUserInterface
+    )
+    
+    let demoApp = Target(
+      name: "\(name)DemoApp",
+      platform: .iOS,
+      product: .app,
+      bundleId: "com.chansoo.\(name)Demoapp",
+      deploymentTarget: .iOS(
+        targetVersion: iOSTargetVersion,
+        devices: [.iphone]
+      ),
+      infoPlist: .extendingDefault(
+        with:
+          [
+            "CFBundleDevelopmentRegion": "ko_KR",
+            "CFBundleShortVersionString": "1.0",
+            "CFBundleVersion": "1.0.0",
+            "UILaunchStoryboardName": "LaunchScreen",
+            "NSAppTransportSecurity" : [
+              "NSAllowsArbitraryLoads": true
+            ]
+          ]
+      ),
+      sources: ["./DemoApp/Sources/**"],
+      resources: ["./DemoApp/Resources/**"],
+      dependencies: [
+        .target(name: name),
+        .target(name: "\(name)Impl"),
+      ] + demoAppDependencies
+    )
+    
+    let targets: [Target] = [interfaceTarget, implementTarget, demoApp]
+    
+    let settings: Settings = .settings(configurations: [
+      .debug(name: "Debug", xcconfig: .relativeToRoot("Config/Debug.xcconfig")),
+      .release(name: "Release", xcconfig: .relativeToRoot("Config/Release.xcconfig")),
+    ])
+    
+    return Project(name: name,
+                   organizationName: organizationName,
+                   settings: settings,
+                   targets: targets)
+  }
 }
-
-
 
 private extension Project {
   
-  public static func makeTarget(
-      name: String,
-      dependencies: [TargetDependency],
-      iOSTargetVersion: String = "16.0.0"
+  private static func makeTarget(
+    name: String,
+    dependencies: [TargetDependency],
+    iOSTargetVersion: String = "16.0.0"
   ) -> Target {
-      return Target(name: name,
-             platform: .iOS,
-             product: .framework,
-             bundleId: "olderStoneBed.io.\(name)",
-             deploymentTarget: .iOS(targetVersion: iOSTargetVersion, devices: [.iphone]),
-             infoPlist: .default,
-             sources: ["./\(name)/**"],
-             dependencies: dependencies)
+    return Target(name: name,
+                  platform: .iOS,
+                  product: .framework,
+                  bundleId: "olderStoneBed.io.\(name)",
+                  deploymentTarget: .iOS(targetVersion: iOSTargetVersion, devices: [.iphone]),
+                  infoPlist: .default,
+                  sources: ["./\(name)/**"],
+                  dependencies: dependencies)
   }
   
   //MARK: - App으로 Project를 만들기 위한 Target 생성
-  static func makeAppTargets(
+  private static func makeAppTargets(
     name: String, platform: Platform,
     iOSTargetVersion: String,
     infoPlist: [String: Plist.Value],
@@ -117,7 +223,7 @@ private extension Project {
   }
   
   //MARK: - Framework로 Project를 만들기 위한 Target 생성
-  static func makeFrameworkTargets(
+  private static func makeFrameworkTargets(
     name: String,
     platform: Platform,
     iOSTargetVersion: String,
@@ -137,46 +243,46 @@ private extension Project {
   }
   
   // MARK: - Static Framework로 세팅할 Implementation Target 생성
-  static func makeImplementStaticLibraryTarget(
-      name: String,
-      platform: Platform,
-      iOSTargetVersion: String,
-      dependencies: [TargetDependency] = [],
-      isUserInterface: Bool = false
+  private static func makeImplementStaticLibraryTarget(
+    name: String,
+    platform: Platform,
+    iOSTargetVersion: String,
+    dependencies: [TargetDependency] = [],
+    isUserInterface: Bool = false
   ) -> Target {
-      
-      return Target(name: "\(name)Impl",
-                    platform: platform,
-                    product: .staticFramework,
-                    bundleId: "team.io.\(name)",
-                    deploymentTarget: .iOS(
-                      targetVersion: iOSTargetVersion,
-                      devices: [.iphone]
-                    ),
-                    infoPlist: .default,
-                    sources: ["./Implement/**"],
-                    dependencies: dependencies
-      )
+    
+    return Target(name: "\(name)Impl",
+                  platform: platform,
+                  product: .staticFramework,
+                  bundleId: "team.io.\(name)",
+                  deploymentTarget: .iOS(
+                    targetVersion: iOSTargetVersion,
+                    devices: [.iphone]
+                  ),
+                  infoPlist: .default,
+                  sources: ["./Implement/**"],
+                  dependencies: dependencies
+    )
   }
   
   // MARK: - Dynamic Framework로 세팅할 Interface Target 생성
-  static func makeInterfaceDynamicFrameworkTarget(
-      name: String,
-      platform: Platform,
-      iOSTargetVersion: String,
-      dependencies: [TargetDependency] = []
+  private static func makeInterfaceDynamicFrameworkTarget(
+    name: String,
+    platform: Platform,
+    iOSTargetVersion: String,
+    dependencies: [TargetDependency] = []
   ) -> Target {
-      return Target(name: name,
-                    platform: platform,
-                    product: .framework,
-                    bundleId: "team.io.\(name)",
-                    deploymentTarget: .iOS(
-                      targetVersion: iOSTargetVersion,
-                      devices: [.iphone]
-                    ),
-                    infoPlist: .default,
-                    sources: ["./Interface/**"],
-                    dependencies: dependencies)
+    return Target(name: name,
+                  platform: platform,
+                  product: .framework,
+                  bundleId: "olderStoneBed.io.\(name)",
+                  deploymentTarget: .iOS(
+                    targetVersion: iOSTargetVersion,
+                    devices: [.iphone]
+                  ),
+                  infoPlist: .default,
+                  sources: ["./Interface/**"],
+                  dependencies: dependencies)
   }
   
 }
