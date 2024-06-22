@@ -46,20 +46,24 @@ let Feature = Template(
             templatePath: "dummy.stencil"
         ),
         .file(
-            path: .featureBasePath + "/\(name)Presenter/Project.swift",
-            templatePath: "PresenterLayer.stencil"
+            path: .featureBasePath + "/\(name)Presenter/View/Project.swift",
+            templatePath: "View.stencil"
+        ),
+        .file(
+            path: .featureBasePath + "/\(name)Presenter/Reactor/Project.swift",
+            templatePath: "Reactor.stencil"
         ),
         //MARK: - DemoApp
         .file(
-            path: .featureBasePath + "/\(name)UserInterface/DemoApp/Sources/\(name)UserInterfaceAppDelegate.swift",
+            path: .featureBasePath + "/\(name)Presenter/DemoApp/Sources/\(name)UserInterfaceAppDelegate.swift",
             templatePath: "AppDelegate.stencil"
         ),
         .file(
-            path: .featureBasePath + "/\(name)UserInterface/DemoApp/Resources/LaunchScreen.storyboard",
+            path: .featureBasePath + "/\(name)Presenter/DemoApp/Resources/LaunchScreen.storyboard",
             templatePath: "LaunchScreen.stencil"
         ),
         .file(
-            path: .featureBasePath + "/\(name)UserInterface/DemoApp/Sources/\(name)UserInterfaceViewController.swift",
+            path: .featureBasePath + "/\(name)Presenter/DemoApp/Sources/\(name)UserInterfaceViewController.swift",
             templatePath: "ViewController.stencil"
         )
     ]
