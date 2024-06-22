@@ -13,7 +13,7 @@ import ProjectDescription
 // -> Demo App: Feature 단위의 빠른 테스트를 위함. (Ex. 로그인쪽 화면만 따로 테스트하고 싶다던지 ~)
 
 extension Project {
-  private static let organizationName = "yongin.io.TuistEx"
+  private static let organizationName = "olderStoneBed.io"
 }
 
 
