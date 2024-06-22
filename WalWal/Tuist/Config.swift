@@ -2,7 +2,7 @@ import ProjectDescription
 
 let config = Config(
     plugins: [
-        .local(path: .relativeToManifest("../../Plugins/DependenciesPlugin")),
-        .local(path: .relativeToManifest("../../Plugins/TemplatesPlugin"))
+        .local(path: .relativeToManifest("../../Plugins/DependencyPlugin")),
+        .local(path: .relativeToManifest("../../Plugins/TemplatePlugin"))
     ]
 )
