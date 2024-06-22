@@ -29,7 +29,18 @@ let project = Project(
             sources: ["Sources/**"],
             resources: ["Resources/**"],
             dependencies: [
-
+              .ThirdParty.Alamofire,
+              .ThirdParty.RxSwift,
+              .ThirdParty.RxRelay,
+              .ThirdParty.RxCocoa,
+              .ThirdParty.RxGesture,
+              .ThirdParty.Kingfisher,
+              .ThirdParty.FlexLayout,
+              .ThirdParty.PinLayout,
+              .ThirdParty.Then,
+              
+              .ResourceKit,
+              .DesignSystem
             ]
         )
     ]
