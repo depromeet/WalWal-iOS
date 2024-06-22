@@ -81,6 +81,21 @@ extension Project {
 
 private extension Project {
   
+  public static func makeTarget(
+      name: String,
+      dependencies: [TargetDependency],
+      iOSTargetVersion: String = "16.0.0"
+  ) -> Target {
+      return Target(name: name,
+             platform: .iOS,
+             product: .framework,
+             bundleId: "olderStoneBed.io.\(name)",
+             deploymentTarget: .iOS(targetVersion: iOSTargetVersion, devices: [.iphone]),
+             infoPlist: .default,
+             sources: ["./\(name)/**"],
+             dependencies: dependencies)
+  }
+  
   //MARK: - App으로 Project를 만들기 위한 Target 생성
   static func makeAppTargets(
     name: String, platform: Platform,
