@@ -10,10 +10,10 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project(
-    name: "App",
+    name: "WalWal",
     targets: [
         Target(
-            name: "App",
+            name: "WalWal",
             platform: .iOS,
             product: .app,
             bundleId: "olderStoneBed.io.walwal",
