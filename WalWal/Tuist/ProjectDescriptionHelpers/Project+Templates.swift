@@ -1,76 +1,167 @@
 import ProjectDescription
 
-/// Project helpers are functions that simplify the way you define your project.
-/// Share code to create targets, settings, dependencies,
-/// Create your own conventions, e.g: a func that makes sure all shared targets are "static frameworks"
-/// See https://docs.tuist.io/guides/helpers/
+// 이곳에서, Tuist설정을 더 쉽게 관리할 수 있도록 일반적인 프로젝트 설정과관련된 공통 기능을 캡슐화 하는 파일
+/// Project+Templetes는 이름대로, 각 Target(모듈)에 적용할 설정을 템플릿화하여 관리하는 파일임. (Project파일 커스텀 하는 곳)
+
+// 자자 우리가 ReactorKit + Clean Architecture를 적용한다면 ???
+// -> Presenter제외 모든 파트를 Interface & Implementation으로 나눠서 관리.
+
+// Ex. 인터페이스들은 모두 Dynamic Framework로 설정 (여러곳에서 중복 사용 가능)
+// Ex. 구현부(Implementation)들은 모두 Static Framework로 설정 (이미 구현된 내용은 중복 사용X)
+
+// Ex. AppTarget 설정. (product타입이 .app인 것들,,, ex. DemoApp / MainApp)
+// -> Demo App: Feature 단위의 빠른 테스트를 위함. (Ex. 로그인쪽 화면만 따로 테스트하고 싶다던지 ~)
 
 extension Project {
-    /// Helper function to create the Project for this ExampleApp
-    public static func app(name: String, platform: Platform, additionalTargets: [String]) -> Project {
-        var targets = makeAppTargets(name: name,
-                                     platform: platform,
-                                     dependencies: additionalTargets.map { TargetDependency.target(name: $0) })
-        targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, platform: platform) })
-        return Project(name: name,
-                       organizationName: "tuist.io",
-                       targets: targets)
-    }
+  private static let organizationName = "yongin.io.TuistEx"
+}
 
-    // MARK: - Private
 
-    /// Helper function to create a framework target and an associated unit test target
-    private static func makeFrameworkTargets(name: String, platform: Platform) -> [Target] {
-        let sources = Target(name: name,
-                platform: platform,
-                product: .framework,
-                bundleId: "io.tuist.\(name)",
-                infoPlist: .default,
-                sources: ["Targets/\(name)/Sources/**"],
-                resources: [],
-                dependencies: [])
-        let tests = Target(name: "\(name)Tests",
-                platform: platform,
-                product: .unitTests,
-                bundleId: "io.tuist.\(name)Tests",
-                infoPlist: .default,
-                sources: ["Targets/\(name)/Tests/**"],
-                resources: [],
-                dependencies: [.target(name: name)])
-        return [sources, tests]
-    }
+//MARK: -
+extension Project {
+  //MARK: - 실제로 Application으로 뽑아낼 Project
+  public static func app(name: String,
+                         platform: Platform,
+                         infoPlist: [String: Plist.Value],
+                         iOSTargetVersion: String,
+                         dependencies: [TargetDependency] = []) -> Project {
+   let targetsForApp = makeAppTargets(name: name,
+                                platform: platform,
+                                iOSTargetVersion: iOSTargetVersion,
+                                infoPlist: infoPlist,
+                                dependencies: dependencies)
+    return Project(name: name,
+                   organizationName: organizationName,
+                   targets: targetsForApp)
+  }
+  
+  //MARK: - 실제로 Framework로 뽑아낼 Project
+  public static func framework(name: String,
+                               platform: Platform,
+                               infoPlist: [String: Plist.Value] = [:],
+                               iOSTargetVersion: String,
+                               dependencies: [TargetDependency] = []) -> Project {
+      let targetsForFramework = makeFrameworkTargets(name: name,
+                                         platform: platform,
+                                         iOSTargetVersion: iOSTargetVersion,
+                                         infoPlist: infoPlist,
+                                         dependencies: dependencies)
+      return Project(name: name,
+                     organizationName: organizationName,
+                     targets: targetsForFramework)
+  }
+  
+  //MARK: - 빠르게 UI체크 할 DemoApp (Framework + App) -> Feature 단위로 테스트할 수 있게
+  public static func DemoApp(name: String,
+                             platform: Platform,
+                             iOSTargetVersion: String,
+                             infoPlist: [String: Plist.Value] = [:],
+                             dependencies: [TargetDependency] = []) -> Project {
+    let framework = makeFrameworkTargets(name: name,
+                                         platform: platform,
+                                         iOSTargetVersion: iOSTargetVersion,
+                                         dependencies: dependencies)
+    
+    let demoApp =  makeAppTargets(name: "\(name)DemoApp",
+                                  platform: platform,
+                                  iOSTargetVersion: iOSTargetVersion,
+                                  infoPlist: infoPlist,
+                                  dependencies: [.target(name: name)] + dependencies)
+    return Project(name: name,
+                   organizationName: organizationName,
+                   targets: framework + demoApp)
+  }
+  
+  
+  
+  
+}
 
-    /// Helper function to create the application target and the unit test target.
-    private static func makeAppTargets(name: String, platform: Platform, dependencies: [TargetDependency]) -> [Target] {
-        let platform: Platform = platform
-        let infoPlist: [String: Plist.Value] = [
-            "CFBundleShortVersionString": "1.0",
-            "CFBundleVersion": "1",
-"UIMainStoryboardFile": "",
-            "UILaunchStoryboardName": "LaunchScreen"
-            ]
 
-        let mainTarget = Target(
-            name: name,
-            platform: platform,
-            product: .app,
-            bundleId: "io.tuist.\(name)",
-            infoPlist: .extendingDefault(with: infoPlist),
-            sources: ["Targets/\(name)/Sources/**"],
-            resources: ["Targets/\(name)/Resources/**"],
-            dependencies: dependencies
-        )
 
-        let testTarget = Target(
-            name: "\(name)Tests",
-            platform: platform,
-            product: .unitTests,
-            bundleId: "io.tuist.\(name)Tests",
-            infoPlist: .default,
-            sources: ["Targets/\(name)/Tests/**"],
-            dependencies: [
-                .target(name: "\(name)")
-        ])
-        return [mainTarget, testTarget]
-    }
+private extension Project {
+  
+  //MARK: - App으로 Project를 만들기 위한 Target 생성
+  static func makeAppTargets(
+    name: String, platform: Platform,
+    iOSTargetVersion: String,
+    infoPlist: [String: Plist.Value],
+    dependencies: [TargetDependency] = []
+  ) -> [Target] {
+    let platform: Platform = platform
+    let appTarget = Target(name: name,
+                           platform: platform,
+                           product: .app,
+                           bundleId: "olderStoneBed.io.\(name)",
+                           deploymentTarget: .iOS(targetVersion: iOSTargetVersion, devices: [.iphone]),
+                           infoPlist: .extendingDefault(with: infoPlist),
+                           sources: ["Sources/**"],
+                           resources: ["Resources/**"],
+                           dependencies: dependencies)
+    return [appTarget]
+  }
+  
+  //MARK: - Framework로 Project를 만들기 위한 Target 생성
+  static func makeFrameworkTargets(
+    name: String,
+    platform: Platform,
+    iOSTargetVersion: String,
+    infoPlist: [String: Plist.Value] = [:],
+    dependencies: [TargetDependency] = []
+  ) -> [Target] {
+    let sources = Target(name: name,
+                         platform: platform,
+                         product: .framework,
+                         bundleId: "olderStoneBed.io.\(name)",
+                         deploymentTarget: .iOS(targetVersion: iOSTargetVersion, devices: [.iphone]),
+                         infoPlist: .extendingDefault(with: infoPlist),
+                         sources: ["Sources/**"],
+                         resources: ["Resources/**"],
+                         dependencies: dependencies)
+    return [sources]
+  }
+  
+  // MARK: - Static Framework로 세팅할 Implementation Target 생성
+  static func makeImplementStaticLibraryTarget(
+      name: String,
+      platform: Platform,
+      iOSTargetVersion: String,
+      dependencies: [TargetDependency] = [],
+      isUserInterface: Bool = false
+  ) -> Target {
+      
+      return Target(name: "\(name)Impl",
+                    platform: platform,
+                    product: .staticFramework,
+                    bundleId: "team.io.\(name)",
+                    deploymentTarget: .iOS(
+                      targetVersion: iOSTargetVersion,
+                      devices: [.iphone]
+                    ),
+                    infoPlist: .default,
+                    sources: ["./Implement/**"],
+                    dependencies: dependencies
+      )
+  }
+  
+  // MARK: - Dynamic Framework로 세팅할 Interface Target 생성
+  static func makeInterfaceDynamicFrameworkTarget(
+      name: String,
+      platform: Platform,
+      iOSTargetVersion: String,
+      dependencies: [TargetDependency] = []
+  ) -> Target {
+      return Target(name: name,
+                    platform: platform,
+                    product: .framework,
+                    bundleId: "team.io.\(name)",
+                    deploymentTarget: .iOS(
+                      targetVersion: iOSTargetVersion,
+                      devices: [.iphone]
+                    ),
+                    infoPlist: .default,
+                    sources: ["./Interface/**"],
+                    dependencies: dependencies)
+  }
+  
 }
