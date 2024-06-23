@@ -12,6 +12,7 @@ import DependencyPlugin
 let project = Project.invertedDualTargetProject(
   name: "Network",
   platform: .iOS,
+  iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
     .ThirdParty.Alamofire
   ],

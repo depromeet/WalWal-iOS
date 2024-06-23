@@ -20,5 +20,5 @@ let project = Project.framework(name: "ResourceKit",
                                     "Item 3": "Pretendard-Bold.otf"
                                   ]
                                 ],
-                                iOSTargetVersion: "16.0.0",
+                                iOSTargetVersion: "15.0.0",
                                 dependencies: [])
