@@ -11,15 +11,16 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.invertedDualTargetProject(
-    name: "{{ name }}Data",
-    platform: .iOS,
-    iOSTargetVersion: "15.0.0",
-    interfaceDependencies: [
-      .ThirdParty.RxSwift
-    ],
-    implementDependencies: [
-      .ThirdParty.RxSwift,
-      .Network.Interface
-    ]
+  name: "{{ name }}Data",
+  platform: .iOS,
+  iOSTargetVersion: "15.0.0",
+  interfaceDependencies: [
+    .ThirdParty.RxSwift
+  ],
+  implementDependencies: [
+    .ThirdParty.RxSwift,
+    .Network.Interface
+  ]
 )
+
 

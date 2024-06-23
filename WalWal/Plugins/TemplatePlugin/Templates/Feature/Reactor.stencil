@@ -1,4 +1,3 @@
-
 //
 //  {{ name }}Reactor.swift
 //
@@ -12,15 +11,15 @@ import RxSwift
 
 public class {{ name }}Reactor: Reactor {
   public enum Action {
-   
+    
   }
   
   public enum Mutation {
-   
+    
   }
   
   public struct State {
-   
+    
   }
   
   public let initialState: State
@@ -31,7 +30,7 @@ public class {{ name }}Reactor: Reactor {
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-     
+      
     }
   }
   
@@ -43,3 +42,4 @@ public class {{ name }}Reactor: Reactor {
     return newState
   }
 }
+

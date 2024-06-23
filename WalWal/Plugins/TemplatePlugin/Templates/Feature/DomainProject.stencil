@@ -1,3 +1,4 @@
+
 //
 //  {{ name }}DomainProject.swift
 //
@@ -11,15 +12,17 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.invertedDualTargetProject(
-    name: "{{ name }}Domain",
-    platform: .iOS,
-    iOSTargetVersion: "15.0.0",
-    interfaceDependencies: [
-      .ThirdParty.RxSwift,
-      .Feature.{{name}}.Data.Interface
-    ],
-    implementDependencies: [
-      .ThirdParty.RxSwift,
-    ]
+  name: "{{ name }}Domain",
+  platform: .iOS,
+  iOSTargetVersion: "15.0.0",
+  interfaceDependencies: [
+    .ThirdParty.RxSwift,
+  ],
+  implementDependencies: [
+    .ThirdParty.RxSwift,
+    
+    .Feature.{{name}}.Data.Interface
+  ]
 )
+
 

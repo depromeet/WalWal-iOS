@@ -10,9 +10,17 @@ import Foundation
 import RxSwift
 
 import {{name}}Data
+import {{name}}Domain
 
 class {{name}}DomainImplementation: {{name}}DomainInterface {
-    func excute() {
-        
-    }
+  let repository: {{name}}DataInterface
+  
+  init(repository: {{name}}DataInterface) {
+    self.repository = repository
+  }
+  
+  func excute() {
+    
+  }
 }
+

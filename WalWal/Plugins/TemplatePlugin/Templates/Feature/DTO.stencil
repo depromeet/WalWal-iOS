@@ -9,7 +9,7 @@
 import Foundation
 
 struct {{name}}DTO: Codable {
-    
+  
   func toModel() -> {{name}}Model {
     return .init()
   }
