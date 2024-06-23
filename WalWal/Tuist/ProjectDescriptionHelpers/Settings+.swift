@@ -10,7 +10,10 @@ import ProjectDescription
 extension Settings {
   static var flexLayoutSetting: Settings {
     return .settings(base: ["GCC_PREPROCESSOR_DEFINITIONS": "FLEXLAYOUT_SWIFT_PACKAGE=1"],
-                     configurations: [.debug(name: .debug), .release(name: .release)])
+                     configurations: [
+                      .debug(name: "Debug", xcconfig: .relativeToRoot("Config/Debug.xcconfig")),
+                      .release(name: "Release", xcconfig: .relativeToRoot("Config/Release.xcconfig"))
+                     ])
   }
 }
 

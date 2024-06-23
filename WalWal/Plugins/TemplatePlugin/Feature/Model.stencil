@@ -1,0 +1,13 @@
+//
+//  {{name}}Model.swift
+//
+//  {{name}}
+//
+//  Created by {{author}} on {{currentDate}}.
+//
+
+import Foundation
+
+struct {{ name }}Model {
+    
+}

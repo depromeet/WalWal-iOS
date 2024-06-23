@@ -1,0 +1,19 @@
+//
+//  ViewController.swift
+//
+//  WALWAL
+//
+//  Created by {{author}} on {{currentDate}}.
+//
+
+import UIKit
+
+final class {{name}}PresenterViewController: UIViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.backgroundColor = .systemPink
+    }
+    
+}
+

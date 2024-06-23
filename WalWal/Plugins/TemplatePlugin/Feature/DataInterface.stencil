@@ -1,0 +1,14 @@
+//
+//  {{ name }}DataInterface.swift
+//
+//  {{name}}
+//
+//  Created by {{author}} on {{currentDate}}.
+//
+
+import Foundation
+import RxSwift
+
+protocol {{ name }}DataInterface {
+    func excute()
+}

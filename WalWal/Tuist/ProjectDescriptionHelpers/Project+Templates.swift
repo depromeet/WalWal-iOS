@@ -113,40 +113,36 @@ extension Project {
                    targets: targets)
   }
   
-  /// 현재 경로 내부의 Implement, Interface, DemoApp 세개의 디렉토리에 각각 Target을 가지는 Project를 만듭니다.
-  /// interface와 implement에 필요한 dependency를 각각 주입해줍니다.
-  /// implement는 자동으로 interface에 대한 종속성을 가지고 있습니다.
-  ///
-  public static func invertedDualTargetProjectWithDemoApp(
+  /// 현재 경로 내부의 View, Reactor, DemoApp 세개의 디렉토리에 각각 Target을 가지는 Project를 만듭니다.
+  public static func invertedReactorKitTargetProject(
     name: String,
     platform: Platform = .iOS,
     iOSTargetVersion: String = "16.0.0",
-    interfaceDependencies: [TargetDependency] = [],
-    implementDependencies: [TargetDependency] = [],
+    viewDependencies: [TargetDependency] = [],
+    reactorDependencies: [TargetDependency] = [],
     demoAppDependencies: [TargetDependency] = [],
-    infoPlist: InfoPlist = .default,
-    isUserInterface: Bool = true
+    infoPlist: InfoPlist = .default
   ) -> Project {
     
-    let interfaceTarget = makeInterfaceDynamicFrameworkTarget(
+    let viewTarget = makeViewFrameworkTargets(
       name: name,
       platform: platform,
       iOSTargetVersion: iOSTargetVersion,
-      dependencies: interfaceDependencies
+      dependencies: viewDependencies
     )
-    let implementTarget = makeImplementStaticLibraryTarget(
+    
+    let reactorTarget = makeReactorFrameworkTargets(
       name: name,
       platform: platform,
       iOSTargetVersion: iOSTargetVersion,
-      dependencies: implementDependencies + [.target(name: name)],
-      isUserInterface: isUserInterface
+      dependencies: reactorDependencies
     )
     
     let demoApp = Target(
       name: "\(name)DemoApp",
       platform: .iOS,
       product: .app,
-      bundleId: "com.chansoo.\(name)Demoapp",
+      bundleId: "\(organizationName).\(name)Demoapp",
       deploymentTarget: .iOS(
         targetVersion: iOSTargetVersion,
         devices: [.iphone]
@@ -166,19 +162,15 @@ extension Project {
       sources: ["./DemoApp/Sources/**"],
       resources: ["./DemoApp/Resources/**"],
       dependencies: [
-        .target(name: name),
-        .target(name: "\(name)Impl"),
+        .target(name: "\(name)View"),
+        .target(name: "\(name)Reactor"),
       ] + demoAppDependencies
     )
     
-    let targets: [Target] = [interfaceTarget, implementTarget, demoApp]
+    let targets: [Target] = [viewTarget, reactorTarget, demoApp]
+    let settings: Settings = .flexLayoutSetting
     
-    let settings: Settings = .settings(configurations: [
-      .debug(name: "Debug", xcconfig: .relativeToRoot("Config/Debug.xcconfig")),
-      .release(name: "Release", xcconfig: .relativeToRoot("Config/Release.xcconfig")),
-    ])
-    
-    return Project(name: name,
+    return Project(name: "\(name)Presenter",
                    organizationName: organizationName,
                    settings: settings,
                    targets: targets)
@@ -195,7 +187,7 @@ private extension Project {
     return Target(name: name,
                   platform: .iOS,
                   product: .framework,
-                  bundleId: "olderStoneBed.io.\(name)",
+                  bundleId: "\(organizationName).\(name)",
                   deploymentTarget: .iOS(targetVersion: iOSTargetVersion, devices: [.iphone]),
                   infoPlist: .default,
                   sources: ["./\(name)/**"],
@@ -213,7 +205,7 @@ private extension Project {
     let appTarget = Target(name: name,
                            platform: platform,
                            product: .app,
-                           bundleId: "olderStoneBed.io.\(name)",
+                           bundleId: "\(organizationName).\(name)",
                            deploymentTarget: .iOS(targetVersion: iOSTargetVersion, devices: [.iphone]),
                            infoPlist: .extendingDefault(with: infoPlist),
                            sources: ["Sources/**"],
@@ -233,13 +225,60 @@ private extension Project {
     let sources = Target(name: name,
                          platform: platform,
                          product: .framework,
-                         bundleId: "olderStoneBed.io.\(name)",
-                         deploymentTarget: .iOS(targetVersion: iOSTargetVersion, devices: [.iphone]),
+                         bundleId: "\(organizationName).framework.\(name)",
+                         deploymentTarget: .iOS(
+                          targetVersion: iOSTargetVersion,
+                          devices: [.iphone]
+                         ),
                          infoPlist: .extendingDefault(with: infoPlist),
                          sources: ["Sources/**"],
                          resources: ["Resources/**"],
                          dependencies: dependencies)
     return [sources]
+  }
+  
+  //MARK: - Presenter/{{name}}View -> Framework로 만들기 위함
+  private static func makeViewFrameworkTargets(
+    name: String,
+    platform: Platform,
+    iOSTargetVersion: String,
+    infoPlist: [String: Plist.Value] = [:],
+    dependencies: [TargetDependency] = []
+  ) -> Target {
+    let target = Target(name: "\(name)View",
+                         platform: platform,
+                         product: .framework,
+                         bundleId: "\(organizationName).\(name)View",
+                         deploymentTarget: .iOS(
+                          targetVersion: iOSTargetVersion,
+                          devices: [.iphone]
+                         ),
+                         infoPlist: .extendingDefault(with: infoPlist),
+                         sources: ["./View/**"],
+                         dependencies: dependencies + [.target(name: "\(name)Reactor")])
+    return target
+  }
+  
+  //MARK: - Presenter/{{name}}Reactor -> Framework로 만들기 위함
+  private static func makeReactorFrameworkTargets(
+    name: String,
+    platform: Platform,
+    iOSTargetVersion: String,
+    infoPlist: [String: Plist.Value] = [:],
+    dependencies: [TargetDependency] = []
+  ) -> Target {
+    let target = Target(name: "\(name)Reactor",
+                         platform: platform,
+                         product: .framework,
+                         bundleId: "\(organizationName).\(name)Reactor",
+                         deploymentTarget: .iOS(
+                          targetVersion: iOSTargetVersion,
+                          devices: [.iphone]
+                         ),
+                         infoPlist: .extendingDefault(with: infoPlist),
+                         sources: ["./Reactor/**"],
+                         dependencies: dependencies)
+    return target
   }
   
   // MARK: - Static Framework로 세팅할 Implementation Target 생성
@@ -254,7 +293,7 @@ private extension Project {
     return Target(name: "\(name)Impl",
                   platform: platform,
                   product: .staticFramework,
-                  bundleId: "team.io.\(name)",
+                  bundleId: "\(organizationName).static.\(name)",
                   deploymentTarget: .iOS(
                     targetVersion: iOSTargetVersion,
                     devices: [.iphone]
@@ -275,7 +314,7 @@ private extension Project {
     return Target(name: name,
                   platform: platform,
                   product: .framework,
-                  bundleId: "olderStoneBed.io.\(name)",
+                  bundleId: "\(organizationName).dynamic.\(name)",
                   deploymentTarget: .iOS(
                     targetVersion: iOSTargetVersion,
                     devices: [.iphone]

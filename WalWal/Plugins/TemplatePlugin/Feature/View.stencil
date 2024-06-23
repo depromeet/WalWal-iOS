@@ -1,0 +1,61 @@
+//
+//  {{ name }}ViewController.swift
+//
+//  {{name}}
+//
+//  Created by {{author}}
+//
+
+import UIKit
+
+import ReactorKit
+import PinLayout
+import FlexLayout
+
+
+final class {{name}}ViewController: UIViewController {
+  public var disposeBag = DisposeBag()
+  
+  //MARK: UI
+  
+  //MARK: - View LifeCycle
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    setAttribute()
+    setLayout()
+  }
+  
+  //MARK: - Layout
+  
+  private func setAttribute() {
+    
+  }
+  
+  private func setLayout() {
+    
+  }
+  
+}
+
+extension {{name}}ViewController: View {
+  
+  func bind(reactor: {{name}}Reactor) {
+    bindAction(reactor: reactor)
+    bindState(reactor: reactor)
+    bindEvent()
+  }
+  
+  private func bindAction(reactor: {{name}}Reactor) {
+    
+  }
+  
+  private func bindState(reactor: {{name}}Reactor) {
+    
+  }
+  
+  private func bindEvent() {
+    
+  }
+  
+}

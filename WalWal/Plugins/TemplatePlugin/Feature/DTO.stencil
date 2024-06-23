@@ -1,0 +1,16 @@
+//
+//  {{name}}DTO.swift
+//
+//  {{name}}
+//
+//  Created by {{author}} on {{currentDate}}.
+//
+
+import Foundation
+
+struct {{name}}DTO: Codable {
+    
+  func toModel() -> {{name}}Model {
+    return .init()
+  }
+}
