@@ -42,7 +42,7 @@ extension WalWalDependency {
 extension TargetDependency {
   // - 독립모듈도 의존성을 분리시킬 필요가 있다면, interface 고민해보기
   public static let Utility =  TargetDependency.project(target: "Utility", path: .relativeToRoot("Utility"))
-  public static let WALWALNetwork =  TargetDependency.project(target: "WALWALNetwork", path: .relativeToRoot("WALWALNetwork"))
+  public static let WALWALNetwork =  TargetDependency.project(target: "Network", path: .relativeToRoot("Network"))
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
   public static let DesignSystem =  TargetDependency.project(target: "DesignSystem", path: .relativeToRoot("DesignSystem"))
   
