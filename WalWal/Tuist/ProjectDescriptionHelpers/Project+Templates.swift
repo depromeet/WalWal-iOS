@@ -170,7 +170,7 @@ extension Project {
     let targets: [Target] = [viewTarget, reactorTarget, demoApp]
     let settings: Settings = .flexLayoutSetting
     
-    return Project(name: "\(name)Presenter",
+    return Project(name: "\(name)",
                    organizationName: organizationName,
                    settings: settings,
                    targets: targets)
@@ -255,7 +255,7 @@ private extension Project {
                          ),
                          infoPlist: .extendingDefault(with: infoPlist),
                          sources: ["./View/**"],
-                         dependencies: dependencies + [.target(name: "\(name)Reactor")])
+                         dependencies: dependencies)
     return target
   }
   
@@ -293,7 +293,7 @@ private extension Project {
     return Target(name: "\(name)Imp",
                   platform: platform,
                   product: .staticFramework,
-                  bundleId: "\(organizationName).static.\(name)",
+                  bundleId: "\(organizationName).\(name)",
                   deploymentTarget: .iOS(
                     targetVersion: iOSTargetVersion,
                     devices: [.iphone]
@@ -314,7 +314,7 @@ private extension Project {
     return Target(name: name,
                   platform: platform,
                   product: .framework,
-                  bundleId: "\(organizationName).dynamic.\(name)",
+                  bundleId: "\(organizationName).\(name)",
                   deploymentTarget: .iOS(
                     targetVersion: iOSTargetVersion,
                     devices: [.iphone]
