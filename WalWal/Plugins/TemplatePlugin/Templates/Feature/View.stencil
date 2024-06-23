@@ -11,6 +11,7 @@ import UIKit
 import ReactorKit
 import PinLayout
 import FlexLayout
+import {{name}}Reactor
 
 
 final class {{name}}ViewController: UIViewController {

@@ -10,32 +10,32 @@
 import ReactorKit
 import RxSwift
 
-class {{ name }}Reactor: Reactor {
-  enum Action {
+public class {{ name }}Reactor: Reactor {
+  public enum Action {
    
   }
   
-  enum Mutation {
+  public enum Mutation {
    
   }
   
-  struct State {
+  public struct State {
    
   }
   
-  let initialState: State
+  public let initialState: State
   
   init() {
     self.initialState = State()
   }
   
-  func mutate(action: Action) -> Observable<Mutation> {
+  public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
      
     }
   }
   
-  func reduce(state: State, mutation: Mutation) -> State {
+  public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
       
