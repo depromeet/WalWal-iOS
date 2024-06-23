@@ -9,6 +9,8 @@
 import Foundation
 import RxSwift
 
+import {{name}}Data
+
 class {{name}}DomainImplementation: {{name}}DomainInterface {
     func excute() {
         

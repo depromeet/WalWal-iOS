@@ -26,7 +26,9 @@ let project = Project.invertedReactorKitTargetProject(
     ],
     reactorDependencies: [
       .ThirdParty.ReactorKit,
-      .ThirdParty.RxSwift
+      .ThirdParty.RxSwift,
+      
+      .Feature.{{name}}.Domain.Interface
     ]
 )
 

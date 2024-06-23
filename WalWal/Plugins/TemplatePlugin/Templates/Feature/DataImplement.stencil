@@ -9,6 +9,9 @@
 import Foundation
 import RxSwift
 
+import Network
+import {{name}}Data
+
 class {{name}}DataImplementation: {{name}}DataInterface {
     func excute() {
         

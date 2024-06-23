@@ -29,7 +29,7 @@ protocol WalWalDependency {
 extension WalWalDependency {
   
   static func project(name: FeatureStr, layer: Layer, isInterface: Bool) -> TargetDependency {
-    let postfix: String = isInterface ? "" : "Impl"
+    let postfix: String = isInterface ? "" : "Imp"
     let layer = layer.rawValue
     let name = name.rawValue
     let folderFullName = "\(name)\(layer)\(postfix)"
@@ -42,9 +42,12 @@ extension WalWalDependency {
 extension TargetDependency {
   // - 독립모듈도 의존성을 분리시킬 필요가 있다면, interface 고민해보기
   public static let Utility =  TargetDependency.project(target: "Utility", path: .relativeToRoot("Utility"))
-  public static let WALWALNetwork =  TargetDependency.project(target: "Network", path: .relativeToRoot("Network"))
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
   public static let DesignSystem =  TargetDependency.project(target: "DesignSystem", path: .relativeToRoot("DesignSystem"))
+  
+  public struct Network { }
+  
+  public struct ThirdParty { }
   
   public struct Feature {
     public struct Auth: WalWalDependency {
@@ -53,37 +56,35 @@ extension TargetDependency {
       public struct Presenter {}
     }
   }
-  
-  public struct ThirdParty { }
 }
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
 public extension TargetDependency.Feature.Auth.Presenter {
-  static let interface = TargetDependency.Feature.Auth.project(name: .auth,
+  static let Interface = TargetDependency.Feature.Auth.project(name: .auth,
                                                                layer: .presenter,
                                                                isInterface: true)
   
-  static let implement = TargetDependency.Feature.Auth.project(name: .auth,
+  static let Implement = TargetDependency.Feature.Auth.project(name: .auth,
                                                                layer: .presenter,
                                                                isInterface: false)
 }
 
 public extension TargetDependency.Feature.Auth.Domain {
-  static let interface = TargetDependency.Feature.Auth.project(name: .auth,
+  static let Interface = TargetDependency.Feature.Auth.project(name: .auth,
                                                                layer: .domain,
                                                                isInterface: true)
   
-  static let implement = TargetDependency.Feature.Auth.project(name: .auth,
+  static let Implement = TargetDependency.Feature.Auth.project(name: .auth,
                                                                layer: .domain,
                                                                isInterface: false)
 }
 
 public extension TargetDependency.Feature.Auth.Data {
-  static let interface = TargetDependency.Feature.Auth.project(name: .auth,
+  static let Interface = TargetDependency.Feature.Auth.project(name: .auth,
                                                                layer: .data,
                                                                isInterface: true)
   
-  static let implement = TargetDependency.Feature.Auth.project(name: .auth,
+  static let Implement = TargetDependency.Feature.Auth.project(name: .auth,
                                                                layer: .data,
                                                                isInterface: false)
 }
@@ -99,4 +100,9 @@ public extension TargetDependency.ThirdParty {
   static let Then = TargetDependency.external(name: "Then")
   static let FlexLayout = TargetDependency.external(name: "FlexLayout")
   static let PinLayout = TargetDependency.external(name: "PinLayout")
+}
+
+public extension TargetDependency.Network {
+    static let Interface = TargetDependency.project(target: "Network", path: .relativeToRoot("Network"))
+    static let Implement = TargetDependency.project(target: "NetworkImp", path: .relativeToRoot("Network"))
 }

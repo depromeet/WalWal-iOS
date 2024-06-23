@@ -290,7 +290,7 @@ private extension Project {
     isUserInterface: Bool = false
   ) -> Target {
     
-    return Target(name: "\(name)Impl",
+    return Target(name: "\(name)Imp",
                   platform: platform,
                   product: .staticFramework,
                   bundleId: "\(organizationName).static.\(name)",

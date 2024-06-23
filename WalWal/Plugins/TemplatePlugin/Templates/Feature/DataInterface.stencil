@@ -9,6 +9,6 @@
 import Foundation
 import RxSwift
 
-protocol {{ name }}DataInterface {
+public protocol {{ name }}DataInterface {
     func excute()
 }
