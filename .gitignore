@@ -122,7 +122,7 @@ iOSInjectionProject/
 Packages
 xcuserdata
 *.xcodeproj
-
+*.xcconfig
 
 ### Xcode ###
 
