@@ -104,6 +104,10 @@ public extension TargetDependency.Feature.Auth.Data {
 }
 
 public extension TargetDependency.ThirdParty {
+  private static func framework(name: String) -> TargetDependency {
+    .xcframework(path: .relativeToRoot("Tuist/Dependencies/Carthage/Build/\(name).xcframework"), status: .optional)
+  }
+  
   static let Alamofire = TargetDependency.external(name: "Alamofire")
   static let ReactorKit = TargetDependency.external(name: "ReactorKit")
   static let RxSwift = TargetDependency.external(name: "RxSwift")
@@ -112,8 +116,9 @@ public extension TargetDependency.ThirdParty {
   static let RxGesture = TargetDependency.external(name: "RxGesture")
   static let Kingfisher = TargetDependency.external(name: "Kingfisher")
   static let Then = TargetDependency.external(name: "Then")
-  static let FlexLayout = TargetDependency.external(name: "FlexLayout")
-  static let PinLayout = TargetDependency.external(name: "PinLayout")
+  
+  static let FlexLayout = framework(name: "FlexLayout")
+  static let PinLayout = framework(name: "PinLayout")
 }
 
 public extension TargetDependency.Network {

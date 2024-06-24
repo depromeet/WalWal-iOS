@@ -7,6 +7,19 @@
 
 import ProjectDescription
 
+
+let carthages = CarthageDependencies([
+    .github(
+        path: "layoutBox/PinLayout",
+        requirement: .upToNext("1.10.1")
+    ),
+    .github(
+        path: "layoutBox/FlexLayout",
+        requirement: .upToNext("1.3.18")
+    ),
+])
+
+
 let spm = SwiftPackageManagerDependencies(
   [
     .remote(url: "https://github.com/Alamofire/Alamofire",
@@ -21,10 +34,6 @@ let spm = SwiftPackageManagerDependencies(
             requirement: .upToNextMajor(from: "7.12.0")),
     .remote(url: "https://github.com/devxoul/Then",
             requirement: .upToNextMajor(from: "2.0.0")),
-    .remote(url: "https://github.com/layoutBox/FlexLayout",
-            requirement: .upToNextMajor(from: "1.3.18")),
-    .remote(url: "https://github.com/layoutBox/PinLayout",
-            requirement: .upToNextMajor(from: "1.10.1"))
   ],
   productTypes: [
     "Alamofire": .framework,
@@ -35,12 +44,11 @@ let spm = SwiftPackageManagerDependencies(
     "RxGesture": .framework,
     "Kingfisher": .framework,
     "Then": .framework,
-    "FlexLayout": .framework,
-    "PinLayout": .framework
   ]
 )
 
 let dependencies = Dependencies(
+  carthage: carthages,
   swiftPackageManager: spm,
   platforms: [.iOS]
 )

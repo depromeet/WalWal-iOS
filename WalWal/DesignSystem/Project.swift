@@ -14,7 +14,10 @@ let organizationName = "olderStoneBed.io"
 let project = Project(
     name: "DesignSystem",
     organizationName: organizationName,
-    settings: .flexLayoutSetting,
+    settings: .settings(configurations: [
+        .debug(name: "Debug", xcconfig: .relativeToRoot("Config/Debug.xcconfig")),
+        .release(name: "Release", xcconfig: .relativeToRoot("Config/Release.xcconfig")),
+    ]),
     targets: [
         Target(
             name: "DesignSystem",

@@ -168,7 +168,10 @@ extension Project {
     )
     
     let targets: [Target] = [viewTarget, reactorTarget, demoApp]
-    let settings: Settings = .flexLayoutSetting
+    let settings: Settings = .settings(configurations: [
+      .debug(name: "Debug", xcconfig: .relativeToRoot("Config/Debug.xcconfig")),
+      .release(name: "Release", xcconfig: .relativeToRoot("Config/Release.xcconfig")),
+    ])
     
     return Project(name: "\(name)",
                    organizationName: organizationName,
@@ -246,16 +249,17 @@ private extension Project {
     dependencies: [TargetDependency] = []
   ) -> Target {
     let target = Target(name: "\(name)View",
-                         platform: platform,
-                         product: .framework,
-                         bundleId: "\(organizationName).\(name)View",
-                         deploymentTarget: .iOS(
+                        platform: platform,
+                        product: .framework,
+                        bundleId: "\(organizationName).\(name)View",
+                        deploymentTarget: .iOS(
                           targetVersion: iOSTargetVersion,
                           devices: [.iphone]
-                         ),
-                         infoPlist: .extendingDefault(with: infoPlist),
-                         sources: ["./View/**"],
-                         dependencies: dependencies)
+                        ),
+                        infoPlist: .extendingDefault(with: infoPlist),
+                        
+                        sources: ["./View/**"],
+                        dependencies: dependencies)
     return target
   }
   
@@ -268,16 +272,16 @@ private extension Project {
     dependencies: [TargetDependency] = []
   ) -> Target {
     let target = Target(name: "\(name)Reactor",
-                         platform: platform,
-                         product: .framework,
-                         bundleId: "\(organizationName).\(name)Reactor",
-                         deploymentTarget: .iOS(
+                        platform: platform,
+                        product: .framework,
+                        bundleId: "\(organizationName).\(name)Reactor",
+                        deploymentTarget: .iOS(
                           targetVersion: iOSTargetVersion,
                           devices: [.iphone]
-                         ),
-                         infoPlist: .extendingDefault(with: infoPlist),
-                         sources: ["./Reactor/**"],
-                         dependencies: dependencies)
+                        ),
+                        infoPlist: .extendingDefault(with: infoPlist),
+                        sources: ["./Reactor/**"],
+                        dependencies: dependencies)
     return target
   }
   
