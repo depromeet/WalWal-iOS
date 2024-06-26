@@ -22,21 +22,21 @@ let carthages = CarthageDependencies([
 
 let spm = SwiftPackageManagerDependencies(
   [
-    .remote(url: "https://github.com/Alamofire/Alamofire",
-            requirement: .upToNextMajor(from: "5.9.1")),
     .remote(url: "https://github.com/ReactiveX/RxSwift",
             requirement: .upToNextMajor(from:"6.0.0")),
     .remote(url: "https://github.com/RxSwiftCommunity/RxGesture",
             requirement: .upToNextMinor(from: "4.0.0")),
     .remote(url: "https://github.com/ReactorKit/ReactorKit",
             requirement: .upToNextMajor(from: "3.2.0")),
+    .remote(url: "https://github.com/RxSwiftCommunity/RxAlamofire",
+            requirement: .upToNextMajor(from: "6.1.0")),
     .remote(url: "https://github.com/onevcat/Kingfisher",
             requirement: .upToNextMajor(from: "7.12.0")),
     .remote(url: "https://github.com/devxoul/Then",
             requirement: .upToNextMajor(from: "2.0.0")),
   ],
   productTypes: [
-    "Alamofire": .framework,
+    "RxAlamofire": .framework,
     "ReactorKit": .framework,
     "RxSwift": .framework,
     "RxCocoa": .framework,

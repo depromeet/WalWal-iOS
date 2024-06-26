@@ -14,9 +14,9 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .ThirdParty.Alamofire
+    .ThirdParty.RxAlamofire
   ],
   implementDependencies: [
-    .ThirdParty.Alamofire
+    .ThirdParty.RxAlamofire
   ]
 )

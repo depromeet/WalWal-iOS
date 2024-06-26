@@ -108,7 +108,7 @@ public extension TargetDependency.ThirdParty {
     .xcframework(path: .relativeToRoot("Tuist/Dependencies/Carthage/Build/\(name).xcframework"), status: .optional)
   }
   
-  static let Alamofire = TargetDependency.external(name: "Alamofire")
+  static let RxAlamofire = TargetDependency.external(name: "RxAlamofire")
   static let ReactorKit = TargetDependency.external(name: "ReactorKit")
   static let RxSwift = TargetDependency.external(name: "RxSwift")
   static let RxRelay = TargetDependency.external(name: "RxRelay")
