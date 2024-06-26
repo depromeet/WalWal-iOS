@@ -7,3 +7,6 @@
 //
 
 import Foundation
+
+/// Response에 Data가 없는 경우, ```BaseResponse<EmptyResponse>```를 사용합니다.
+public struct EmptyResponse: Decodable {}
