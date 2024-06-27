@@ -8,6 +8,11 @@ protocol APIEndpoint {
     var baseURL: URL { get }
     var path: String { get }
     var method: HTTPMethod { get }
-    var parameters: [String: Any]? { get }
+    var parameters: RequestParams { get }
     var headers: [String: String]? { get }
+}
+
+enum RequestParams {
+    case query(_ parameter: Encodable?)
+    case body(_ parameter: Encodable?)
 }
