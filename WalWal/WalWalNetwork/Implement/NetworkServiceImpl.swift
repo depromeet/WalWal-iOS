@@ -46,7 +46,7 @@ class NetworkService: NetworkServiceProtocol {
                                        headers: headers)
         .flatMap { response, data -> Single<T> in
             do {
-                if !(200...403).contains(response.statusCode) {
+                if !(200...300).contains(response.statusCode) {
                     throw NetworkError.serverError(statusCode: response.statusCode)
                 }
                 let data = try JSONSerialization.data(withJSONObject: data, options: .prettyPrinted)
