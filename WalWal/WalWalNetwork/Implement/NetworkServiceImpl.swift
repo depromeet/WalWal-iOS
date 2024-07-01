@@ -31,14 +31,7 @@ class NetworkService: NetworkServiceProtocol {
         let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
         /// 헤더 타입 변경
         let headers = endpoint.headers != nil ? HTTPHeaders(endpoint.headers!) : nil
-        
-        print("======== 📤 Request ==========>")
-        print("HTTP Method: \(endpoint.method.rawValue)")
-        print("URL: \(endpoint.baseURL.absoluteString + endpoint.path)")
-        print("Header: \(headers ?? .default)")
-        print("Parameters: \(endpoint.parameters ?? .init())")
-        print("================================")
-        
+        requestLogging(endpoint)
         
         /// 추후에 interceptor 추가 가능
         return RxAlamofire.requestJSON(endpoint.method,
@@ -52,10 +45,7 @@ class NetworkService: NetworkServiceProtocol {
                 }
                 let data = try JSONSerialization.data(withJSONObject: data, options: .prettyPrinted)
                 let decodedObject = try JSONDecoder().decode(T.self, from: data)
-                print("======== 📥 Response <==========")
-                print(data.toPrettyPrintedString ?? "")
-                print("================================")
-                
+                responseLogging(data.toPrettyPrintedString ?? "")
                 return .just(decodedObject)
             } catch {
                 return .error(NetworkError.decodingError(error))
@@ -69,6 +59,21 @@ class NetworkService: NetworkServiceProtocol {
                 return .error(NetworkError.unknown(error))
             }
         }
+    }
+    
+    private func requestLogging(_ endpoint: APIEndPoint) {
+        print("======== 📤 Request ==========>")
+        print("HTTP Method: \(endpoint.method.rawValue)")
+        print("URL: \(endpoint.baseURL.absoluteString + endpoint.path)")
+        print("Header: \(headers ?? .default)")
+        print("Parameters: \(endpoint.parameters ?? .init())")
+        print("================================")
+    }
+    
+    private func responseLogging(_ dataString: String) {
+        print("======== 📥 Response <==========")
+        print(dataString)
+        print("================================")
     }
 }
 
