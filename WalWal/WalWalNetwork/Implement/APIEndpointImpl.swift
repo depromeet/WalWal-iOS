@@ -8,8 +8,8 @@
 
 import Foundation
 
-import RxAlamofire
 import Alamofire
+import RxAlamofire
 
 ///URLRequestConvertible 프로토콜 구현부 :
 /// URLRequest 객체를 생성하는 방법을 정의.
@@ -24,15 +24,31 @@ extension APIEndpoint: URLRequestConvertible {
         
         /// parameters 프로퍼티에 따라 query parameter 또는 request body 생성
         switch parameters {
-        case .query(let request):
+        case .requestPlain:
+            break
+        case .requestQuery(let request):
             let params = request?.toDictionary() ?? [:]
             let queryParams = params.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
             var components = URLComponents(string: url.appendingPathComponent(path).absoluteString)
             components?.queryItems = queryParams
             urlRequest.url = components?.url
-        case .body(let request):
+        case .requestWithbody(let request):
             let params = request?.toDictionary() ?? [:]
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: params, options: [])
+        case .requestQueryWithBody(let query, let body):
+                let params = queryRequest?.toDictionary()
+                let queryParams = params?.map {
+                    URLQueryItem(name: $0.key, value: "\($0.value)")
+                }
+                var components = URLComponents(
+                    string: url.appendingPathComponent(path).absoluteString)
+                components?.queryItems = queryParams
+                urlRequest.url = components?.url
+                
+                let bodyParams = bodyRequest?.toDictionary() ?? [:]
+                
+                urlRequest.httpBody = try JSONSerialization.data(withJSONObject: bodyParams)
+            
         }
         
         return urlRequest

@@ -16,6 +16,8 @@ protocol APIEndpoint {
 }
 
 enum RequestParams {
-    case query(_ parameter: Encodable?)
-    case body(_ parameter: Encodable?)
+    case requestPlain
+    case requestQuery(_ parameter: Encodable?)
+    case requestWithbody(_ parameter: Encodable?)
+    case requestQueryWithBody(_ queryParameter: Encodable?, _ bodyParameter: Encodable?)
 }
