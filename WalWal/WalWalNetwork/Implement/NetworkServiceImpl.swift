@@ -7,6 +7,7 @@
 //
 
 import Foundation
+
 import Alamofire
 import RxAlamofire
 import RxSwift
@@ -60,7 +61,6 @@ class NetworkService: NetworkServiceProtocol {
                 return .error(NetworkError.decodingError(error))
             }
         }
-        .asSingle()
         .catchError { error in
             if let afError = error as? AFError,
                let statusCode = afError.responseCode {
