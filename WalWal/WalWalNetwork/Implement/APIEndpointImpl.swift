@@ -33,14 +33,14 @@ struct APIEndpointImpl: APIEndpoint, URLRequestConvertible {
         switch parameters {
         case .requestPlain:
             break
-        case .requestQuery(let request):
-            let params = request?.toDictionary() ?? [:]
+        case .requestQuery(let query):
+            let params = query?.toDictionary() ?? [:]
             let queryParams = params.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
             var components = URLComponents(url: url.appendingPathComponent(path), resolvingAgainstBaseURL: false)
             components?.queryItems = queryParams
             urlRequest.url = components?.url
-        case .requestWithbody(let request):
-            let params = request?.toDictionary() ?? [:]
+        case .requestWithbody(let body):
+            let params = body?.toDictionary() ?? [:]
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: params, options: [])
         case .requestQueryWithBody(let query, let body):
             let queryParams = query?.toDictionary().map { URLQueryItem(name: $0.key, value: "\($0.value)") }
