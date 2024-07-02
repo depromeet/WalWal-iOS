@@ -12,45 +12,45 @@ import Alamofire
 import RxAlamofire
 import RxSwift
 
-class NetworkService: NetworkServiceProtocol {
+final class NetworkService: NetworkServiceProtocol {
     /// request(:) 메서드는 APIEndpoint 프로토콜을 준수하는 엔드포인트를 받아 네트워크 요청을 수행합니다.
     /// - Parameter endpoint: APIEndpoint 프로토콜을 준수하는 엔드포인트
     /// - Returns: Single<T> 타입의 Observable
     /// 사용예시
     /// ``` swift
-    /// weatherUsecase.getWeather()
-    ///   .subscribe(onSuccess: { respones in
-    ///     //로직 처리
-    ///  }, onError: { error in
-    ///     print("Error: \(error)")
-    ///  })
-    ///  .disposed(by: disposeBag)
+    /// let networkService = NetworkService()
+    /// networkService.request(endpoint: MyAPIEndpoint()).subscribe(onSuccess: { (result: MyDataType) in
+    ///     print(result)
+    /// }, onError: { error in
+    ///     print(error)
+    /// })
     /// ```
     func request<T: Decodable>(endpoint: APIEndpoint) -> Single<T> {
         /// url 생성
         let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
         /// 헤더 타입 변경
-        let headers = endpoint.headers != nil ? HTTPHeaders(endpoint.headers!) : nil
-        requestLogging(endpoint)
+        let headers = HTTPHeaders(endpoint.headers)
+        requestLogging(endpoint, headers)
         
         /// 추후에 interceptor 추가 가능
         return RxAlamofire.requestJSON(endpoint.method,
                                        url,
-                                       parameters: endpoint.parameters,
-                                       headers: headers)
+                                       parameters: parametersToDictionary(endpoint.parameters),
+                                       headers: HTTPHeaders(endpoint.headers) )
         .flatMap { response, data -> Single<T> in
             do {
-                if !(200...300).contains(response.statusCode) {
-                    throw NetworkError.serverError(statusCode: response.statusCode)
-                }
-                let data = try JSONSerialization.data(withJSONObject: data, options: .prettyPrinted)
-                let decodedObject = try JSONDecoder().decode(T.self, from: data)
+                throw NetworkError.serverError(statusCode: response.statusCode)
+            }
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: data, options: .prettyPrinted)
+                let decodedObject = try JSONDecoder().decode(T.self, from: jsonData)
                 responseLogging(data.toPrettyPrintedString ?? "")
                 return .just(decodedObject)
             } catch {
-                return .error(NetworkError.decodingError(error))
+                throw NetworkError.decodingError(error)
             }
         }
+        .asSingle()
         .catchError { error in
             if let afError = error as? AFError,
                let statusCode = afError.responseCode {
