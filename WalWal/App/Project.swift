@@ -40,7 +40,8 @@ let project = Project(
               .ThirdParty.Then,
               
               .ResourceKit,
-              .DesignSystem
+              .DesignSystem,
+              .Utility
             ]
         )
     ]

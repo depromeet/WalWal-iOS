@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-import Network
+import WalWalNetwork
 import {{name}}Data
 
 class {{name}}DataImplementation: {{name}}DataInterface {

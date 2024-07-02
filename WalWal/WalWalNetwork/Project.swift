@@ -10,13 +10,16 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.invertedDualTargetProject(
-  name: "Network",
+  name: "WalWalNetwork",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .ThirdParty.RxAlamofire
+    .ThirdParty.RxAlamofire,
+    .ThirdParty.RxSwift
   ],
   implementDependencies: [
-    .ThirdParty.RxAlamofire
+    .ThirdParty.RxAlamofire,
+    .ThirdParty.RxSwift,
+    .ThirdParty.RxCocoa
   ]
 )

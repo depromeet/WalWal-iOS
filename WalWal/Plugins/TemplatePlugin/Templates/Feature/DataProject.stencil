@@ -19,7 +19,7 @@ let project = Project.invertedDualTargetProject(
   ],
   implementDependencies: [
     .ThirdParty.RxSwift,
-    .Network.Interface
+    .WalWalNetwork.Interface
   ]
 )
 
