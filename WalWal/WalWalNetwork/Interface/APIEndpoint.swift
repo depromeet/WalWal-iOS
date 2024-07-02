@@ -1,21 +1,22 @@
 import Foundation
 
+import Alamofire
 import RxAlamofire
 
 /// HTTPHeader 타입 입니다.
-typealias HTTPHeader = [String: String]
+public typealias WalWalHTTPHeader = [String: String]
 
 /// APIEndpoint 프로토콜
 /// API 엔드포인트를 정의하는 용도로 사용됩니다.
-protocol APIEndpoint {
+public protocol APIEndpoint {
     var baseURL: URL { get }
     var path: String { get }
     var method: HTTPMethod { get }
     var parameters: RequestParams { get }
-    var headers: HTTPHeader { get }
+    var headers: WalWalHTTPHeader { get }
 }
 
-enum RequestParams {
+public enum RequestParams {
     case requestPlain
     case requestQuery(_ parameter: Encodable?)
     case requestWithbody(_ parameter: Encodable?)

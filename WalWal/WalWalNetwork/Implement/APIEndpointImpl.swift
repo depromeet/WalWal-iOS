@@ -8,6 +8,7 @@
 
 import Foundation
 
+import WalWalNetwork
 import Alamofire
 import RxAlamofire
 
@@ -19,7 +20,7 @@ struct APIEndpointImpl: APIEndpoint, URLRequestConvertible {
     var path: String
     var method: HTTPMethod
     var parameters: RequestParams
-    var headers: HTTPHeader
+    var headers: WalWalHTTPHeader
     
     func asURLRequest() throws -> URLRequest {
         let url = try baseURL.asURL()
