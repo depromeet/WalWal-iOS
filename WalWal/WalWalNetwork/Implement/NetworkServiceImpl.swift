@@ -44,7 +44,7 @@ final class NetworkService: NetworkServiceProtocol {
             do {
                 let jsonData = try JSONSerialization.data(withJSONObject: data, options: .prettyPrinted)
                 let decodedObject = try JSONDecoder().decode(T.self, from: jsonData)
-                responseLogging(data.toPrettyPrintedString ?? "")
+                self.responseLogging(jsonData.toPrettyPrintedString ?? "")
                 return .just(decodedObject)
             } catch {
                 throw NetworkError.decodingError(error)
@@ -62,11 +62,12 @@ final class NetworkService: NetworkServiceProtocol {
     }
     
     private func requestLogging(_ endpoint: APIEndPoint) {
+    private func requestLogging(_ endpoint: APIEndpoint, _ headers: HTTPHeaders?) {
         print("======== 📤 Request ==========>")
         print("HTTP Method: \(endpoint.method.rawValue)")
         print("URL: \(endpoint.baseURL.absoluteString + endpoint.path)")
-        print("Header: \(headers ?? .default)")
-        print("Parameters: \(endpoint.parameters ?? .init())")
+        print("Header: \(headers ?? [:])")
+        print("Parameters: \(parametersToDictionary(endpoint.parameters) ?? [:])")
         print("================================")
     }
     
