@@ -29,3 +29,8 @@ protocol NetworkServiceProtocol {
     /// upload(:) 메서드는 APIEndpoint 프로토콜을 준수하는 엔드포인트와 업로드할 데이터를 받아 Single<T> 타입의 Observable을 반환합니다.
     func upload<T: Decodable>(endpoint: APIEndpoint, data: [UploadData]) -> Single<T>
 }
+
+enum UploadData {
+    case file(data: Data, name: String, fileName: String, mimeType: String)
+    case parameter(name: String, value: String)
+}
