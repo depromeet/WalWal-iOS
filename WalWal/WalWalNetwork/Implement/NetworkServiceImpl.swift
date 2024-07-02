@@ -38,7 +38,7 @@ final class NetworkService: NetworkServiceProtocol {
                                        parameters: parametersToDictionary(endpoint.parameters),
                                        headers: HTTPHeaders(endpoint.headers) )
         .flatMap { response, data -> Single<T> in
-            do {
+            if !(200...299).contains(response.statusCode) {
                 throw NetworkError.serverError(statusCode: response.statusCode)
             }
             do {
@@ -61,7 +61,53 @@ final class NetworkService: NetworkServiceProtocol {
         }
     }
     
-    private func requestLogging(_ endpoint: APIEndPoint) {
+    /// upload(:) 메서드는 APIEndpoint 프로토콜을 준수하는 엔드포인트와 업로드할 데이터를 받아 네트워크 요청을 수행합니다.
+    /// - Parameter endpoint: APIEndpoint 프로토콜을 준수하는 엔드포인트
+    /// - Parameter data: 업로드할 데이터 배열
+    /// - Returns: Single<T> 타입의 Observable
+    /// - 사용예시
+    /// ``` swift
+    /// let uploadData: [UploadData] = [
+    ///     .file(fileData: Data(), name: "file", fileName: "file.txt", mimeType: "text/plain"),
+    ///     .parameter(name: "param1", value: "value1")
+    /// ]
+    ///
+    /// let networkService = NetworkService()
+    /// networkService.upload(endpoint: UploadAPIEndpoint(), data: uploadData).subscribe(onSuccess: { (result: UploadResponse) in
+    ///     print(result)
+    /// }, onError: { error in
+    ///     print(error)
+    /// })
+    /// ```
+    func upload<T: Decodable>(endpoint: APIEndpoint, data: [UploadData]) -> Single<T> {
+        let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
+        let headers = HTTPHeaders(endpoint.headers)
+        
+        requestLogging(endpoint, headers)
+        
+        return RxAlamofire.upload(multipartFormData: { multipartFormData in
+            for item in data {
+                switch item {
+                case .file(let fileData, let name, let fileName, let mimeType):
+                    multipartFormData.append(fileData, withName: name, fileName: fileName, mimeType: mimeType)
+                case .parameter(let name, let value):
+                    multipartFormData.append(Data(value.utf8), withName: name)
+                }
+            }
+        }, to: url, method: endpoint.method, headers: headers)
+        .flatMap { request in
+            request.rx.responseData()
+        }
+        .map { response, data -> T in
+            guard 200..<300 ~= response.statusCode else {
+                throw NetworkError.httpError(response.statusCode)
+            }
+            return try JSONDecoder().decode(T.self, from: data)
+        }
+        .asSingle()
+    }
+    
+    
     private func requestLogging(_ endpoint: APIEndpoint, _ headers: HTTPHeaders?) {
         print("======== 📤 Request ==========>")
         print("HTTP Method: \(endpoint.method.rawValue)")
@@ -76,7 +122,22 @@ final class NetworkService: NetworkServiceProtocol {
         print(dataString)
         print("================================")
     }
+    
+    private func parametersToDictionary(_ parameters: RequestParams) -> [String: Any]? {
+        switch parameters {
+        case .requestPlain:
+            return nil
+        case .requestQuery(let parameter),
+                .requestWithbody(let parameter),
+                .requestQueryWithBody(_, let parameter):
+            return parameter?.toDictionary()
+        case .uploadMultipart:
+            return nil
+        }
+    }
+    
 }
+
 
 // MARK: NetworkReachability
 /// 네트워크 연결 여부를 확인하는 싱글톤 클래스 입니다
