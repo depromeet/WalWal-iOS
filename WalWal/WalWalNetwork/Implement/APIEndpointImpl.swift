@@ -13,47 +13,50 @@ import RxAlamofire
 
 ///URLRequestConvertible 프로토콜 구현부 :
 /// URLRequest 객체를 생성하는 방법을 정의.
-extension APIEndpoint: URLRequestConvertible {
+
+struct APIEndpointImpl: APIEndpoint, URLRequestConvertible {
+    var baseURL: URL
+    var path: String
+    var method: HTTPMethod
+    var parameters: RequestParams
+    var headers: HTTPHeader
+    
     func asURLRequest() throws -> URLRequest {
-        /// url  생성 후, path, method를 사용하여 urlRequest 생성
         let url = try baseURL.asURL()
         var urlRequest = try URLRequest(url: url.appendingPathComponent(path), method: method)
         
-        /// HTTPHeader
-        urlRequest.setValue(ContentType.json.rawValue, forHTTPHeaderField: HTTPHeaderField.contentType.rawValue)
+        for (headerField, headerValue) in headers {
+            urlRequest.setValue(headerValue, forHTTPHeaderField: headerField)
+        }
         
-        /// parameters 프로퍼티에 따라 query parameter 또는 request body 생성
         switch parameters {
         case .requestPlain:
             break
         case .requestQuery(let request):
             let params = request?.toDictionary() ?? [:]
             let queryParams = params.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
-            var components = URLComponents(string: url.appendingPathComponent(path).absoluteString)
+            var components = URLComponents(url: url.appendingPathComponent(path), resolvingAgainstBaseURL: false)
             components?.queryItems = queryParams
             urlRequest.url = components?.url
         case .requestWithbody(let request):
             let params = request?.toDictionary() ?? [:]
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: params, options: [])
         case .requestQueryWithBody(let query, let body):
-                let params = queryRequest?.toDictionary()
-                let queryParams = params?.map {
-                    URLQueryItem(name: $0.key, value: "\($0.value)")
-                }
-                var components = URLComponents(
-                    string: url.appendingPathComponent(path).absoluteString)
-                components?.queryItems = queryParams
-                urlRequest.url = components?.url
-                
-                let bodyParams = bodyRequest?.toDictionary() ?? [:]
-                
-                urlRequest.httpBody = try JSONSerialization.data(withJSONObject: bodyParams)
+            let queryParams = query?.toDictionary().map { URLQueryItem(name: $0.key, value: "\($0.value)") }
+            var components = URLComponents(url: url.appendingPathComponent(path), resolvingAgainstBaseURL: false)
+            components?.queryItems = queryParams
+            urlRequest.url = components?.url
             
+            let bodyParams = body?.toDictionary() ?? [:]
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: bodyParams, options: [])
+        case .uploadMultipart(_):
+            break
         }
         
         return urlRequest
     }
 }
+
 
 
 extension Encodable {
