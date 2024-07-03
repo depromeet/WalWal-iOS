@@ -1,6 +1,6 @@
 //
 //  NetworkService.swift
-//  Network
+//  WalWalNetwork
 //
 //  Created by 이지희 on 6/27/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
@@ -26,7 +26,7 @@ final class NetworkService: NetworkServiceProtocol {
     ///     print(error)
     /// })
     /// ```
-    func request<T: Decodable>(endpoint: APIEndpoint) -> Single<T> {
+    public func request<T: Decodable>(endpoint: APIEndpoint) -> Single<T> {
         /// url 생성
         let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
         /// 헤더 타입 변경
@@ -38,22 +38,22 @@ final class NetworkService: NetworkServiceProtocol {
                                        url,
                                        parameters: parametersToDictionary(endpoint.parameters),
                                        headers: headers)
-            .flatMap { response, data -> Single<T> in
-                if !(200...299).contains(response.statusCode) {
-                    throw NetworkError.serverError(statusCode: response.statusCode)
-                }
-                self.responseLogging((data as? Data)?.toPrettyPrintedString ?? "")
-                return self.decode(T.self, from: try JSONSerialization.data(withJSONObject: data))
+        .flatMap { response, data -> Single<T> in
+            if !(200...299).contains(response.statusCode) {
+                throw NetworkError.serverError(statusCode: response.statusCode)
             }
-            .asSingle()
-            .catch { error in
-                if let afError = error as? AFError,
-                   let statusCode = afError.responseCode {
-                    return .error(NetworkError.serverError(statusCode: statusCode))
-                } else {
-                    return .error(NetworkError.unknown(error))
-                }
+            self.responseLogging((data as? Data)?.toPrettyPrintedString ?? "")
+            return self.decode(T.self, from: try JSONSerialization.data(withJSONObject: data))
+        }
+        .asSingle()
+        .catch { error in
+            if let afError = error as? AFError,
+               let statusCode = afError.responseCode {
+                return .error(NetworkError.serverError(statusCode: statusCode))
+            } else {
+                return .error(NetworkError.unknown(error))
             }
+        }
     }
     
     
@@ -62,7 +62,9 @@ final class NetworkService: NetworkServiceProtocol {
     /// - Parameter data: 업로드할 데이터 배열
     /// - Returns: Single<T> 타입의 Observable
     func upload<T: Decodable>(endpoint: APIEndpoint, data: [UploadData]) -> Single<T> {
+        /// url 생성
         let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
+        /// 헤더 타입 변경
         let headers = HTTPHeaders(endpoint.headers)
         
         requestLogging(endpoint, headers)

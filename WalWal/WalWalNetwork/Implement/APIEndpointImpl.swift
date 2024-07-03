@@ -1,6 +1,6 @@
 //
 //  APIEndpointImpl.swift
-//  NetworkImp
+//  WalWalNetworkImp
 //
 //  Created by 이지희 on 6/27/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
@@ -14,7 +14,6 @@ import RxAlamofire
 
 ///URLRequestConvertible 프로토콜 구현부 :
 /// URLRequest 객체를 생성하는 방법을 정의.
-
 extension APIEndpoint {
     func asURLRequest() throws -> URLRequest {
         let url = try baseURL.asURL()
@@ -37,10 +36,9 @@ extension APIEndpoint {
         case .uploadMultipart(_):
             break
         }
-        
         return urlRequest
     }
-
+    
     private func configureQueryParams(url: URL, query: Encodable?) throws -> URL {
         let params = query?.toDictionary() ?? [:]
         let queryParams = params.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
@@ -51,7 +49,7 @@ extension APIEndpoint {
         }
         return configuredURL
     }
-
+    
     private func configureBodyParams(body: Encodable?) throws -> Data {
         let params = body?.toDictionary() ?? [:]
         return try JSONSerialization.data(withJSONObject: params, options: [])
