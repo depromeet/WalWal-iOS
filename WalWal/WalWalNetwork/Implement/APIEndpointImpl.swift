@@ -15,13 +15,7 @@ import RxAlamofire
 ///URLRequestConvertible 프로토콜 구현부 :
 /// URLRequest 객체를 생성하는 방법을 정의.
 
-struct APIEndpointImpl: APIEndpoint, URLRequestConvertible {
-    var baseURL: URL
-    var path: String
-    var method: HTTPMethod
-    var parameters: RequestParams
-    var headers: WalWalHTTPHeader
-    
+extension APIEndpoint {
     func asURLRequest() throws -> URLRequest {
         let url = try baseURL.asURL()
         var urlRequest = try URLRequest(url: url.appendingPathComponent(path), method: method)
