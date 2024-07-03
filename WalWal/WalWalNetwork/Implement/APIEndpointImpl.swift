@@ -28,27 +28,33 @@ extension APIEndpoint {
         case .requestPlain:
             break
         case .requestQuery(let query):
-            let params = query?.toDictionary() ?? [:]
-            let queryParams = params.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
-            var components = URLComponents(url: url.appendingPathComponent(path), resolvingAgainstBaseURL: false)
-            components?.queryItems = queryParams
-            urlRequest.url = components?.url
+            urlRequest.url = try configureQueryParams(url: url.appendingPathComponent(path), query: query)
         case .requestWithbody(let body):
-            let params = body?.toDictionary() ?? [:]
-            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: params, options: [])
+            urlRequest.httpBody = try configureBodyParams(body: body)
         case .requestQueryWithBody(let query, let body):
-            let queryParams = query?.toDictionary().map { URLQueryItem(name: $0.key, value: "\($0.value)") }
-            var components = URLComponents(url: url.appendingPathComponent(path), resolvingAgainstBaseURL: false)
-            components?.queryItems = queryParams
-            urlRequest.url = components?.url
-            
-            let bodyParams = body?.toDictionary() ?? [:]
-            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: bodyParams, options: [])
+            urlRequest.url = try configureQueryParams(url: url.appendingPathComponent(path), query: query)
+            urlRequest.httpBody = try configureBodyParams(body: body)
         case .uploadMultipart(_):
             break
         }
         
         return urlRequest
+    }
+
+    private func configureQueryParams(url: URL, query: Encodable?) throws -> URL {
+        let params = query?.toDictionary() ?? [:]
+        let queryParams = params.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        components?.queryItems = queryParams
+        guard let configuredURL = components?.url else {
+            throw URLError(.badURL)
+        }
+        return configuredURL
+    }
+
+    private func configureBodyParams(body: Encodable?) throws -> Data {
+        let params = body?.toDictionary() ?? [:]
+        return try JSONSerialization.data(withJSONObject: params, options: [])
     }
 }
 
