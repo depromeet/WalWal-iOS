@@ -10,18 +10,6 @@ import Foundation
 
 import RxSwift
 
-
-// MARK: - NetworkError
-/// NetworkError: 네트워크 요청 중 발생할 수 있는 에러 타입을 정의
-public enum NetworkError: Error {
-    case invalidRequest
-    case httpError(Int)
-    case serverError(statusCode: Int)
-    case decodingError(Error)
-    case unknown(Error)
-}
-
-
 // MARK: - NetworkService
 /// NetworkService: 네트워크 서비스 프로토콜 정의
 /// 네트워크 요청을 수행하는 메서드를 정의합니다.

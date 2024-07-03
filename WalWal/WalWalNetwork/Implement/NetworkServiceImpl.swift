@@ -101,7 +101,7 @@ final class NetworkService: NetworkServiceProtocol {
         }
         .map { response, data -> T in
             guard 200..<300 ~= response.statusCode else {
-                throw NetworkError.httpError(response.statusCode)
+                throw NetworkError.networkError(response.statusCode)
             }
             return try JSONDecoder().decode(T.self, from: data)
         }
