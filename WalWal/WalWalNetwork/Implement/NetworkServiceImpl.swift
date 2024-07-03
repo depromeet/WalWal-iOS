@@ -37,49 +37,30 @@ final class NetworkService: NetworkServiceProtocol {
         return RxAlamofire.requestJSON(endpoint.method,
                                        url,
                                        parameters: parametersToDictionary(endpoint.parameters),
-                                       headers: HTTPHeaders(endpoint.headers) )
-        .flatMap { response, data -> Single<T> in
-            if !(200...299).contains(response.statusCode) {
-                throw NetworkError.serverError(statusCode: response.statusCode)
+                                       headers: headers)
+            .flatMap { response, data -> Single<T> in
+                if !(200...299).contains(response.statusCode) {
+                    throw NetworkError.serverError(statusCode: response.statusCode)
+                }
+                self.responseLogging((data as? Data)?.toPrettyPrintedString ?? "")
+                return self.decode(T.self, from: try JSONSerialization.data(withJSONObject: data))
             }
-            do {
-                let jsonData = try JSONSerialization.data(withJSONObject: data, options: .prettyPrinted)
-                let decodedObject = try JSONDecoder().decode(T.self, from: jsonData)
-                self.responseLogging(jsonData.toPrettyPrintedString ?? "")
-                return .just(decodedObject)
-            } catch {
-                throw NetworkError.decodingError(error)
+            .asSingle()
+            .catch { error in
+                if let afError = error as? AFError,
+                   let statusCode = afError.responseCode {
+                    return .error(NetworkError.serverError(statusCode: statusCode))
+                } else {
+                    return .error(NetworkError.unknown(error))
+                }
             }
-        }
-        .asSingle()
-        .catchError { error in
-            if let afError = error as? AFError,
-               let statusCode = afError.responseCode {
-                return .error(NetworkError.serverError(statusCode: statusCode))
-            } else {
-                return .error(NetworkError.unknown(error))
-            }
-        }
     }
+    
     
     /// upload(:) 메서드는 APIEndpoint 프로토콜을 준수하는 엔드포인트와 업로드할 데이터를 받아 네트워크 요청을 수행합니다.
     /// - Parameter endpoint: APIEndpoint 프로토콜을 준수하는 엔드포인트
     /// - Parameter data: 업로드할 데이터 배열
     /// - Returns: Single<T> 타입의 Observable
-    /// - 사용예시
-    /// ``` swift
-    /// let uploadData: [UploadData] = [
-    ///     .file(fileData: Data(), name: "file", fileName: "file.txt", mimeType: "text/plain"),
-    ///     .parameter(name: "param1", value: "value1")
-    /// ]
-    ///
-    /// let networkService = NetworkService()
-    /// networkService.upload(endpoint: UploadAPIEndpoint(), data: uploadData).subscribe(onSuccess: { (result: UploadResponse) in
-    ///     print(result)
-    /// }, onError: { error in
-    ///     print(error)
-    /// })
-    /// ```
     func upload<T: Decodable>(endpoint: APIEndpoint, data: [UploadData]) -> Single<T> {
         let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
         let headers = HTTPHeaders(endpoint.headers)
@@ -99,15 +80,15 @@ final class NetworkService: NetworkServiceProtocol {
         .flatMap { request in
             request.rx.responseData()
         }
-        .map { response, data -> T in
+        .flatMap { response, data -> Single<T> in
             guard 200..<300 ~= response.statusCode else {
                 throw NetworkError.networkError(response.statusCode)
             }
-            return try JSONDecoder().decode(T.self, from: data)
+            self.responseLogging(data.toPrettyPrintedString ?? "")
+            return self.decode(T.self, from: data)
         }
         .asSingle()
     }
-    
     
     private func requestLogging(_ endpoint: APIEndpoint, _ headers: HTTPHeaders?) {
         print("======== 📤 Request ==========>")
@@ -134,6 +115,16 @@ final class NetworkService: NetworkServiceProtocol {
             return parameter?.toDictionary()
         case .uploadMultipart:
             return nil
+        }
+    }
+    
+    private func decode<T: Decodable>(_ type: T.Type, from data: Data) -> Single<T> {
+        do {
+            let result = try JSONDecoder().decode(T.self, from: data)
+            return .just(result)
+        }
+        catch {
+            return .error(NetworkError.decodingError(error))
         }
     }
     
