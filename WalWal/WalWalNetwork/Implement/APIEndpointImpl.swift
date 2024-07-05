@@ -16,8 +16,8 @@ import RxAlamofire
 /// URLRequest 객체를 생성하는 방법을 정의.
 extension APIEndpoint {
     func asURLRequest() throws -> URLRequest {
-        let url = try baseURL.asURL()
-        var urlRequest = try URLRequest(url: url.appendingPathComponent(path), method: method)
+        let url = try configureURL(baseURL)
+        var urlRequest = try URLRequest(url: url, method: method)
         
         for (headerField, headerValue) in headers {
             urlRequest.setValue(headerValue, forHTTPHeaderField: headerField)
@@ -27,16 +27,22 @@ extension APIEndpoint {
         case .requestPlain:
             break
         case .requestQuery(let query):
-            urlRequest.url = try configureQueryParams(url: url.appendingPathComponent(path), query: query)
+            urlRequest.url = try configureQueryParams(url: url, query: query)
         case .requestWithbody(let body):
             urlRequest.httpBody = try configureBodyParams(body: body)
         case .requestQueryWithBody(let query, let body):
-            urlRequest.url = try configureQueryParams(url: url.appendingPathComponent(path), query: query)
+            urlRequest.url = try configureQueryParams(url: url, query: query)
             urlRequest.httpBody = try configureBodyParams(body: body)
         case .uploadMultipart(_):
             break
         }
         return urlRequest
+    }
+    
+    private func configureURL(_ url: URL) throws -> URL {
+        let baseURL = try baseURL.asURL()
+        let url = baseURL.appendingPathComponent(path)
+        return url
     }
     
     private func configureQueryParams(url: URL, query: Encodable?) throws -> URL {
