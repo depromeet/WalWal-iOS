@@ -56,8 +56,6 @@ extension APIEndpoint {
     }
 }
 
-
-
 extension Encodable {
     func toDictionary() -> [String: Any] {
         guard let data = try? JSONEncoder().encode(self),

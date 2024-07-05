@@ -9,6 +9,7 @@
 import Foundation
 
 // MARK: - NetworkError
+
 /// NetworkError: 네트워크 요청 중 발생할 수 있는 에러 타입을 정의
 public enum NetworkError: Error {
     case invalidRequest

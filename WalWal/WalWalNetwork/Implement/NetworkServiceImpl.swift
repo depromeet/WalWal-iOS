@@ -56,7 +56,6 @@ final class NetworkService: NetworkServiceProtocol {
         }
     }
     
-    
     /// upload(:) 메서드는 APIEndpoint 프로토콜을 준수하는 엔드포인트와 업로드할 데이터를 받아 네트워크 요청을 수행합니다.
     /// - Parameter endpoint: APIEndpoint 프로토콜을 준수하는 엔드포인트
     /// - Parameter data: 업로드할 데이터 배열
@@ -141,9 +140,8 @@ extension Data {
     }
 }
 
-
-
 // MARK: NetworkReachability
+
 /// 네트워크 연결 여부를 확인하는 싱글톤 클래스 입니다
 final class NetworkReachability {
     static let shared = NetworkReachability()
