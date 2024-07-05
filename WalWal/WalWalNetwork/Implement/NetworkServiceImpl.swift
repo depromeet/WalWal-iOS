@@ -60,7 +60,7 @@ final class NetworkService: NetworkServiceProtocol {
     /// - Parameter endpoint: APIEndpoint 프로토콜을 준수하는 엔드포인트
     /// - Parameter data: 업로드할 데이터 배열
     /// - Returns: Single<T> 타입의 Observable
-    func upload<T: Decodable>(endpoint: APIEndpoint, data: [UploadData]) -> Single<T> {
+    public func upload<T: Decodable>(endpoint: APIEndpoint, data: [UploadData]) -> Single<T> {
         /// url 생성
         let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
         /// 헤더 타입 변경
@@ -143,7 +143,7 @@ extension Data {
 // MARK: NetworkReachability
 
 /// 네트워크 연결 여부를 확인하는 싱글톤 클래스 입니다
-final class NetworkReachability {
+public class NetworkReachability {
     static let shared = NetworkReachability()
     
     /// Almofire에서 제공하는 네트워크 상태 매니저
