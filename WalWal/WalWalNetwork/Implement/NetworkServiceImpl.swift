@@ -143,7 +143,7 @@ extension Data {
 // MARK: NetworkReachability
 
 /// 네트워크 연결 여부를 확인하는 싱글톤 클래스 입니다
-public class NetworkReachability {
+public final class NetworkReachability {
     static let shared = NetworkReachability()
     
     /// Almofire에서 제공하는 네트워크 상태 매니저
