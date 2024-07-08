@@ -42,11 +42,11 @@ final class NetworkService: NetworkServiceProtocol {
       if !(200...299).contains(response.statusCode) {
         throw WalWalNetworkError.serverError(statusCode: response.statusCode)
       }
-      self.responseLogging((data as? Data)?.toPrettyPrintedString ?? "")
+      self.responseLogging(data)
       return self.decode(T.self, from: try JSONSerialization.data(withJSONObject: data))
     }
     .asSingle()
-    .catch { error in
+    .catchError { error in
       if let afError = error as? AFError,
          let statusCode = afError.responseCode {
         return .error(WalWalNetworkError.serverError(statusCode: statusCode))
@@ -100,9 +100,9 @@ final class NetworkService: NetworkServiceProtocol {
     print("================================")
   }
   
-  private func responseLogging(_ dataString: String) {
+  private func responseLogging(_ data: Any) {
     print("======== 📥 Response <==========")
-    print(dataString)
+    print(data)
     print("================================")
   }
   
