@@ -46,7 +46,7 @@ final class NetworkService: NetworkServiceProtocol {
       return self.decode(T.self, from: try JSONSerialization.data(withJSONObject: data))
     }
     .asSingle()
-    .catchError { error in
+    .catch { error in
       if let afError = error as? AFError,
          let statusCode = afError.responseCode {
         return .error(WalWalNetworkError.serverError(statusCode: statusCode))
@@ -174,7 +174,7 @@ public final class NetworkReachability {
   ///   })
   ///   .dispose(by: disposeBag)
   /// ```
-  func observeReachability() {
+  public func observeReachability() {
     let reachability = NetworkReachabilityManager()
     reachability?.startListening(onUpdatePerforming: { [weak statusPublish] status in
       switch status {
@@ -194,7 +194,7 @@ public final class NetworkReachability {
   /// ``` swift
   /// view.backgroundColor = NetworkReachability.shared.isReachable() ? .blue : .gray
   /// ```
-  func isReachable() -> Bool {
+  public func isReachable() -> Bool {
     return reachabilityManager?.isReachable ?? false
   }
   
