@@ -76,14 +76,6 @@ let Feature = Template(
     .file(
       path: .featureBasePath + "/\(name)Presenter/DemoApp/Resources/LaunchScreen.storyboard",
       templatePath: "LaunchScreen.stencil"
-    ),
-    .file(
-      path: .featureBasePath + "/\(name)Presenter/DemoApp/Sources/\(name)View.swift",
-      templatePath: "View.stencil"
-    ),
-    .file(
-      path: .featureBasePath + "/\(name)Presenter/DemoApp/Sources/\(name)Reactor.swift",
-      templatePath: "Reactor.stencil"
     )
   ]
 )

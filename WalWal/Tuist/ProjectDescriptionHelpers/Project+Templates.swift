@@ -147,18 +147,7 @@ extension Project {
         targetVersion: iOSTargetVersion,
         devices: [.iphone]
       ),
-      infoPlist: .extendingDefault(
-        with:
-          [
-            "CFBundleDevelopmentRegion": "ko_KR",
-            "CFBundleShortVersionString": "1.0",
-            "CFBundleVersion": "1.0.0",
-            "UILaunchStoryboardName": "LaunchScreen",
-            "NSAppTransportSecurity" : [
-              "NSAllowsArbitraryLoads": true
-            ]
-          ]
-      ),
+      infoPlist: infoPlist,
       sources: ["./DemoApp/Sources/**"],
       resources: ["./DemoApp/Resources/**"],
       dependencies: [

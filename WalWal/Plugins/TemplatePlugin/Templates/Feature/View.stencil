@@ -9,17 +9,18 @@
 import UIKit
 
 import ReactorKit
+import Then
 import PinLayout
 import FlexLayout
 import {{name}}Reactor
 
 
-final class {{name}}ViewController: UIViewController {
+final public class {{name}}ViewController: UIViewController {
   public var disposeBag = DisposeBag()
   
-  //MARK: UI
+  // MARK: UI
   
-  //MARK: - View LifeCycle
+  // MARK: - View LifeCycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -27,7 +28,7 @@ final class {{name}}ViewController: UIViewController {
     setLayout()
   }
   
-  //MARK: - Layout
+  // MARK: - Layout
   
   private func setAttribute() {
     
