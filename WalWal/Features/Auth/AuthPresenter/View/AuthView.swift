@@ -22,8 +22,9 @@ final public class AuthViewController: UIViewController {
   
   // MARK: - View LifeCycle
   
-  override func viewDidLoad() {
+  override public func viewDidLoad() {
     super.viewDidLoad()
+    view.backgroundColor = .white
     setAttribute()
     setLayout()
   }
@@ -42,7 +43,7 @@ final public class AuthViewController: UIViewController {
 
 extension AuthViewController: View {
   
-  func bind(reactor: AuthReactor) {
+  public func bind(reactor: AuthReactor) {
     bindAction(reactor: reactor)
     bindState(reactor: reactor)
     bindEvent()

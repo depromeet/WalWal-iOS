@@ -21,15 +21,27 @@ let project = Project.invertedReactorKitTargetProject(
     .ThirdParty.RxCocoa,
     .ThirdParty.RxSwift,
     
-    .DesignSystem,
+      .DesignSystem,
     .ResourceKit
   ],
   reactorDependencies: [
     .ThirdParty.ReactorKit,
     .ThirdParty.RxSwift,
     
-    .Feature.Auth.Domain.Interface
-  ]
+      .Feature.Auth.Domain.Interface
+  ],
+  infoPlist: .extendingDefault(
+    with:
+      [
+        "CFBundleDevelopmentRegion": "ko_KR",
+        "CFBundleShortVersionString": "1.0",
+        "CFBundleVersion": "1.0.0",
+        "UILaunchStoryboardName": "LaunchScreen",
+        "NSAppTransportSecurity" : [
+          "NSAllowsArbitraryLoads": true
+        ]
+      ]
+  )
 )
 
 
