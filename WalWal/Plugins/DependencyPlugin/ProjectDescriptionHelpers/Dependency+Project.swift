@@ -38,7 +38,7 @@ extension WalWalDependency {
     let layer = layer.rawValue
     let postfix: String = isInterface ? "" : "Imp"
     let folderFullName = "\(name)\(layer)\(postfix)"
-    return .project(target: "\(folderFullName)",
+    return .project(target: folderFullName,
                     path: .relativeToRoot("Features/\(name)/\(name)\(layer)"))
   }
   
@@ -47,14 +47,13 @@ extension WalWalDependency {
     let layer = layer.rawValue
     let type = type.rawValue
     let folderFullName = "\(name)\(layer)\(type)"
-    return .project(target: "\(folderFullName)",
+    return .project(target: folderFullName,
                     path: .relativeToRoot("Features/\(name)/\(name)\(layer)"))
   }
   
 }
 
 extension TargetDependency {
-  // - 독립모듈도 의존성을 분리시킬 필요가 있다면, interface 고민해보기
   public static let Utility =  TargetDependency.project(target: "Utility", path: .relativeToRoot("Utility"))
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
   public static let DesignSystem =  TargetDependency.project(target: "DesignSystem", path: .relativeToRoot("DesignSystem"))
