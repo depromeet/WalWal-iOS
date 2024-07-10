@@ -59,6 +59,8 @@ extension TargetDependency {
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
   public static let DesignSystem =  TargetDependency.project(target: "DesignSystem", path: .relativeToRoot("DesignSystem"))
   
+  public struct DependencyFactory { }
+  
   public struct WalWalNetwork { }
   
   public struct ThirdParty { }
@@ -125,3 +127,9 @@ public extension TargetDependency.WalWalNetwork {
     static let Interface = TargetDependency.project(target: "WalWalNetwork", path: .relativeToRoot("WalWalNetwork"))
     static let Implement = TargetDependency.project(target: "WalWalNetworkImp", path: .relativeToRoot("WalWalNetwork"))
 }
+
+public extension TargetDependency.DependencyFactory {
+  static let Interface = TargetDependency.project(target: "DependencyFactory", path: .relativeToRoot("DependencyFactory"))
+  static let Implement = TargetDependency.project(target: "DependencyFactoryImp", path: .relativeToRoot("DependencyFactory"))
+}
+                                                  
