@@ -15,11 +15,13 @@ let project = Project.invertedReactorKitTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   viewDependencies: [
-    .ThirdParty.ReactorKit,
+    
+    .ThirdParty.Then,
     .ThirdParty.FlexLayout,
     .ThirdParty.PinLayout,
     .ThirdParty.RxCocoa,
     .ThirdParty.RxSwift,
+    .ThirdParty.ReactorKit,
     
     .DesignSystem,
     .ResourceKit

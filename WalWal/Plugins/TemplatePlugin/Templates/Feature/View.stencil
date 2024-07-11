@@ -7,22 +7,26 @@
 //
 
 import UIKit
+import {{name}}Reactor
 
-import ReactorKit
 import Then
 import PinLayout
 import FlexLayout
-import {{name}}Reactor
-
+import RxSwift
+import RxCocoa
+import ReactorKit
 
 final public class {{name}}ViewController: UIViewController {
+  
+  // MARK: - Properties
+  
   public var disposeBag = DisposeBag()
   
-  // MARK: UI
+  // MARK: - UI
   
   // MARK: - View LifeCycle
   
-  override func viewDidLoad() {
+  public override func viewDidLoad() {
     super.viewDidLoad()
     setAttribute()
     setLayout()
@@ -42,7 +46,7 @@ final public class {{name}}ViewController: UIViewController {
 
 extension {{name}}ViewController: View {
   
-  func bind(reactor: {{name}}Reactor) {
+  public func bind(reactor: {{name}}Reactor) {
     bindAction(reactor: reactor)
     bindState(reactor: reactor)
     bindEvent()

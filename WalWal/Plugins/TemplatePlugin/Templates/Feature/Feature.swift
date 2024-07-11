@@ -34,10 +34,6 @@ let Feature = Template(
       path: .featureBasePath + "/\(name)Data/Implement/\(name)DataImplement.swift",
       templatePath: "DataImplement.stencil"
     ),
-    .file(
-      path: .featureBasePath + "/\(name)Data/DTO/\(name)DTO.swift",
-      templatePath: "DTO.stencil"
-    ),
     //MARK: Domain Layer
     .file(
       path: .featureBasePath + "/\(name)Domain/Project.swift",
@@ -50,10 +46,6 @@ let Feature = Template(
     .file(
       path: .featureBasePath + "/\(name)Domain/Implement/\(name)DomainImplement.swift",
       templatePath: "DomainImplement.stencil"
-    ),
-    .file(
-      path: .featureBasePath + "/\(name)Domain/Model/\(name)Model.swift",
-      templatePath: "Model.stencil"
     ),
     //MARK: Presenter Layer
     .file(

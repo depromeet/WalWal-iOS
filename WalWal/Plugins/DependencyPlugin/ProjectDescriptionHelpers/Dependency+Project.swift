@@ -24,6 +24,7 @@ enum Reactor: String {
 
 enum FeatureStr: String {
   case auth = "Auth"
+  case sample = "Sample"
 }
 
 protocol WalWalDependency {
@@ -56,6 +57,7 @@ extension WalWalDependency {
 extension TargetDependency {
   // - 독립모듈도 의존성을 분리시킬 필요가 있다면, interface 고민해보기
   public static let Utility =  TargetDependency.project(target: "Utility", path: .relativeToRoot("Utility"))
+  public static let LocalStorage = TargetDependency.project(target: "LocalStorage", path: .relativeToRoot("LocalStorage"))
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
   public static let DesignSystem =  TargetDependency.project(target: "DesignSystem", path: .relativeToRoot("DesignSystem"))
   
@@ -65,6 +67,12 @@ extension TargetDependency {
   
   public struct Feature {
     public struct Auth: WalWalDependency {
+      public struct Data {}
+      public struct Domain {}
+      public struct Presenter {}
+    }
+    
+    public struct Sample: WalWalDependency {
       public struct Data {}
       public struct Domain {}
       public struct Presenter {}
@@ -94,11 +102,41 @@ public extension TargetDependency.Feature.Auth.Domain {
 }
 
 public extension TargetDependency.Feature.Auth.Data {
-  static let Interface = TargetDependency.Feature.Auth.project(name: .auth,
+  static let Interface = TargetDependency.Feature.Sample.project(name: .auth,
                                                                layer: .data,
                                                                isInterface: true)
   
-  static let Implement = TargetDependency.Feature.Auth.project(name: .auth,
+  static let Implement = TargetDependency.Feature.Sample.project(name: .auth,
+                                                               layer: .data,
+                                                               isInterface: false)
+}
+
+public extension TargetDependency.Feature.Sample.Presenter {
+  static let View = TargetDependency.Feature.Sample.project(name: .sample,
+                                                          layer: .presenter,
+                                                          type: .view)
+  
+  static let Reactor = TargetDependency.Feature.Sample.project(name: .sample,
+                                                             layer: .presenter,
+                                                             type: .reactor)
+}
+
+public extension TargetDependency.Feature.Sample.Domain {
+  static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
+                                                               layer: .domain,
+                                                               isInterface: true)
+  
+  static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
+                                                               layer: .domain,
+                                                               isInterface: false)
+}
+
+public extension TargetDependency.Feature.Sample.Data {
+  static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
+                                                               layer: .data,
+                                                               isInterface: true)
+  
+  static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
                                                                layer: .data,
                                                                isInterface: false)
 }
