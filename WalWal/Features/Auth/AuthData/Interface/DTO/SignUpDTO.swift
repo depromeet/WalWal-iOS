@@ -6,7 +6,7 @@
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 public struct SignUpDTO: Decodable {
   public let token: String

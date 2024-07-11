@@ -6,10 +6,9 @@
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import Foundation
-
-import AuthDomain
+import UIKit
 import AuthData
+import AuthDomain
 
 import RxSwift
 

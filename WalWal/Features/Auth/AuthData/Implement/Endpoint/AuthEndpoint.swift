@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import WalWalNetwork
 
 import Alamofire
-import WalWalNetwork
+
 
 enum AuthEndpoint<ResponseType>: APIEndpoint where ResponseType: Decodable {
   typealias Response = ResponseType
