@@ -52,6 +52,7 @@ public final class NetworkService: NetworkServiceProtocol {
 }
 
 // MARK: - Private Method
+
 extension NetworkService {
   private func convertToResponse<T: Decodable>(
     _ response: HTTPURLResponse,

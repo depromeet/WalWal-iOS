@@ -16,9 +16,14 @@ import AuthReactor
 
 
 final public class AuthViewController: UIViewController {
+  
+  // MARK: - Properties
+  
   public var disposeBag = DisposeBag()
   
-  // MARK: UI
+  // MARK: - UI
+  
+  
   
   // MARK: - View LifeCycle
   

@@ -19,6 +19,7 @@ public final class AuthDataRepositoryImpl: AuthDataRepository {
   private let networkService: NetworkServiceProtocol
   
   // MARK: - Initializers
+  
   public init(
     networkService: NetworkServiceProtocol
   ) {
@@ -26,6 +27,7 @@ public final class AuthDataRepositoryImpl: AuthDataRepository {
   }
   
   // MARK: - Methods
+  
   // - Interface에 정의된 함수를 구현해주세요.
   public func signUp(nickname: String, profile: Data) -> Single<SignUpDTO> {
     let body = SignUpBody(nickname: nickname, profile: profile)
