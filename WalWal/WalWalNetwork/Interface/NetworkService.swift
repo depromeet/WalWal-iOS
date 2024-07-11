@@ -16,9 +16,7 @@ import RxSwift
 public protocol NetworkServiceProtocol {
   /// request(:) 메서드는 APIEndpoint 프로토콜을 준수하는 엔드포인트를 받아 Single<T> 타입의 Observable을 반환합니다.
   /// 공통되는 엔티티를 사용하기 위해 BaseResponse를 사용합니다.
-  func request<E: APIEndpoint>(endpoint: E) -> Single<E.Response?> where E: APIEndpoint
-  /// upload(:) 메서드는 APIEndpoint 프로토콜을 준수하는 엔드포인트와 업로드할 데이터를 받아 Single<T> 타입의 Observable을 반환합니다.
-//  func upload<T: Decodable>(endpoint: APIEndpoint, data: [UploadData]) -> Single<T>
+  func request<E: APIEndpoint>(endpoint: E) -> Single<E.ResponseType?> where E: APIEndpoint
 }
 
 public enum UploadData {

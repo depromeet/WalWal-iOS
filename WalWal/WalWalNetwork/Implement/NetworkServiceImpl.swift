@@ -23,7 +23,7 @@ public final class NetworkService: NetworkServiceProtocol {
     
   }
   
-  public func request<EP: APIEndpoint>(endpoint: EP) -> Single<EP.Response?> where EP: APIEndpoint {
+  public func request<E: APIEndpoint>(endpoint: E) -> Single<E.ResponseType?> where E: APIEndpoint {
     let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
     let headers = HTTPHeaders(endpoint.headers)
     requestLogging(endpoint)
@@ -37,9 +37,9 @@ public final class NetworkService: NetworkServiceProtocol {
       return (response, convertedData)
     }
     .withUnretained(self)
-    .flatMap { owner, result -> Single<EP.Response?> in
+    .flatMap { owner, result -> Single<E.ResponseType?> in
       let (response, data) = result
-      let convertedResult = self.convertToResponse(response, data, EP.Response.self, endpoint)
+      let convertedResult = self.convertToResponse(response, data, E.ResponseType.self, endpoint)
       switch convertedResult {
       case .success(let responseData):
         return .just(responseData)
@@ -53,19 +53,19 @@ public final class NetworkService: NetworkServiceProtocol {
 
 // MARK: - Private Method
 extension NetworkService {
-  private func convertToResponse<WAL: Decodable>(
+  private func convertToResponse<T: Decodable>(
     _ response: HTTPURLResponse,
     _ data: Data,
-    _ model: WAL.Type,
+    _ model: T.Type,
     _ endpoint: any APIEndpoint
-  ) -> Result<WAL?, Error> {
+  ) -> Result<T?, Error> {
     let statusCode = response.statusCode
     if !(200...299).contains(statusCode) {
       return .failure(WalWalNetworkError.serverError(statusCode: statusCode))
     }
     
     do {
-      let responseModel = try JSONDecoder().decode(BaseResponse<WAL>.self, from: data)
+      let responseModel = try JSONDecoder().decode(BaseResponse<T>.self, from: data)
       if responseModel.sucess {
         responseSuccess(endpoint, result: responseModel)
         return .success(responseModel.data)
@@ -90,7 +90,7 @@ extension NetworkService {
           """)
   }
   
-  private func responseSuccess<RE: Decodable>(_ endpoint: any APIEndpoint, result response: BaseResponse<RE>) {
+  private func responseSuccess<T: Decodable>(_ endpoint: any APIEndpoint, result response: BaseResponse<T>) {
     print("""
               ======================== 📥 Response <========================
               ========================= ✅ Success =========================

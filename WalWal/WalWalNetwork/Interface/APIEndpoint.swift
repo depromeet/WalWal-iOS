@@ -9,7 +9,7 @@ public typealias WalWalHTTPHeader = [String: String]
 /// APIEndpoint 프로토콜
 /// API 엔드포인트를 정의하는 용도로 사용됩니다.
 public protocol APIEndpoint: URLRequestConvertible {
-  associatedtype Response: Decodable
+  associatedtype ResponseType: Decodable
   
   var baseURL: URL { get }
   var path: String { get }

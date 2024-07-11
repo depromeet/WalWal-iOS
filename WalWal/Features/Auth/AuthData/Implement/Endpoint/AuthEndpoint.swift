@@ -11,8 +11,8 @@ import Foundation
 import Alamofire
 import WalWalNetwork
 
-enum AuthEndpoint<EP>: APIEndpoint where EP: Decodable {
-  typealias Response = EP
+enum AuthEndpoint<ResponseType>: APIEndpoint where ResponseType: Decodable {
+  typealias Response = ResponseType
   
   case signUp(body: SignUpBody)
   case signIn(body: SignInBody)
