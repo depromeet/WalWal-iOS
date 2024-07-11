@@ -12,7 +12,7 @@ import AuthData
 
 import RxSwift
 
-public class AuthDataRepositoryImpl: AuthDataRepository {
+public final class AuthDataRepositoryImpl: AuthDataRepository {
   
   // MARK: - Properties
 
