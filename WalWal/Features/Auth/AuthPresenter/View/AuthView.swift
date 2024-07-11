@@ -61,12 +61,13 @@ final public class AuthViewController: UIViewController {
   private func setLayout() {
     rootContainer.flex.justifyContent(.spaceBetween).define { flex in
       flex.addItem().alignItems(.center).paddingTop(35%).define { flex in
-        flex.addItem(imageView).width(55%).aspectRatio(1.0)
-        flex.addItem(titleLabel).marginTop(10)
-        flex.addItem(subTitleLabel).marginTop(10)
+        flex.addItem(imageView).size(220)
+        flex.addItem(titleLabel).marginTop(10).maxWidth(330)
+        flex.addItem(subTitleLabel).marginTop(6).maxWidth(330)
       }
-      flex.addItem().marginBottom(40).define { flex in
-        flex.addItem(appleLoginButton).marginHorizontal(20).height(56)
+      flex.addItem().marginBottom(40).alignItems(.center).define { flex in
+        // 카카오 로그인 버튼 추가하기
+        flex.addItem(appleLoginButton).width(330).height(56)
       }
     }
   }
