@@ -7,10 +7,10 @@
 //
 
 import Foundation
-import RxSwift
-
 import WalWalNetwork
 import {{name}}Data
+
+import RxSwift
 
 class {{name}}DataImplementation: {{name}}DataInterface {
   func excute() {
