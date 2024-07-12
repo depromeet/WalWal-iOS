@@ -11,7 +11,7 @@ import RxSwift
 
 public class AuthReactor: Reactor {
   public enum Action {
-    
+    case appleLogin(authCode: String)
   }
   
   public enum Mutation {
@@ -19,18 +19,19 @@ public class AuthReactor: Reactor {
   }
   
   public struct State {
-    
   }
   
   public let initialState: State
   
-  init() {
+  public init() {
     self.initialState = State()
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-      
+    case let .appleLogin(authCode):
+      print(authCode)
+      return .never()
     }
   }
   

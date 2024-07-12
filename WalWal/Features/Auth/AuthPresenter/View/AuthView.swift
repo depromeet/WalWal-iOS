@@ -14,6 +14,7 @@ import Then
 import PinLayout
 import FlexLayout
 import AuthReactor
+import RxCocoa
 
 
 final public class AuthViewController: UIViewController {
@@ -35,7 +36,11 @@ final public class AuthViewController: UIViewController {
     $0.textColor = .black
     $0.font = .systemFont(ofSize: 14)
   }
-  private let appleLoginButton = ASAuthorizationAppleIDButton(authorizationButtonType: .continue, authorizationButtonStyle: .black)
+  private lazy var appleLoginButton = UIButton().then {
+    $0.setTitle("애플 로그인", for: .normal)
+    $0.backgroundColor = .black
+    $0.tintColor = .white
+  }
   
   // MARK: - View LifeCycle
   
@@ -43,6 +48,7 @@ final public class AuthViewController: UIViewController {
     super.viewDidLoad()
     setAttribute()
     setLayout()
+    self.reactor = AuthReactor()
   }
   
   // MARK: - Layout
@@ -83,7 +89,14 @@ extension AuthViewController: View {
   }
   
   private func bindAction(reactor: AuthReactor) {
-    
+    appleLoginButton.rx.tap
+      .flatMap { _ in
+        ASAuthorizationAppleIDProvider().rx.appleLogin(scope: [.email, .fullName], window: self.view.window)
+      }
+      .compactMap { $0 }
+      .map { Reactor.Action.appleLogin(authCode: $0) }
+      .subscribe(reactor.action)
+      .disposed(by: disposeBag)
   }
   
   private func bindState(reactor: AuthReactor) {
@@ -95,3 +108,4 @@ extension AuthViewController: View {
   }
   
 }
+
