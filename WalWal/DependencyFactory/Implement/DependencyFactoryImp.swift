@@ -10,7 +10,9 @@ import DependencyFactory
 
 // MARK: - 추가되는 Feature에 따라 import되는 Interface와 Implement를 작성해주세요.
 
-/// 이곳은 Interface와 Implement 동시에 의존성을 갖습니다. (하단 예시 참고)
+/// (이곳은 Interface와 Implement 동시에 의존성을 갖습니다.)
+/// Ex.
+
 /*
 import WalWalNetwork
 import WalWalNetworkImp
@@ -22,18 +24,19 @@ import AuthData
 import AuthDataImp
 
 public class DependencyFactoryImp: DependencyFactory {
+  
   // MARK: - 추가되는 Feature에 따라 Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
- 
+  
   private let networkService = NetworkService()
   
   // MARK: - Data Injection
- 
+  
   public func injectAuthData() -> AuthDataRepository {
     return AuthDataRepositoryImpl(networkService: networkService)
   }
   
   // MARK: - Domain Injection
- 
+  
   public func injectSignInUsecase() -> SignInUseCase {
     return SignInUseCaseImpl(authRepository: injectAuthData())
   }
