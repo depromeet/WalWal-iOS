@@ -39,10 +39,13 @@ let project = Project(
         .ThirdParty.PinLayout,
         .ThirdParty.Then,
         
-          .ResourceKit,
+        .ResourceKit,
         .DesignSystem,
-        .Utility
-        
+        .Utility,
+        .WalWalNetwork.Interface,
+        .WalWalNetwork.Implement,
+        .DependencyFactory.Interface,
+        .DependencyFactory.Implement
       ]
     )
   ]
