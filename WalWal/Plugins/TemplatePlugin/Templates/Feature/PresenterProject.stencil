@@ -11,7 +11,7 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.invertedReactorKitTargetProject(
-  name: "{{ name }}",
+  name: "{{ name }}Presenter",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   viewDependencies: [
