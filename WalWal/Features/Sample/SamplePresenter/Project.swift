@@ -24,7 +24,9 @@ let project = Project.invertedReactorKitTargetProject(
     .ThirdParty.ReactorKit,
     
     .DesignSystem,
-    .ResourceKit
+    .ResourceKit,
+    
+    .Feature.Sample.Presenter.Reactor
   ],
   reactorDependencies: [
     .ThirdParty.ReactorKit,
