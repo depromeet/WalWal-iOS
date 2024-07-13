@@ -13,97 +13,104 @@ import Alamofire
 import RxAlamofire
 import RxSwift
 
-final class NetworkService: NetworkServiceProtocol {
+public final class NetworkService: NetworkServiceProtocol {
   /// request(:) 메서드는 APIEndpoint 프로토콜을 준수하는 엔드포인트를 받아 네트워크 요청을 수행합니다.
   /// - Parameter endpoint: APIEndpoint 프로토콜을 준수하는 엔드포인트
-  /// - Returns: Single<T> 타입의 Observable
-  /// 사용예시
-  /// ``` swift
-  /// let networkService = NetworkService()
-  /// networkService.request(endpoint: MyAPIEndpoint()).subscribe(onSuccess: { (result: MyDataType) in
-  ///     print(result)
-  /// }, onError: { error in
-  ///     print(error)
-  /// })
-  /// ```
-  public func request<T: Decodable>(endpoint: APIEndpoint) -> Single<T> {
-    /// url 생성
-    let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
-    /// 헤더 타입 변경
-    let headers = HTTPHeaders(endpoint.headers)
-    requestLogging(endpoint, headers)
+  /// - Returns: Single<EP.Response> 타입의 Observable
+  /// --> Response는 associatedtype으로 정의하여, APIEndpoint를 준수하는 다양한 타입의 data(내부 프로퍼티)를 다룰 수 있게 함.
+  
+  public init() {
     
+  }
+  
+  public func request<E: APIEndpoint>(endpoint: E) -> Single<E.ResponseType?> where E: APIEndpoint {
+    let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
+    let headers = HTTPHeaders(endpoint.headers)
+    requestLogging(endpoint)
     /// 추후에 interceptor 추가 가능
     return RxAlamofire.requestJSON(endpoint.method,
                                    url,
                                    parameters: parametersToDictionary(endpoint.parameters),
                                    headers: headers)
-    .flatMap { response, data -> Single<T> in
-      if !(200...299).contains(response.statusCode) {
-        throw WalWalNetworkError.serverError(statusCode: response.statusCode)
+    .map{ response, anyData -> (HTTPURLResponse, Data) in
+      let convertedData = try JSONSerialization.data(withJSONObject: anyData)
+      return (response, convertedData)
+    }
+    .withUnretained(self)
+    .flatMap { owner, result -> Single<E.ResponseType?> in
+      let (response, data) = result
+      let convertedResult = self.convertToResponse(response, data, E.ResponseType.self, endpoint)
+      switch convertedResult {
+      case .success(let responseData):
+        return .just(responseData)
+      case .failure(let error):
+        return .error(error)
       }
-      self.responseLogging(data)
-      return self.decode(T.self, from: try JSONSerialization.data(withJSONObject: data))
     }
     .asSingle()
-    .catch { error in
-      if let afError = error as? AFError,
-         let statusCode = afError.responseCode {
-        return .error(WalWalNetworkError.serverError(statusCode: statusCode))
+  }
+}
+
+// MARK: - Private Method
+
+extension NetworkService {
+  private func convertToResponse<T: Decodable>(
+    _ response: HTTPURLResponse,
+    _ data: Data,
+    _ model: T.Type,
+    _ endpoint: any APIEndpoint
+  ) -> Result<T?, Error> {
+    let statusCode = response.statusCode
+    if !(200...299).contains(statusCode) {
+      return .failure(WalWalNetworkError.serverError(statusCode: statusCode))
+    }
+    
+    do {
+      let responseModel = try JSONDecoder().decode(BaseResponse<T>.self, from: data)
+      if responseModel.sucess {
+        responseSuccess(endpoint, result: responseModel)
+        return .success(responseModel.data)
       } else {
-        return .error(WalWalNetworkError.unknown(error))
+        let error = WalWalNetworkError.serverError(statusCode: statusCode)
+        responseError(endpoint, result: error)
+        return .failure(error)
       }
+    } catch {
+      return .failure(WalWalNetworkError.decodingError(error))
     }
   }
   
-  /// upload(:) 메서드는 APIEndpoint 프로토콜을 준수하는 엔드포인트와 업로드할 데이터를 받아 네트워크 요청을 수행합니다.
-  /// - Parameter endpoint: APIEndpoint 프로토콜을 준수하는 엔드포인트
-  /// - Parameter data: 업로드할 데이터 배열
-  /// - Returns: Single<T> 타입의 Observable
-  public func upload<T: Decodable>(endpoint: APIEndpoint, data: [UploadData]) -> Single<T> {
-    /// url 생성
-    let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
-    /// 헤더 타입 변경
-    let headers = HTTPHeaders(endpoint.headers)
-    
-    requestLogging(endpoint, headers)
-    
-    return RxAlamofire.upload(multipartFormData: { multipartFormData in
-      for item in data {
-        switch item {
-        case .file(let fileData, let name, let fileName, let mimeType):
-          multipartFormData.append(fileData, withName: name, fileName: fileName, mimeType: mimeType)
-        case .parameter(let name, let value):
-          multipartFormData.append(Data(value.utf8), withName: name)
-        }
-      }
-    }, to: url, method: endpoint.method, headers: headers)
-    .flatMap { request in
-      request.rx.responseData()
-    }
-    .flatMap { response, data -> Single<T> in
-      guard 200..<300 ~= response.statusCode else {
-        throw WalWalNetworkError.networkError(response.statusCode)
-      }
-      self.responseLogging(data.toPrettyPrintedString ?? "")
-      return self.decode(T.self, from: data)
-    }
-    .asSingle()
+  private func requestLogging(_ endpoint: any APIEndpoint) {
+    print("""
+              ================== 📤 Request ===================>
+              📝 URL: \(endpoint.baseURL.absoluteString + endpoint.path)
+              📝 HTTP Method: \(endpoint.method.rawValue)
+              📝 Header: \(endpoint.headers)
+              📝 Parameters: \(parametersToDictionary(endpoint.parameters) ?? [:])
+              ================================
+          """)
   }
   
-  private func requestLogging(_ endpoint: APIEndpoint, _ headers: HTTPHeaders?) {
-    print("======== 📤 Request ==========>")
-    print("HTTP Method: \(endpoint.method.rawValue)")
-    print("URL: \(endpoint.baseURL.absoluteString + endpoint.path)")
-    print("Header: \(headers ?? [:])")
-    print("Parameters: \(parametersToDictionary(endpoint.parameters) ?? [:])")
-    print("================================")
+  private func responseSuccess<T: Decodable>(_ endpoint: any APIEndpoint, result response: BaseResponse<T>) {
+    print("""
+              ======================== 📥 Response <========================
+              ========================= ✅ Success =========================
+              ✌🏻 URL: \(endpoint.baseURL.absoluteString + endpoint.path)
+              ✌🏻 Header: \(endpoint.headers)
+              ✌🏻 Success_Data: \(String(describing: response.data))
+              ==============================================================
+          """)
   }
   
-  private func responseLogging(_ data: Any) {
-    print("======== 📥 Response <==========")
-    print(data)
-    print("================================")
+  private func responseError(_ endpoint: any APIEndpoint, result error: WalWalNetworkError) {
+    print("""
+              ======================== 📥 Response <========================
+              ========================= ❌ Error.. =========================
+              ❗️ URL: \(endpoint.baseURL.absoluteString + endpoint.path)
+              ❗️ Header: \(endpoint.headers)
+              ❗️ Error_Data: \(error.errorDescription ?? "Unknown Error Occured")
+              ==============================================================
+          """)
   }
   
   private func parametersToDictionary(_ parameters: RequestParams) -> [String: Any]? {
@@ -118,88 +125,17 @@ final class NetworkService: NetworkServiceProtocol {
       return nil
     }
   }
-  
-  private func decode<T: Decodable>(_ type: T.Type, from data: Data) -> Single<T> {
-    do {
-      let result = try JSONDecoder().decode(T.self, from: data)
-      return .just(result)
-    }
-    catch {
-      return .error(WalWalNetworkError.decodingError(error))
-    }
-  }
 }
 
 extension Data {
   var toPrettyPrintedString: String? {
-    guard let object = try? JSONSerialization.jsonObject(with: self, options: []),
-          let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
-          let prettyPrintedString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else { return nil }
-    return prettyPrintedString as String?
-  }
-}
-
-// MARK: NetworkReachability
-
-enum NetworkStatusType {
-  case disconnect
-  case connect
-  case unknown
-}
-
-/// 네트워크 연결 여부를 확인하는 싱글톤 클래스 입니다
-public final class NetworkReachability {
-  static let shared = NetworkReachability()
-  
-  /// Almofire에서 제공하는 네트워크 상태 매니저
-  private let reachabilityManager = NetworkReachabilityManager()
-  private let disposeBag = DisposeBag()
-  fileprivate let statusPublish = PublishSubject<NetworkStatusType>()
-  var statusObservable: Observable<NetworkStatusType>{
-    statusPublish
-      .debug()
-  }
-  
-  private init() {
-    observeReachability()
-  }
-  
-  
-  /// 네트워크 상태 변화를 나타내는 Observable
-  /// 사용 예시
-  /// ``` swift
-  ///  NetworkReachability.shared.statusObservable
-  ///   .subscribe (onNext: {
-  ///      print($0)
-  ///   })
-  ///   .dispose(by: disposeBag)
-  /// ```
-  public func observeReachability() {
-    let reachability = NetworkReachabilityManager()
-    reachability?.startListening(onUpdatePerforming: { [weak statusPublish] status in
-      switch status {
-      case .notReachable:
-        statusPublish?.onNext(.disconnect)
-      case .reachable(.cellular), .reachable(.ethernetOrWiFi):
-        statusPublish?.onNext(.connect)
-      case .unknown:
-        statusPublish?.onNext(.unknown)
-      }
-    })
-  }
-  
-  /// 네트워크가 연결되었는지 확인하는 메서드
-  ///
-  /// 사용 예시
-  /// ``` swift
-  /// view.backgroundColor = NetworkReachability.shared.isReachable() ? .blue : .gray
-  /// ```
-  public func isReachable() -> Bool {
-    return reachabilityManager?.isReachable ?? false
-  }
-  
-  /// 네트워크 상태 모니터링 중지
-  func stopMonitoring() {
-    reachabilityManager?.stopListening()
+    do {
+      let object = try JSONSerialization.jsonObject(with: self, options: [])
+      let data = try JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted])
+      let prettyPrintedString = String(data: data, encoding: .utf8)
+      return prettyPrintedString
+    } catch {
+      return nil
+    }
   }
 }

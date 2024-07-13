@@ -9,8 +9,8 @@ import Foundation
 
 /// Response에 공통적으로 포함되는 모델을 정의합니다.
 /// data는 때에 따라 없는 경우도 존재하기 때문에 옵셔널로 정의
-struct BaseResponse<T: Decodable>: Decodable {
-  var statusCode: Int
-  var sucess: Bool
-  var data: T?
+public struct BaseResponse<T>: Decodable where T: Decodable {
+  public var statusCode: Int
+  public var sucess: Bool
+  public var data: T?
 }

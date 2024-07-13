@@ -1,9 +1,9 @@
 //
-//  {{ name }}PresenterProject.swift
+//  SamplePresenterProject.swift
 //
-//  {{name}}
+//  Sample
 //
-//  Created by {{author}}
+//  Created by 조용인
 //
 
 import ProjectDescription
@@ -11,7 +11,7 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.invertedReactorKitTargetProject(
-  name: "{{ name }}Presenter",
+  name: "SamplePresenter",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   viewDependencies: [
@@ -30,7 +30,7 @@ let project = Project.invertedReactorKitTargetProject(
     .ThirdParty.ReactorKit,
     .ThirdParty.RxSwift,
     
-    .Feature.{{name}}.Domain.Interface
+    .Feature.Sample.Domain.Interface
   ]
 )
 
