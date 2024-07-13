@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SampleReactor
+import SamplePresenterReactor
 
 import Then
 import PinLayout
