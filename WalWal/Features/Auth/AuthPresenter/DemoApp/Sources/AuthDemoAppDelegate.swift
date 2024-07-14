@@ -8,8 +8,8 @@
 
 import UIKit
 
-import AuthView
-import AuthReactor
+import AuthPresenterView
+import AuthPresenterReactor
 
 @main
 final class AuthAppDelegate: UIResponder, UIApplicationDelegate {

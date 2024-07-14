@@ -13,7 +13,7 @@ import ReactorKit
 import Then
 import PinLayout
 import FlexLayout
-import AuthReactor
+import AuthPresenterReactor
 import RxCocoa
 
 
@@ -36,11 +36,8 @@ final public class AuthViewController: UIViewController {
     $0.textColor = .black
     $0.font = .systemFont(ofSize: 14)
   }
-  private lazy var appleLoginButton = UIButton().then {
-    $0.setTitle("애플 로그인", for: .normal)
-    $0.backgroundColor = .black
-    $0.tintColor = .white
-  }
+  
+  private var appleLoginButton = SocialLoginButton(socialType: .apple)
   
   // MARK: - View LifeCycle
   

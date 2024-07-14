@@ -11,7 +11,7 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.invertedReactorKitTargetProject(
-  name: "Auth",
+  name: "AuthPresenter",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   viewDependencies: [
@@ -20,6 +20,8 @@ let project = Project.invertedReactorKitTargetProject(
     .ThirdParty.PinLayout,
     .ThirdParty.RxCocoa,
     .ThirdParty.RxSwift,
+    
+    .Feature.Auth.Presenter.Reactor,
     
       .DesignSystem,
     .ResourceKit
