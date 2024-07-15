@@ -32,8 +32,7 @@ let project = Project(
       sources: ["Sources/**"],
       dependencies: [
         .Utility,
-        .DependencyFactory.Interface,
-        .DependencyFactory.Implement
+        .DependencyFactory.Interface
       ]
     ),
   ]
