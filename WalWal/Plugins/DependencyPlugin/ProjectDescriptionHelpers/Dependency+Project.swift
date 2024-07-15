@@ -17,7 +17,7 @@ enum Layer: String {
   case presenter = "Presenter"
 }
 
-enum CoordinatorType: String {
+enum CoordinatorStr: String {
   case sampleAuth = "SampleAuth"
   case sampleApp = "SampleApp"
   case sampleHome = "SampleHome"
@@ -58,14 +58,14 @@ extension WalWalDependency {
                     path: .relativeToRoot("Features/\(name)/\(name)\(layer)"))
   }
   
-  static func project(coordinatorType: CoordinatorType, isInterface: Bool) -> TargetDependency {
-    let coordinatorType = coordinatorType.rawValue
-    let postfix: String = isInterface ? "" : "Impl"
-    let folderFullName = "\(coordinatorType)Coordinator\(postfix)"
+  static func project(name: CoordinatorStr, isInterface: Bool) -> TargetDependency {
+    let name = name.rawValue
+    let layer = "Coordinator"
+    let postfix: String = isInterface ? "" : "Imp"
+    let folderFullName = "\(name)\(layer)\(postfix)"
     return .project(target: folderFullName,
-                    path: .relativeToRoot("Coordinators/\(coordinatorType)/\(coordinatorType)Coordinator"))
+                    path: .relativeToRoot("Coordinators/\(name)/\(name)\(layer)"))
   }
-  
 }
 
 extension TargetDependency {
@@ -164,23 +164,23 @@ public extension TargetDependency.Feature.Sample.Data {
 
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
 public extension TargetDependency.Coordinator.SampleApp {
-  static let Interface = TargetDependency.Coordinator.SampleApp.project(coordinatorType: .sampleApp,
+  static let Interface = TargetDependency.Coordinator.SampleApp.project(name: .sampleApp,
                                                                         isInterface: true)
-  static let Implement = TargetDependency.Coordinator.SampleApp.project(coordinatorType: .sampleApp,
+  static let Implement = TargetDependency.Coordinator.SampleApp.project(name: .sampleApp,
                                                                         isInterface: false)
 }
 
 public extension TargetDependency.Coordinator.SampleAuth {
-  static let Interface = TargetDependency.Coordinator.SampleAuth.project(coordinatorType: .sampleAuth,
+  static let Interface = TargetDependency.Coordinator.SampleAuth.project(name: .sampleAuth,
                                                                         isInterface: true)
-  static let Implement = TargetDependency.Coordinator.SampleAuth.project(coordinatorType: .sampleAuth,
+  static let Implement = TargetDependency.Coordinator.SampleAuth.project(name: .sampleAuth,
                                                                         isInterface: false)
 }
 
 public extension TargetDependency.Coordinator.SampleHome {
-  static let Interface = TargetDependency.Coordinator.SampleHome.project(coordinatorType: .sampleHome,
+  static let Interface = TargetDependency.Coordinator.SampleHome.project(name: .sampleHome,
                                                                         isInterface: true)
-  static let Implement = TargetDependency.Coordinator.SampleHome.project(coordinatorType: .sampleHome,
+  static let Implement = TargetDependency.Coordinator.SampleHome.project(name: .sampleHome,
                                                                         isInterface: false)
 }
 
