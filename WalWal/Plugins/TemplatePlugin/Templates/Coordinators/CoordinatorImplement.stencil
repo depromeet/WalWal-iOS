@@ -82,7 +82,7 @@ public final class {{name}}CoordinatorImpl: {{name}}Coordinator {
 
 // MARK: - Handle Child Actions
 
-extension {{name}}Coordinator {
+extension {{name}}CoordinatorImpl {
   
   fileprivate func handle__Event(_ event: CoordinatorEvent<__CoordinatorAction>) {
     switch event {
@@ -96,7 +96,7 @@ extension {{name}}Coordinator {
 
 // MARK: - Create and Start(Show) with Flow(View)
 
-extension {{name}}Coordinator {
+extension {{name}}CoordinatorImpl {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func start__() {
@@ -125,6 +125,6 @@ extension {{name}}Coordinator {
 
 // MARK: - {{name}}(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
-extension {{name}}Coordinator {
+extension {{name}}CoordinatorImpl {
   
 }
