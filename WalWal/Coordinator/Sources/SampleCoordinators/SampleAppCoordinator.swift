@@ -63,9 +63,9 @@ class SampleAppCoordinator: CoordinatorType {
   
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
   func handleChildEvent<T: ParentAction>(_ event: T) {
-    if let authEvent = event as? CoordinatorEvent<AuthCoordinatorAction> {
+    if let authEvent = event as? CoordinatorEvent<SampleAuthCoordinatorAction> {
       handleAuthEvent(authEvent)
-    } else if let homeEvent = event as? CoordinatorEvent<HomeCoordinatorAction> {
+    } else if let homeEvent = event as? CoordinatorEvent<SampleHomeCoordinatorAction> {
       handleHomeEvent(homeEvent)
     }
   }
@@ -73,11 +73,14 @@ class SampleAppCoordinator: CoordinatorType {
   func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
+    /*
     let splashUseCase = dependency.makeSplashUseCase()
     let reactor = SplashReactor(
       coordinator: self,
       splashUseCase: splashUseCase
     )
+    */
+    let reactor = dependency.makeSplashReactor(coordinator: self)
     let splashViewController = SplashViewController(reactor: reactor)
     self.baseViewController = splashViewController
     self.pushViewController(viewController: splashViewController, animated: false)
@@ -88,7 +91,7 @@ class SampleAppCoordinator: CoordinatorType {
 
 extension SampleAppCoordinator {
   
-  private func handleAuthEvent(_ event: CoordinatorEvent<AuthCoordinatorAction>) {
+  private func handleAuthEvent(_ event: CoordinatorEvent<SampleAuthCoordinatorAction>) {
     switch event {
     case .finished:
       childCoordinator = nil
@@ -103,7 +106,7 @@ extension SampleAppCoordinator {
     }
   }
   
-  private func handleHomeEvent(_ event: CoordinatorEvent<HomeCoordinatorAction>) {
+  private func handleHomeEvent(_ event: CoordinatorEvent<SampleHomeCoordinatorAction>) {
     switch event {
     case .finished:
       childCoordinator = nil
@@ -122,7 +125,7 @@ extension SampleAppCoordinator {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   private func startAuth() {
-    let authCoordinator = AuthCoordinator(
+    let authCoordinator = SampleAuthCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
       dependency: dependency
@@ -133,7 +136,7 @@ extension SampleAppCoordinator {
   
   /// 새로운 Coordinator를 통해서 Flow를 새로 생성하기 때문에, start를 prefix로 사용합니다.
   private func startHome() {
-    let homeCoordinator = HomeCoordinator(
+    let homeCoordinator = SampleHomeCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
       dependency: dependency
