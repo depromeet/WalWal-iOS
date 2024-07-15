@@ -10,7 +10,7 @@ import Foundation
 
 import RxSwift
 
-public protocol SignInUseCase {
-  func execute(id:String, password: String) -> Single<Token>
+public protocol SampleSignInUseCase {
+  func execute(id:String, password: String) -> Single<SampleToken>
 }
 

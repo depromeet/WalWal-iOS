@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct SignInBody: Codable {
+struct SampleSignInBody: Codable {
   let id: String
   let password: String
 }

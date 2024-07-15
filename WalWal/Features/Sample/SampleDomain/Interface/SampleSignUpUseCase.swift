@@ -1,5 +1,5 @@
 //
-//  SampleSignUpUseCaseImpl.swift
+//  SampleSignUpUseCase.swift
 //  SampleDomainImp
 //
 //  Created by 조용인 on 7/13/24.
@@ -10,6 +10,6 @@ import Foundation
 
 import RxSwift
 
-public protocol SignUpUseCase {
-  func execute(nickname: String, profile: Data) -> Single<Token>
+public protocol SampleSignUpUseCase {
+  func execute(nickname: String, profile: Data) -> Single<SampleToken>
 }

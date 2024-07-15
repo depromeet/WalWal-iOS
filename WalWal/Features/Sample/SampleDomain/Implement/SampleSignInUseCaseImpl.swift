@@ -12,24 +12,22 @@ import SampleDomain
 
 import RxSwift
 
-public final class SignInUseCaseImpl: SignInUseCase {
+public final class SignInUseCaseImpl: SampleSignInUseCase {
   
   // MARK: - Properties
   
-  private let authRepository: AuthDataRepository
+  private let sampleAuthRepository: SampleAuthRepository
   
   // MARK: - Initializers
   
-  public init(authRepository: AuthDataRepository) {
-    self.authRepository = authRepository
+  public init(sampleAuthRepository: SampleAuthRepository) {
+    self.sampleAuthRepository = sampleAuthRepository
   }
   
   // MARK: - Methods
   
-  public func execute(
-    id: String,
-    password: String
-  ) -> Single<Token> {
-    authRepository.signIn(id: id, password: password).map { Token(dto: $0) }
+  public func execute(id: String, password: String) -> Single<SampleToken> {
+    sampleAuthRepository.signIn(id: id, password: password)
+      .map { SampleToken(dto: $0) }
   }
 }
