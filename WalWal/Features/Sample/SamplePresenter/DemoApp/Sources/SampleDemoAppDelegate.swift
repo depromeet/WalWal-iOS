@@ -8,8 +8,8 @@
 
 import UIKit
 
-import SampleView
-import SampleReactor
+import SamplePresenterView
+import SamplePresenterReactor
 
 @main
 final class SampleAppDelegate: UIResponder, UIApplicationDelegate {
