@@ -17,6 +17,12 @@ enum Layer: String {
   case presenter = "Presenter"
 }
 
+enum CoordinatorType: String {
+  case sampleAuth = "SampleAuth"
+  case sampleApp = "SampleApp"
+  case sampleHome = "SampleHome"
+}
+
 enum Reactor: String {
   case reactor = "Reactor"
   case view = "View"
@@ -52,6 +58,14 @@ extension WalWalDependency {
                     path: .relativeToRoot("Features/\(name)/\(name)\(layer)"))
   }
   
+  static func project(coordinatorType: CoordinatorType, isInterface: Bool) -> TargetDependency {
+    let coordinatorType = coordinatorType.rawValue
+    let folderFullName = "\(coordinatorType)Coordinator"
+    let postfix: String = isInterface ? "" : "Imp"
+    return .project(target: folderFullName,
+                    path: .relativeToRoot("Coordinator/\(folderFullName)/\(coordinatorType)\(postfix)"))
+  }
+  
 }
 
 extension TargetDependency {
@@ -59,7 +73,12 @@ extension TargetDependency {
   public static let LocalStorage = TargetDependency.project(target: "LocalStorage", path: .relativeToRoot("LocalStorage"))
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
   public static let DesignSystem =  TargetDependency.project(target: "DesignSystem", path: .relativeToRoot("DesignSystem"))
-  public static let Coordinator = TargetDependency.project(target: "Coordinator", path: .relativeToRoot("Coordinator"))
+  
+  public struct Coordinator {
+    public struct SampleAuth: WalWalDependency { }
+    public struct SampleApp: WalWalDependency { }
+    public struct SampleHome: WalWalDependency { }
+  }
   
   public struct DependencyFactory { }
   
@@ -142,6 +161,30 @@ public extension TargetDependency.Feature.Sample.Data {
                                                                  layer: .data,
                                                                  isInterface: false)
 }
+
+// MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
+public extension TargetDependency.Coordinator.SampleApp {
+  static let Interface = TargetDependency.Coordinator.SampleApp.project(coordinatorType: .sampleApp,
+                                                                        isInterface: true)
+  static let Implement = TargetDependency.Coordinator.SampleApp.project(coordinatorType: .sampleApp,
+                                                                        isInterface: false)
+}
+
+public extension TargetDependency.Coordinator.SampleAuth {
+  static let Interface = TargetDependency.Coordinator.SampleAuth.project(coordinatorType: .sampleAuth,
+                                                                        isInterface: true)
+  static let Implement = TargetDependency.Coordinator.SampleAuth.project(coordinatorType: .sampleAuth,
+                                                                        isInterface: false)
+}
+
+public extension TargetDependency.Coordinator.SampleHome {
+  static let Interface = TargetDependency.Coordinator.SampleHome.project(coordinatorType: .sampleHome,
+                                                                        isInterface: true)
+  static let Implement = TargetDependency.Coordinator.SampleHome.project(coordinatorType: .sampleHome,
+                                                                        isInterface: false)
+}
+
+
 
 public extension TargetDependency.ThirdParty {
   private static func framework(name: String) -> TargetDependency {

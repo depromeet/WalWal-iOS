@@ -1,0 +1,33 @@
+//
+//  {{ name }}DataProject.swift
+//
+//  {{name}}
+//
+//  Created by {{author}}
+//
+
+import ProjectDescription
+import ProjectDescriptionHelpers
+import DependencyPlugin
+
+let project = Project.invertedDualTargetProject(
+  name: "{{ name }}Coordinator",
+  platform: .iOS,
+  iOSTargetVersion: "15.0.0",
+  interfaceDependencies: [
+    .Utility,
+    
+    .ThirdParty.RxSwift,
+    .ThirdParty.RxCocoa
+  ],
+  implementDependencies: [
+    .Utility,
+    .{{ name }}Coordinator.Interface,
+    .DependencyFactory.Interface,
+    
+    .ThirdParty.RxSwift,
+    .ThirdParty.RxCocoa
+  ]
+)
+
+
