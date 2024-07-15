@@ -14,7 +14,7 @@ import SampleHomeCoordinator
 import RxSwift
 import RxCocoa
 
-public final class SampleHomeCoordinatorImpl: SampleHomeCoordinator {
+public final class SampleHomeCoordinatorImp: SampleHomeCoordinator {
   
   public typealias Action = SampleHomeCoordinatorAction
   public typealias Flow = SampleHomeCoordinatorFlow
@@ -73,13 +73,13 @@ public final class SampleHomeCoordinatorImpl: SampleHomeCoordinator {
 
 // MARK: - Handle Child Actions
 
-extension SampleHomeCoordinatorImpl {
+extension SampleHomeCoordinatorImp {
   /// handleChildEvent에서 Child의 케이스별로 부모가 처리할 동작 정의
 }
 
 // MARK: - Create and Start(Show) with Flow(View)
 
-extension SampleHomeCoordinatorImpl {
+extension SampleHomeCoordinatorImp {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   private func showProfile() {
@@ -108,7 +108,7 @@ extension SampleHomeCoordinatorImpl {
 
 // MARK: - SampleHome(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
-extension SampleHomeCoordinatorImpl {
+extension SampleHomeCoordinatorImp {
   func logout() {
     requireParentAction(.logout)
   }

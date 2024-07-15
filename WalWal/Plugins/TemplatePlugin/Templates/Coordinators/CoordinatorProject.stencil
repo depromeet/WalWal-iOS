@@ -28,5 +28,3 @@ let project = Project.invertedDualTargetProject(
     .ThirdParty.RxCocoa
   ]
 )
-
-

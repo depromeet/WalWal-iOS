@@ -14,7 +14,7 @@ import SampleAuthCoordinator
 import RxSwift
 import RxCocoa
 
-public final class SampleAuthCoordinatorImpl: SampleAuthCoordinator {
+public final class SampleAuthCoordinatorImp: SampleAuthCoordinator {
   
   public typealias Action = SampleAuthCoordinatorAction
   public typealias Flow = SampleAuthCoordinatorFlow
@@ -73,13 +73,13 @@ public final class SampleAuthCoordinatorImpl: SampleAuthCoordinator {
 
 // MARK: - Handle Child Actions
 
-extension SampleAuthCoordinatorImpl {
+extension SampleAuthCoordinatorImp {
   /// handleChildEvent에서 Child의 케이스별로 부모가 처리할 동작 정의
 }
 
 // MARK: - Create and Start(Show) with Flow(View)
 
-extension SampleAuthCoordinatorImpl {
+extension SampleAuthCoordinatorImp {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   fileprivate func showSignIn() {
@@ -108,7 +108,7 @@ extension SampleAuthCoordinatorImpl {
 
 // MARK: - SampleAuth(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
-extension SampleAuthCoordinatorImpl {
+extension SampleAuthCoordinatorImp {
   func signInSuccessful() {
     requireParentAction(.authenticationCompleted)
   }

@@ -1,5 +1,5 @@
 //
-//  SampleAppCoordinatorImpl.swift
+//  SampleAppCoordinatorImp.swift
 //
 //  SampleApp
 //
@@ -16,7 +16,7 @@ import SampleAuthCoordinator
 import RxSwift
 import RxCocoa
 
-public final class SampleAppCoordinatorImpl: SampleAppCoordinator {
+public final class SampleAppCoordinatorImp: SampleAppCoordinator {
   
   public typealias Action = SampleAppCoordinatorAction
   public typealias Flow = SampleAppCoordinatorFlow
@@ -81,7 +81,7 @@ public final class SampleAppCoordinatorImpl: SampleAppCoordinator {
 
 // MARK: - Handle Child Actions
 
-extension SampleAppCoordinatorImpl {
+extension SampleAppCoordinatorImp {
   
   fileprivate func handleAuthEvent(_ event: CoordinatorEvent<SampleAuthCoordinatorAction>) {
     switch event {
@@ -113,7 +113,7 @@ extension SampleAppCoordinatorImpl {
 
 // MARK: - Create and Start(Show) with Flow(View)
 
-extension SampleAppCoordinatorImpl {
+extension SampleAppCoordinatorImp {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func startAuth() {
@@ -142,6 +142,6 @@ extension SampleAppCoordinatorImpl {
 
 // MARK: - SampleApp(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
-extension SampleAppCoordinatorImpl {
+extension SampleAppCoordinatorImp {
   /// AppCoordinator는 최상위 부모이기 때문에, 따로 구현하지 않아도 괜찮음.
 }
