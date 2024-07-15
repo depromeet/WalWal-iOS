@@ -7,9 +7,6 @@
 //
 import UIKit
 import DependencyFactory
-
-// MARK: - 추가되는 Feature에 따라 import되는 Interface와 Implement를 작성해주세요.
-
 import WalWalNetwork
 import WalWalNetworkImp
 
@@ -36,6 +33,11 @@ import SampleDomain
 import SampleDomainImp
 import SamplePresenter
 import SamplePresenterImp
+
+import AuthData
+import AuthDataImp
+import AuthDomain
+import AuthDomainImp
 
 public class DependencyFactoryImp: DependencyFactory {
   
@@ -115,5 +117,17 @@ public class DependencyFactoryImp: DependencyFactory {
   
   public func makeSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController {
     return SplashViewControllerImp(reactor: reactor)
+  }
+
+  // MARK: - Data Injection
+  
+  public func injectAuthData() -> AuthDataRepository {
+    return AuthDataRepositoryImpl(networkService: networkService) 
+  }
+  
+  // MARK: - Domain Injection
+  
+  public func injectAuthUsecase() -> AuthUseCase {
+    return AuthUseCaseImpl(authDataRepository: injectAuthData())
   }
 }

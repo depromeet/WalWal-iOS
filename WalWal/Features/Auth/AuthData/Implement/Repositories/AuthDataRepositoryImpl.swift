@@ -8,6 +8,7 @@
 
 import Foundation
 import WalWalNetwork
+import AuthData
 
 import RxSwift
 

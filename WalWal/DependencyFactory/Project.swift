@@ -21,7 +21,10 @@ let project = Project.invertedDualTargetProject(
     
     .Feature.Sample.Data.Interface,
     .Feature.Sample.Domain.Interface,
-    .Feature.Sample.Presenter.Interface
+    .Feature.Sample.Presenter.Interfacem
+
+    .Feature.Auth.Data.Interface,
+    .Feature.Auth.Domain.Interface
   ],
   implementDependencies: [
     .WalWalNetwork.Interface,
@@ -48,6 +51,11 @@ let project = Project.invertedDualTargetProject(
     .Feature.Sample.Domain.Interface,
     .Feature.Sample.Domain.Implement,
     .Feature.Sample.Presenter.Interface,
-    .Feature.Sample.Presenter.Implement
+    .Feature.Sample.Presenter.Implement,
+
+    .Feature.Auth.Data.Interface,
+    .Feature.Auth.Data.Implement,
+    .Feature.Auth.Domain.Interface,
+    .Feature.Auth.Domain.Implement
   ]
 )

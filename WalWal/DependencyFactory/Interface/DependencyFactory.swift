@@ -21,6 +21,9 @@ import SampleData
 import SampleDomain
 import SamplePresenter
 
+import AuthData
+import AuthDomain
+
 public protocol DependencyFactory {
   
   // MARK: - 추가되는 Feature에 따라 Dependency를 생성 및 주입하는 함수를 추가해주새요
@@ -45,4 +48,8 @@ public protocol DependencyFactory {
   func makeSampleAuthCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleAuthCoordinator
   
   func makeSampleHomeCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleHomeCoordinator
+
+  func injectAuthData() -> AuthDataRepository
+  func injectAuthUsecase() -> AuthUseCase
 }
+

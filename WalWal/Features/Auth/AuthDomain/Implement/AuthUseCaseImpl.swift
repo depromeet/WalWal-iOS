@@ -16,7 +16,7 @@ public final class AuthUseCaseImpl: AuthUseCase {
   
   private let authDataRepository: AuthDataRepository
   
-  init(authDataRepository: AuthDataRepository) {
+  public init(authDataRepository: AuthDataRepository) {
     self.authDataRepository = authDataRepository
   }
   
