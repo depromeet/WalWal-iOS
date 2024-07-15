@@ -59,6 +59,7 @@ extension TargetDependency {
   public static let LocalStorage = TargetDependency.project(target: "LocalStorage", path: .relativeToRoot("LocalStorage"))
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
   public static let DesignSystem =  TargetDependency.project(target: "DesignSystem", path: .relativeToRoot("DesignSystem"))
+  public static let Coordinator = TargetDependency.project(target: "Coordinator", path: .relativeToRoot("Coordinator"))
   
   public struct DependencyFactory { }
   
