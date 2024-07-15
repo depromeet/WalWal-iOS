@@ -13,19 +13,19 @@ import DependencyFactory
 import RxSwift
 import RxCocoa
 
-enum HomeCoordinatorAction: ParentAction {
+enum SampleHomeCoordinatorAction: ParentAction {
   case logout
 }
 
-enum HomeCoordinatorFlow: CoordinatorFlow {
+enum SampleHomeCoordinatorFlow: CoordinatorFlow {
   case showProfile
   case showSettings
 }
 
-class HomeCoordinator: CoordinatorType {
+class SampleHomeCoordinator: CoordinatorType {
   
-  typealias Action = HomeCoordinatorAction
-  typealias Flow = HomeCoordinatorFlow
+  typealias Action = SampleHomeCoordinatorAction
+  typealias Flow = SampleHomeCoordinatorFlow
   
   let disposeBag = DisposeBag()
   let destination = PublishSubject<Flow>()
@@ -81,7 +81,7 @@ class HomeCoordinator: CoordinatorType {
 
 // MARK: - Create and Start(Show) with Flow(View)
 
-extension HomeCoordinator {
+extension SampleHomeCoordinator {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   private func showProfile() {
@@ -108,7 +108,7 @@ extension HomeCoordinator {
 
 // MARK: - Home(자식)의 동작 결과, App(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
-extension HomeCoordinator {
+extension SampleHomeCoordinator {
   func logout() {
     requireParentAction(.logout)
   }

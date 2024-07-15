@@ -14,21 +14,21 @@ import RxSwift
 import RxCocoa
 
 /// Auth가 종료 된 이후에 Parent에게 요구 할 행동
-enum AuthCoordinatorAction: ParentAction {
+enum SampleAuthCoordinatorAction: ParentAction {
   case authenticationCompleted
   case authenticationFailed(Error)
 }
 
 /// Auth 내부에서 동작하는 화면전환
-enum AuthCoordinatorFlow: CoordinatorFlow {
+enum SampleAuthCoordinatorFlow: CoordinatorFlow {
   case showSignIn
   case showSignUp
 }
 
-class AuthCoordinator: CoordinatorType {
+class SampleAuthCoordinator: CoordinatorType {
   
-  typealias Action = AuthCoordinatorAction
-  typealias Flow = AuthCoordinatorFlow
+  typealias Action = SampleAuthCoordinatorAction
+  typealias Flow = SampleAuthCoordinatorFlow
   
   let disposeBag = DisposeBag()
   let destination = PublishSubject<Flow>()
@@ -85,7 +85,7 @@ class AuthCoordinator: CoordinatorType {
 
 // MARK: - Create and Start(Show) with Flow(View)
 
-extension AuthCoordinator {
+extension SampleAuthCoordinator {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   private func showSignIn() {
@@ -112,7 +112,7 @@ extension AuthCoordinator {
 
 // MARK: - Auth(자식)의 동작 결과, App(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
-extension AuthCoordinator {
+extension SampleAuthCoordinator {
   func signInSuccessful() {
     requireParentAction(.authenticationCompleted)
   }

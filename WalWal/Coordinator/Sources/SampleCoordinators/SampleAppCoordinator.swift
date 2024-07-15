@@ -13,19 +13,19 @@ import DependencyFactory
 import RxSwift
 import RxCocoa
 
-enum AppCoordinatorAction: ParentAction {
+enum SampleAppCoordinatorAction: ParentAction {
   case never
 }
 
-enum AppCoordinatorFlow: CoordinatorFlow {
+enum SampleAppCoordinatorFlow: CoordinatorFlow {
   case startAuth
   case startHome
 }
 
-class AppCoordinator: CoordinatorType {
+class SampleAppCoordinator: CoordinatorType {
   
-  typealias Action = AppCoordinatorAction
-  typealias Flow = AppCoordinatorFlow
+  typealias Action = SampleAppCoordinatorAction
+  typealias Flow = SampleAppCoordinatorFlow
   
   let disposeBag = DisposeBag()
   let destination = PublishSubject<Flow>()
@@ -86,7 +86,7 @@ class AppCoordinator: CoordinatorType {
 
 // MARK: - Handle Child Actions
 
-extension AppCoordinator {
+extension SampleAppCoordinator {
   
   private func handleAuthEvent(_ event: CoordinatorEvent<AuthCoordinatorAction>) {
     switch event {
@@ -118,7 +118,7 @@ extension AppCoordinator {
 
 // MARK: - Create and Start(Show) with Flow(View)
 
-extension AppCoordinator {
+extension SampleAppCoordinator {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   private func startAuth() {
@@ -145,6 +145,6 @@ extension AppCoordinator {
 
 // MARK: - App(자식)의 동작 결과, ??(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
-extension AppCoordinator {
+extension SampleAppCoordinator {
   /// AppCoordinator는 최상위 부모이기 때문에, 따로 구현하지 않아도 괜찮음.
 }
