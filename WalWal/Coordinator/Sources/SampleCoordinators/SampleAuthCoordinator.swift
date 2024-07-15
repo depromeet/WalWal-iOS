@@ -71,14 +71,11 @@ class SampleAuthCoordinator: CoordinatorType {
   func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    /*
     let authUseCase = dependency.makeAuthUseCase()
     let reactor = AuthMainReactor(
       coordinator: self,
       authUsecase: authUseCase
     )
-     */
-    let reactor = dependency.makeAuthReactor(coordinator: self)
     let authMainViewController = AuthMainViewController(reactor: reactor)
     self.baseViewController = authMainViewController
     self.pushViewController(viewController: authMainViewController, animated: false)
@@ -92,28 +89,22 @@ extension SampleAuthCoordinator {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   private func showSignIn() {
-    /*
     let signInUsecase = dependency.makeSignInUseCase()
     let reactor = SignInReactor(
       coordinator: self,
       signInUsecase: signInUsecase
     )
-    */
-    let reactor = dependency.makeSignInReactor(coordinator: self)
     let signInVC = SignInViewController(reactor: reactor)
     navigationController.pushViewController(signInVC, animated: true)
   }
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   private func showSignUp() {
-    /*
     let signUpUsecase = dependency.makeSignUpUseCase()
     let reactor = SignInReactor(
       coordinator: self,
       signUpUsecase: signUpUsecase
     )
-    */
-    let reactor = dependency.makeSignUpReactor(coordinator: self)
     let signUpVC = SignUpViewController(reactor: reactor)
     navigationController.pushViewController(signUpVC, animated: true)
   }
