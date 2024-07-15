@@ -24,6 +24,9 @@ let project = Project.invertedDualTargetProject(
     .Utility,
     .DependencyFactory.Interface,
     
+    .Coordinator.SampleAuth.Interface,
+    .Coordinator.SampleHome.Interface,
+    
     .ThirdParty.RxSwift,
     .ThirdParty.RxCocoa
   ]
