@@ -104,42 +104,42 @@ public extension TargetDependency.Feature.Auth.Domain {
 
 public extension TargetDependency.Feature.Auth.Data {
   static let Interface = TargetDependency.Feature.Sample.project(name: .auth,
-                                                               layer: .data,
-                                                               isInterface: true)
+                                                                 layer: .data,
+                                                                 isInterface: true)
   
   static let Implement = TargetDependency.Feature.Sample.project(name: .auth,
-                                                               layer: .data,
-                                                               isInterface: false)
+                                                                 layer: .data,
+                                                                 isInterface: false)
 }
 
 public extension TargetDependency.Feature.Sample.Presenter {
   static let View = TargetDependency.Feature.Sample.project(name: .sample,
-                                                          layer: .presenter,
-                                                          type: .view)
+                                                            layer: .presenter,
+                                                            type: .view)
   
   static let Reactor = TargetDependency.Feature.Sample.project(name: .sample,
-                                                             layer: .presenter,
-                                                             type: .reactor)
+                                                               layer: .presenter,
+                                                               type: .reactor)
 }
 
 public extension TargetDependency.Feature.Sample.Domain {
   static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
-                                                               layer: .domain,
-                                                               isInterface: true)
+                                                                 layer: .domain,
+                                                                 isInterface: true)
   
   static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
-                                                               layer: .domain,
-                                                               isInterface: false)
+                                                                 layer: .domain,
+                                                                 isInterface: false)
 }
 
 public extension TargetDependency.Feature.Sample.Data {
   static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
-                                                               layer: .data,
-                                                               isInterface: true)
+                                                                 layer: .data,
+                                                                 isInterface: true)
   
   static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
-                                                               layer: .data,
-                                                               isInterface: false)
+                                                                 layer: .data,
+                                                                 isInterface: false)
 }
 
 public extension TargetDependency.ThirdParty {
@@ -161,12 +161,12 @@ public extension TargetDependency.ThirdParty {
 }
 
 public extension TargetDependency.WalWalNetwork {
-    static let Interface = TargetDependency.project(target: "WalWalNetwork", path: .relativeToRoot("WalWalNetwork"))
-    static let Implement = TargetDependency.project(target: "WalWalNetworkImp", path: .relativeToRoot("WalWalNetwork"))
+  static let Interface = TargetDependency.project(target: "WalWalNetwork", path: .relativeToRoot("WalWalNetwork"))
+  static let Implement = TargetDependency.project(target: "WalWalNetworkImp", path: .relativeToRoot("WalWalNetwork"))
 }
 
 public extension TargetDependency.DependencyFactory {
   static let Interface = TargetDependency.project(target: "DependencyFactory", path: .relativeToRoot("DependencyFactory"))
   static let Implement = TargetDependency.project(target: "DependencyFactoryImp", path: .relativeToRoot("DependencyFactory"))
 }
-                                                  
+

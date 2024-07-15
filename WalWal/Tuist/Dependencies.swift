@@ -9,14 +9,14 @@ import ProjectDescription
 
 
 let carthages = CarthageDependencies([
-    .github(
-        path: "layoutBox/PinLayout",
-        requirement: .upToNext("1.10.1")
-    ),
-    .github(
-        path: "layoutBox/FlexLayout",
-        requirement: .upToNext("1.3.18")
-    ),
+  .github(
+    path: "layoutBox/PinLayout",
+    requirement: .upToNext("1.10.1")
+  ),
+  .github(
+    path: "layoutBox/FlexLayout",
+    requirement: .upToNext("1.3.18")
+  ),
 ])
 
 

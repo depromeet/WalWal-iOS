@@ -6,7 +6,8 @@
 //  Created by {{author}} on {{currentDate}}.
 //
 
-import Foundation
+import UIKit
+
 import RxSwift
 
 public protocol {{ name }}DomainInterface {
