@@ -89,16 +89,22 @@ extension AuthCoordinator {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   private func showSignIn() {
-    /// 대충 이런 Reactor랑 ViewController가 있다 치고~
-    let reactor = SignInReactor()
+    let signInUsecase = dependency.makeSignInUseCase()
+    let reactor = SignInReactor(
+      coordinator: self,
+      signInUsecase: signInUsecase
+    )
     let signInVC = SignInViewController(reactor: reactor)
     navigationController.pushViewController(signInVC, animated: true)
   }
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   private func showSignUp() {
-    /// 대충 이런 Reactor랑 ViewController가 있다 치고~
-    let reactor = SignInReactor()
+    let signUpUsecase = dependency.makeSignUpUseCase()
+    let reactor = SignInReactor(
+      coordinator: self,
+      signUpUsecase: signUpUsecase
+    )
     let signUpVC = SignUpViewController(reactor: reactor)
     navigationController.pushViewController(signUpVC, animated: true)
   }

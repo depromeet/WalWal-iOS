@@ -85,16 +85,22 @@ extension HomeCoordinator {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   private func showProfile() {
-    /// 이런 Reactor랑 ViewController가 있다 치고~
-    let reactor = ProfileReactor()
+    let profileUseCase = dependency.makeProfileUseCase()
+    let reactor = ProfileReactor(
+      coordinator: self,
+      profileUseCase: profileUseCase
+    )
     let profileVC = ProfileViewController(reactor: reactor)
     navigationController.pushViewController(profileVC, animated: true)
   }
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   private func showSettings() {
-    /// 이런 Reactor랑 ViewController가 있다 치고~
-    let reactor = SettingReactor()
+    let settingUseCase = dependency.makeSettingUseCase()
+    let reactor = SettingReactor(
+      coordinator: self,
+      settingUseCase: settingUseCase
+    )
     let settingVC = SettingViewController(reactor: reactor)
     navigationController.pushViewController(settingVC, animated: true)
   }
