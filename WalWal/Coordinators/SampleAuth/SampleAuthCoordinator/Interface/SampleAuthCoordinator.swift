@@ -9,6 +9,14 @@
 import UIKit
 import Utility
 
-public protocol SampleAuthCoordinator: CoordinatorType {
-
+public enum SampleAuthCoordinatorAction: ParentAction {
+  case authenticationCompleted
+  case authenticationFailed(Error)
 }
+
+public enum SampleAuthCoordinatorFlow: CoordinatorFlow {
+  case showSignIn
+  case showSignUp
+}
+
+public protocol SampleAuthCoordinator: CoordinatorType { }

@@ -14,15 +14,6 @@ import SampleHomeCoordinator
 import RxSwift
 import RxCocoa
 
-public enum SampleHomeCoordinatorAction: ParentAction {
-  case logout
-}
-
-public enum SampleHomeCoordinatorFlow: CoordinatorFlow {
-  case showProfile
-  case showSettings
-}
-
 public final class SampleHomeCoordinatorImpl: SampleHomeCoordinator {
   
   public typealias Action = SampleHomeCoordinatorAction

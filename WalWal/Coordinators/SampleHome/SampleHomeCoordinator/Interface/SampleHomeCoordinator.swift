@@ -9,6 +9,13 @@
 import UIKit
 import Utility
 
-public protocol SampleHomeCoordinator: CoordinatorType {
-
+public enum SampleHomeCoordinatorAction: ParentAction {
+  case logout
 }
+
+public enum SampleHomeCoordinatorFlow: CoordinatorFlow {
+  case showProfile
+  case showSettings
+}
+
+public protocol SampleHomeCoordinator: CoordinatorType { }

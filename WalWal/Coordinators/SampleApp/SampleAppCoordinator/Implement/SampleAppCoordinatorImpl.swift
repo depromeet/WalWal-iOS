@@ -10,18 +10,11 @@ import UIKit
 import Utility
 import DependencyFactory
 import SampleAppCoordinator
+import SampleHomeCoordinator
+import SampleAuthCoordinator
 
 import RxSwift
 import RxCocoa
-
-public enum SampleAppCoordinatorAction: ParentAction {
-  case never
-}
-
-public enum SampleAppCoordinatorFlow: CoordinatorFlow {
-  case startAuth
-  case startHome
-}
 
 public final class SampleAppCoordinatorImpl: SampleAppCoordinator {
   
@@ -64,7 +57,7 @@ public final class SampleAppCoordinatorImpl: SampleAppCoordinator {
   
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
   /// 여기도, SampleApp이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
-  func handleChildEvent<T: ParentAction>(_ event: T) {
+  public func handleChildEvent<T: ParentAction>(_ event: T) {
     if let authEvent = event as? CoordinatorEvent<SampleAuthCoordinatorAction> {
       handleAuthEvent(authEvent)
     } else if let homeEvent = event as? CoordinatorEvent<SampleHomeCoordinatorAction> {

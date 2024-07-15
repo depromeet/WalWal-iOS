@@ -14,16 +14,6 @@ import SampleAuthCoordinator
 import RxSwift
 import RxCocoa
 
-public enum SampleAuthCoordinatorAction: ParentAction {
-  case authenticationCompleted
-  case authenticationFailed(Error)
-}
-
-public enum SampleAuthCoordinatorFlow: CoordinatorFlow {
-  case showSignIn
-  case showSignUp
-}
-
 public final class SampleAuthCoordinatorImpl: SampleAuthCoordinator {
   
   public typealias Action = SampleAuthCoordinatorAction
