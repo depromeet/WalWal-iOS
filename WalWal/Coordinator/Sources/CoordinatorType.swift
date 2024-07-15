@@ -105,9 +105,9 @@ extension CoordinatorType{
   }
   
   /// 자식으로 부터 단순 .finished 이벤트가 전달 될 때, 자식 Coordinator를 nil로 만들어주고 자식의 baseViewController를 pop해줍니다.
-  public func handleJustFinish() {
-    childCoordinator = nil
+  private func handleJustFinish() {
     popViewController(animated: true)
+    childCoordinator = nil
   }
 }
 
