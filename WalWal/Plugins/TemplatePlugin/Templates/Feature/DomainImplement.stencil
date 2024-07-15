@@ -6,11 +6,11 @@
 //  Created by {{author}} on {{currentDate}}.
 //
 
-import Foundation
-import RxSwift
-
+import UIKit
 import {{name}}Data
 import {{name}}Domain
+
+import RxSwift
 
 class {{name}}DomainImplementation: {{name}}DomainInterface {
   let repository: {{name}}DataInterface

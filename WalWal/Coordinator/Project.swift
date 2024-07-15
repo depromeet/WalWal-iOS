@@ -2,7 +2,7 @@
 //  Project.swift
 //  ProjectDescriptionHelpers
 //
-//  Created by 조용인 on 6/25/24.
+//  Created by 조용인 on 6/22/24.
 //
 
 import ProjectDescription
@@ -12,7 +12,7 @@ import DependencyPlugin
 let organizationName = "olderStoneBed.io"
 
 let project = Project(
-  name: "LocalStorage",
+  name: "Coordinator",
   organizationName: organizationName,
   settings: .settings(configurations: [
     .debug(name: "Debug", xcconfig: .relativeToRoot("Config/Debug.xcconfig")),
@@ -20,17 +20,21 @@ let project = Project(
   ]),
   targets: [
     Target(
-      name: "LocalStorage",
+      name: "Coordinator",
       platform: .iOS,
       product: .framework,
-      bundleId: "\(organizationName).LocalStorage",
+      bundleId: "\(organizationName).Coordinator",
       deploymentTarget: .iOS(
         targetVersion: "15.0.0",
         devices: [.iphone]
       ),
       infoPlist: .default,
       sources: ["Sources/**"],
-      dependencies: []
+      dependencies: [
+        .Utility,
+        .DependencyFactory.Interface,
+        .DependencyFactory.Implement
+      ]
     ),
   ]
 )

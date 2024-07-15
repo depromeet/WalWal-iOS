@@ -10,8 +10,8 @@ import ProjectDescription
 let appName = "WalWal"
 
 let workspace = Workspace(
-    name: appName,
-    projects: [
-        "./**"
-    ]
+  name: appName,
+  projects: [
+    "./**"
+  ]
 )
