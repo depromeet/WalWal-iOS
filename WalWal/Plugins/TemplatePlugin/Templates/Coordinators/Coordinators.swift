@@ -13,7 +13,7 @@ fileprivate let name: Template.Attribute = .required("name")
 fileprivate let author: Template.Attribute = .required("author")
 fileprivate let currentDate: Template.Attribute = .optional("currentDate", default: DateFormatter().string(from: Date()))
 
-let Coordinator = Template(
+let Coordinators = Template(
   description: "This Template is for making default files",
   attributes: [
     name,
@@ -23,16 +23,16 @@ let Coordinator = Template(
   items: [
     //MARK: Coordinator Template Path
     .file(
-      path: .featureBasePath + "/\(name)Coordinator/Project.swift",
-      templatePath: "DataProject.stencil"
+      path: .CoordinatorBasePath + "/\(name)Coordinator/Project.swift",
+      templatePath: "CoordinatorProject.stencil"
     ),
     .file(
-      path: .featureBasePath + "/\(name)Coordinator/Interface/\(name)CoordinatorInterface.swift",
-      templatePath: "DataInterface.stencil"
+      path: .CoordinatorBasePath + "/\(name)Coordinator/Interface/\(name)Coordinator.swift",
+      templatePath: "CoordinatorInterface.stencil"
     ),
     .file(
-      path: .featureBasePath + "/\(name)Coordinator/Implement/\(name)CoordinatorImplement.swift",
-      templatePath: "DataImplement.stencil"
+      path: .CoordinatorBasePath + "/\(name)Coordinator/Implement/\(name)CoordinatorImpl.swift",
+      templatePath: "CoordinatorImplement.stencil"
     )
   ]
 )

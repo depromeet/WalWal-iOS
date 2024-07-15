@@ -1,5 +1,5 @@
 //
-//  {{ name }}DataProject.swift
+//  {{ name }}CoordinatorProject.swift
 //
 //  {{name}}
 //
@@ -22,7 +22,6 @@ let project = Project.invertedDualTargetProject(
   ],
   implementDependencies: [
     .Utility,
-    .{{ name }}Coordinator.Interface,
     .DependencyFactory.Interface,
     
     .ThirdParty.RxSwift,

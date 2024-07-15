@@ -60,10 +60,10 @@ extension WalWalDependency {
   
   static func project(coordinatorType: CoordinatorType, isInterface: Bool) -> TargetDependency {
     let coordinatorType = coordinatorType.rawValue
-    let folderFullName = "\(coordinatorType)Coordinator"
-    let postfix: String = isInterface ? "" : "Imp"
+    let postfix: String = isInterface ? "" : "Impl"
+    let folderFullName = "\(coordinatorType)Coordinator\(postfix)"
     return .project(target: folderFullName,
-                    path: .relativeToRoot("Coordinator/\(folderFullName)/\(coordinatorType)\(postfix)"))
+                    path: .relativeToRoot("Coordinators/\(coordinatorType)/\(coordinatorType)Coordinator"))
   }
   
 }
