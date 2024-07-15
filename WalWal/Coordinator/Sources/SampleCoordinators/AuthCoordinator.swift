@@ -64,7 +64,7 @@ class AuthCoordinator: CoordinatorType {
       .disposed(by: disposeBag)
   }
   
-  func handleChildEvent(_ event: Any) {
+  func handleChildEvent<T: ParentAction>(_ event: T) {
     /// 여기도, Auth가 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   }
   
@@ -83,7 +83,7 @@ class AuthCoordinator: CoordinatorType {
   
 }
 
-// MARK: - Private Methods
+// MARK: - Create and Start(Show) with Flow(View)
 
 extension AuthCoordinator {
   

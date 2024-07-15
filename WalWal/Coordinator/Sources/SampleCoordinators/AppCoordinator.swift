@@ -62,7 +62,7 @@ class AppCoordinator: CoordinatorType {
   }
   
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
-  func handleChildEvent(_ event: Any) {
+  func handleChildEvent<T: ParentAction>(_ event: T) {
     if let authEvent = event as? CoordinatorEvent<AuthCoordinatorAction> {
       handleAuthEvent(authEvent)
     } else if let homeEvent = event as? CoordinatorEvent<HomeCoordinatorAction> {
@@ -84,7 +84,7 @@ class AppCoordinator: CoordinatorType {
   }
 }
 
-// MARK: - Private Methods
+// MARK: - Handle Child Actions
 
 extension AppCoordinator {
   
@@ -114,6 +114,10 @@ extension AppCoordinator {
       }
     }
   }
+}
+
+// MARK: - Create and Start(Show) with Flow(View)
+extension AppCoordinator {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   private func startAuth() {

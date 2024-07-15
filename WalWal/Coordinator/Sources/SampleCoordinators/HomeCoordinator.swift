@@ -61,7 +61,7 @@ class HomeCoordinator: CoordinatorType {
       .disposed(by: disposeBag)
   }
   
-  func handleChildEvent(_ event: Any) {
+  func handleChildEvent<T: ParentAction>(_ event: T) {
     /// 여기도, Home이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   }
   
@@ -79,7 +79,7 @@ class HomeCoordinator: CoordinatorType {
   }
 }
 
-// MARK: - Private Methods
+// MARK: - Create and Start(Show) with Flow(View)
 
 extension HomeCoordinator {
   

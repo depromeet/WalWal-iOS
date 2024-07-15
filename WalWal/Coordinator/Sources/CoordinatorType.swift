@@ -66,7 +66,7 @@ public protocol CoordinatorType: AnyObject{
   func start()
   
   /// 자식이 부모에게 특정 동작을 요청할 때 사용하면 됩니다.
-  func handleChildEvent(_ event: Any)
+  func handleChildEvent<T: ParentAction>(_ event: T)
 }
 
 // MARK: - 기본 구현 함수들
@@ -98,15 +98,10 @@ extension CoordinatorType{
         case .finished:
           parentCoordinator.handleJustFinish()
         case .requireParentAction(let action):
-          parentCoordinator.handleAnyAction(action)
+          parentCoordinator.handleChildEvent(action)
         }
       })
       .disposed(by: disposeBag)
-  }
-  
-  /// 기본 구현은 아무것도 하지 않습니다. 필요한 경우 하위 클래스에서 오버라이드합니다.
-  public func handleAnyAction(_ action: Any) {
-    
   }
   
   /// 자식으로 부터 단순 .finished 이벤트가 전달 될 때, 자식 Coordinator를 nil로 만들어주고 자식의 baseViewController를 pop해줍니다.
