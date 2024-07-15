@@ -14,6 +14,10 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
+    .Coordinator.SampleApp.Interface,
+    .Coordinator.SampleAuth.Interface,
+    .Coordinator.SampleHome.Interface,
+    
     .Feature.Sample.Data.Interface,
     .Feature.Sample.Domain.Interface,
     /*
@@ -24,6 +28,13 @@ let project = Project.invertedDualTargetProject(
      */
   ],
   implementDependencies: [
+    .Coordinator.SampleApp.Interface,
+    .Coordinator.SampleApp.Implement,
+    .Coordinator.SampleAuth.Interface,
+    .Coordinator.SampleAuth.Implement,
+    .Coordinator.SampleHome.Interface,
+    .Coordinator.SampleHome.Implement,
+    
     .Feature.Sample.Data.Implement,
     .Feature.Sample.Data.Interface,
     .Feature.Sample.Domain.Interface,
