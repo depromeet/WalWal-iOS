@@ -9,6 +9,6 @@
 import UIKit
 import Utility
 
-protocol {{name}}Coordinator: CoordinatorType {
+public protocol {{name}}Coordinator: CoordinatorType {
 
 }
