@@ -8,8 +8,10 @@ platform :ios do
 
   lane :certificates do
       match(type: "appstore",
-  		app_identifier: ["olderStoneBed.io.walwal.dev"])
+            app_identifier:["olderStoneBed.io.walwal.dev"],
+            readonly: true)
       match(type: "development",
-  		app_identifier: ["olderStoneBed.io.walwal.dev"])
+            app_identifier:["olderStoneBed.io.walwal.dev"],
+            readonly: true)
   end
 end
