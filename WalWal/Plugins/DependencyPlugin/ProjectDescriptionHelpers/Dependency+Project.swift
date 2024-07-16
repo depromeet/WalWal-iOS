@@ -18,6 +18,7 @@ enum Layer: String {
 }
 
 enum CoordinatorStr: String {
+  case base = "Base"
   case sampleAuth = "SampleAuth"
   case sampleApp = "SampleApp"
   case sampleHome = "SampleHome"
@@ -75,6 +76,7 @@ extension TargetDependency {
   public static let DesignSystem =  TargetDependency.project(target: "DesignSystem", path: .relativeToRoot("DesignSystem"))
   
   public struct Coordinator {
+    public struct Base: WalWalDependency { }
     public struct SampleAuth: WalWalDependency { }
     public struct SampleApp: WalWalDependency { }
     public struct SampleHome: WalWalDependency { }
@@ -181,6 +183,13 @@ public extension TargetDependency.Coordinator.SampleHome {
   static let Interface = TargetDependency.Coordinator.SampleHome.project(name: .sampleHome,
                                                                         isInterface: true)
   static let Implement = TargetDependency.Coordinator.SampleHome.project(name: .sampleHome,
+                                                                        isInterface: false)
+}
+
+public extension TargetDependency.Coordinator.Base {
+  static let Interface = TargetDependency.Coordinator.SampleHome.project(name: .base,
+                                                                        isInterface: true)
+  static let Implement = TargetDependency.Coordinator.SampleHome.project(name: .base,
                                                                         isInterface: false)
 }
 

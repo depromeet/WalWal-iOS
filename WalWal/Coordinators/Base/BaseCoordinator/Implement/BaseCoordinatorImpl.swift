@@ -1,7 +1,7 @@
 //
-//  CoordinatorTypeCoordinatorImpl.swift
+//  BaseCoordinatorImpl.swift
 //
-//  CoordinatorType
+//  Base
 //
 //  Created by 조용인
 //
@@ -9,23 +9,23 @@
 import UIKit
 import Utility
 import DependencyFactory
-import CoordinatorTypeCoordinator
+import BaseCoordinator
 
 import RxSwift
 import RxCocoa
 
-public enum CoordinatorTypeCoordinatorAction: ParentAction {
+public enum BaseCoordinatorAction: ParentAction {
   
 }
 
-public enum CoordinatorTypeCoordinatorFlow: CoordinatorFlow {
+public enum BaseCoordinatorFlow: CoordinatorFlow {
   
 }
 
-public final class CoordinatorTypeCoordinatorImp: CoordinatorTypeCoordinator {
+public final class BaseCoordinatorImp: BaseCoordinator {
   
-  public typealias Action = CoordinatorTypeCoordinatorAction
-  public typealias Flow = CoordinatorTypeCoordinatorFlow
+  public typealias Action = BaseCoordinatorAction
+  public typealias Flow = BaseCoordinatorFlow
   
   public let disposeBag = DisposeBag()
   public let destination = PublishSubject<Flow>()
@@ -57,7 +57,7 @@ public final class CoordinatorTypeCoordinatorImp: CoordinatorTypeCoordinator {
   }
   
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
-  /// 여기도, CoordinatorType이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
+  /// 여기도, Base이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   public func handleChildEvent<T: ParentAction>(_ event: T) {
     if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
       handle__Event(__Event)
@@ -82,7 +82,7 @@ public final class CoordinatorTypeCoordinatorImp: CoordinatorTypeCoordinator {
 
 // MARK: - Handle Child Actions
 
-extension CoordinatorTypeCoordinatorImp {
+extension BaseCoordinatorImp {
   
   fileprivate func handle__Event(_ event: CoordinatorEvent<__CoordinatorAction>) {
     switch event {
@@ -96,7 +96,7 @@ extension CoordinatorTypeCoordinatorImp {
 
 // MARK: - Create and Start(Show) with Flow(View)
 
-extension CoordinatorTypeCoordinatorImp {
+extension BaseCoordinatorImp {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func start__() {
@@ -123,8 +123,8 @@ extension CoordinatorTypeCoordinatorImp {
 
 
 
-// MARK: - CoordinatorType(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
+// MARK: - Base(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
-extension CoordinatorTypeCoordinatorImp {
+extension BaseCoordinatorImp {
   
 }

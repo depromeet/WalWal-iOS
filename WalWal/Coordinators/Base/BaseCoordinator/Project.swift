@@ -1,7 +1,7 @@
 //
-//  CoordinatorTypeCoordinatorProject.swift
+//  BaseCoordinatorProject.swift
 //
-//  CoordinatorType
+//  Base
 //
 //  Created by 조용인
 //
@@ -11,7 +11,7 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.invertedDualTargetProject(
-  name: "CoordinatorTypeCoordinator",
+  name: "BaseCoordinator",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
@@ -21,6 +21,7 @@ let project = Project.invertedDualTargetProject(
     .ThirdParty.RxCocoa
   ],
   implementDependencies: [
+    .Utility,
     .DependencyFactory.Interface,
     
     .ThirdParty.RxSwift,
