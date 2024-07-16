@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Utility
+import BaseCoordinator
 
 public enum SampleAppCoordinatorAction: ParentAction {
   case never
@@ -18,6 +18,6 @@ public enum SampleAppCoordinatorFlow: CoordinatorFlow {
   case startHome
 }
 
-public protocol SampleAppCoordinator: CoordinatorType {
+public protocol SampleAppCoordinator: BaseCoordinator {
 
 }

@@ -10,18 +10,31 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 import DependencyPlugin
 
-let project = Project.invertedDualTargetProject(
+let organizationName = "olderStoneBed.io"
+
+let project = Project(
   name: "BaseCoordinator",
-  platform: .iOS,
-  iOSTargetVersion: "15.0.0",
-  interfaceDependencies: [
-    .ThirdParty.RxSwift,
-    .ThirdParty.RxCocoa
-  ],
-  implementDependencies: [
-    .DependencyFactory.Interface,
-    
-    .ThirdParty.RxSwift,
-    .ThirdParty.RxCocoa
+  organizationName: organizationName,
+  settings: .settings(configurations: [
+    .debug(name: "Debug", xcconfig: .relativeToRoot("Config/Debug.xcconfig")),
+    .release(name: "Release", xcconfig: .relativeToRoot("Config/Release.xcconfig")),
+  ]),
+  targets: [
+    Target(
+      name: "BaseCoordinator",
+      platform: .iOS,
+      product: .framework,
+      bundleId: "\(organizationName).BaseCoordinator",
+      deploymentTarget: .iOS(
+        targetVersion: "15.0.0",
+        devices: [.iphone]
+      ),
+      infoPlist: .default,
+      sources: ["Sources/**"],
+      dependencies: [
+        .ThirdParty.RxSwift,
+        .ThirdParty.RxCocoa
+      ]
+    ),
   ]
 )

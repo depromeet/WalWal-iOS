@@ -13,6 +13,13 @@ import DependencyFactory
 import WalWalNetwork
 import WalWalNetworkImp
 
+import SampleAppCoordinator
+import SampleAppCoordinatorImp
+import SampleAuthCoordinator
+import SampleAuthCoordinatorImp
+import SampleHomeCoordinator
+import SampleHomeCoordinatorImp
+
 import SampleData
 import SampleDataImp
 import SampleDomain
@@ -26,17 +33,21 @@ public class DependencyFactoryImp: DependencyFactory {
   
   // MARK: - Data Injection
   
-  public func injectSampleAuthData() -> SampleAuthRepository {
+  public func makeSampleAuthData() -> SampleAuthRepository {
     return SampleAuthRepositoryImpl(networkService: networkService)
   }
   
   // MARK: - Domain Injection
   
-  public func injectSampleSignInUsecase() -> SampleSignInUseCase {
-    return SignInUseCaseImpl(sampleAuthRepository: injectSampleAuthData())
+  public func makeSampleSignInUsecase() -> SampleSignInUseCase {
+    return SignInUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
   }
   
-  public func injectSampleSignUpUsecase() -> SampleSignUpUseCase {
-    return SignUpUseCaseImpl(sampleAuthRepository: injectSampleAuthData())
+  public func makeSampleSignUpUsecase() -> SampleSignUpUseCase {
+    return SignUpUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
+  }
+  
+  public func makeSampleAppCoordinator() -> SampleAppCoordinator {
+    
   }
 }

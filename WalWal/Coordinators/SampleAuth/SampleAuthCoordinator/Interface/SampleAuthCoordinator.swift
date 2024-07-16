@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Utility
+import BaseCoordinator
 
 public enum SampleAuthCoordinatorAction: ParentAction {
   case authenticationCompleted
@@ -19,4 +19,4 @@ public enum SampleAuthCoordinatorFlow: CoordinatorFlow {
   case showSignUp
 }
 
-public protocol SampleAuthCoordinator: CoordinatorType { }
+public protocol SampleAuthCoordinator: BaseCoordinator { }

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Utility
+import BaseCoordinator
 
 public enum SampleHomeCoordinatorAction: ParentAction {
   case logout
@@ -18,4 +18,4 @@ public enum SampleHomeCoordinatorFlow: CoordinatorFlow {
   case showSettings
 }
 
-public protocol SampleHomeCoordinator: CoordinatorType { }
+public protocol SampleHomeCoordinator: BaseCoordinator { }

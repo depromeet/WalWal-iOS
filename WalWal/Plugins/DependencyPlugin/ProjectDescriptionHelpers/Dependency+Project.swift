@@ -187,10 +187,8 @@ public extension TargetDependency.Coordinator.SampleHome {
 }
 
 public extension TargetDependency.Coordinator.Base {
-  static let Interface = TargetDependency.Coordinator.SampleHome.project(name: .base,
+  static let Interface = TargetDependency.Coordinator.Base.project(name: .base,
                                                                         isInterface: true)
-  static let Implement = TargetDependency.Coordinator.SampleHome.project(name: .base,
-                                                                        isInterface: false)
 }
 
 

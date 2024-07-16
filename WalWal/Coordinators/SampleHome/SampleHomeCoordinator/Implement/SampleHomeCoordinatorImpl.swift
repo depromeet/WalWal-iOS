@@ -7,8 +7,7 @@
 //
 
 import UIKit
-import Utility
-import DependencyFactory
+import BaseCoordinator
 import SampleHomeCoordinator
 
 import RxSwift
@@ -23,19 +22,16 @@ public final class SampleHomeCoordinatorImp: SampleHomeCoordinator {
   public let destination = PublishSubject<Flow>()
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
-  public let dependency: DependencyFactory
-  public weak var parentCoordinator: (any CoordinatorType)?
-  public var childCoordinator: (any CoordinatorType)?
+  public weak var parentCoordinator: (any BaseCoordinator)?
+  public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
   public required init(
     navigationController: UINavigationController,
-    parentCoordinator: (any CoordinatorType)?,
-    dependency: DependencyFactory
+    parentCoordinator: (any BaseCoordinator)?
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
-    self.dependency = dependency
     bindChildToParentAction()
     bindState()
   }
