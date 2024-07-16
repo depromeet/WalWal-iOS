@@ -7,7 +7,14 @@
 //
 
 import UIKit
+import BaseCoordinator
 
-public protocol {{name}}Coordinator: CoordinatorType {
-
+public enum {{ name }}CoordinatorAction: ParentAction {
+  
 }
+
+public enum {{ name }}CoordinatorFlow: CoordinatorFlow {
+  
+}
+
+public protocol {{ name }}Coordinator: BaseCoordinator { }

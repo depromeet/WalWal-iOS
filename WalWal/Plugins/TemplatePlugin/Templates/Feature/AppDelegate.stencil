@@ -7,15 +7,27 @@
 //
 
 import UIKit
-import {{name}}View
-import {{name}}Reactor
+
+import DependencyFactory
+import DependencyFactoryImp
+import {{name}}Data
+import {{name}}Domain
+import {{name}}Coordinator
+import {{name}}Presenter
 
 @main
 final class {{name}}AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     let window = UIWindow(frame: UIScreen.main.bounds)
-    window.rootViewController = {{name}}ViewController()
+    
+    let dependencyFactory = DependencyFactoryImp()
+    let navigationController = UINavigationController()
+    let coordinator = dependencyFactory.make{{name}}Coordinator(navigationController: navigationController)
+    let reactor = dependencyFactory.make{{name}}Reactor(coordinator: coordinator)
+    let viewController = dependencyFactory.make{{name}}ViewController(reactor: reactor)
+    
+    window.rootViewController = viewController
     window.makeKeyAndVisible()
     self.window = window
     return true
