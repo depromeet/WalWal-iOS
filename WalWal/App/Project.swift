@@ -16,7 +16,7 @@ let project = Project(
       name: "WalWal",
       platform: .iOS,
       product: .app,
-      bundleId: "olderStoneBed.io.walwal",
+      bundleId: "olderStoneBed.io.walwal.dev", /// 우선 Develop 전용으로
       infoPlist: InfoPlist.extendingDefault(
         with:
           [
