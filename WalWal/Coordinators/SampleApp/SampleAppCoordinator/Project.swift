@@ -22,6 +22,7 @@ let project = Project.invertedDualTargetProject(
   ],
   implementDependencies: [
     .DependencyFactory.Interface,
+    .Coordinator.Base.Interface,
     
     .Coordinator.SampleAuth.Interface,
     .Coordinator.SampleHome.Interface,

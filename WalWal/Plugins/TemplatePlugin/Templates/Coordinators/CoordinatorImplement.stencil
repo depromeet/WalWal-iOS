@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Utility
+impoer DependencyFactory
 import BaseCoordinator
 import {{name}}Coordinator
 
@@ -32,15 +32,18 @@ public final class {{name}}CoordinatorImp: {{name}}Coordinator {
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any CoordinatorType)?
+  public var dependencyFactory: DependencyFactory
   public var childCoordinator: (any CoordinatorType)?
   public var baseViewController: UIViewController?
   
   public required init(
     navigationController: UINavigationController,
-    parentCoordinator: (any CoordinatorType)?
+    parentCoordinator: (any CoordinatorType)?,
+    dependencyFactory: DependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
+    self.dependencyFactory = dependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -66,12 +69,9 @@ public final class {{name}}CoordinatorImp: {{name}}Coordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let __UseCase = dependency.make__UseCase()
-    let reactor = __Reactor(
-      coordinator: self,
-      __UseCase: __UseCase
-    )
-    let __ViewController = __ViewController(reactor: reactor)
+    let __UseCase = dependencyFactory.make__UseCase()
+    let reactor = dependencyFactory.make__Reactor(coordinator: self)
+    let __ViewController = dependencyFactory.make__ViewController(reactor: reactor)
     self.baseViewController = __ViewController
     self.pushViewController(viewController: __ViewController, animated: false)
   }
@@ -97,10 +97,9 @@ extension {{name}}CoordinatorImp {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func start__() {
-    let __Coordinator = __Coordinator(
+    let __Coordinator = dependencyFactory.make__Coordinator(
       navigationController: navigationController,
-      parentCoordinator: self,
-      dependency: dependency
+      parentCoordinator: self
     )
     childCoordinator = __Coordinator
     __Coordinator.start()
@@ -108,13 +107,10 @@ extension {{name}}CoordinatorImp {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   fileprivate func show__() {
-    let __UseCase = dependency.make__UseCase()
-    let reactor = __Reactor(
-      coordinator: self,
-      __UseCase: __UseCase
-    )
-    let __VC = __ViewController(reactor: reactor)
-    navigationController.pushViewController(__VC, animated: true)
+    let __UseCase = dependencyFactory.make__UseCase()
+    let reactor = dependencyFactory.make__Reactor(coordinator: self)
+    let __ViewController = dependencyFactory.make__ViewController(reactor: reactor)
+    self.pushViewController(viewController: __ViewController, animated: false)
   }
 }
 
