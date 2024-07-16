@@ -17,9 +17,11 @@ enum Layer: String {
   case presenter = "Presenter"
 }
 
-enum Reactor: String {
-  case reactor = "Reactor"
-  case view = "View"
+enum CoordinatorStr: String {
+  case base = "Base"
+  case sampleAuth = "SampleAuth"
+  case sampleApp = "SampleApp"
+  case sampleHome = "SampleHome"
 }
 
 enum FeatureStr: String {
@@ -29,7 +31,7 @@ enum FeatureStr: String {
 
 protocol WalWalDependency {
   static func project(name: FeatureStr, layer: Layer, isInterface: Bool) -> TargetDependency
-  static func project(name: FeatureStr, layer: Layer, type: Reactor) -> TargetDependency
+  static func project(name: CoordinatorStr, isInterface: Bool) -> TargetDependency
 }
 
 extension WalWalDependency {
@@ -43,15 +45,14 @@ extension WalWalDependency {
                     path: .relativeToRoot("Features/\(name)/\(name)\(layer)"))
   }
   
-  static func project(name: FeatureStr, layer: Layer, type: Reactor) -> TargetDependency {
+  static func project(name: CoordinatorStr, isInterface: Bool) -> TargetDependency {
     let name = name.rawValue
-    let layer = layer.rawValue
-    let type = type.rawValue
-    let folderFullName = "\(name)\(layer)\(type)"
+    let layer = "Coordinator"
+    let postfix: String = isInterface ? "" : "Imp"
+    let folderFullName = "\(name)\(layer)\(postfix)"
     return .project(target: folderFullName,
-                    path: .relativeToRoot("Features/\(name)/\(name)\(layer)"))
+                    path: .relativeToRoot("Coordinators/\(name)/\(name)\(layer)"))
   }
-  
 }
 
 extension TargetDependency {
@@ -59,6 +60,13 @@ extension TargetDependency {
   public static let LocalStorage = TargetDependency.project(target: "LocalStorage", path: .relativeToRoot("LocalStorage"))
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
   public static let DesignSystem =  TargetDependency.project(target: "DesignSystem", path: .relativeToRoot("DesignSystem"))
+  
+  public struct Coordinator {
+    public struct Base: WalWalDependency { }
+    public struct SampleAuth: WalWalDependency { }
+    public struct SampleApp: WalWalDependency { }
+    public struct SampleHome: WalWalDependency { }
+  }
   
   public struct DependencyFactory { }
   
@@ -83,13 +91,13 @@ extension TargetDependency {
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
 public extension TargetDependency.Feature.Auth.Presenter {
-  static let View = TargetDependency.Feature.Auth.project(name: .auth,
-                                                          layer: .presenter,
-                                                          type: .view)
+  static let Interface = TargetDependency.Feature.Auth.project(name: .auth,
+                                                               layer: .presenter,
+                                                               isInterface: true)
   
-  static let Reactor = TargetDependency.Feature.Auth.project(name: .auth,
-                                                             layer: .presenter,
-                                                             type: .reactor)
+  static let Implement = TargetDependency.Feature.Auth.project(name: .auth,
+                                                              layer: .presenter,
+                                                              isInterface: false)
 }
 
 public extension TargetDependency.Feature.Auth.Domain {
@@ -113,13 +121,13 @@ public extension TargetDependency.Feature.Auth.Data {
 }
 
 public extension TargetDependency.Feature.Sample.Presenter {
-  static let View = TargetDependency.Feature.Sample.project(name: .sample,
-                                                            layer: .presenter,
-                                                            type: .view)
-  
-  static let Reactor = TargetDependency.Feature.Sample.project(name: .sample,
+  static let Interface = TargetDependency.Feature.Auth.project(name: .sample,
                                                                layer: .presenter,
-                                                               type: .reactor)
+                                                               isInterface: true)
+  
+  static let Implement = TargetDependency.Feature.Auth.project(name: .sample,
+                                                              layer: .presenter,
+                                                              isInterface: false)
 }
 
 public extension TargetDependency.Feature.Sample.Domain {
@@ -141,6 +149,35 @@ public extension TargetDependency.Feature.Sample.Data {
                                                                  layer: .data,
                                                                  isInterface: false)
 }
+
+// MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
+public extension TargetDependency.Coordinator.SampleApp {
+  static let Interface = TargetDependency.Coordinator.SampleApp.project(name: .sampleApp,
+                                                                        isInterface: true)
+  static let Implement = TargetDependency.Coordinator.SampleApp.project(name: .sampleApp,
+                                                                        isInterface: false)
+}
+
+public extension TargetDependency.Coordinator.SampleAuth {
+  static let Interface = TargetDependency.Coordinator.SampleAuth.project(name: .sampleAuth,
+                                                                        isInterface: true)
+  static let Implement = TargetDependency.Coordinator.SampleAuth.project(name: .sampleAuth,
+                                                                        isInterface: false)
+}
+
+public extension TargetDependency.Coordinator.SampleHome {
+  static let Interface = TargetDependency.Coordinator.SampleHome.project(name: .sampleHome,
+                                                                        isInterface: true)
+  static let Implement = TargetDependency.Coordinator.SampleHome.project(name: .sampleHome,
+                                                                        isInterface: false)
+}
+
+public extension TargetDependency.Coordinator.Base {
+  static let Interface = TargetDependency.Coordinator.Base.project(name: .base,
+                                                                        isInterface: true)
+}
+
+
 
 public extension TargetDependency.ThirdParty {
   private static func framework(name: String) -> TargetDependency {

@@ -1,0 +1,20 @@
+//
+//  {{ name }}CoordinatorInterface.swift
+//
+//  {{name}}
+//
+//  Created by {{author}}
+//
+
+import UIKit
+import BaseCoordinator
+
+public enum {{ name }}CoordinatorAction: ParentAction {
+  
+}
+
+public enum {{ name }}CoordinatorFlow: CoordinatorFlow {
+  
+}
+
+public protocol {{ name }}Coordinator: BaseCoordinator { }

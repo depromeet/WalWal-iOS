@@ -8,6 +8,6 @@
 
 import UIKit
 
-public struct SignInDTO: Decodable {
+public struct SampleSignInDTO: Decodable {
   public let token: String
 }

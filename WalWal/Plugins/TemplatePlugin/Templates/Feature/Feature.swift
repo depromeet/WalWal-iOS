@@ -53,12 +53,20 @@ let Feature = Template(
       templatePath: "PresenterProject.stencil"
     ),
     .file(
-      path: .featureBasePath + "/\(name)Presenter/View/\(name)View.swift",
-      templatePath: "View.stencil"
+      path: .featureBasePath + "/\(name)Presenter/Interface/Views/\(name)View.swift",
+      templatePath: "ViewInterface.stencil"
     ),
     .file(
-      path: .featureBasePath + "/\(name)Presenter/Reactor/\(name)Reactor.swift",
-      templatePath: "Reactor.stencil"
+      path: .featureBasePath + "/\(name)Presenter/Implement/Views/\(name)ViewImp.swift",
+      templatePath: "ViewImplement.stencil"
+    ),
+    .file(
+      path: .featureBasePath + "/\(name)Presenter/Interface/Reactors/\(name)Reactor.swift",
+      templatePath: "ReactorInterface.stencil"
+    ),
+    .file(
+      path: .featureBasePath + "/\(name)Presenter/Implement/Reactors/\(name)ReactorImp.swift",
+      templatePath: "ReactorImplement.stencil"
     ),
     //MARK: - DemoApp
     .file(

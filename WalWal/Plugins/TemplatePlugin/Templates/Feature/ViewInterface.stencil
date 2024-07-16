@@ -1,0 +1,25 @@
+//
+//  {{ name }}ViewController.swift
+//
+//  {{name}}
+//
+//  Created by {{author}}
+//
+
+import UIKit
+
+import ReactorKit
+import RxSwift
+
+public protocol {{name}}ViewController: UIViewController, View {
+  
+  associatedtype {{name}}ReactorType: {{name}}Reactor
+  var disposeBag: DisposeBag { get set }
+  
+  func setLayout()
+  func setAttribute()
+  func bind(reactor: {{name}}ReactorType)
+  func bindAction(reactor: {{name}}ReactorType)
+  func bindState(reactor: {{name}}ReactorType)
+  func bindEvent()
+}

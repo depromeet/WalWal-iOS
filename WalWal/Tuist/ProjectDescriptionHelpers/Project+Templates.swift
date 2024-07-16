@@ -114,28 +114,28 @@ extension Project {
   }
   
   /// 현재 경로 내부의 View, Reactor, DemoApp 세개의 디렉토리에 각각 Target을 가지는 Project를 만듭니다.
-  public static func invertedReactorKitTargetProject(
+  public static func invertedPresenterWithDemoApp(
     name: String,
     platform: Platform = .iOS,
     iOSTargetVersion: String = "16.0.0",
-    viewDependencies: [TargetDependency] = [],
-    reactorDependencies: [TargetDependency] = [],
+    interfaceDependencies: [TargetDependency] = [],
+    implementDependencies: [TargetDependency] = [],
     demoAppDependencies: [TargetDependency] = [],
     infoPlist: InfoPlist = .default
   ) -> Project {
     
-    let viewTarget = makeViewFrameworkTargets(
+    let interfaceTarget = makeInterfaceDynamicFrameworkTarget(
       name: name,
       platform: platform,
       iOSTargetVersion: iOSTargetVersion,
-      dependencies: viewDependencies
+      dependencies: interfaceDependencies
     )
     
-    let reactorTarget = makeReactorFrameworkTargets(
+    let implementTarget = makeImplementStaticLibraryTarget(
       name: name,
       platform: platform,
       iOSTargetVersion: iOSTargetVersion,
-      dependencies: reactorDependencies
+      dependencies: implementDependencies + [.target(name: name)]
     )
     
     let demoApp = Target(
@@ -151,12 +151,12 @@ extension Project {
       sources: ["./DemoApp/Sources/**"],
       resources: ["./DemoApp/Resources/**"],
       dependencies: [
-        .target(name: "\(name)View"),
-        .target(name: "\(name)Reactor"),
+        .target(name: "\(name)"),
+        .target(name: "\(name)Imp"),
       ] + demoAppDependencies
     )
     
-    let targets: [Target] = [viewTarget, reactorTarget, demoApp]
+    let targets: [Target] = [interfaceTarget, implementTarget, demoApp]
     let settings: Settings = .settings(configurations: [
       .debug(name: "Debug", xcconfig: .relativeToRoot("Config/Debug.xcconfig")),
       .release(name: "Release", xcconfig: .relativeToRoot("Config/Release.xcconfig")),

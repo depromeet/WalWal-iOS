@@ -7,21 +7,31 @@
 //
 import UIKit
 
-// MARK: - 추가되는 Feature에 따라 import되는 Interface를 작성해주세요.
+import BaseCoordinator
+import SampleAppCoordinator
+import SampleAuthCoordinator
+import SampleHomeCoordinator
 
-/// (이곳은 Interface만 의존성을 갖습니다.)
-/// Ex.
-/*
-import AuthDomain
-import AuthData
+import SampleData
+import SampleDomain
+import SamplePresenter
 
 public protocol DependencyFactory {
   
   // MARK: - 추가되는 Feature에 따라 Dependency를 생성 및 주입하는 함수를 추가해주새요
   
-  func injectAuthData() -> AuthDataRepository
+  func makeSampleAuthData() -> SampleAuthRepository
   
-  func injectSignInUsecase() -> SignInUseCase
-  func injectSignUpUsecase() -> SignUpUseCase
+  func makeSampleSignInUsecase() -> SampleSignInUseCase
+  func makeSampleSignUpUsecase() -> SampleSignUpUseCase
+  
+  func makeSampleAppCoordinator(navigationController: UINavigationController) -> any SampleAppCoordinator
+  
+  func makeSampleReactor(coordinator: any SampleAppCoordinator) -> any SampleReactor
+  func makeSampleViewController<T: SampleReactor>(reactor: T) -> any SampleViewController
+  
+  
+  func makeSampleAuthCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleAuthCoordinator
+  
+  func makeSampleHomeCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleHomeCoordinator
 }
-*/

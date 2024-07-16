@@ -12,7 +12,7 @@ import SampleData
 
 import RxSwift
 
-public final class AuthDataRepositoryImpl: AuthDataRepository {
+public final class SampleAuthRepositoryImpl: SampleAuthRepository {
   
   // MARK: - Properties
 
@@ -29,15 +29,15 @@ public final class AuthDataRepositoryImpl: AuthDataRepository {
   // MARK: - Methods
   
   // - Interface에 정의된 함수를 구현해주세요.
-  public func signUp(nickname: String, profile: Data) -> Single<SignUpDTO> {
-    let body = SignUpBody(nickname: nickname, profile: profile)
-    let endpoint = AuthEndpoint<SignUpDTO>.signUp(body: body)
+  public func signUp(nickname: String, profile: Data) -> Single<SampleSignUpDTO> {
+    let body = SampleSignUpBody(nickname: nickname, profile: profile)
+    let endpoint = AuthEndpoint<SampleSignUpDTO>.signUp(body: body)
     return networkService.request(endpoint: endpoint).compactMap{ $0 }.asObservable().asSingle()
   }
   
-  public func signIn(id: String, password: String) -> Single<SignInDTO> {
-    let body = SignInBody(id: id, password: password)
-    let endpoint = AuthEndpoint<SignInDTO>.signIn(body: body)
+  public func signIn(id: String, password: String) -> Single<SampleSignInDTO> {
+    let body = SampleSignInBody(id: id, password: password)
+    let endpoint = AuthEndpoint<SampleSignInDTO>.signIn(body: body)
     return networkService.request(endpoint: endpoint).compactMap{ $0 }.asObservable().asSingle()
   }
 }

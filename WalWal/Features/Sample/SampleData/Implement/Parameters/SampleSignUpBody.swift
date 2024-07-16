@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct SignUpBody: Codable {
+struct SampleSignUpBody: Codable {
   let nickname: String
   let profile: Data
 }

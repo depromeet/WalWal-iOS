@@ -9,14 +9,14 @@
 import UIKit
 import SampleData
 
-public struct Token {
+public struct SampleToken {
   public var token: String
   
-  public init(dto: SignUpDTO) {
+  public init(dto: SampleSignUpDTO) {
     self.token = dto.token
   }
   
-  public init(dto: SignInDTO) {
+  public init(dto: SampleSignInDTO) {
     self.token = dto.token
   }
 }

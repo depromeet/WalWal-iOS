@@ -1,0 +1,53 @@
+//
+//  {{ name }}ReactorImp.swift
+//
+//  {{name}}
+//
+//  Created by {{author}}
+//
+
+import {{name}}Domain
+import {{name}}Presenter
+import {{name}}Coordinator
+
+import ReactorKit
+import RxSwift
+
+public enum {{name}}ReactorActionImp: {{name}}ReactorAction {
+    /// 구체적인 액션 정의
+}
+
+public enum {{name}}ReactorMutationImp: {{name}}ReactorMutation {
+    /// 구체적인 뮤테이션 정의
+}
+
+public struct {{name}}ReactorStateImp: {{name}}ReactorState {
+    /// 구체적인 상태 정의
+    public init() {
+      
+    }
+}
+
+public final class {{name}}ReactorImp: {{name}}Reactor {
+    public typealias Action = {{name}}ReactorActionImp
+    public typealias Mutation = {{name}}ReactorMutationImp
+    public typealias State = {{name}}ReactorStateImp
+
+    public let initialState: State
+    public let coordinator: any {{name}}Coordinator
+    
+    public init(
+        coordinator: any {{name}}Coordinator
+    ) {
+        self.coordinator = coordinator
+        self.initialState = State()
+    }
+    
+    public func mutate(action: Action) -> Observable<Mutation> {
+      
+    }
+    
+    public func reduce(state: State, mutation: Mutation) -> State {
+        
+    }
+}

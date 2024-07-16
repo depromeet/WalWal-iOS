@@ -1,13 +1,12 @@
 //
-//  CoordinatorType.swift
-//  Utility
+//  BaseCoordinatorInterface.swift
 //
-//  Created by 조용인 on 7/12/24.
-//  Copyright © 2024 olderStoneBed.io. All rights reserved.
+//  Base
+//
+//  Created by 조용인
 //
 
 import UIKit
-import DependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -22,7 +21,7 @@ public enum CoordinatorEvent<Action: ParentAction> {
     case requireParentAction(Action)
 }
 
-public protocol CoordinatorType: AnyObject{
+public protocol BaseCoordinator: AnyObject{
   associatedtype Action: ParentAction
   associatedtype Flow: CoordinatorFlow
   
@@ -40,22 +39,13 @@ public protocol CoordinatorType: AnyObject{
   var navigationController: UINavigationController { get }
   
   /// 부모 Coordinator를 관리하는 변수
-  var parentCoordinator: (any CoordinatorType)? { get set }
-  
-  /// DependencyFactory를 통해서 주입하고자하는 Dependency를 관리한다. 이 때, 실제 DependencyFactory의 구현체는 앱의 최상단에서만 주입함.
-  var dependency: DependencyFactory { get }
+  var parentCoordinator: (any BaseCoordinator)? { get set }
   
   /// 자식 Coordinator를 관리하는 변수
-  var childCoordinator: (any CoordinatorType)? { get set }
+  var childCoordinator: (any BaseCoordinator)? { get set }
   
   /// 자신Coordinator의 BaseViewController를 정의합니다. (navigationController의 Root가 아닙니다.)
   var baseViewController: UIViewController? { get set }
-  
-  init(
-    navigationController: UINavigationController,
-    parentCoordinator: (any CoordinatorType)?,
-    dependency: DependencyFactory
-  )
   
   // MARK: - Methods
   
@@ -71,11 +61,11 @@ public protocol CoordinatorType: AnyObject{
 
 // MARK: - 기본 구현 함수들
 
-extension CoordinatorType{
+public extension BaseCoordinator{
   
   /// 나의 baseViewController까지 pop 시켜줍니다.
   /// 또한, finish가 호출되면 나의 childCoordinator를 nil로 만들어주고, 부모 Coordinator에게 자신이 종료되어야 한다는 사실을 알려줍니다.
-  public func requirefinish() {
+  func requirefinish() {
     popToRootViewController(animated: false)
     childCoordinator = nil
     requireFromChild.onNext(.finished)
@@ -83,14 +73,14 @@ extension CoordinatorType{
   
   /// 나의 baseViewController까지 pop 시켜줍니다.
   /// 또한, finish가 호출되면 나의 childCoordinator를 nil로 만들어주고, 부모 Coordinator에게 자신이 종료됨과 동시에 부모에게 특정 동작을 요청할 때 사용하면 됩니다.
-  public func requireParentAction(_ action: Action) {
+  func requireParentAction(_ action: Action) {
     popToRootViewController(animated: false)
     childCoordinator = nil
     requireFromChild.onNext(.requireParentAction(action))
   }
   
   /// requireFromChild에 새로운 값이 전달 될 때마다, 해당 값에 해당하는 Action을 parent에게 전달해줍니다.
-  public func bindChildToParentAction() {
+  func bindChildToParentAction() {
     requireFromChild
       .subscribe(with: self, onNext: { owner, event in
         guard let parentCoordinator = owner.parentCoordinator else { return }
@@ -105,7 +95,7 @@ extension CoordinatorType{
   }
   
   /// 자식으로 부터 단순 .finished 이벤트가 전달 될 때, 자식 Coordinator를 nil로 만들어주고 자식의 baseViewController를 pop해줍니다.
-  private func handleJustFinish() {
+  func handleJustFinish() {
     popViewController(animated: true)
     childCoordinator = nil
   }
@@ -113,7 +103,7 @@ extension CoordinatorType{
 
 // MARK: - CoordinatorType의 화면 전환 관련 함수들
 
-extension CoordinatorType {
+public extension BaseCoordinator {
   
   /// 현재 Navigation Stack에 새로운 ViewController를 Push 함
   func pushViewController(viewController vc: UIViewController, animated: Bool ){

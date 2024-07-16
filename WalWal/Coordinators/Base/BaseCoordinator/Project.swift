@@ -1,8 +1,9 @@
 //
-//  Project.swift
-//  ProjectDescriptionHelpers
+//  BaseCoordinatorProject.swift
 //
-//  Created by 조용인 on 6/22/24.
+//  Base
+//
+//  Created by 조용인
 //
 
 import ProjectDescription
@@ -12,7 +13,7 @@ import DependencyPlugin
 let organizationName = "olderStoneBed.io"
 
 let project = Project(
-  name: "Coordinator",
+  name: "BaseCoordinator",
   organizationName: organizationName,
   settings: .settings(configurations: [
     .debug(name: "Debug", xcconfig: .relativeToRoot("Config/Debug.xcconfig")),
@@ -20,10 +21,10 @@ let project = Project(
   ]),
   targets: [
     Target(
-      name: "Coordinator",
+      name: "BaseCoordinator",
       platform: .iOS,
       product: .framework,
-      bundleId: "\(organizationName).Coordinator",
+      bundleId: "\(organizationName).BaseCoordinator",
       deploymentTarget: .iOS(
         targetVersion: "15.0.0",
         devices: [.iphone]
@@ -31,9 +32,8 @@ let project = Project(
       infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
-        .Utility,
-        .DependencyFactory.Interface,
-        .DependencyFactory.Implement
+        .ThirdParty.RxSwift,
+        .ThirdParty.RxCocoa
       ]
     ),
   ]
