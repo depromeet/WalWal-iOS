@@ -21,7 +21,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane ios custom_lane
 ```
 
-Description of what the lane does
+
 
 ### ios certificates
 
