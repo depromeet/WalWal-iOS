@@ -28,6 +28,9 @@ let project = Project.invertedDualTargetProject(
      */
   ],
   implementDependencies: [
+    .WalWalNetwork.Interface,
+    .WalWalNetwork.Implement,
+    
     .Coordinator.SampleApp.Interface,
     .Coordinator.SampleApp.Implement,
     .Coordinator.SampleAuth.Interface,
