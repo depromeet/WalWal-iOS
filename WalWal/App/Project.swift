@@ -28,6 +28,7 @@ let project = Project(
       ),
       sources: ["Sources/**"],
       resources: ["Resources/**"],
+      entitlements: "../WalWal.entitlements",
       dependencies: [
         .ThirdParty.RxAlamofire,
         .ThirdParty.RxSwift,
