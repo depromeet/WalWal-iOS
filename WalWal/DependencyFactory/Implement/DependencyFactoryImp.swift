@@ -13,6 +13,7 @@ import DependencyFactory
 import WalWalNetwork
 import WalWalNetworkImp
 
+import BaseCoordinator
 import SampleAppCoordinator
 import SampleAppCoordinatorImp
 import SampleAuthCoordinator
@@ -24,45 +25,39 @@ import SampleData
 import SampleDataImp
 import SampleDomain
 import SampleDomainImp
-
-import SamplePresenterReactor
-import SamplePresenterView
+import SamplePresenter
+import SamplePresenterImp
 
 public class DependencyFactoryImp: DependencyFactory {
   
+  public init() {
+    
+  }
+  
   // MARK: - 추가되는 Coordinator에 따라 Dependency를 생성 및 주입하는 함수의 구현부를 작성해주새요
   
-  public func makeSampleAppCoordinator<T: SampleAppCoordinator>(
+  public func makeSampleAppCoordinator(
     navigationController: UINavigationController
-  ) -> T? {
-    return SampleAppCoordinatorImp(navigationController: navigationController, parentCoordinator: nil, dependencyFactory: self) as? T
+  ) -> any SampleAppCoordinator {
+    return SampleAppCoordinatorImp(navigationController: navigationController, parentCoordinator: nil, dependencyFactory: self)
   }
   
-  public func makeSampleAuthCoordinator<T: SampleAuthCoordinator, U: SampleAppCoordinator>(
-    navigationController: UINavigationController,
-    parentCoordinator: U
-  ) -> T? {
-    return SampleAuthCoordinatorImp(navigationController: navigationController, parentCoordinator: parentCoordinator, dependencyFactory: self) as? T
+  public func makeSampleAuthCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleAuthCoordinator {
+    return SampleAuthCoordinatorImp(navigationController: navigationController, parentCoordinator: parentCoordinator, dependencyFactory: self)
   }
   
-  public func makeSampleHomeCoordinator<T: SampleHomeCoordinator, U: SampleAppCoordinator>(
-    navigationController: UINavigationController,
-    parentCoordinator: U
-  ) -> T? {
-    return SampleHomeCoordinatorImp(navigationController: navigationController, parentCoordinator: parentCoordinator, dependencyFactory: self) as? T
+  public func makeSampleHomeCoordinator(
+    navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleHomeCoordinator {
+    return SampleHomeCoordinatorImp(navigationController: navigationController, parentCoordinator: parentCoordinator, dependencyFactory: self)
   }
   
   // MARK: - 추가되는 Feature에 따라 Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
   
   private let networkService = NetworkService()
   
-  // MARK: - Make Data
-  
   public func makeSampleAuthData() -> SampleAuthRepository {
     return SampleAuthRepositoryImpl(networkService: networkService)
   }
-  
-  // MARK: - Make Domain
   
   public func makeSampleSignInUsecase() -> SampleSignInUseCase {
     return SignInUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
@@ -72,16 +67,17 @@ public class DependencyFactoryImp: DependencyFactory {
     return SignUpUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
   }
   
-  // MARK: - Make Presenter
-  
-  public func makeSampleAuthReactor<T: SampleAuthCoordinator>(coordinator: T) -> SampleReactor {
+  public func makeSampleReactor(coordinator: any SampleAppCoordinator) -> any SampleReactor {
     let sampleSignInUseCase = makeSampleSignInUsecase()
     let sampleSignUpUseCase = makeSampleSignUpUsecase()
-    return SampleReactor(coordinator: coordinator, sampleSignInUsecase: sampleSignInUseCase, sampleSignUpUsecase: sampleSignUpUseCase)
+    return SampleReactorImp(
+      coordinator: coordinator,
+      sampleSignInUsecase: sampleSignInUseCase,
+      sampleSignUpUsecase: sampleSignUpUseCase
+    )
   }
   
-  public func makeSampleAuthViewController(reactor: SampleReactor) -> SampleViewController {
-    return makeSampleAuthViewController(reactor: reactor)
+  public func makeSampleViewController<T: SampleReactor>(reactor: T) -> any SampleViewController {
+    return SampleViewControllerImp(reactor: reactor)
   }
-  
 }

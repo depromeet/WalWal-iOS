@@ -68,14 +68,10 @@ public final class SampleAppCoordinatorImp: SampleAppCoordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let splashUseCase = dependency.makeSplashUseCase()
-    let reactor = SplashReactor(
-      coordinator: self,
-      splashUseCase: splashUseCase
-    )
-    let splashViewController = SplashViewController(reactor: reactor)
-    self.baseViewController = splashViewController
-    self.pushViewController(viewController: splashViewController, animated: false)
+    let reactor = dependencyFactory.makeSplashReactor(coordinator: self)
+    let splashVC = dependencyFactory.makeSplashViewController(reactor: reactor)
+    self.baseViewController = splashVC
+    self.pushViewController(viewController: splashVC, animated: false)
   }
 }
 
@@ -117,17 +113,17 @@ extension SampleAppCoordinatorImp {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func startAuth() {
-    let authCoordinator = SampleAuthCoordinator(
+    let homeCoordinator = dependencyFactory.makeSampleAuthCoordinator(
       navigationController: navigationController,
       parentCoordinator: self
     )
-    childCoordinator = authCoordinator
-    authCoordinator.start()
+    childCoordinator = homeCoordinator
+    homeCoordinator.start()
   }
   
   /// 새로운 Coordinator를 통해서 Flow를 새로 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func startHome() {
-    let homeCoordinator = SampleHomeCoordinator(
+    let homeCoordinator = dependencyFactory.makeSampleHomeCoordinator(
       navigationController: navigationController,
       parentCoordinator: self
     )

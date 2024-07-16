@@ -60,14 +60,10 @@ public final class SampleAuthCoordinatorImp: SampleAuthCoordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let authUseCase = dependency.makeAuthUseCase()
-    let reactor = AuthMainReactor(
-      coordinator: self,
-      authUsecase: authUseCase
-    )
-    let authMainViewController = AuthMainViewController(reactor: reactor)
-    self.baseViewController = authMainViewController
-    self.pushViewController(viewController: authMainViewController, animated: false)
+    let reactor = dependencyFactory.makeAuthReactor(coordinator: self)
+    let AuthMainVC = dependencyFactory.makeAuthViewController(reactor: reactor)
+    self.baseViewController = AuthMainVC
+    self.pushViewController(viewController: AuthMainVC, animated: false)
   }
 }
 
@@ -83,23 +79,15 @@ extension SampleAuthCoordinatorImp {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   fileprivate func showSignIn() {
-    let signInUsecase = dependency.makeSignInUseCase()
-    let reactor = SignInReactor(
-      coordinator: self,
-      signInUsecase: signInUsecase
-    )
-    let signInVC = SignInViewController(reactor: reactor)
+    let reactor = dependencyFactory.makeSignInReactor(coordinator: self)
+    let signInVC = dependencyFactory.makeSignInViewController(reactor: reactor)
     navigationController.pushViewController(signInVC, animated: true)
   }
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   fileprivate func showSignUp() {
-    let signUpUsecase = dependency.makeSignUpUseCase()
-    let reactor = SignInReactor(
-      coordinator: self,
-      signUpUsecase: signUpUsecase
-    )
-    let signUpVC = SignUpViewController(reactor: reactor)
+    let reactor = dependencyFactory.makeSignUpReactor(coordinator: self)
+    let signUpVC = dependencyFactory.makeSignUpViewController(reactor: reactor)
     navigationController.pushViewController(signUpVC, animated: true)
   }
 }

@@ -60,14 +60,10 @@ public final class SampleHomeCoordinatorImp: SampleHomeCoordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let homeUseCase = dependency.makeHomeUseCase()
-    let reactor = HomeMainReactor(
-      coordinator: self,
-      homeUseCase: homeUseCase
-    )
-    let homeMainViewController = HomeMainViewController(reactor: reactor)
-    self.baseViewController = homeMainViewController
-    self.pushViewController(viewController: homeMainViewController, animated: false)
+    let reactor = dependencyFactory.makeHomeReactor(coordinator: self)
+    let homeMainVC = dependencyFactory.makeHomeViewController(reactor: reactor)
+    self.baseViewController = homeMainVC
+    self.pushViewController(viewController: homeMainVC, animated: false)
   }
 }
 
@@ -83,24 +79,16 @@ extension SampleHomeCoordinatorImp {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   private func showProfile() {
-    let profileUseCase = dependency.makeProfileUseCase()
-    let reactor = ProfileReactor(
-      coordinator: self,
-      profileUseCase: profileUseCase
-    )
-    let profileVC = ProfileViewController(reactor: reactor)
+    let reactor = dependencyFactory.makeProfileReactor(coordinator: self)
+    let profileVC = dependencyFactory.makeProfileViewController(reactor: reactor)
     navigationController.pushViewController(profileVC, animated: true)
   }
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   private func showSettings() {
-    let settingUseCase = dependency.makeSettingUseCase()
-    let reactor = SettingReactor(
-      coordinator: self,
-      settingUseCase: settingUseCase
-    )
-    let settingVC = SettingViewController(reactor: reactor)
-    navigationController.pushViewController(settingVC, animated: true)
+    let reactor = dependencyFactory.makeSettingsReactor(coordinator: self)
+    let settingsVC = dependencyFactory.makeSettingsViewController(reactor: reactor)
+    navigationController.pushViewController(settingsVC, animated: true)
   }
 }
 

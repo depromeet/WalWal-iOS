@@ -32,6 +32,10 @@ let project = Project.invertedPresenterWithDemoApp(
     
     .DesignSystem,
     .ResourceKit
+  ],
+  demoAppDependencies: [
+    .DependencyFactory.Interface,
+    .DependencyFactory.Implement,
   ]
 )
 

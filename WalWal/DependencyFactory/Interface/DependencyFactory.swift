@@ -7,16 +7,14 @@
 //
 import UIKit
 
-// MARK: - 추가되는 Feature에 따라 import되는 Interface를 작성해주세요.
-
+import BaseCoordinator
 import SampleAppCoordinator
 import SampleAuthCoordinator
 import SampleHomeCoordinator
 
 import SampleData
 import SampleDomain
-import SamplePresenterReactor
-import SamplePresenterView
+import SamplePresenter
 
 public protocol DependencyFactory {
   
@@ -27,10 +25,13 @@ public protocol DependencyFactory {
   func makeSampleSignInUsecase() -> SampleSignInUseCase
   func makeSampleSignUpUsecase() -> SampleSignUpUseCase
   
-  func makeSampleAuthReactor<T: SampleAuthCoordinator>(coordinator: T) -> SampleReactor
-  func makeSampleAuthViewController(reactor: SampleReactor) -> SampleViewController
+  func makeSampleAppCoordinator(navigationController: UINavigationController) -> any SampleAppCoordinator
   
-  func makeSampleAppCoordinator<T: SampleAppCoordinator>(navigationController: UINavigationController) -> T?
-  func makeSampleAuthCoordinator<T: SampleAuthCoordinator, U: SampleAppCoordinator>(navigationController: UINavigationController, parentCoordinator: U) -> T?
-  func makeSampleHomeCoordinator<T: SampleHomeCoordinator, U: SampleAppCoordinator>(navigationController: UINavigationController, parentCoordinator: U) -> T?
+  func makeSampleReactor(coordinator: any SampleAppCoordinator) -> any SampleReactor
+  func makeSampleViewController<T: SampleReactor>(reactor: T) -> any SampleViewController
+  
+  
+  func makeSampleAuthCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleAuthCoordinator
+  
+  func makeSampleHomeCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleHomeCoordinator
 }
