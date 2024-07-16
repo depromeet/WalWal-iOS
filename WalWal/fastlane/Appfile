@@ -1,8 +1,6 @@
-app_identifier("olderStoneBed.io.walwal") # The bundle identifier of your app
-apple_id("cocoa9805@naver.com") # Your Apple Developer Portal username
-
+# develop 전용 Bundle ID
+app_identifier("olderStoneBed.io.walwal.dev") 
+apple_id("cocoa9805@naver.com")
 itc_team_id("126120741") # App Store Connect Team ID
 team_id("6NXQDZ68FD") # Developer Portal Team ID
-
-# For more information about the Appfile, see:
-#     https://docs.fastlane.tools/advanced/#appfile
+# release 전용 Bundle ID -> "olderStoneBed.io.walwal"
