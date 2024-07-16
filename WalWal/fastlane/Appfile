@@ -1,0 +1,6 @@
+# develop 전용 Bundle ID
+app_identifier("olderStoneBed.io.walwal.dev") 
+apple_id("cocoa9805@naver.com")
+itc_team_id("126120741") # App Store Connect Team ID
+team_id("6NXQDZ68FD") # Developer Portal Team ID
+# release 전용 Bundle ID -> "olderStoneBed.io.walwal"
