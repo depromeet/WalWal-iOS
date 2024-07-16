@@ -1,0 +1,2 @@
+Device ID	Device Name	Device Platform
+00008101-001615682E30001E	젼	ios

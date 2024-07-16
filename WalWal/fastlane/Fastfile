@@ -1,17 +1,17 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Description of what the lane does"
+
   lane :custom_lane do
 
   end
 
   lane :certificates do
-      match(type: "appstore",
-            app_identifier:["olderStoneBed.io.walwal.dev"],
-            readonly: true)
-      match(type: "development",
-            app_identifier:["olderStoneBed.io.walwal.dev"],
-            readonly: true)
+      register_devices(
+      	devices_file: "./fastlane/devices.txt"
+      )
+
+      match(type: "development")
+      match(type: "appstore")
   end
 end
