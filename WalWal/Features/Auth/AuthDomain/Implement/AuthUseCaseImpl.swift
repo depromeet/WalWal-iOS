@@ -2,13 +2,13 @@
 //  AuthUseCaseImpl.swift
 //  AuthDomain
 //
-//  Created by Jiyeon on 7/15/24.
+//  Created by Jiyeon on 7/17/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
 import Foundation
-import AuthDomain
 import AuthData
+import AuthDomain
 
 import RxSwift
 
@@ -22,7 +22,7 @@ public final class AuthUseCaseImpl: AuthUseCase {
   
   public func appleLogin(authCode: String) -> Single<AuthToken> {
     return authDataRepository.appleLogin(token: authCode)
-      .map { $0.toModel() }
+      .map { AuthToken(dto: $0) }
       .asObservable()
       .asSingle()
   }

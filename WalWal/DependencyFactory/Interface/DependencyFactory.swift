@@ -21,8 +21,11 @@ import SampleData
 import SampleDomain
 import SamplePresenter
 
+import AuthCoordinator
+
 import AuthData
 import AuthDomain
+import AuthPresenter
 
 public protocol DependencyFactory {
   
@@ -48,8 +51,18 @@ public protocol DependencyFactory {
   func makeSampleAuthCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleAuthCoordinator
   
   func makeSampleHomeCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleHomeCoordinator
-
-  func injectAuthData() -> AuthDataRepository
-  func injectAuthUsecase() -> AuthUseCase
+  
+  // MARK: - Auth
+  
+  func makeAuthData() -> AuthDataRepository
+  func makeAuthUsecase() -> AuthUseCase
+  func makeAuthReactor(coordinator: any AuthCoordinator) -> any AuthReactor
+  func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
+  func makeAuthCoordinator(
+    navigationController: UINavigationController,
+    parentCoordinator: any BaseCoordinator
+  ) -> any AuthCoordinator
+  
+  
 }
 

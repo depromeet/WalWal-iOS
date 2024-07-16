@@ -1,24 +1,26 @@
 //
-//  AuthViewController.swift
+//  AuthViewControllerImp.swift
 //
 //  Auth
 //
 //  Created by Jiyeon
 //
 
-import UIKit
-import AuthenticationServices
 
-import ReactorKit
+import UIKit
+import AuthPresenter
+
 import Then
 import PinLayout
 import FlexLayout
-import AuthPresenterReactor
+import ReactorKit
+import RxSwift
 import RxCocoa
 
-
-final public class AuthViewController: UIViewController {
+public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController {
+  
   public var disposeBag = DisposeBag()
+  public var reactor: R?
   
   // MARK: UI
   
@@ -39,16 +41,23 @@ final public class AuthViewController: UIViewController {
   
   private var appleLoginButton = SocialLoginButton(socialType: .apple)
   
-  // MARK: - View LifeCycle
+  public init(reactor: R) {
+    self.reactor = reactor
+    super.init(nibName: nil, bundle: nil)
+  }
   
-  override public func viewDidLoad() {
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  // MARK: - Lifecycle
+  
+  public override func viewDidLoad() {
     super.viewDidLoad()
     setAttribute()
     setLayout()
-    self.reactor = AuthReactor()
+    if let reactor = reactor { bind(reactor: reactor) }
   }
-  
-  // MARK: - Layout
   
   override public func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
@@ -75,34 +84,32 @@ final public class AuthViewController: UIViewController {
     }
   }
   
-}
-
-extension AuthViewController: View {
+  // MARK: - Binding
   
-  public func bind(reactor: AuthReactor) {
+  public func bind(reactor: R) {
     bindAction(reactor: reactor)
     bindState(reactor: reactor)
     bindEvent()
   }
   
-  private func bindAction(reactor: AuthReactor) {
-    appleLoginButton.rx.tap
-      .flatMap { _ in
-        ASAuthorizationAppleIDProvider().rx.appleLogin(scope: [.email, .fullName], window: self.view.window)
-      }
-      .compactMap { $0 }
-      .map { Reactor.Action.appleLogin(authCode: $0) }
-      .subscribe(reactor.action)
-      .disposed(by: disposeBag)
+  public func bindAction(reactor: R) {
+      appleLoginButton.rx.tap
+        .flatMap { _ in
+          ASAuthorizationAppleIDProvider().rx.appleLogin(scope: [.email, .fullName], window: self.view.window)
+        }
+        .compactMap { $0 }
+        .map { Reactor.Action.appleLogin(authCode: $0) }
+        .subscribe(reactor.action)
+        .disposed(by: disposeBag)
   }
   
-  private func bindState(reactor: AuthReactor) {
+  public func bindState(reactor: R) {
     
   }
   
-  private func bindEvent() {
+  public func bindEvent() {
     
   }
-  
 }
+
 

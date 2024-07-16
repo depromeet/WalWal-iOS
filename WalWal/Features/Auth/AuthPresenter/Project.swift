@@ -10,40 +10,31 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 import DependencyPlugin
 
-let project = Project.invertedReactorKitTargetProject(
+let project = Project.invertedPresenterWithDemoApp(
   name: "AuthPresenter",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
-  viewDependencies: [
+  interfaceDependencies: [
+    .ThirdParty.RxSwift,
     .ThirdParty.ReactorKit,
+  ],
+  implementDependencies: [
+    .ThirdParty.Then,
     .ThirdParty.FlexLayout,
     .ThirdParty.PinLayout,
     .ThirdParty.RxCocoa,
     .ThirdParty.RxSwift,
+    .ThirdParty.ReactorKit,
     
-    .Feature.Auth.Presenter.Reactor,
+    .DependencyFactory.Interface,
     
-      .DesignSystem,
+    .Feature.Auth.Domain.Interface,
+    
+    .DesignSystem,
     .ResourceKit
   ],
-  reactorDependencies: [
-    .ThirdParty.ReactorKit,
-    .ThirdParty.RxSwift,
-    
-      .Feature.Auth.Domain.Interface
-  ],
-  infoPlist: .extendingDefault(
-    with:
-      [
-        "CFBundleDevelopmentRegion": "ko_KR",
-        "CFBundleShortVersionString": "1.0",
-        "CFBundleVersion": "1.0.0",
-        "UILaunchStoryboardName": "LaunchScreen",
-        "NSAppTransportSecurity" : [
-          "NSAllowsArbitraryLoads": true
-        ]
-      ]
-  )
+  demoAppDependencies: [
+    .DependencyFactory.Interface,
+    .DependencyFactory.Implement,
+  ]
 )
-
-

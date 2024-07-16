@@ -19,6 +19,8 @@ import SampleAuthCoordinator
 import SampleAuthCoordinatorImp
 import SampleHomeCoordinator
 import SampleHomeCoordinatorImp
+import AuthCoordinator
+import AuthCoordinatorImp
 
 import SplashData
 import SplashDataImp
@@ -38,6 +40,8 @@ import AuthData
 import AuthDataImp
 import AuthDomain
 import AuthDomainImp
+import AuthPresenter
+import AuthPresenterImp
 
 public class DependencyFactoryImp: DependencyFactory {
   
@@ -118,16 +122,30 @@ public class DependencyFactoryImp: DependencyFactory {
   public func makeSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController {
     return SplashViewControllerImp(reactor: reactor)
   }
-
-  // MARK: - Data Injection
   
-  public func injectAuthData() -> AuthDataRepository {
-    return AuthDataRepositoryImpl(networkService: networkService) 
+  // MARK: - Auth
+  
+  public func makeAuthData() -> AuthDataRepository {
+    return AuthDataRepositoryImpl(networkService: networkService)
   }
   
-  // MARK: - Domain Injection
-  
-  public func injectAuthUsecase() -> AuthUseCase {
-    return AuthUseCaseImpl(authDataRepository: injectAuthData())
+  public func makeAuthUsecase() -> AuthUseCase {
+    return AuthUseCaseImpl(authDataRepository: makeAuthData())
   }
+  
+  public func makeAuthReactor(coordinator: any AuthCoordinator) -> any AuthReactor {
+    return AuthReactorImp(coordinator: coordinator)
+  }
+  
+  public func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController {
+    return AuthViewControllerImp(reactor: reactor)
+  }
+  
+  public func makeAuthCoordinator(
+    navigationController: UINavigationController,
+    parentCoordinator: any BaseCoordinator
+  ) -> any AuthCoordinator {
+    <#code#>
+  }
+  
 }
