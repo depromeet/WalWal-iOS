@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import SampleAuthCoordinator
+import SampleDomain
 
 import ReactorKit
 import RxSwift
@@ -26,7 +28,18 @@ public class SampleReactor: Reactor {
   
   public let initialState: State
   
-  init() {
+  private let coordinator: any SampleAuthCoordinator
+  private let sampleSignInUsecase: SampleSignInUseCase
+  private let sampleSignUpUsecase: SampleSignUpUseCase
+  
+  public init(
+    coordinator: any SampleAuthCoordinator,
+    sampleSignInUsecase: SampleSignInUseCase,
+    sampleSignUpUsecase: SampleSignUpUseCase
+  ) {
+    self.coordinator = coordinator
+    self.sampleSignInUsecase = sampleSignInUsecase
+    self.sampleSignUpUsecase = sampleSignUpUsecase
     self.initialState = State()
   }
   

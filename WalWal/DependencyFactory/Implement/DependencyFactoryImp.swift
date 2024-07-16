@@ -25,19 +25,44 @@ import SampleDataImp
 import SampleDomain
 import SampleDomainImp
 
+import SamplePresenterReactor
+import SamplePresenterView
+
 public class DependencyFactoryImp: DependencyFactory {
+  
+  // MARK: - 추가되는 Coordinator에 따라 Dependency를 생성 및 주입하는 함수의 구현부를 작성해주새요
+  
+  public func makeSampleAppCoordinator<T: SampleAppCoordinator>(
+    navigationController: UINavigationController
+  ) -> T? {
+    return SampleAppCoordinatorImp(navigationController: navigationController, parentCoordinator: nil, dependencyFactory: self) as? T
+  }
+  
+  public func makeSampleAuthCoordinator<T: SampleAuthCoordinator, U: SampleAppCoordinator>(
+    navigationController: UINavigationController,
+    parentCoordinator: U
+  ) -> T? {
+    return SampleAuthCoordinatorImp(navigationController: navigationController, parentCoordinator: parentCoordinator, dependencyFactory: self) as? T
+  }
+  
+  public func makeSampleHomeCoordinator<T: SampleHomeCoordinator, U: SampleAppCoordinator>(
+    navigationController: UINavigationController,
+    parentCoordinator: U
+  ) -> T? {
+    return SampleHomeCoordinatorImp(navigationController: navigationController, parentCoordinator: parentCoordinator, dependencyFactory: self) as? T
+  }
   
   // MARK: - 추가되는 Feature에 따라 Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
   
   private let networkService = NetworkService()
   
-  // MARK: - Data Injection
+  // MARK: - Make Data
   
   public func makeSampleAuthData() -> SampleAuthRepository {
     return SampleAuthRepositoryImpl(networkService: networkService)
   }
   
-  // MARK: - Domain Injection
+  // MARK: - Make Domain
   
   public func makeSampleSignInUsecase() -> SampleSignInUseCase {
     return SignInUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
@@ -47,7 +72,16 @@ public class DependencyFactoryImp: DependencyFactory {
     return SignUpUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
   }
   
-  public func makeSampleAppCoordinator() -> SampleAppCoordinator {
-    
+  // MARK: - Make Presenter
+  
+  public func makeSampleAuthReactor<T: SampleAuthCoordinator>(coordinator: T) -> SampleReactor {
+    let sampleSignInUseCase = makeSampleSignInUsecase()
+    let sampleSignUpUseCase = makeSampleSignUpUsecase()
+    return SampleReactor(coordinator: coordinator, sampleSignInUsecase: sampleSignInUseCase, sampleSignUpUsecase: sampleSignUpUseCase)
   }
+  
+  public func makeSampleAuthViewController(reactor: SampleReactor) -> SampleViewController {
+    return makeSampleAuthViewController(reactor: reactor)
+  }
+  
 }

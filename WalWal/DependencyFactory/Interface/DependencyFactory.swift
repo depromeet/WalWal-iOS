@@ -15,6 +15,8 @@ import SampleHomeCoordinator
 
 import SampleData
 import SampleDomain
+import SamplePresenterReactor
+import SamplePresenterView
 
 public protocol DependencyFactory {
   
@@ -25,7 +27,10 @@ public protocol DependencyFactory {
   func makeSampleSignInUsecase() -> SampleSignInUseCase
   func makeSampleSignUpUsecase() -> SampleSignUpUseCase
   
-  func makeSampleAppCoordinator<T: SampleAppCoordinator>() -> T
-  func makeSampleAuthCoordinator<T: SampleAuthCoordinator>() -> T
-  func makeSampleHomeCoordinator<T: SampleHomeCoordinator>() -> T
+  func makeSampleAuthReactor<T: SampleAuthCoordinator>(coordinator: T) -> SampleReactor
+  func makeSampleAuthViewController(reactor: SampleReactor) -> SampleViewController
+  
+  func makeSampleAppCoordinator<T: SampleAppCoordinator>(navigationController: UINavigationController) -> T?
+  func makeSampleAuthCoordinator<T: SampleAuthCoordinator, U: SampleAppCoordinator>(navigationController: UINavigationController, parentCoordinator: U) -> T?
+  func makeSampleHomeCoordinator<T: SampleHomeCoordinator, U: SampleAppCoordinator>(navigationController: UINavigationController, parentCoordinator: U) -> T?
 }

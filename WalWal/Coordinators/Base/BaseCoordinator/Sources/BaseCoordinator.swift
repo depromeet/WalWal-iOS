@@ -47,11 +47,6 @@ public protocol BaseCoordinator: AnyObject{
   /// 자신Coordinator의 BaseViewController를 정의합니다. (navigationController의 Root가 아닙니다.)
   var baseViewController: UIViewController? { get set }
   
-  init(
-    navigationController: UINavigationController,
-    parentCoordinator: (any BaseCoordinator)?
-  )
-  
   // MARK: - Methods
   
   /// Coordinator의 CoordinatorFlow에 따라서, 어떤 화면전환 로직을 구현할 지 처리합니다.
