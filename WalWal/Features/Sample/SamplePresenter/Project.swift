@@ -10,12 +10,15 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 import DependencyPlugin
 
-let project = Project.invertedReactorKitTargetProject(
+let project = Project.invertedPresenterWithDemoApp(
   name: "SamplePresenter",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
-  viewDependencies: [
-    
+  interfaceDependencies: [
+    .ThirdParty.RxSwift,
+    .ThirdParty.ReactorKit,
+  ],
+  implementDependencies: [
     .ThirdParty.Then,
     .ThirdParty.FlexLayout,
     .ThirdParty.PinLayout,
@@ -23,18 +26,12 @@ let project = Project.invertedReactorKitTargetProject(
     .ThirdParty.RxSwift,
     .ThirdParty.ReactorKit,
     
-    .DesignSystem,
-    .ResourceKit,
-    
-    .Feature.Sample.Presenter.Reactor
-  ],
-  reactorDependencies: [
-    .ThirdParty.ReactorKit,
-    .ThirdParty.RxSwift,
-    
     .DependencyFactory.Interface,
     
-    .Feature.Sample.Domain.Interface
+    .Feature.Sample.Domain.Interface,
+    
+    .DesignSystem,
+    .ResourceKit
   ]
 )
 

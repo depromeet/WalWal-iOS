@@ -24,11 +24,6 @@ enum CoordinatorStr: String {
   case sampleHome = "SampleHome"
 }
 
-enum Reactor: String {
-  case reactor = "Reactor"
-  case view = "View"
-}
-
 enum FeatureStr: String {
   case auth = "Auth"
   case sample = "Sample"
@@ -36,7 +31,7 @@ enum FeatureStr: String {
 
 protocol WalWalDependency {
   static func project(name: FeatureStr, layer: Layer, isInterface: Bool) -> TargetDependency
-  static func project(name: FeatureStr, layer: Layer, type: Reactor) -> TargetDependency
+  static func project(name: CoordinatorStr, isInterface: Bool) -> TargetDependency
 }
 
 extension WalWalDependency {
@@ -46,15 +41,6 @@ extension WalWalDependency {
     let layer = layer.rawValue
     let postfix: String = isInterface ? "" : "Imp"
     let folderFullName = "\(name)\(layer)\(postfix)"
-    return .project(target: folderFullName,
-                    path: .relativeToRoot("Features/\(name)/\(name)\(layer)"))
-  }
-  
-  static func project(name: FeatureStr, layer: Layer, type: Reactor) -> TargetDependency {
-    let name = name.rawValue
-    let layer = layer.rawValue
-    let type = type.rawValue
-    let folderFullName = "\(name)\(layer)\(type)"
     return .project(target: folderFullName,
                     path: .relativeToRoot("Features/\(name)/\(name)\(layer)"))
   }
@@ -105,13 +91,13 @@ extension TargetDependency {
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
 public extension TargetDependency.Feature.Auth.Presenter {
-  static let View = TargetDependency.Feature.Auth.project(name: .auth,
-                                                          layer: .presenter,
-                                                          type: .view)
+  static let Interface = TargetDependency.Feature.Auth.project(name: .auth,
+                                                               layer: .presenter,
+                                                               isInterface: true)
   
-  static let Reactor = TargetDependency.Feature.Auth.project(name: .auth,
-                                                             layer: .presenter,
-                                                             type: .reactor)
+  static let Implement = TargetDependency.Feature.Auth.project(name: .auth,
+                                                              layer: .presenter,
+                                                              isInterface: false)
 }
 
 public extension TargetDependency.Feature.Auth.Domain {
@@ -135,13 +121,13 @@ public extension TargetDependency.Feature.Auth.Data {
 }
 
 public extension TargetDependency.Feature.Sample.Presenter {
-  static let View = TargetDependency.Feature.Sample.project(name: .sample,
-                                                            layer: .presenter,
-                                                            type: .view)
-  
-  static let Reactor = TargetDependency.Feature.Sample.project(name: .sample,
+  static let Interface = TargetDependency.Feature.Auth.project(name: .sample,
                                                                layer: .presenter,
-                                                               type: .reactor)
+                                                               isInterface: true)
+  
+  static let Implement = TargetDependency.Feature.Auth.project(name: .sample,
+                                                              layer: .presenter,
+                                                              isInterface: false)
 }
 
 public extension TargetDependency.Feature.Sample.Domain {
