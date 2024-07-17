@@ -17,6 +17,7 @@ let project = Project.invertedPresenterWithDemoApp(
   interfaceDependencies: [
     .ThirdParty.RxSwift,
     .ThirdParty.ReactorKit,
+    .Coordinator.Auth.Interface,
   ],
   implementDependencies: [
     .ThirdParty.Then,
@@ -27,7 +28,7 @@ let project = Project.invertedPresenterWithDemoApp(
     .ThirdParty.ReactorKit,
     
     .DependencyFactory.Interface,
-    
+    .Coordinator.Auth.Interface,
     .Feature.Auth.Domain.Interface,
     
     .DesignSystem,
@@ -36,5 +37,17 @@ let project = Project.invertedPresenterWithDemoApp(
   demoAppDependencies: [
     .DependencyFactory.Interface,
     .DependencyFactory.Implement,
-  ]
+  ],
+  infoPlist: .extendingDefault(
+    with:
+      [
+        "CFBundleDevelopmentRegion": "ko_KR",
+        "CFBundleShortVersionString": "1.0",
+        "CFBundleVersion": "1.0.0",
+        "UILaunchStoryboardName": "LaunchScreen",
+        "NSAppTransportSecurity" : [
+          "NSAllowsArbitraryLoads": true
+        ]
+      ]
+  )
 )

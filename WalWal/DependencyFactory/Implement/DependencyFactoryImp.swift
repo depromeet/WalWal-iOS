@@ -54,29 +54,49 @@ public class DependencyFactoryImp: DependencyFactory {
   public func makeSampleAppCoordinator(
     navigationController: UINavigationController
   ) -> any SampleAppCoordinator {
-    return SampleAppCoordinatorImp(navigationController: navigationController, parentCoordinator: nil, dependencyFactory: self)
+    return SampleAppCoordinatorImp(
+      navigationController: navigationController,
+      parentCoordinator: nil,
+      dependencyFactory: self
+    )
   }
   
-  public func makeSampleAuthCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleAuthCoordinator {
+  public func makeSampleAuthCoordinator(
+    navigationController: UINavigationController,
+    parentCoordinator: any BaseCoordinator
+  ) -> any SampleAuthCoordinator {
     return SampleAuthCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       dependencyFactory: self
     )
   }
-  
-  public func makeSampleHomeCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleHomeCoordinator {
-      return SampleHomeCoordinatorImp(
-        navigationController: navigationController,
-        parentCoordinator: parentCoordinator,
-        dependencyFactory: self
-      )
-    }
+
+  public func makeSampleHomeCoordinator(
+    navigationController: UINavigationController, 
+    parentCoordinator: any BaseCoordinator
+  ) -> any SampleHomeCoordinator {
+    return SampleHomeCoordinatorImp(
+      navigationController: navigationController,
+      parentCoordinator: parentCoordinator,
+      dependencyFactory: self)
+  }
   
   public func makeAppCoordinator(navigationController: UINavigationController) -> any AppCoordinator {
     return AppCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: nil,
+      dependencyFactory: self
+    )
+  }
+  
+  public func makeAuthCoordinator(
+    navigationController: UINavigationController,
+    parentCoordinator: any BaseCoordinator
+  ) -> any AuthCoordinator {
+    return AuthCoordinatorImp(
+      navigationController: navigationController,
+      parentCoordinator: parentCoordinator,
       dependencyFactory: self
     )
   }
@@ -139,13 +159,6 @@ public class DependencyFactoryImp: DependencyFactory {
   
   public func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController {
     return AuthViewControllerImp(reactor: reactor)
-  }
-  
-  public func makeAuthCoordinator(
-    navigationController: UINavigationController,
-    parentCoordinator: any BaseCoordinator
-  ) -> any AuthCoordinator {
-    <#code#>
   }
   
 }

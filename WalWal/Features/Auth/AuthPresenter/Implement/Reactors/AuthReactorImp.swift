@@ -13,25 +13,12 @@ import AuthCoordinator
 import ReactorKit
 import RxSwift
 
-public enum AuthReactorActionImp: AuthReactorAction {
-  case appleLogin(authCode: String)
-}
 
-public enum AuthReactorMutationImp: AuthReactorMutation {
-  /// 구체적인 뮤테이션 정의
-}
-
-public struct AuthReactorStateImp: AuthReactorState {
-  /// 구체적인 상태 정의
-  public init() {
-    
-  }
-}
 
 public final class AuthReactorImp: AuthReactor {
-  public typealias Action = AuthReactorActionImp
-  public typealias Mutation = AuthReactorMutationImp
-  public typealias State = AuthReactorStateImp
+  public typealias Action = AuthReactorAction
+  public typealias Mutation = AuthReactorMutation
+  public typealias State = AuthReactorState
   
   public let initialState: State
   public let coordinator: any AuthCoordinator

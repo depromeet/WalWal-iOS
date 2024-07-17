@@ -17,6 +17,7 @@ let project = Project.invertedDualTargetProject(
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
     .ThirdParty.RxSwift,
+    .Feature.Sample.Data.Interface
   ],
   implementDependencies: [
     .ThirdParty.RxSwift,

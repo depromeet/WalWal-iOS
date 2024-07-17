@@ -16,11 +16,12 @@ import FlexLayout
 import ReactorKit
 import RxSwift
 import RxCocoa
+import AuthenticationServices
 
 public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController {
   
   public var disposeBag = DisposeBag()
-  public var reactor: R?
+  public let authReactor: R
   
   // MARK: UI
   
@@ -42,7 +43,7 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   private var appleLoginButton = SocialLoginButton(socialType: .apple)
   
   public init(reactor: R) {
-    self.reactor = reactor
+    self.authReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -56,7 +57,7 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     super.viewDidLoad()
     setAttribute()
     setLayout()
-    if let reactor = reactor { bind(reactor: reactor) }
+    
   }
   
   override public func viewDidLayoutSubviews() {
@@ -65,12 +66,12 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     rootContainer.flex.layout()
   }
   
-  private func setAttribute() {
+  public func setAttribute() {
     view.backgroundColor = .white
     view.addSubview(rootContainer)
   }
   
-  private func setLayout() {
+  public func setLayout() {
     rootContainer.flex.justifyContent(.spaceBetween).define { flex in
       flex.addItem().alignItems(.center).paddingTop(35%).define { flex in
         flex.addItem(imageView).size(220)
@@ -111,5 +112,4 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     
   }
 }
-
 
