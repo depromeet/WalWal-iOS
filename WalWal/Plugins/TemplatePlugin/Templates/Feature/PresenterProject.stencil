@@ -17,6 +17,8 @@ let project = Project.invertedPresenterWithDemoApp(
   interfaceDependencies: [
     .ThirdParty.RxSwift,
     .ThirdParty.ReactorKit,
+    
+    .Coordinator.{{name}}.Interface
   ],
   implementDependencies: [
     .ThirdParty.Then,
@@ -26,8 +28,7 @@ let project = Project.invertedPresenterWithDemoApp(
     .ThirdParty.RxSwift,
     .ThirdParty.ReactorKit,
     
-    .DependencyFactory.Interface,
-    
+    .Coordinator.{{name}}.Interface,
     .Feature.{{name}}.Domain.Interface,
     
     .DesignSystem,
