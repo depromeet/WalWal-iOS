@@ -13,25 +13,10 @@ import {{name}}Coordinator
 import ReactorKit
 import RxSwift
 
-public enum {{name}}ReactorActionImp: {{name}}ReactorAction {
-    /// 구체적인 액션 정의
-}
-
-public enum {{name}}ReactorMutationImp: {{name}}ReactorMutation {
-    /// 구체적인 뮤테이션 정의
-}
-
-public struct {{name}}ReactorStateImp: {{name}}ReactorState {
-    /// 구체적인 상태 정의
-    public init() {
-      
-    }
-}
-
 public final class {{name}}ReactorImp: {{name}}Reactor {
-    public typealias Action = {{name}}ReactorActionImp
-    public typealias Mutation = {{name}}ReactorMutationImp
-    public typealias State = {{name}}ReactorStateImp
+    public typealias Action = {{name}}ReactorAction
+    public typealias Mutation = {{name}}ReactorMutation
+    public typealias State = {{name}}ReactorState
 
     public let initialState: State
     public let coordinator: any {{name}}Coordinator

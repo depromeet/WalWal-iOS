@@ -18,7 +18,6 @@ public protocol {{name}}ViewController: UIViewController, View {
   
   func setLayout()
   func setAttribute()
-  func bind(reactor: {{name}}ReactorType)
   func bindAction(reactor: {{name}}ReactorType)
   func bindState(reactor: {{name}}ReactorType)
   func bindEvent()
