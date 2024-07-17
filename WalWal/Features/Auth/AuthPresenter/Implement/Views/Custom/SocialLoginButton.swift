@@ -34,9 +34,10 @@ enum SocialLoginType {
 final class SocialLoginButton: UIButton {
   
   private var socialType: SocialLoginType = .apple
-  private let containerView = UIView()
+  private let containerView = UIView().then {
+    $0.isUserInteractionEnabled = false
+  }
   private let customImageView = UIImageView()
-  
   private let customLabel = UILabel().then {
     $0.font = .systemFont(ofSize: 16)
     $0.textColor = .white

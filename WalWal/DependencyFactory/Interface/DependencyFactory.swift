@@ -59,8 +59,7 @@ public protocol DependencyFactory {
   func makeAuthReactor(coordinator: any AuthCoordinator) -> any AuthReactor
   func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
   func makeAuthCoordinator(
-    navigationController: UINavigationController,
-    parentCoordinator: any BaseCoordinator
+    navigationController: UINavigationController
   ) -> any AuthCoordinator
   
   

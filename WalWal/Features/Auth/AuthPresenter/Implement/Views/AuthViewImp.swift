@@ -9,6 +9,7 @@
 
 import UIKit
 import AuthPresenter
+import AuthenticationServices
 
 import Then
 import PinLayout
@@ -16,7 +17,6 @@ import FlexLayout
 import ReactorKit
 import RxSwift
 import RxCocoa
-import AuthenticationServices
 
 public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController {
   
@@ -57,7 +57,7 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     super.viewDidLoad()
     setAttribute()
     setLayout()
-    
+    self.reactor = authReactor
   }
   
   override public func viewDidLayoutSubviews() {
@@ -95,6 +95,7 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   
   public func bindAction(reactor: R) {
       appleLoginButton.rx.tap
+        .debug()
         .flatMap { _ in
           ASAuthorizationAppleIDProvider().rx.appleLogin(scope: [.email, .fullName], window: self.view.window)
         }

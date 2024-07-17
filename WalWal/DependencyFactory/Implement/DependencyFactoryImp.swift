@@ -91,12 +91,11 @@ public class DependencyFactoryImp: DependencyFactory {
   }
   
   public func makeAuthCoordinator(
-    navigationController: UINavigationController,
-    parentCoordinator: any BaseCoordinator
+    navigationController: UINavigationController
   ) -> any AuthCoordinator {
     return AuthCoordinatorImp(
       navigationController: navigationController,
-      parentCoordinator: parentCoordinator,
+      parentCoordinator: nil,
       dependencyFactory: self
     )
   }
@@ -154,7 +153,7 @@ public class DependencyFactoryImp: DependencyFactory {
   }
   
   public func makeAuthReactor(coordinator: any AuthCoordinator) -> any AuthReactor {
-    return AuthReactorImp(coordinator: coordinator)
+    return AuthReactorImp(coordinator: coordinator, authUseCase: makeAuthUsecase())
   }
   
   public func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController {
