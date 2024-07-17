@@ -28,6 +28,6 @@ public final class SignUpUseCaseImpl: SampleSignUpUseCase {
   
   public func execute(nickname: String, profile: Data) -> Single<SampleToken> {
     sampleAuthRepository.signUp(nickname: nickname, profile: profile)
-      .map { SampleToken(dto: $0) }
+      .map { SampleTokenImp(dto: $0) }
   }
 }

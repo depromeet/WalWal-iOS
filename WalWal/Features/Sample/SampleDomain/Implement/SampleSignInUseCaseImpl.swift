@@ -28,6 +28,6 @@ public final class SignInUseCaseImpl: SampleSignInUseCase {
   
   public func execute(id: String, password: String) -> Single<SampleToken> {
     sampleAuthRepository.signIn(id: id, password: password)
-      .map { SampleToken(dto: $0) }
+      .map { SampleTokenImp(dto: $0) }
   }
 }

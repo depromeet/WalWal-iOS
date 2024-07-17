@@ -15,8 +15,8 @@ import Alamofire
 enum AuthEndpoint<ResponseType>: APIEndpoint where ResponseType: Decodable {
   typealias Response = ResponseType
   
-  case signUp(body: SignUpBody)
-  case signIn(body: SignInBody)
+  case signUp(body: SampleSignUpBody)
+  case signIn(body: SampleSignInBody)
 }
 
 extension AuthEndpoint {
