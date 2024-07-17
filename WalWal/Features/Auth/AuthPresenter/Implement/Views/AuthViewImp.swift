@@ -18,7 +18,8 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController {
+public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, 
+                                                            AuthViewController {
   
   public var disposeBag = DisposeBag()
   public let authReactor: R
@@ -42,6 +43,8 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   
   private var appleLoginButton = SocialLoginButton(socialType: .apple)
   
+  // MARK: - Initialize
+  
   public init(reactor: R) {
     self.authReactor = reactor
     super.init(nibName: nil, bundle: nil)
@@ -59,6 +62,8 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     setLayout()
     self.reactor = authReactor
   }
+  
+  // MARK: - Layout
   
   override public func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
@@ -84,9 +89,11 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
       }
     }
   }
-  
-  // MARK: - Binding
-  
+}
+
+// MARK: - Binding
+
+extension AuthViewControllerImp: View {
   public func bind(reactor: R) {
     bindAction(reactor: reactor)
     bindState(reactor: reactor)
@@ -94,15 +101,14 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   }
   
   public func bindAction(reactor: R) {
-      appleLoginButton.rx.tap
-        .debug()
-        .flatMap { _ in
-          ASAuthorizationAppleIDProvider().rx.appleLogin(scope: [.email, .fullName], window: self.view.window)
-        }
-        .compactMap { $0 }
-        .map { Reactor.Action.appleLogin(authCode: $0) }
-        .subscribe(reactor.action)
-        .disposed(by: disposeBag)
+    appleLoginButton.rx.tap
+      .flatMap { _ in
+        ASAuthorizationAppleIDProvider().rx.appleLogin(scope: [.email, .fullName], window: self.view.window)
+      }
+      .compactMap { $0 }
+      .map { Reactor.Action.appleLogin(authCode: $0) }
+      .subscribe(reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {

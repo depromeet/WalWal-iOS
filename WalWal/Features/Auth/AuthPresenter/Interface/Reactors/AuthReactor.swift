@@ -24,7 +24,8 @@ public struct AuthReactorState {
   /// 구체적인 상태 정의
   public init() { }
 }
-public protocol AuthReactor: 
+
+public protocol AuthReactor:
   Reactor where Action == AuthReactorAction,
                   Mutation == AuthReactorMutation,
                   State == AuthReactorState {
