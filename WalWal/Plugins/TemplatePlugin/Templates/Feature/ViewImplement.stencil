@@ -20,12 +20,12 @@ import RxCocoa
 public final class {{name}}ViewControllerImp<R: {{name}}Reactor>: UIViewController, {{name}}ViewController {
   
   public var disposeBag = DisposeBag()
-  public var {{name}}reactor: R?
+  public var __reactor: R
   
   public init(
-      {{name}}reactor: R
+      reactor: R
   ) {
-    self.reactor = reactor
+    self.__reactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -39,7 +39,7 @@ public final class {{name}}ViewControllerImp<R: {{name}}Reactor>: UIViewControll
     super.viewDidLoad()
     setAttribute()
     setLayout()
-    self.reactor = {{name}}reactor
+    self.reactor = __reactor
   }
   
   
