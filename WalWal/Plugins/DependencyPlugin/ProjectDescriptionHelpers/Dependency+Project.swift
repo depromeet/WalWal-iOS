@@ -30,12 +30,14 @@ enum CoordinatorStr: String {
   case sampleApp = "SampleApp"
   case sampleHome = "SampleHome"
   case auth = "Auth"
+  case mission = "Mission"
 }
 
 enum FeatureStr: String {
   case splash = "Splash"
   case auth = "Auth"
   case sample = "Sample"
+  case mission = "Mission"
 }
 
 protocol WalWalDependency {
@@ -96,6 +98,7 @@ extension TargetDependency {
     public struct SampleApp: WalWalDependency { }
     public struct SampleHome: WalWalDependency { }
     public struct Auth: WalWalDependency { }
+    public struct Mission: WalWalDependency { }
   }
   
   public struct Feature {
@@ -115,6 +118,12 @@ extension TargetDependency {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
       public struct Presenter: WalWalDependency {}
+    }
+    
+    public struct Mission: WalWalDependency {
+      public struct Data {}
+      public struct Domain {}
+      public struct Presenter {}
     }
   }
 }
@@ -183,6 +192,37 @@ public extension TargetDependency.Feature.Sample.Data {
   static let Implement = Self.project(name: .auth, layer: .data, isInterface: false)
 }
 
+public extension TargetDependency.Feature.Mission.Presenter {
+  static let Interface = TargetDependency.Feature.Auth.project(name: .sample,
+                                                               layer: .presenter,
+                                                               isInterface: true)
+  
+  static let Implement = TargetDependency.Feature.Auth.project(name: .sample,
+                                                              layer: .presenter,
+                                                              isInterface: false)
+}
+
+public extension TargetDependency.Feature.Mission.Domain {
+  static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
+                                                                 layer: .domain,
+                                                                 isInterface: true)
+  
+  static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
+                                                                 layer: .domain,
+                                                                 isInterface: false)
+}
+
+public extension TargetDependency.Feature.Mission.Data {
+  static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
+                                                                 layer: .data,
+                                                                 isInterface: true)
+  
+  static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
+                                                                 layer: .data,
+                                                                 isInterface: false)
+}
+
+
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
 public extension TargetDependency.Coordinator.SampleApp {
   static let Interface = Self.project(name: .sampleApp, isInterface: true)
@@ -211,6 +251,13 @@ public extension TargetDependency.Coordinator.Auth {
 
 public extension TargetDependency.Coordinator.Base {
   static let Interface = Self.project(name: .base, isInterface: true)
+}
+
+public extension TargetDependency.Coordinator.Mission {
+  static let Interface = TargetDependency.Coordinator.SampleHome.project(name: .mission,
+                                                                        isInterface: true)
+  static let Implement = TargetDependency.Coordinator.SampleHome.project(name: .mission,
+                                                                        isInterface: false)
 }
 
 public extension TargetDependency.ThirdParty {
