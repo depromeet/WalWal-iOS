@@ -26,6 +26,7 @@ enum CoordinatorStr: String {
 }
 
 enum FeatureStr: String {
+  case splash = "Splash"
   case auth = "Auth"
   case sample = "Sample"
 }
@@ -77,6 +78,12 @@ extension TargetDependency {
   public struct ThirdParty { }
   
   public struct Feature {
+    public struct Splash: WalWalDependency {
+      public struct Data {}
+      public struct Domain {}
+      public struct Presenter {}
+    }
+    
     public struct Auth: WalWalDependency {
       public struct Data {}
       public struct Domain {}
@@ -92,6 +99,37 @@ extension TargetDependency {
 }
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
+
+public extension TargetDependency.Feature.Splash.Presenter {
+  static let Interface = TargetDependency.Feature.Splash.project(name: .splash,
+                                                               layer: .presenter,
+                                                               isInterface: true)
+  
+  static let Implement = TargetDependency.Feature.Splash.project(name: .splash,
+                                                              layer: .presenter,
+                                                              isInterface: false)
+}
+
+public extension TargetDependency.Feature.Splash.Domain {
+  static let Interface = TargetDependency.Feature.Splash.project(name: .splash,
+                                                               layer: .domain,
+                                                               isInterface: true)
+  
+  static let Implement = TargetDependency.Feature.Splash.project(name: .splash,
+                                                               layer: .domain,
+                                                               isInterface: false)
+}
+
+public extension TargetDependency.Feature.Splash.Data {
+  static let Interface = TargetDependency.Feature.Splash.project(name: .splash,
+                                                                 layer: .data,
+                                                                 isInterface: true)
+  
+  static let Implement = TargetDependency.Feature.Splash.project(name: .splash,
+                                                                 layer: .data,
+                                                                 isInterface: false)
+}
+
 public extension TargetDependency.Feature.Auth.Presenter {
   static let Interface = TargetDependency.Feature.Auth.project(name: .auth,
                                                                layer: .presenter,
@@ -113,21 +151,21 @@ public extension TargetDependency.Feature.Auth.Domain {
 }
 
 public extension TargetDependency.Feature.Auth.Data {
-  static let Interface = TargetDependency.Feature.Sample.project(name: .auth,
+  static let Interface = TargetDependency.Feature.Auth.project(name: .auth,
                                                                  layer: .data,
                                                                  isInterface: true)
   
-  static let Implement = TargetDependency.Feature.Sample.project(name: .auth,
+  static let Implement = TargetDependency.Feature.Auth.project(name: .auth,
                                                                  layer: .data,
                                                                  isInterface: false)
 }
 
 public extension TargetDependency.Feature.Sample.Presenter {
-  static let Interface = TargetDependency.Feature.Auth.project(name: .sample,
+  static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
                                                                layer: .presenter,
                                                                isInterface: true)
   
-  static let Implement = TargetDependency.Feature.Auth.project(name: .sample,
+  static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
                                                               layer: .presenter,
                                                               isInterface: false)
 }
