@@ -7,7 +7,7 @@
 //
 
 import UIKit
-impoer DependencyFactory
+import DependencyFactory
 import BaseCoordinator
 import AppCoordinator
 
@@ -31,14 +31,14 @@ public final class AppCoordinatorImp: AppCoordinator {
   public let destination = PublishSubject<Flow>()
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
-  public weak var parentCoordinator: (any CoordinatorType)?
+  public weak var parentCoordinator: (any BaseCoordinator)?
   public var dependencyFactory: DependencyFactory
-  public var childCoordinator: (any CoordinatorType)?
+  public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
   public required init(
     navigationController: UINavigationController,
-    parentCoordinator: (any CoordinatorType)?,
+    parentCoordinator: (any BaseCoordinator)?,
     dependencyFactory: DependencyFactory
   ) {
     self.navigationController = navigationController
