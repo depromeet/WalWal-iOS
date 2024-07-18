@@ -13,24 +13,10 @@ import AppCoordinator
 import ReactorKit
 import RxSwift
 
-public enum SplashReactorActionImp: SplashReactorAction {
-
-}
-
-public enum SplashReactorMutationImp: SplashReactorMutation {
-
-}
-
-public struct SplashReactorStateImp: SplashReactorState {
-  public init() {
-  
-  }
-}
-
 public final class SplashReactorImp: SplashReactor {
-    public typealias Action = SplashReactorActionImp
-    public typealias Mutation = SplashReactorMutationImp
-    public typealias State = SplashReactorStateImp
+    public typealias Action = SplashReactorAction
+    public typealias Mutation = SplashReactorMutation
+    public typealias State = SplashReactorState
 
     public let initialState: State
     public let coordinator: any AppCoordinator

@@ -12,11 +12,21 @@ import AppCoordinator
 import ReactorKit
 import RxSwift
 
-public protocol SplashReactorAction {}
-public protocol SplashReactorMutation {}
-public protocol SplashReactorState {}
+public enum SplashReactorAction {
+  
+}
 
-public protocol SplashReactor: Reactor where Action: SplashReactorAction, Mutation: SplashReactorMutation, State: SplashReactorState {
+public enum SplashReactorMutation {
+
+}
+
+public struct SplashReactorState {
+  public init() {
+  
+  }
+}
+
+public protocol SplashReactor: Reactor where Action == SplashReactorAction, Mutation == SplashReactorMutation, State == SplashReactorState {
   
   var coordinator: any AppCoordinator { get }
   
