@@ -10,11 +10,12 @@ import UIKit
 import BaseCoordinator
 
 public enum AppCoordinatorAction: ParentAction {
-  
+  case never
 }
 
 public enum AppCoordinatorFlow: CoordinatorFlow {
-  
+  case startAuth
+  case startHome
 }
 
 public protocol AppCoordinator: BaseCoordinator { }
