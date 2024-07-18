@@ -1,17 +1,89 @@
 default_platform(:ios)
 
 platform :ios do
+  desc "개발용 앱을 TestFlight에 업로드"
+  lane :dev do |options|
+    build_and_upload_app(
+      app_identifier: "olderStoneBed.io.walwal.dev",
+      scheme: "WalWal",
+      configuration: "Debug",
+      version: options[:version],
+      build: options[:build]
+    )
+  end
 
-  lane :custom_lane do
-
+  desc "배포용 앱을 TestFlight에 업로드"
+  lane :release do |options|
+    build_and_upload_app(
+      app_identifier: "olderStoneBed.io.walwal",
+      scheme: "WalWal",
+      configuration: "Release",
+      version: options[:version],
+      build: options[:build]
+    )
   end
 
   lane :certificates do
-      register_devices(
-      	devices_file: "./fastlane/devices.txt"
-      )
-
-      match(type: "development")
-      match(type: "appstore")
+    register_devices(devices_file: "./fastlane/devices.txt")
+    match(type: "development")
+    match(type: "appstore")
   end
+end
+
+# 빌드를 간편하게 하기 위한 커스텀 함수들...
+
+def build_and_upload_app(app_identifier, scheme, configuration, version, build)
+  update_app_identifier(
+    xcodeproj: "./WalWal.xcodeproj",
+    plist_path: "Info.plist",
+    app_identifier: app_identifier
+  )
+  
+  set_build_info(version, build)
+  
+  match(type: "appstore", app_identifier: app_identifier)
+  
+  build_app(
+    scheme: scheme,
+    configuration: configuration,
+    xcconfig: "./WalWal/Config/#{configuration}.xcconfig",
+    output_directory: "./output/archives/#{configuration.downcase}",
+    export_method: "appstore"
+  )
+  
+  upload_to_testflight(skip_waiting_for_build_processing: true)
+  
+  download_dsyms(
+    app_identifier: app_identifier,
+    output_directory: "./output/archives/#{configuration.downcase}"
+  )
+  
+  create_tag(version, build)
+end
+
+def set_build_info(new_version_number, new_build_number)
+  set_xcconfig_value("MARKETING_VERSION", new_version_number)
+  increment_build_number(
+    xcodeproj: './WalWal.xcodeproj',
+    build_number: new_build_number
+  )
+end
+
+def set_xcconfig_value(targetKey, targetValue, xcconfigs_file_path = './WalWal/Config/WalWal.xcconfig')
+  configs = {}
+  File.open(xcconfigs_file_path, "r").each_line do |line|
+    value = line.split("=")
+    configs[value[0]] = value[1].strip
+  end
+  configs[targetKey] = targetValue if targetKey == "MARKETING_VERSION"
+  File.open(xcconfigs_file_path, 'w') do |out_file|
+    configs.each do |key, value|
+      out_file.puts "#{key}=#{value}"
+    end
+  end
+end
+
+def create_tag(new_version_number, new_build_number)
+  tag_name = "#{new_version_number}-#{new_build_number}"
+  system( `git tag #{tag_name} && git push -u origin "#{tag_name}"` )
 end
