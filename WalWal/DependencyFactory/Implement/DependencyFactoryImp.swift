@@ -14,12 +14,21 @@ import WalWalNetwork
 import WalWalNetworkImp
 
 import BaseCoordinator
+import AppCoordinator
+import AppCoordinatorImp
 import SampleAppCoordinator
 import SampleAppCoordinatorImp
 import SampleAuthCoordinator
 import SampleAuthCoordinatorImp
 import SampleHomeCoordinator
 import SampleHomeCoordinatorImp
+
+import SplashData
+import SplashDataImp
+import SplashDomain
+import SplashDomainImp
+import SplashPresenter
+import SplashPresenterImp
 
 import SampleData
 import SampleDataImp
@@ -43,21 +52,38 @@ public class DependencyFactoryImp: DependencyFactory {
   }
   
   public func makeSampleAuthCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleAuthCoordinator {
-    return SampleAuthCoordinatorImp(navigationController: navigationController, parentCoordinator: parentCoordinator, dependencyFactory: self)
+    return SampleAuthCoordinatorImp(
+      navigationController: navigationController,
+      parentCoordinator: parentCoordinator,
+      dependencyFactory: self
+    )
   }
   
-  public func makeSampleHomeCoordinator(
-    navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleHomeCoordinator {
-    return SampleHomeCoordinatorImp(navigationController: navigationController, parentCoordinator: parentCoordinator, dependencyFactory: self)
+  public func makeSampleHomeCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleHomeCoordinator {
+      return SampleHomeCoordinatorImp(
+        navigationController: navigationController,
+        parentCoordinator: parentCoordinator,
+        dependencyFactory: self
+      )
+    }
+  
+  public func makeAppCoordinator(navigationController: UINavigationController) -> any AppCoordinator {
+    return AppCoordinatorImp(
+      navigationController: navigationController,
+      parentCoordinator: nil,
+      dependencyFactory: self
+    )
   }
   
-  // MARK: - 추가되는 Feature에 따라 Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
+  // MARK: - 추가되는 Feature에 따라 Data Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
   
   private let networkService = NetworkService()
   
   public func makeSampleAuthData() -> SampleAuthRepository {
     return SampleAuthRepositoryImpl(networkService: networkService)
   }
+  
+  // MARK: - 추가되는 Feature에 따라 Domain Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
   
   public func makeSampleSignInUsecase() -> SampleSignInUseCase {
     return SignInUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
@@ -66,6 +92,8 @@ public class DependencyFactoryImp: DependencyFactory {
   public func makeSampleSignUpUsecase() -> SampleSignUpUseCase {
     return SignUpUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
   }
+  
+  // MARK: - 추가되는 Feature에 따라 Presenter Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
   
   public func makeSampleReactor(coordinator: any SampleAppCoordinator) -> any SampleReactor {
     let sampleSignInUseCase = makeSampleSignInUsecase()
@@ -77,7 +105,15 @@ public class DependencyFactoryImp: DependencyFactory {
     )
   }
   
+  public func makeSplashReactor(coordinator: any AppCoordinator) -> any SplashReactor {
+    return SplashReactorImp(coordinator: coordinator)
+  }
+  
   public func makeSampleViewController<T: SampleReactor>(reactor: T) -> any SampleViewController {
     return SampleViewControllerImp(reactor: reactor)
+  }
+  
+  public func makeSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController {
+    return SplashViewControllerImp(reactor: reactor)
   }
 }

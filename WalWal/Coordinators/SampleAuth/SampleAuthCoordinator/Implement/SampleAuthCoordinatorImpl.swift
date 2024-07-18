@@ -60,10 +60,13 @@ public final class SampleAuthCoordinatorImp: SampleAuthCoordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let reactor = dependencyFactory.makeAuthReactor(coordinator: self)
-    let AuthMainVC = dependencyFactory.makeAuthViewController(reactor: reactor)
-    self.baseViewController = AuthMainVC
-    self.pushViewController(viewController: AuthMainVC, animated: false)
+    
+    // TODO: - SampleAuthViewController 시작
+    
+    /// let reactor = dependencyFactory.makeAuthReactor(coordinator: self)
+    /// let AuthMainVC = dependencyFactory.makeAuthViewController(reactor: reactor)
+    /// self.baseViewController = AuthMainVC
+    /// self.pushViewController(viewController: AuthMainVC, animated: false)
   }
 }
 
@@ -79,16 +82,22 @@ extension SampleAuthCoordinatorImp {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   fileprivate func showSignIn() {
-    let reactor = dependencyFactory.makeSignInReactor(coordinator: self)
-    let signInVC = dependencyFactory.makeSignInViewController(reactor: reactor)
-    navigationController.pushViewController(signInVC, animated: true)
+    
+    // TODO: - SignInViewController 시작
+    
+    /// let reactor = dependencyFactory.makeSignInReactor(coordinator: self)
+    /// let signInVC = dependencyFactory.makeSignInViewController(reactor: reactor)
+    /// navigationController.pushViewController(signInVC, animated: true)
   }
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   fileprivate func showSignUp() {
-    let reactor = dependencyFactory.makeSignUpReactor(coordinator: self)
-    let signUpVC = dependencyFactory.makeSignUpViewController(reactor: reactor)
-    navigationController.pushViewController(signUpVC, animated: true)
+    
+    // TODO: - SignUpViewController 시작
+    
+    /// let reactor = dependencyFactory.makeSignUpReactor(coordinator: self)
+    /// let signUpVC = dependencyFactory.makeSignUpViewController(reactor: reactor)
+    /// navigationController.pushViewController(signUpVC, animated: true)
   }
 }
 

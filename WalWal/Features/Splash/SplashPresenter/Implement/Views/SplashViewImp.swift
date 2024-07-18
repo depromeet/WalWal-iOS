@@ -1,14 +1,14 @@
 //
-//  {{ name }}ViewControllerImp.swift
+//  SplashViewControllerImp.swift
 //
-//  {{name}}
+//  Splash
 //
-//  Created by {{author}}
+//  Created by 조용인
 //
 
 
 import UIKit
-import {{name}}Presenter
+import SplashPresenter
 
 import Then
 import PinLayout
@@ -17,15 +17,15 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-public final class {{name}}ViewControllerImp<R: {{name}}Reactor>: UIViewController, {{name}}ViewController {
+public final class SplashViewControllerImp<R: SplashReactor>: UIViewController, SplashViewController {
   
   public var disposeBag = DisposeBag()
-  public var __reactor: R
+  public var splashReactor: R
   
   public init(
       reactor: R
   ) {
-    self.__reactor = reactor
+    self.splashReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -39,9 +39,9 @@ public final class {{name}}ViewControllerImp<R: {{name}}Reactor>: UIViewControll
     super.viewDidLoad()
     setAttribute()
     setLayout()
-    self.reactor = __reactor
+    self.reactor = splashReactor
   }
-    
+  
   
   public func setAttribute() {
     
@@ -56,7 +56,7 @@ public final class {{name}}ViewControllerImp<R: {{name}}Reactor>: UIViewControll
   }
 }
 
-extension {{name}}ViewControllerImp: View {
+extension SplashViewControllerImp: View {
   
   // MARK: - Binding
   

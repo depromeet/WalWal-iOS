@@ -51,7 +51,13 @@ public final class SampleViewControllerImp<R: SampleReactor>: UIViewController, 
   }
   
   // MARK: - Binding
+  public func bindEvent() {
+    
+  }
   
+}
+
+extension SampleViewControllerImp: View {
   public func bind(reactor: R) {
     bindAction(reactor: reactor)
     bindState(reactor: reactor)
@@ -65,10 +71,4 @@ public final class SampleViewControllerImp<R: SampleReactor>: UIViewController, 
   public func bindState(reactor: R) {
     
   }
-  
-  public func bindEvent() {
-    
-  }
 }
-
-

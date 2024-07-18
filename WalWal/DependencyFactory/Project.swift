@@ -14,6 +14,7 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
+    .Coordinator.App.Interface,
     .Coordinator.SampleApp.Interface,
     .Coordinator.SampleAuth.Interface,
     .Coordinator.SampleHome.Interface,
@@ -21,17 +22,13 @@ let project = Project.invertedDualTargetProject(
     .Feature.Sample.Data.Interface,
     .Feature.Sample.Domain.Interface,
     .Feature.Sample.Presenter.Interface
-    /*
-     // MARK: - 새로 생기는 Features의 Interface의 의존성만 가져오면 됩니다.
-     /// Ex. Auth가 현재 존재하는 Feature라면,
-     .Feature.Auth.Data.Interface,
-     .Feature.Auth.Domain.Interface
-     */
   ],
   implementDependencies: [
     .WalWalNetwork.Interface,
     .WalWalNetwork.Implement,
     
+    .Coordinator.App.Interface,
+    .Coordinator.App.Implement,
     .Coordinator.SampleApp.Interface,
     .Coordinator.SampleApp.Implement,
     .Coordinator.SampleAuth.Interface,
@@ -39,22 +36,18 @@ let project = Project.invertedDualTargetProject(
     .Coordinator.SampleHome.Interface,
     .Coordinator.SampleHome.Implement,
     
+    .Feature.Splash.Data.Implement,
+    .Feature.Splash.Data.Interface,
+    .Feature.Splash.Domain.Interface,
+    .Feature.Splash.Domain.Implement,
+    .Feature.Splash.Presenter.Interface,
+    .Feature.Splash.Presenter.Implement,
+    
     .Feature.Sample.Data.Implement,
     .Feature.Sample.Data.Interface,
     .Feature.Sample.Domain.Interface,
     .Feature.Sample.Domain.Implement,
     .Feature.Sample.Presenter.Interface,
-    .Feature.Sample.Presenter.Implement,
-    /*
-     // MARK: - 새로 생기는 Features의 Interface와 Implement를 모두 의존성으로 가져와야 합니다.
-     /// Ex. Auth가 현재 존재하는 Feature라면,
-     .WalWalNetwork.Interface,
-     .WalWalNetwork.Implement,
-     
-     .Feature.Auth.Data.Interface,
-     .Feature.Auth.Data.Implement,
-     .Feature.Auth.Domain.Interface,
-     .Feature.Auth.Domain.Implement
-     */
+    .Feature.Sample.Presenter.Implement
   ]
 )

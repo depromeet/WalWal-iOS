@@ -11,14 +11,13 @@ import UIKit
 import ReactorKit
 import RxSwift
 
-public protocol SampleViewController: UIViewController, View {
+public protocol SampleViewController: UIViewController {
   
   associatedtype SampleReactorType: SampleReactor
   var disposeBag: DisposeBag { get set }
   
   func setLayout()
   func setAttribute()
-  func bind(reactor: SampleReactorType)
   func bindAction(reactor: SampleReactorType)
   func bindState(reactor: SampleReactorType)
   func bindEvent()

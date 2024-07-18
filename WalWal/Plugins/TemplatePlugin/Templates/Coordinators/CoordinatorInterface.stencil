@@ -17,4 +17,6 @@ public enum {{ name }}CoordinatorFlow: CoordinatorFlow {
   
 }
 
-public protocol {{ name }}Coordinator: BaseCoordinator { }
+public protocol {{ name }}Coordinator: BaseCoordinator {
+
+}

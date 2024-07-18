@@ -13,24 +13,24 @@ import ReactorKit
 import RxSwift
 
 public enum {{name}}ReactorAction {
-
+  
 }
 
 public enum {{name}}ReactorMutation {
-
+  
 }
 
-public enum {{name}}ReactorState {
+public struct {{name}}ReactorState {
   public init() {
   
   }
 }
 
-public protocol {{name}}Reactor: Reactor where Action: {{name}}ReactorAction, Mutation: {{name}}ReactorMutation, State: {{name}}ReactorState {
+public protocol {{name}}Reactor: Reactor where Action == {{name}}ReactorAction, Mutation == {{name}}ReactorMutation, State == {{name}}ReactorState {
   
-  var coordinator: any {{name}}Coordinator { get }
+  var coordinator: any __Coordinator { get }
   
   init(
-    coordinator: any {{name}}Coordinator
+    coordinator: any __Coordinator
   )
 }
