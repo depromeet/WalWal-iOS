@@ -14,14 +14,6 @@ import AppCoordinator
 import RxSwift
 import RxCocoa
 
-public enum AppCoordinatorAction: ParentAction {
-  
-}
-
-public enum AppCoordinatorFlow: CoordinatorFlow {
-  
-}
-
 public final class AppCoordinatorImp: AppCoordinator {
   
   public typealias Action = AppCoordinatorAction
@@ -51,7 +43,12 @@ public final class AppCoordinatorImp: AppCoordinator {
   public func bindState() {
     destination
       .subscribe(with: self, onNext: { owner, flow in
-        switch flow { }
+        switch flow { 
+        case .startAuth:
+          owner.startAuth()
+        case .startHome:
+          owner.startAuth()
+        }
       })
       .disposed(by: disposeBag)
   }
@@ -59,20 +56,22 @@ public final class AppCoordinatorImp: AppCoordinator {
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
   /// 여기도, App이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   public func handleChildEvent<T: ParentAction>(_ event: T) {
-    if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
-      handle__Event(__Event)
-    } else if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
-      handle__Event(__Event)
+    /*
+    if let authEvent = event as? CoordinatorEvent<AuthCoordinatorAction> {
+      handleAuthEvent(authEvent)
+    } else if let homeEvent = event as? CoordinatorEvent<HomeCoordinatorAction> {
+      handleHomeEvent(homeEvent)
     }
+    */
   }
   
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let reactor = dependencyFactory.make__Reactor(coordinator: self)
-    let __VC = dependencyFactory.make__ViewController(reactor: reactor)
-    self.baseViewController = __VC
-    self.pushViewController(viewController: __VC, animated: false)
+    let reactor = dependencyFactory.makeSplashReactor(coordinator: self)
+    let splashVC = dependencyFactory.makeSplashViewController(reactor: reactor)
+    self.baseViewController = splashVC
+    self.pushViewController(viewController: splashVC, animated: false)
   }
 }
 
@@ -80,14 +79,35 @@ public final class AppCoordinatorImp: AppCoordinator {
 
 extension AppCoordinatorImp {
   
-  fileprivate func handle__Event(_ event: CoordinatorEvent<__CoordinatorAction>) {
+  /*
+  fileprivate func handleAuthEvent(_ event: CoordinatorEvent<AuthCoordinatorAction>) {
     switch event {
     case .finished:
       childCoordinator = nil
     case .requireParentAction(let action):
-      switch action { }
+      switch action {
+      case .authenticationCompleted:
+        destination.onNext(.startHome)
+      case .authenticationFailed(let error):
+        print("Authentication failed: \(error.localizedDescription)")
+        /// 에러 처리 로직
+      }
     }
   }
+  */
+  /*
+  fileprivate func handleHomeEvent(_ event: CoordinatorEvent<HomeCoordinatorAction>) {
+    switch event {
+    case .finished:
+      childCoordinator = nil
+    case .requireParentAction(let action):
+      switch action {
+      case .logout:
+        destination.onNext(.startAuth)
+      }
+    }
+  }
+  */
 }
 
 // MARK: - Create and Start(Show) with Flow(View)
@@ -95,20 +115,28 @@ extension AppCoordinatorImp {
 extension AppCoordinatorImp {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
-  fileprivate func start__() {
-    let __Coordinator = dependencyFactory.make__Coordinator(
+  fileprivate func startAuth() {
+    /*
+    let homeCoordinator = dependencyFactory.makeAuthCoordinator(
       navigationController: navigationController,
       parentCoordinator: self
     )
-    childCoordinator = __Coordinator
-    __Coordinator.start()
+    childCoordinator = homeCoordinator
+    homeCoordinator.start()
+    */
   }
   
-  /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
-  fileprivate func show__() {
-    let reactor = dependencyFactory.make__Reactor(coordinator: self)
-    let __VC = dependencyFactory.make__ViewController(reactor: reactor)
-    self.pushViewController(viewController: __VC, animated: false)
+  
+  /// 새로운 Coordinator를 통해서 Flow를 새로 생성하기 때문에, start를 prefix로 사용합니다.
+  fileprivate func startHome() {
+    /*
+    let homeCoordinator = dependencyFactory.makeHomeCoordinator(
+      navigationController: navigationController,
+      parentCoordinator: self
+    )
+    childCoordinator = homeCoordinator
+    homeCoordinator.start()
+    */
   }
 }
 
@@ -117,5 +145,5 @@ extension AppCoordinatorImp {
 // MARK: - App(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
 extension AppCoordinatorImp {
-  
+  /// AppCoordinator는 최상위 부모이기 때문에, 따로 구현하지 않아도 괜찮음.
 }
