@@ -20,12 +20,12 @@ import RxCocoa
 public final class SplashViewControllerImp<R: SplashReactor>: UIViewController, SplashViewController {
   
   public var disposeBag = DisposeBag()
-  public var __reactor: R
+  public var splashReactor: R
   
   public init(
       reactor: R
   ) {
-    self.__reactor = reactor
+    self.splashReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -39,7 +39,7 @@ public final class SplashViewControllerImp<R: SplashReactor>: UIViewController, 
     super.viewDidLoad()
     setAttribute()
     setLayout()
-    self.reactor = __reactor
+    self.reactor = splashReactor
   }
   
   

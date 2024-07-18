@@ -7,30 +7,20 @@
 //
 
 import SplashDomain
-import SplashCoordinator
+import AppCoordinator
 
 import ReactorKit
 import RxSwift
 
-public enum SplashReactorAction {
-
-}
-
-public enum SplashReactorMutation {
-
-}
-
-public enum SplashReactorState {
-  public init() {
-  
-  }
-}
+public protocol SplashReactorAction {}
+public protocol SplashReactorMutation {}
+public protocol SplashReactorState {}
 
 public protocol SplashReactor: Reactor where Action: SplashReactorAction, Mutation: SplashReactorMutation, State: SplashReactorState {
   
-  var coordinator: any SplashCoordinator { get }
+  var coordinator: any AppCoordinator { get }
   
   init(
-    coordinator: any SplashCoordinator
+    coordinator: any AppCoordinator
   )
 }
