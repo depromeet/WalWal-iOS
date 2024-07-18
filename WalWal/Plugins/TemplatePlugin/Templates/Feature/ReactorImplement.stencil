@@ -13,16 +13,30 @@ import {{name}}Coordinator
 import ReactorKit
 import RxSwift
 
+public enum {{name}}ReactorActionImp: {{name}}ReactorAction {
+
+}
+
+public enum {{name}}ReactorMutationImp: {{name}}ReactorMutation {
+
+}
+
+public struct {{name}}ReactorStateImp: {{name}}ReactorState {
+  public init() {
+  
+  }
+}
+
 public final class {{name}}ReactorImp: {{name}}Reactor {
     public typealias Action = {{name}}ReactorAction
     public typealias Mutation = {{name}}ReactorMutation
     public typealias State = {{name}}ReactorState
 
     public let initialState: State
-    public let coordinator: any {{name}}Coordinator
+    public let coordinator: any __Coordinator
     
     public init(
-        coordinator: any {{name}}Coordinator
+        coordinator: any __Coordinator
     ) {
         self.coordinator = coordinator
         self.initialState = State()

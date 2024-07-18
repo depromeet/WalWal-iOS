@@ -11,7 +11,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
-public protocol SplashViewController: UIViewController, View {
+public protocol SplashViewController: UIViewController {
   
   associatedtype SplashReactorType: SplashReactor
   var disposeBag: DisposeBag { get set }

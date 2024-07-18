@@ -41,7 +41,7 @@ public final class {{name}}ViewControllerImp<R: {{name}}Reactor>: UIViewControll
     setLayout()
     self.reactor = __reactor
   }
-  
+    
   
   public func setAttribute() {
     
@@ -50,6 +50,13 @@ public final class {{name}}ViewControllerImp<R: {{name}}Reactor>: UIViewControll
   public func setLayout() {
     
   }
+  
+  public func bindEvent() {
+    
+  }
+}
+
+extension {{name}}ViewControllerImp: View {
   
   // MARK: - Binding
   
@@ -66,10 +73,4 @@ public final class {{name}}ViewControllerImp<R: {{name}}Reactor>: UIViewControll
   public func bindState(reactor: R) {
     
   }
-  
-  public func bindEvent() {
-    
-  }
 }
-
-

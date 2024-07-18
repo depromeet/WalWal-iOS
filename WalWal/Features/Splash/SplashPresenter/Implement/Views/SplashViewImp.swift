@@ -51,6 +51,13 @@ public final class SplashViewControllerImp<R: SplashReactor>: UIViewController, 
     
   }
   
+  public func bindEvent() {
+    
+  }
+}
+
+extension SplashViewControllerImp: View {
+  
   // MARK: - Binding
   
   public func bind(reactor: R) {
@@ -66,10 +73,4 @@ public final class SplashViewControllerImp<R: SplashReactor>: UIViewController, 
   public func bindState(reactor: R) {
     
   }
-  
-  public func bindEvent() {
-    
-  }
 }
-
-

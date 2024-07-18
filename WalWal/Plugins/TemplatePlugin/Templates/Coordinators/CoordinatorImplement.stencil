@@ -14,14 +14,6 @@ import {{name}}Coordinator
 import RxSwift
 import RxCocoa
 
-public enum {{name}}CoordinatorAction: ParentAction {
-  
-}
-
-public enum {{name}}CoordinatorFlow: CoordinatorFlow {
-  
-}
-
 public final class {{name}}CoordinatorImp: {{name}}Coordinator {
   
   public typealias Action = {{name}}CoordinatorAction
