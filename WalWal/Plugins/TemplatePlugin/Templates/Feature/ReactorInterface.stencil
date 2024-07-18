@@ -12,11 +12,21 @@ import {{name}}Coordinator
 import ReactorKit
 import RxSwift
 
-public protocol {{name}}ReactorAction {}
-public protocol {{name}}ReactorMutation {}
-public protocol {{name}}ReactorState {}
+public enum {{name}}ReactorAction {
+  
+}
 
-public protocol {{name}}Reactor: Reactor where Action: {{name}}ReactorAction, Mutation: {{name}}ReactorMutation, State: {{name}}ReactorState {
+public enum {{name}}ReactorMutation {
+  
+}
+
+public struct {{name}}ReactorState {
+  public init() {
+  
+  }
+}
+
+public protocol {{name}}Reactor: Reactor where Action == {{name}}ReactorAction, Mutation == {{name}}ReactorMutation, State == {{name}}ReactorState {
   
   var coordinator: any __Coordinator { get }
   

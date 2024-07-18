@@ -23,7 +23,7 @@ final class {{name}}AppDelegate: UIResponder, UIApplicationDelegate {
     
     let dependencyFactory = DependencyFactoryImp()
     let navigationController = UINavigationController()
-    let coordinator = dependencyFactory.make{{name}}Coordinator(navigationController: navigationController)
+    let coordinator = dependencyFactory.make__Coordinator(navigationController: navigationController)
     let reactor = dependencyFactory.make{{name}}Reactor(coordinator: coordinator)
     let viewController = dependencyFactory.make{{name}}ViewController(reactor: reactor)
     

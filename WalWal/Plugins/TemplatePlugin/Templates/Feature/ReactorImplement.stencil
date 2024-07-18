@@ -13,40 +13,26 @@ import {{name}}Coordinator
 import ReactorKit
 import RxSwift
 
-public enum {{name}}ReactorActionImp: {{name}}ReactorAction {
-
-}
-
-public enum {{name}}ReactorMutationImp: {{name}}ReactorMutation {
-
-}
-
-public struct {{name}}ReactorStateImp: {{name}}ReactorState {
-  public init() {
+public final class {{name}}ReactorImp: SplashReactor {
+  public typealias Action = {{name}}ReactorAction
+  public typealias Mutation = {{name}}ReactorMutation
+  public typealias State = {{name}}ReactorState
   
+  public let initialState: State
+  public let coordinator: any __Coordinator
+  
+  public init(
+    coordinator: any __Coordinator
+  ) {
+    self.coordinator = coordinator
+    self.initialState = State()
   }
-}
-
-public final class {{name}}ReactorImp: {{name}}Reactor {
-    public typealias Action = {{name}}ReactorAction
-    public typealias Mutation = {{name}}ReactorMutation
-    public typealias State = {{name}}ReactorState
-
-    public let initialState: State
-    public let coordinator: any __Coordinator
+  
+  public func mutate(action: Action) -> Observable<Mutation> {
     
-    public init(
-        coordinator: any __Coordinator
-    ) {
-        self.coordinator = coordinator
-        self.initialState = State()
-    }
+  }
+  
+  public func reduce(state: State, mutation: Mutation) -> State {
     
-    public func mutate(action: Action) -> Observable<Mutation> {
-      
-    }
-    
-    public func reduce(state: State, mutation: Mutation) -> State {
-        
-    }
+  }
 }
