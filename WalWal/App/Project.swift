@@ -30,23 +30,14 @@ let project = Project(
       resources: ["Resources/**"],
       entitlements: "../WalWal.entitlements",
       dependencies: [
-        .ThirdParty.RxAlamofire,
-        .ThirdParty.RxSwift,
-        .ThirdParty.RxRelay,
-        .ThirdParty.RxCocoa,
-        .ThirdParty.RxGesture,
-        .ThirdParty.Kingfisher,
-        .ThirdParty.FlexLayout,
-        .ThirdParty.PinLayout,
-        .ThirdParty.Then,
-        
-        .ResourceKit,
-        .DesignSystem,
-        .Utility,
         .WalWalNetwork.Interface,
         .WalWalNetwork.Implement,
+        
         .DependencyFactory.Interface,
-        .DependencyFactory.Implement
+        .DependencyFactory.Implement,
+        
+        .Coordinator.App.Interface,
+        .Coordinator.App.Implement
       ]
     )
   ]
