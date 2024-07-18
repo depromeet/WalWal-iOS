@@ -21,12 +21,6 @@ let project = Project.invertedDualTargetProject(
     .Feature.Sample.Data.Interface,
     .Feature.Sample.Domain.Interface,
     .Feature.Sample.Presenter.Interface
-    /*
-     // MARK: - 새로 생기는 Features의 Interface의 의존성만 가져오면 됩니다.
-     /// Ex. Auth가 현재 존재하는 Feature라면,
-     .Feature.Auth.Data.Interface,
-     .Feature.Auth.Domain.Interface
-     */
   ],
   implementDependencies: [
     .WalWalNetwork.Interface,
@@ -44,17 +38,6 @@ let project = Project.invertedDualTargetProject(
     .Feature.Sample.Domain.Interface,
     .Feature.Sample.Domain.Implement,
     .Feature.Sample.Presenter.Interface,
-    .Feature.Sample.Presenter.Implement,
-    /*
-     // MARK: - 새로 생기는 Features의 Interface와 Implement를 모두 의존성으로 가져와야 합니다.
-     /// Ex. Auth가 현재 존재하는 Feature라면,
-     .WalWalNetwork.Interface,
-     .WalWalNetwork.Implement,
-     
-     .Feature.Auth.Data.Interface,
-     .Feature.Auth.Data.Implement,
-     .Feature.Auth.Domain.Interface,
-     .Feature.Auth.Domain.Implement
-     */
+    .Feature.Sample.Presenter.Implement
   ]
 )

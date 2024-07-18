@@ -15,14 +15,14 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .Coordinator.Base,
+    .Coordinator.Base.Interface,
     
     .ThirdParty.RxSwift,
     .ThirdParty.RxCocoa
   ],
   implementDependencies: [
-    .Coordinator.Base,
-    .DependencyFactory.Interface
+    .Coordinator.Base.Interface,
+    .DependencyFactory.Interface,
     
     .ThirdParty.RxSwift,
     .ThirdParty.RxCocoa
