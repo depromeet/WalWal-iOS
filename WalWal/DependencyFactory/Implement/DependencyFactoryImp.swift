@@ -106,7 +106,7 @@ public class DependencyFactoryImp: DependencyFactory {
     )
   }
   
-  public func makeOnboardingCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any OnboardingCoordinator {
+  public func makeOnboardingCoordinator(navigationController: UINavigationController, parentCoordinator: (any BaseCoordinator)?) -> any OnboardingCoordinator {
     return OnboardingCoordinatorImp(navigationController: navigationController, parentCoordinator: parentCoordinator, dependencyFactory: self)
   }
   

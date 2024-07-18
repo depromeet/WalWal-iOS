@@ -97,8 +97,7 @@ extension OnboardingCoordinatorImp {
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func startOnboarding() {
     let onboardingCoordinator = dependencyFactory.makeOnboardingCoordinator(
-      navigationController: navigationController,
-      parentCoordinator: self
+      navigationController: navigationController, parentCoordinator: nil
     )
     childCoordinator = onboardingCoordinator
     onboardingCoordinator.start()

@@ -51,6 +51,7 @@ public protocol DependencyFactory {
   
   func makeAppCoordinator(navigationController: UINavigationController) -> any AppCoordinator
   func makeSampleAppCoordinator(navigationController: UINavigationController) -> any SampleAppCoordinator
+  
   func makeSampleAuthCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleAuthCoordinator
   func makeSampleHomeCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleHomeCoordinator
   
@@ -64,7 +65,8 @@ public protocol DependencyFactory {
 
   // MARK: - OnBoarding
   
-  func makeOnboardingCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any OnboardingCoordinator
+  /// demo app test 위해 parentCoordinator 옵셔널 처리
+  func makeOnboardingCoordinator(navigationController: UINavigationController, parentCoordinator: (any BaseCoordinator)?) -> any OnboardingCoordinator
   
   
 }
