@@ -29,6 +29,7 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
   // MARK: - UI
   
   private let rootContainer = UIView()
+  private let contentContainer = UIView()
   private let progressView = ProgressView(index: 1)
   private let titleLabel = UILabel().then {
     $0.text = "어떤 반려동물을\n키우고 계신가요?"
@@ -57,11 +58,13 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
     super.viewDidLoad()
     setAttribute()
     setLayout()
+    
     self.reactor = onboardingReactor
   }
   
   public override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
+    
     /// navigation view에서 pop되는 경우에만 선택 값을 리셋하도록 설정
     if self.isMovingFromParent {
       initState.onNext(())
@@ -74,28 +77,36 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
     super.viewDidLayoutSubviews()
     rootContainer.pin.all(view.pin.safeArea)
     rootContainer.flex.layout()
+    
   }
   
   public func setAttribute() {
     view.backgroundColor = .white
     view.addSubview(rootContainer)
+    rootContainer.addSubview(progressView)
+    rootContainer.addSubview(contentContainer)
+    rootContainer.addSubview(nextButton)
   }
   
   public func setLayout() {
-    rootContainer.flex.justifyContent(.center).marginHorizontal(20).define { flex in
-      flex.addItem(progressView).marginTop(32)
-      
-      flex.addItem().justifyContent(.start).grow(1).define { flex in
-        flex.addItem(titleLabel).marginTop(48)
+    rootContainer.flex.justifyContent(.center).marginHorizontal(20)
+    
+    progressView.flex.marginTop(32)
+    nextButton.flex.height(56).marginBottom(30)
+    
+    setContentLayout()
+  }
+  
+  /// root 내부에 들어가는 ContentContainer의 레이아웃 설정을 위한 메서드
+  private func setContentLayout() {
+    contentContainer.flex.justifyContent(.start).grow(1).define {
+        $0.addItem(titleLabel).marginTop(48)
         
-        flex.addItem().direction(.row).marginTop(40).define { flex in
-          flex.addItem(dogView).grow(1)
-          flex.addItem(catView).grow(1).marginLeft(20)
-        }
+        $0.addItem().direction(.row).marginTop(40).define {
+            $0.addItem(dogView).grow(1)
+            $0.addItem(catView).marginLeft(20).grow(1)
+          }
       }
-      
-      flex.addItem(nextButton).marginBottom(30).height(56)
-    }
   }
 }
 
@@ -115,6 +126,7 @@ extension OnboardingSelectViewController {
     let catViewTapped = catView.rx.tapGesture()
       .when(.recognized)
       .map { _ in return PetType.cat }
+    
     /// 반려동물 선택 뷰 둘 중 하나 탭 시 Action
     Observable.merge(dogViewTapped, catViewTapped)
       .map { petType in
@@ -125,6 +137,7 @@ extension OnboardingSelectViewController {
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
     /// pop이 되었을 때 선택을 초기화 시키기 위한 Action
     initState
       .map { Reactor.Action.initSelectView }
@@ -142,7 +155,7 @@ extension OnboardingSelectViewController {
         owner.catView.isSelected = cat
       }
       .disposed(by: disposeBag)
-
+    
     reactor.state
       .map { $0.selectCompleteButtonEnable }
       .distinctUntilChanged()

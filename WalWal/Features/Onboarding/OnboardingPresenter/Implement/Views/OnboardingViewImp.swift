@@ -91,7 +91,7 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
     rootContainer.flex.justifyContent(.center).define { flex in
       flex.addItem().justifyContent(.center).grow(1).define { flex in
         flex.addItem(scrollView).alignSelf(.center)
-        flex.addItem(pageControl).height(5).marginTop(57)
+        flex.addItem(pageControl).marginTop(57).height(5)
       }
       flex.addItem(nextButton).marginBottom(30).marginHorizontal(20).height(56)
     }
