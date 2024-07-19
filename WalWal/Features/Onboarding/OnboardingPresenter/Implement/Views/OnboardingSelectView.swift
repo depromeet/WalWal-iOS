@@ -23,6 +23,8 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
+  /// 현재 뷰가 pop됐을 경우에 선택 값을 리셋하도록 설정하기 위한 이벤트
+  private let initState = PublishSubject<Void>()
   
   // MARK: - UI
   
@@ -37,7 +39,6 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
   private let dogView = PetView(petType: .dog)
   private let catView = PetView(petType: .cat)
   private let nextButton = NextButton(isEnable: false)
-  
   
   // MARK: - Initialize
   
@@ -57,6 +58,14 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
     setAttribute()
     setLayout()
     self.reactor = onboardingReactor
+  }
+  
+  public override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    /// navigation view에서 pop되는 경우에만 선택 값을 리셋하도록 설정
+    if self.isMovingFromParent {
+      initState.onNext(())
+    }
   }
   
   // MARK: - Layout
@@ -98,11 +107,50 @@ extension OnboardingSelectViewController {
   }
   
   public func bindAction(reactor: R) {
-    
+    /// 강아지 선택 액션
+    let dogViewTapped = dogView.rx.tapGesture()
+      .when(.recognized)
+      .map { _ in return PetType.dog }
+    /// 고양이 선택 액션
+    let catViewTapped = catView.rx.tapGesture()
+      .when(.recognized)
+      .map { _ in return PetType.cat }
+    /// 반려동물 선택 뷰 둘 중 하나 탭 시 Action
+    Observable.merge(dogViewTapped, catViewTapped)
+      .map { petType in
+        Reactor.Action.selectAnimal(
+          dog: petType == .dog,
+          cat: petType == .cat
+        )
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    /// pop이 되었을 때 선택을 초기화 시키기 위한 Action
+    initState
+      .map { Reactor.Action.initSelectView }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
-    
+    reactor.state
+      .map { $0.selectedAnimal }
+      .asDriver(onErrorJustReturn: (false, false))
+      .drive(with: self) { owner, select in
+        let (dog, cat) = select
+        owner.dogView.isSelected = dog
+        owner.catView.isSelected = cat
+      }
+      .disposed(by: disposeBag)
+
+    reactor.state
+      .map { $0.selectCompleteButtonEnable }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, isEnable in
+        owner.nextButton.isEnabled = isEnable
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
@@ -123,6 +171,7 @@ extension OnboardingSelectViewController {
         owner.catView.isSelected = true
       }
       .disposed(by: disposeBag)
+    
   }
   
 }
