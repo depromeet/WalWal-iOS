@@ -40,6 +40,7 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
   private let dogView = PetView(petType: .dog)
   private let catView = PetView(petType: .cat)
   private let nextButton = CompleteButton(isEnable: false)
+  private let permissionView = PermissionView()
   
   // MARK: - Initialize
   
@@ -60,6 +61,12 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
     setLayout()
     
     self.reactor = onboardingReactor
+    
+  }
+  
+  public override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    permissionView.showAlert()
   }
   
   public override func viewDidDisappear(_ animated: Bool) {
