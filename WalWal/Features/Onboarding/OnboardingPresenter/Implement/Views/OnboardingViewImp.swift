@@ -44,7 +44,7 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
     $0.currentPageIndicatorTintColor = .gray
     $0.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
   }
-  private let nextButton = NextButton(isEnable: true)
+  private let nextButton = CompleteButton(isEnable: true)
   
   // MARK: - Initialize
   

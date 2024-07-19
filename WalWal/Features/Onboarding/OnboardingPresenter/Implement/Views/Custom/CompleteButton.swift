@@ -1,5 +1,5 @@
 //
-//  NextButton.swift
+//  CompleteButton.swift
 //  OnboardingPresenterView
 //
 //  Created by Jiyeon on 7/15/24.
@@ -13,7 +13,7 @@ import UIKit
 /// - Parameters:
 ///   - title: 버튼 타이틀 텍스트로 기본 값으로 "다음"을 가지고 있습니다.
 ///   - isEnable: 버튼 활성화 여부로, 초기에 활성화 여부를 설정할 수 있습니다.
-final class NextButton: UIButton {
+final class CompleteButton: UIButton {
   
   /// 버튼 활성화 값에 따라 백그라운드 색 변경되도록 설정
   ///

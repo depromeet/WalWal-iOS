@@ -39,7 +39,7 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
   }
   private let dogView = PetView(petType: .dog)
   private let catView = PetView(petType: .cat)
-  private let nextButton = NextButton(isEnable: false)
+  private let nextButton = CompleteButton(isEnable: false)
   
   // MARK: - Initialize
   
