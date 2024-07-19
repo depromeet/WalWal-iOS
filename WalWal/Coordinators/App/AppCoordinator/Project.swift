@@ -21,8 +21,8 @@ let project = Project.invertedDualTargetProject(
     .ThirdParty.RxCocoa
   ],
   implementDependencies: [
-    .Coordinator.Base.Interface,
     .DependencyFactory.Interface,
+    .Coordinator.Base.Interface,
     
     .ThirdParty.RxSwift,
     .ThirdParty.RxCocoa

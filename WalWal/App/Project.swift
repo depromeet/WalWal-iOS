@@ -30,14 +30,8 @@ let project = Project(
       resources: ["Resources/**"],
       entitlements: "../WalWal.entitlements",
       dependencies: [
-        .WalWalNetwork.Interface,
-        .WalWalNetwork.Implement,
-        
         .DependencyFactory.Interface,
-        .DependencyFactory.Implement,
-        
-        .Coordinator.App.Interface,
-        .Coordinator.App.Implement
+        .DependencyFactory.Implement
       ]
     )
   ]
