@@ -23,7 +23,7 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
   UIScrollViewDelegate {
   
   public var disposeBag = DisposeBag()
-  public var onboardingReactor: R
+  private var onboardingReactor: R
   
   // MARK: - UI
   
@@ -48,9 +48,7 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
   
   // MARK: - Initialize
   
-  public init(
-    reactor: R
-  ) {
+  public init(reactor: R) {
     self.onboardingReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
@@ -112,7 +110,6 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
 // MARK: - Binding
 
 extension OnboardingViewControllerImp {
-  
   public func bind(reactor: R) {
     bindAction(reactor: reactor)
     bindState(reactor: reactor)
@@ -128,10 +125,12 @@ extension OnboardingViewControllerImp {
   }
   
   public func bindEvent() {
-    //    nextButton.rx.tap
-    //      .subscribe(with: self) { owner, _ in
-    //        owner.navigationController?.pushViewController(OnboardingSelectViewController(), animated: true)
-    //      }
-    //      .disposed(by: disposeBag)
+    nextButton.rx.tap
+      .subscribe(with: self) { owner, _ in
+        owner.navigationController?.pushViewController(
+          OnboardingSelectViewController(reactor: owner.onboardingReactor),
+          animated: true)
+      }
+      .disposed(by: disposeBag)
   }
 }
