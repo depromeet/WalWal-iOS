@@ -65,7 +65,7 @@ public protocol DependencyFactory {
 
   // MARK: - OnBoarding
   
-  /// demo app test 위해 parentCoordinator 옵셔널 처리
+  /// demo app test 위해 parentCoordinator 옵셔널 처리. 추후 변경 예정
   func makeOnboardingCoordinator(navigationController: UINavigationController, parentCoordinator: (any BaseCoordinator)?) -> any OnboardingCoordinator
   
   

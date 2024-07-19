@@ -17,7 +17,10 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewController, OnboardingViewController, UIScrollViewDelegate {
+public final class OnboardingViewControllerImp<R: OnboardingReactor>:
+  UIViewController,
+  OnboardingViewController,
+  UIScrollViewDelegate {
   
   public var disposeBag = DisposeBag()
   public var onboardingReactor: R
@@ -32,7 +35,7 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewCont
     $0.isPagingEnabled = true
     $0.showsHorizontalScrollIndicator = false
     $0.bounces = false
-//    $0.delegate = self
+    $0.delegate = self
   }
   private lazy var pageControl = UIPageControl().then {
     $0.numberOfPages = 3
@@ -46,7 +49,7 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewCont
   // MARK: - Initialize
   
   public init(
-      reactor: R
+    reactor: R
   ) {
     self.onboardingReactor = reactor
     super.init(nibName: nil, bundle: nil)
@@ -97,7 +100,18 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewCont
     }
   }
   
-  // MARK: - Binding
+  // MARK: - ScrollView Delegate
+  
+  public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    guard scrollView.frame.width > 0 else { return }
+    let pageIndex = round(scrollView.contentOffset.x / scrollView.frame.width)
+    pageControl.currentPage = Int(pageIndex)
+  }
+}
+
+// MARK: - Binding
+
+extension OnboardingViewControllerImp {
   
   public func bind(reactor: R) {
     bindAction(reactor: reactor)
@@ -114,17 +128,10 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewCont
   }
   
   public func bindEvent() {
-//    nextButton.rx.tap
-//      .subscribe(with: self) { owner, _ in
-//        owner.navigationController?.pushViewController(OnboardingSelectViewController(), animated: true)
-//      }
-//      .disposed(by: disposeBag)
-  }
-  
-  // MARK: - ScrollView Delegate
-  public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    guard scrollView.frame.width > 0 else { return }
-        let pageIndex = round(scrollView.contentOffset.x / scrollView.frame.width)
-        pageControl.currentPage = Int(pageIndex)
+    //    nextButton.rx.tap
+    //      .subscribe(with: self) { owner, _ in
+    //        owner.navigationController?.pushViewController(OnboardingSelectViewController(), animated: true)
+    //      }
+    //      .disposed(by: disposeBag)
   }
 }
