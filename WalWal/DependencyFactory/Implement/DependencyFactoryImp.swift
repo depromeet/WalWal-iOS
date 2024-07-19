@@ -8,8 +8,6 @@
 import UIKit
 import DependencyFactory
 
-// MARK: - 추가되는 Feature에 따라 import되는 Interface와 Implement를 작성해주세요.
-
 import WalWalNetwork
 import WalWalNetworkImp
 
@@ -45,10 +43,12 @@ public class DependencyFactoryImp: DependencyFactory {
   
   // MARK: - 추가되는 Coordinator에 따라 Dependency를 생성 및 주입하는 함수의 구현부를 작성해주새요
   
-  public func makeSampleAppCoordinator(
-    navigationController: UINavigationController
-  ) -> any SampleAppCoordinator {
-    return SampleAppCoordinatorImp(navigationController: navigationController, parentCoordinator: nil, dependencyFactory: self)
+  public func makeSampleAppCoordinator(navigationController: UINavigationController) -> any SampleAppCoordinator {
+    return SampleAppCoordinatorImp(
+      navigationController: navigationController,
+      parentCoordinator: nil,
+      dependencyFactory: self
+    )
   }
   
   public func makeSampleAuthCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleAuthCoordinator {
@@ -86,11 +86,11 @@ public class DependencyFactoryImp: DependencyFactory {
   // MARK: - 추가되는 Feature에 따라 Domain Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
   
   public func makeSampleSignInUsecase() -> SampleSignInUseCase {
-    return SignInUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
+    return SampleSignInUseCaseImp(sampleAuthRepository: makeSampleAuthData())
   }
   
   public func makeSampleSignUpUsecase() -> SampleSignUpUseCase {
-    return SignUpUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
+    return SampleSignUpUseCaseImp(sampleAuthRepository: makeSampleAuthData())
   }
   
   // MARK: - 추가되는 Feature에 따라 Presenter Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
