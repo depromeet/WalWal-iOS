@@ -6,7 +6,6 @@
 //  Created by Jiyeon
 //
 
-
 import UIKit
 import AuthPresenter
 import AuthenticationServices
@@ -18,8 +17,7 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, 
-                                                            AuthViewController {
+public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController {
   
   public var disposeBag = DisposeBag()
   public let authReactor: R
@@ -28,7 +26,7 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController,
   
   private let rootContainer = UIView()
   private let imageView = UIImageView().then {
-    $0.backgroundColor = .lightGray
+    $0.backgroundColor = .gray
   }
   private let titleLabel = UILabel().then {
     $0.text = "왈왈에서 매일 만나요"
@@ -40,7 +38,6 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController,
     $0.textColor = .black
     $0.font = .systemFont(ofSize: 14)
   }
-  
   private var appleLoginButton = SocialLoginButton(socialType: .apple)
   
   // MARK: - Initialize
@@ -72,22 +69,35 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController,
   }
   
   public func setAttribute() {
-    view.backgroundColor = .white
+    view.backgroundColor = .systemOrange
     view.addSubview(rootContainer)
   }
   
   public func setLayout() {
-    rootContainer.flex.justifyContent(.spaceBetween).define { flex in
-      flex.addItem().alignItems(.center).paddingTop(35%).define { flex in
-        flex.addItem(imageView).size(220)
-        flex.addItem(titleLabel).marginTop(10).maxWidth(330)
-        flex.addItem(subTitleLabel).marginTop(6).maxWidth(330)
+    rootContainer.flex
+      .justifyContent(.spaceBetween)
+      .define {
+        $0.addItem()
+          .alignItems(.center)
+          .paddingTop(35%).define {
+            $0.addItem(imageView)
+              .size(220)
+            $0.addItem(titleLabel)
+              .marginTop(10)
+              .maxWidth(330)
+            $0.addItem(subTitleLabel)
+              .marginTop(6)
+              .maxWidth(330)
+          }
+        $0.addItem()
+          .marginBottom(40)
+          .alignItems(.center)
+          .define {
+            $0.addItem(appleLoginButton)
+              .width(330)
+              .height(56)
+          }
       }
-      flex.addItem().marginBottom(40).alignItems(.center).define { flex in
-        // 카카오 로그인 버튼 추가하기
-        flex.addItem(appleLoginButton).width(330).height(56)
-      }
-    }
   }
 }
 

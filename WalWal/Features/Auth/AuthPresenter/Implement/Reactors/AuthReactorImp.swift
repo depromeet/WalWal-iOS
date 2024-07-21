@@ -36,6 +36,8 @@ public final class AuthReactorImp: AuthReactor {
     case let .appleLogin(authCode):
       print(authCode)
       return .never()
+      
+      // TODO: - 추후 api 요청 작업 시 사용 예정
 //      return authUseCase.appleLogin(authCode: authCode)
 //        .asObservable()
 //        .map { token in
@@ -49,7 +51,7 @@ public final class AuthReactorImp: AuthReactor {
     switch mutation {
     case let .token(token):
       print(token)
-      // newState.token = token
+//      newState.token = token
     }
     return newState
   }

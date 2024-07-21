@@ -16,6 +16,7 @@ enum SocialLoginType {
   case apple
   case kakao
   
+  /// 소셜로그인 버튼 타이틀
   var buttonTitle: String {
     switch self {
     case .apple:
@@ -94,9 +95,15 @@ final class SocialLoginButton: UIButton {
   }
   
   private func setLayout() {
-    containerView.flex.direction(.row).alignItems(.center).define { flex in
-      flex.addItem(customImageView).size(22)
-      flex.addItem(customLabel).marginLeft(16).grow(1)
-    }
+    containerView.flex
+      .direction(.row)
+      .alignItems(.center)
+      .define {
+        $0.addItem(customImageView)
+          .size(22)
+        $0.addItem(customLabel)
+          .marginLeft(16)
+          .grow(1)
+      }
   }
 }
