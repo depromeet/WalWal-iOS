@@ -61,7 +61,6 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
     setLayout()
     
     self.reactor = onboardingReactor
-    
   }
   
   public override func viewDidAppear(_ animated: Bool) {
@@ -84,7 +83,6 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
     super.viewDidLayoutSubviews()
     rootContainer.pin.all(view.pin.safeArea)
     rootContainer.flex.layout()
-    
   }
   
   public func setAttribute() {
@@ -97,23 +95,15 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
   
   public func setLayout() {
     rootContainer.flex.justifyContent(.center).marginHorizontal(20)
-    
     progressView.flex.marginTop(32)
-    nextButton.flex.height(56).marginBottom(30)
-    
-    setContentLayout()
-  }
-  
-  /// root 내부에 들어가는 ContentContainer의 레이아웃 설정을 위한 메서드
-  private func setContentLayout() {
     contentContainer.flex.justifyContent(.start).grow(1).define {
-        $0.addItem(titleLabel).marginTop(48)
-        
-        $0.addItem().direction(.row).marginTop(40).define {
-            $0.addItem(dogView).grow(1)
-            $0.addItem(catView).marginLeft(20).grow(1)
-          }
+      $0.addItem(titleLabel).marginTop(48)
+      $0.addItem().direction(.row).marginTop(40).define {
+        $0.addItem(dogView).grow(1)
+        $0.addItem(catView).marginLeft(20).grow(1)
       }
+    }
+    nextButton.flex.marginBottom(30).height(56)
   }
 }
 
@@ -191,7 +181,6 @@ extension OnboardingSelectViewController {
         owner.catView.isSelected = true
       }
       .disposed(by: disposeBag)
-    
   }
   
 }
