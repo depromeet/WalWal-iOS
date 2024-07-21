@@ -52,9 +52,16 @@ final class ProgressView: UIView {
     containerView.flex.layout()
   }
   private func setLayout() {
-    containerView.flex.direction(.row).define { flex in
-      flex.addItem(firstBar).height(4).grow(1)
-      flex.addItem(secondBar).height(4).grow(1).marginLeft(6)
+    containerView.flex
+      .direction(.row)
+      .define {
+      $0.addItem(firstBar)
+          .height(4)
+          .grow(1)
+      $0.addItem(secondBar)
+          .marginLeft(6)
+          .height(4)
+          .grow(1)
     }
   }
   

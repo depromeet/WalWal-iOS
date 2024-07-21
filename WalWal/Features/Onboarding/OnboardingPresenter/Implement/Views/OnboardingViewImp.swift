@@ -88,19 +88,37 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
   }
   
   public func setLayout() {
-    rootContainer.flex.justifyContent(.center).define { flex in
-      flex.addItem().justifyContent(.center).grow(1).define { flex in
-        flex.addItem(scrollView).alignSelf(.center)
-        flex.addItem(pageControl).marginTop(57).height(5)
+    rootContainer.flex
+      .define {
+        $0.addItem()
+          .justifyContent(.center)
+          .grow(1)
+          .define {
+            $0.addItem(scrollView)
+              .alignSelf(.center)
+            $0.addItem(pageControl)
+              .marginTop(57)
+              .height(5)
+          }
+        $0.addItem(nextButton)
+          .marginBottom(30)
+          .marginHorizontal(20)
+          .height(56)
       }
-      flex.addItem(nextButton).marginBottom(30).marginHorizontal(20).height(56)
-    }
     
-    scrollView.flex.direction(.row).define { flex in
-      flex.addItem(descriptionView1).width(100%).height(80%)
-      flex.addItem(descriptionView2).width(100%).height(80%)
-      flex.addItem(descriptionView3).width(100%).height(80%)
-    }
+    scrollView.flex
+      .direction(.row)
+      .define {
+        $0.addItem(descriptionView1)
+          .width(100%)
+          .height(80%)
+        $0.addItem(descriptionView2)
+          .width(100%)
+          .height(80%)
+        $0.addItem(descriptionView3)
+          .width(100%)
+          .height(80%)
+      }
   }
   
   // MARK: - ScrollView Delegate

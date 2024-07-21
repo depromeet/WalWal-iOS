@@ -94,16 +94,30 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
   }
   
   public func setLayout() {
-    rootContainer.flex.justifyContent(.center).marginHorizontal(20)
-    progressView.flex.marginTop(32)
-    contentContainer.flex.justifyContent(.start).grow(1).define {
-      $0.addItem(titleLabel).marginTop(48)
-      $0.addItem().direction(.row).marginTop(40).define {
-        $0.addItem(dogView).grow(1)
-        $0.addItem(catView).marginLeft(20).grow(1)
+    rootContainer.flex
+      .justifyContent(.center)
+      .marginHorizontal(20)
+    progressView.flex
+      .marginTop(32)
+    contentContainer.flex
+      .justifyContent(.start)
+      .grow(1)
+      .define {
+        $0.addItem(titleLabel).marginTop(48)
+        $0.addItem()
+          .direction(.row)
+          .marginTop(40)
+          .define {
+            $0.addItem(dogView)
+              .grow(1)
+            $0.addItem(catView)
+              .marginLeft(20)
+              .grow(1)
+          }
       }
-    }
-    nextButton.flex.marginBottom(30).height(56)
+    nextButton.flex
+      .marginBottom(30)
+      .height(56)
   }
 }
 

@@ -63,10 +63,12 @@ final class PetView: UIView {
   // MARK: - Layout
   
   private func setLayout() {
-    containerView.flex.alignItems(.center).define { flex in
-      flex.addItem(petImage).size(158)
-      flex.addItem(typeLabel).marginTop(20)
-    }
+    containerView.flex
+      .alignItems(.center)
+      .define { flex in
+        flex.addItem(petImage).size(158)
+        flex.addItem(typeLabel).marginTop(20)
+      }
   }
   
   override func layoutSubviews() {
