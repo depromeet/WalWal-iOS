@@ -14,9 +14,9 @@ import RxSwift
 
 public final class AuthUseCaseImp: AuthUseCase {
   
-  private let authDataRepository: AuthDataRepository
+  private let authDataRepository: AuthRepository
   
-  public init(authDataRepository: AuthDataRepository) {
+  public init(authDataRepository: AuthRepository) {
     self.authDataRepository = authDataRepository
   }
   

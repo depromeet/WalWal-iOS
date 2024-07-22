@@ -144,8 +144,8 @@ public class DependencyFactoryImp: DependencyFactory {
   
   // MARK: - Auth
   
-  public func makeAuthData() -> AuthDataRepository {
-    return AuthDataRepositoryImp(networkService: networkService)
+  public func makeAuthData() -> AuthRepository {
+    return AuthRepositoryImp(networkService: networkService)
   }
   
   public func makeAuthUsecase() -> AuthUseCase {

@@ -54,7 +54,7 @@ public protocol DependencyFactory {
   
   // MARK: - Auth
   
-  func makeAuthData() -> AuthDataRepository
+  func makeAuthData() -> AuthRepository
   func makeAuthUsecase() -> AuthUseCase
   func makeAuthReactor(coordinator: any AuthCoordinator) -> any AuthReactor
   func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController

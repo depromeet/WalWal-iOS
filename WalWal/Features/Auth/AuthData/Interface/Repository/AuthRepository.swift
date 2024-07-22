@@ -10,6 +10,6 @@ import Foundation
 
 import RxSwift
 
-public protocol AuthDataRepository {
+public protocol AuthRepository {
   func appleLogin(token: String) -> Single<AuthTokenDTO>
 }
