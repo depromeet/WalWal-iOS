@@ -20,6 +20,10 @@ let project = Project.invertedDualTargetProject(
     .Coordinator.SampleHome.Interface,
     .Coordinator.Auth.Interface,
     
+    .Feature.Splash.Data.Interface,
+    .Feature.Splash.Domain.Interface,
+    .Feature.Splash.Presenter.Interface,
+    
     .Feature.Sample.Data.Interface,
     .Feature.Sample.Domain.Interface,
     .Feature.Sample.Presenter.Interface,
@@ -32,7 +36,7 @@ let project = Project.invertedDualTargetProject(
     .WalWalNetwork.Interface,
     .WalWalNetwork.Implement,
     
-    .Coordinator.App.Interface,
+      .Coordinator.App.Interface,
     .Coordinator.App.Implement,
     .Coordinator.SampleApp.Interface,
     .Coordinator.SampleApp.Implement,
@@ -43,14 +47,14 @@ let project = Project.invertedDualTargetProject(
     .Coordinator.Auth.Interface,
     .Coordinator.Auth.Implement,
     
-    .Feature.Splash.Data.Implement,
+      .Feature.Splash.Data.Implement,
     .Feature.Splash.Data.Interface,
     .Feature.Splash.Domain.Interface,
     .Feature.Splash.Domain.Implement,
     .Feature.Splash.Presenter.Interface,
     .Feature.Splash.Presenter.Implement,
     
-    .Feature.Sample.Data.Implement,
+      .Feature.Sample.Data.Implement,
     .Feature.Sample.Data.Interface,
     .Feature.Sample.Data.Implement,
     .Feature.Sample.Domain.Interface,
@@ -58,7 +62,7 @@ let project = Project.invertedDualTargetProject(
     .Feature.Sample.Presenter.Interface,
     .Feature.Sample.Presenter.Implement,
     
-    .Feature.Auth.Data.Interface,
+      .Feature.Auth.Data.Interface,
     .Feature.Auth.Data.Implement,
     .Feature.Auth.Domain.Interface,
     .Feature.Auth.Domain.Implement,
