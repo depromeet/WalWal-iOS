@@ -33,7 +33,7 @@ public final class AuthReactorImp: AuthReactor {
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case let .appleLogin(authCode):
+    case let .appleLoginTapped(authCode):
       print(authCode)
       return .never()
       

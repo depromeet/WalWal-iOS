@@ -13,7 +13,7 @@ import ReactorKit
 import RxSwift
 
 public enum AuthReactorAction {
-  case appleLogin(authCode: String)
+  case appleLoginTapped(authCode: String)
 }
 
 public enum AuthReactorMutation {

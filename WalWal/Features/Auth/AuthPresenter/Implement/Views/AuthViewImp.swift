@@ -115,7 +115,7 @@ extension AuthViewControllerImp: View {
         ASAuthorizationAppleIDProvider().rx.appleLogin(scope: [.email, .fullName], window: self.view.window)
       }
       .compactMap { $0 }
-      .map { Reactor.Action.appleLogin(authCode: $0) }
+      .map { Reactor.Action.appleLoginTapped(authCode: $0) }
       .subscribe(reactor.action)
       .disposed(by: disposeBag)
   }
