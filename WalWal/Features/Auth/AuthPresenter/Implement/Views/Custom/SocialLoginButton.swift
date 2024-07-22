@@ -67,30 +67,22 @@ final class SocialLoginButton: UIButton {
   
   private func setAttributes() {
     let tintColor: UIColor = socialType == .apple ? .white : .black
-    
-    // MARK: - UIButton 설정
-    
     backgroundColor = socialType == .apple ? .black : .yellow
     layer.cornerRadius = 18
     clipsToBounds = true
     
-    // MARK: - ContainerView
-    
     containerView.backgroundColor = .clear
     addSubview(containerView)
-    
-    // MARK: - customImageView
     
     customImageView.tintColor = tintColor
     customImageView.image = UIImage(systemName: "apple.logo")
     customImageView.contentMode = .scaleAspectFit
-    containerView.addSubview(customImageView)
-    
-    // MARK: - customLabel
     
     customLabel.text = socialType.buttonTitle
     customLabel.textColor = tintColor
     customLabel.textAlignment = .center
+    
+    containerView.addSubview(customImageView)
     containerView.addSubview(customLabel)
   }
   

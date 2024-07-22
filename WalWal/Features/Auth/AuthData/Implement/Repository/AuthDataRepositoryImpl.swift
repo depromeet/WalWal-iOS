@@ -28,6 +28,4 @@ public final class AuthDataRepositoryImpl: AuthDataRepository {
       .asObservable()
       .asSingle()
   }
-  
-  
 }

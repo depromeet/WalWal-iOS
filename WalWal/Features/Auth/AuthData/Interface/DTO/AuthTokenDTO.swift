@@ -11,5 +11,4 @@ import Foundation
 
 public struct AuthTokenDTO: Decodable {
   public let token: String
-  
 }

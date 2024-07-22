@@ -18,7 +18,6 @@ import RxSwift
 import RxCocoa
 
 public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController {
-  
   public var disposeBag = DisposeBag()
   public let authReactor: R
   
@@ -129,4 +128,3 @@ extension AuthViewControllerImp: View {
     
   }
 }
-
