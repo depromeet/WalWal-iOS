@@ -105,17 +105,17 @@ public class DependencyFactoryImp: DependencyFactory {
   private let networkService = NetworkService()
   
   public func makeSampleAuthData() -> SampleAuthRepository {
-    return SampleAuthRepositoryImpl(networkService: networkService)
+    return SampleAuthRepositoryImp(networkService: networkService)
   }
   
   // MARK: - 추가되는 Feature에 따라 Domain Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
   
   public func makeSampleSignInUsecase() -> SampleSignInUseCase {
-    return SignInUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
+    return SignInUseCaseImp(sampleAuthRepository: makeSampleAuthData())
   }
   
   public func makeSampleSignUpUsecase() -> SampleSignUpUseCase {
-    return SignUpUseCaseImpl(sampleAuthRepository: makeSampleAuthData())
+    return SignUpUseCaseImp(sampleAuthRepository: makeSampleAuthData())
   }
   
   // MARK: - 추가되는 Feature에 따라 Presenter Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
@@ -145,11 +145,11 @@ public class DependencyFactoryImp: DependencyFactory {
   // MARK: - Auth
   
   public func makeAuthData() -> AuthDataRepository {
-    return AuthDataRepositoryImpl(networkService: networkService)
+    return AuthDataRepositoryImp(networkService: networkService)
   }
   
   public func makeAuthUsecase() -> AuthUseCase {
-    return AuthUseCaseImpl(authDataRepository: makeAuthData())
+    return AuthUseCaseImp(authDataRepository: makeAuthData())
   }
   
   public func makeAuthReactor(coordinator: any AuthCoordinator) -> any AuthReactor {

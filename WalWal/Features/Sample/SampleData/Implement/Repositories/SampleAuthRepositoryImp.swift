@@ -12,7 +12,7 @@ import SampleData
 
 import RxSwift
 
-public final class SampleAuthRepositoryImpl: SampleAuthRepository {
+public final class SampleAuthRepositoryImp: SampleAuthRepository {
   
   // MARK: - Properties
 

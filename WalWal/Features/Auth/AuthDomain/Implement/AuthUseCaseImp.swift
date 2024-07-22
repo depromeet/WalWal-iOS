@@ -12,7 +12,7 @@ import AuthDomain
 
 import RxSwift
 
-public final class AuthUseCaseImpl: AuthUseCase {
+public final class AuthUseCaseImp: AuthUseCase {
   
   private let authDataRepository: AuthDataRepository
   

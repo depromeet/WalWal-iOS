@@ -12,7 +12,7 @@ import SampleDomain
 
 import RxSwift
 
-public final class SignInUseCaseImpl: SampleSignInUseCase {
+public final class SignInUseCaseImp: SampleSignInUseCase {
   
   // MARK: - Properties
   

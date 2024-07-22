@@ -12,7 +12,7 @@ import AuthData
 
 import RxSwift
 
-public final class AuthDataRepositoryImpl: AuthDataRepository {
+public final class AuthDataRepositoryImp: AuthDataRepository {
   
   private let networkService: NetworkServiceProtocol
   
