@@ -33,8 +33,6 @@ let project = Project(
       dependencies: [
         .ThirdParty.PinLayout,
         .ThirdParty.FlexLayout,
-        .ThirdParty.RxCocoa,
-        .ThirdParty.RxSwift,
         .ThirdParty.RxGesture,
         .ThirdParty.Then,
         .ThirdParty.Kingfisher,
@@ -62,14 +60,7 @@ let project = Project(
       resources: ["./DemoApp/Resources/**"],
       dependencies:
         [
-          .target(name: "DesignSystem"),
-          .ThirdParty.FlexLayout,
-          .ThirdParty.PinLayout,
-          .ThirdParty.RxCocoa,
-          .ThirdParty.RxSwift,
-          .ThirdParty.RxGesture,
-          .ThirdParty.Then,
-          .ResourceKit
+          .target(name: "DesignSystem")
         ]
     )
   ]

@@ -31,15 +31,7 @@ let project = Project(
       infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
-        .ThirdParty.PinLayout,
-        .ThirdParty.FlexLayout,
-        .ThirdParty.RxCocoa,
-        .ThirdParty.RxSwift,
-        .ThirdParty.RxGesture,
-        .ThirdParty.Then,
-        .ThirdParty.Kingfisher,
-        
-        .ResourceKit,
+        .ThirdParty.RxCocoa
       ]
     ),
   ]

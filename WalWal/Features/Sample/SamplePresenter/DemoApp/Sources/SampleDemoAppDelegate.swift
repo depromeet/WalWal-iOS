@@ -8,12 +8,7 @@
 
 import UIKit
 
-import DependencyFactory
 import DependencyFactoryImp
-import SampleData
-import SampleDomain
-import SampleAppCoordinator
-import SamplePresenter
 
 @main
 final class SampleAppDelegate: UIResponder, UIApplicationDelegate {
