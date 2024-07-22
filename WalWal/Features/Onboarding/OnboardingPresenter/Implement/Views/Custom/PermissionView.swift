@@ -11,10 +11,14 @@ import Utility
 
 import FlexLayout
 import PinLayout
+import RxSwift
+import RxCocoa
 
 /// 권한 확인을 받기 위한 얼럿 뷰 입니다.
 final class PermissionView {
-  
+  private let disposeBag = DisposeBag()
+  private var window: UIWindow?
+  private let permissionRequest = PermissionRequest()
   // MARK: - UI
   
   private let alertContainer = UIView().then {
@@ -43,6 +47,10 @@ final class PermissionView {
   private let cameraPermissionView = PermissionListView(icon: UIImage(systemName: "camera"), type: "카메라", content: "미션 인증 사진 촬영")
   private let photoPermissionView = PermissionListView(icon: UIImage(systemName: "photo"), type: "사진", content: "프로필 이미지 첨부")
   private let permissionView = UIView()
+  
+  init() {
+    
+  }
   
   // MARK: - Layout
   
@@ -94,8 +102,36 @@ final class PermissionView {
   /// ```
   func showAlert() {
     guard let window = UIWindow.key else { return }
+    self.window = window
     window.addSubview(alertContainer)
     self.setLayout()
+    bind()
+  }
+  
+  private func bind() {
+    let requestPermission = PublishSubject<Void>()
+    confirmButton.rx.tap
+      .asDriver()
+      .drive(with: self) { owner, _ in
+        owner.alertContainer.removeFromSuperview()
+        requestPermission.onNext(())
+      }
+      .disposed(by: disposeBag)
+    
+    requestPermission
+      .withUnretained(self)
+      .concatMap{ owner, _ in
+        Observable<Void>.concat(
+          owner.permissionRequest.requestNotification(),
+          owner.permissionRequest.requestCamera(),
+          owner.permissionRequest.requestPhoto()
+        )
+      }
+      .asDriver(onErrorJustReturn: ())
+      .drive(with: self, onNext: { owner, _ in
+        
+      })
+      .disposed(by: disposeBag)
   }
   
 }
