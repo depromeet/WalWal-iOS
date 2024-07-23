@@ -1,5 +1,5 @@
 //
-//  AuthUseCaseImpl.swift
+//  AppleLoginUseCaseImp.swift
 //  AuthDomain
 //
 //  Created by Jiyeon on 7/17/24.
@@ -12,7 +12,7 @@ import AuthDomain
 
 import RxSwift
 
-public final class AuthUseCaseImp: AuthUseCase {
+public final class AppleLoginUseCaseImp: AppleLoginUseCase {
   
   private let authDataRepository: AuthRepository
   
@@ -20,7 +20,7 @@ public final class AuthUseCaseImp: AuthUseCase {
     self.authDataRepository = authDataRepository
   }
   
-  public func appleLogin(authCode: String) -> Single<AuthToken> {
+  public func excute(authCode: String) -> Single<AuthToken> {
     return authDataRepository.appleLogin(token: authCode)
       .map { AuthToken(dto: $0) }
       .asObservable()

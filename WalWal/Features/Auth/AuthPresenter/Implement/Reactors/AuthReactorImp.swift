@@ -20,15 +20,15 @@ public final class AuthReactorImp: AuthReactor {
   
   public let initialState: State
   public let coordinator: any AuthCoordinator
-  private let authUseCase: AuthUseCase
+  private let appleLoginUseCase: AppleLoginUseCase
   
   public init(
     coordinator: any AuthCoordinator,
-    authUseCase: AuthUseCase
+    appleLoginUseCase: AppleLoginUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
-    self.authUseCase = authUseCase
+    self.appleLoginUseCase = appleLoginUseCase
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -38,7 +38,7 @@ public final class AuthReactorImp: AuthReactor {
       return .never()
       
       // TODO: - 추후 api 요청 작업 시 사용 예정
-//      return authUseCase.appleLogin(authCode: authCode)
+//      return appleLoginUseCase.excute(authCode: authCode)
 //        .asObservable()
 //        .map { token in
 //          return Mutation.token(token: token.token)

@@ -10,7 +10,7 @@ import Foundation
 
 import RxSwift
 
-public protocol AuthUseCase {
+public protocol AppleLoginUseCase {
   /// 애플 로그인 요청 후 서버에서 토큰 값 반환하는 메서드
-  func appleLogin(authCode: String) -> Single<AuthToken>
+  func excute(authCode: String) -> Single<AuthToken>
 }

@@ -148,12 +148,12 @@ public class DependencyFactoryImp: DependencyFactory {
     return AuthRepositoryImp(networkService: networkService)
   }
   
-  public func makeAuthUsecase() -> AuthUseCase {
-    return AuthUseCaseImp(authDataRepository: makeAuthData())
+  public func makeAppleLoginUseCase() -> AppleLoginUseCase {
+    return AppleLoginUseCaseImp(authDataRepository: makeAuthData())
   }
   
   public func makeAuthReactor(coordinator: any AuthCoordinator) -> any AuthReactor {
-    return AuthReactorImp(coordinator: coordinator, authUseCase: makeAuthUsecase())
+    return AuthReactorImp(coordinator: coordinator, appleLoginUseCase: makeAppleLoginUseCase())
   }
   
   public func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController {

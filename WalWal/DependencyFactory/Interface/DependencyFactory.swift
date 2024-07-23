@@ -55,7 +55,7 @@ public protocol DependencyFactory {
   // MARK: - Auth
   
   func makeAuthData() -> AuthRepository
-  func makeAuthUsecase() -> AuthUseCase
+  func makeAppleLoginUseCase() -> AppleLoginUseCase
   func makeAuthReactor(coordinator: any AuthCoordinator) -> any AuthReactor
   func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
   func makeAuthCoordinator(navigationController: UINavigationController) -> any AuthCoordinator
