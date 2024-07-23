@@ -18,10 +18,11 @@ let project = Project.invertedDualTargetProject(
     .Coordinator.SampleApp.Interface,
     .Coordinator.SampleAuth.Interface,
     .Coordinator.SampleHome.Interface,
+    .Coordinator.Auth.Interface,
     
+    .Feature.Splash.Presenter.Interface,
     .Feature.Sample.Presenter.Interface,
-    
-    .Feature.Splash.Presenter.Interface
+    .Feature.Auth.Presenter.Interface,
   ],
   implementDependencies: [
     .WalWalNetwork.Implement,
@@ -30,13 +31,19 @@ let project = Project.invertedDualTargetProject(
     .Coordinator.SampleApp.Implement,
     .Coordinator.SampleAuth.Implement,
     .Coordinator.SampleHome.Implement,
+    .Coordinator.Auth.Implement,
     
     .Feature.Splash.Data.Implement,
     .Feature.Splash.Domain.Implement,
     .Feature.Splash.Presenter.Implement,
     
     .Feature.Sample.Data.Implement,
+    .Feature.Sample.Data.Implement,
     .Feature.Sample.Domain.Implement,
-    .Feature.Sample.Presenter.Implement
+    .Feature.Sample.Presenter.Implement,
+    
+    .Feature.Auth.Data.Implement,
+    .Feature.Auth.Domain.Implement,
+    .Feature.Auth.Presenter.Implement,
   ]
 )

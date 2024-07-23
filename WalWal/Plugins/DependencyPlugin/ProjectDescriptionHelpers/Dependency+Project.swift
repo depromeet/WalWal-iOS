@@ -23,6 +23,7 @@ enum CoordinatorStr: String {
   case sampleAuth = "SampleAuth"
   case sampleApp = "SampleApp"
   case sampleHome = "SampleHome"
+  case auth = "Auth"
 }
 
 enum FeatureStr: String {
@@ -69,6 +70,7 @@ extension TargetDependency {
     public struct SampleAuth: WalWalDependency { }
     public struct SampleApp: WalWalDependency { }
     public struct SampleHome: WalWalDependency { }
+    public struct Auth: WalWalDependency { }
   }
   
   public struct DependencyFactory { }
@@ -218,11 +220,18 @@ public extension TargetDependency.Coordinator.App {
   static let Implement = TargetDependency.Coordinator.App.project(name: .app,
                                                                         isInterface: false)
 }
+public extension TargetDependency.Coordinator.Auth {
+  static let Interface = TargetDependency.Coordinator.Auth.project(name: .auth,
+                                                                        isInterface: true)
+  static let Implement = TargetDependency.Coordinator.Auth.project(name: .auth,
+                                                                        isInterface: false)
+}
 
 public extension TargetDependency.Coordinator.Base {
   static let Interface = TargetDependency.Coordinator.Base.project(name: .base,
                                                                         isInterface: true)
 }
+
 
 
 

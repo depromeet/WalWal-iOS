@@ -13,7 +13,7 @@ import UIKit
 /// window.addSubview(loadingView)
 public extension UIWindow {
     /// 찾지 못하였을 경우 `nil`을 반환합니다.
-    static var key: UIWindow? {
+  static var key: UIWindow? {
         return UIApplication.shared.connectedScenes
             .filter { $0.activationState == .foregroundActive || $0.activationState == .foregroundInactive }
             .first(where: { $0 is UIWindowScene })

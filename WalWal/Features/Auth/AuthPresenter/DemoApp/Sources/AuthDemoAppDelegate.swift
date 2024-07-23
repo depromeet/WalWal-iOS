@@ -1,25 +1,25 @@
 //
-//  SplashAppDelegate.swift
+//  AuthAppDelegate.swift
 //
-//  Splash
+//  Auth
 //
-//  Created by 조용인 on .
+//  Created by Jiyeon on .
 //
 
 import UIKit
 import DependencyFactoryImp
 
 @main
-final class SplashAppDelegate: UIResponder, UIApplicationDelegate {
+final class AuthAppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     let window = UIWindow(frame: UIScreen.main.bounds)
     
     let dependencyFactory = DependencyFactoryImp()
     let navigationController = UINavigationController()
-    let coordinator = dependencyFactory.makeAppCoordinator(navigationController: navigationController)
-    let reactor = dependencyFactory.makeSplashReactor(coordinator: coordinator)
-    let viewController = dependencyFactory.makeSplashViewController(reactor: reactor)
+    let coordinator = dependencyFactory.makeAuthCoordinator(navigationController: navigationController)
+    let reactor = dependencyFactory.makeAuthReactor(coordinator: coordinator)
+    let viewController = dependencyFactory.makeAuthViewController(reactor: reactor)
     
     window.rootViewController = viewController
     window.makeKeyAndVisible()
