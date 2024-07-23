@@ -18,7 +18,7 @@ import RxCocoa
 final class PermissionView {
   private let disposeBag = DisposeBag()
   private var window: UIWindow?
-  private let permissionRequest = PermissionRequest()
+  private let permissionRequest = PermissionHelper()
   // MARK: - UI
   
   private let alertContainer = UIView().then {
@@ -122,9 +122,9 @@ final class PermissionView {
       .withUnretained(self)
       .concatMap{ owner, _ in
         Observable<Void>.concat(
-          owner.permissionRequest.requestNotification(),
-          owner.permissionRequest.requestCamera(),
-          owner.permissionRequest.requestPhoto()
+          owner.permissionRequest.requestNotificationPermission(),
+          owner.permissionRequest.requestCameraPermission(),
+          owner.permissionRequest.requestPhotoPermission()
         )
       }
       .asDriver(onErrorJustReturn: ())

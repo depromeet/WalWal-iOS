@@ -196,7 +196,6 @@ extension OnboardingSelectViewController {
       }
       .disposed(by: disposeBag)
     
-    
   }
   
 }
