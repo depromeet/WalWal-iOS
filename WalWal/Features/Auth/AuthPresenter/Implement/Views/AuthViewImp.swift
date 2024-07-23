@@ -73,28 +73,14 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   }
   
   public func setLayout() {
-    rootContainer.flex
-      .justifyContent(.spaceBetween)
-      .define {
-        $0.addItem()
-          .alignItems(.center)
-          .paddingTop(35%).define {
-            $0.addItem(imageView)
-              .size(220)
-            $0.addItem(titleLabel)
-              .marginTop(10)
-              .maxWidth(330)
-            $0.addItem(subTitleLabel)
-              .marginTop(6)
-              .maxWidth(330)
+    rootContainer.flex.justifyContent(.spaceBetween).define {
+        $0.addItem().alignItems(.center).paddingTop(35%).define {
+            $0.addItem(imageView).size(220)
+            $0.addItem(titleLabel).marginTop(10).maxWidth(330)
+            $0.addItem(subTitleLabel).marginTop(6).maxWidth(330)
           }
-        $0.addItem()
-          .marginBottom(40)
-          .alignItems(.center)
-          .define {
-            $0.addItem(appleLoginButton)
-              .width(330)
-              .height(56)
+        $0.addItem().marginBottom(40).alignItems(.center).define {
+            $0.addItem(appleLoginButton).width(330).height(56)
           }
       }
   }

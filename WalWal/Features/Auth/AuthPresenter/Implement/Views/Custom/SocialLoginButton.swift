@@ -87,15 +87,9 @@ final class SocialLoginButton: UIButton {
   }
   
   private func setLayout() {
-    containerView.flex
-      .direction(.row)
-      .alignItems(.center)
-      .define {
-        $0.addItem(customImageView)
-          .size(22)
-        $0.addItem(customLabel)
-          .marginLeft(16)
-          .grow(1)
+    containerView.flex.direction(.row).alignItems(.center).define {
+        $0.addItem(customImageView).size(22)
+        $0.addItem(customLabel).marginLeft(16).grow(1)
       }
   }
 }
