@@ -12,10 +12,14 @@ import RxCocoa
 import RxGesture
 import Then
 import FlexLayout
+import PinLayout
 
 final public class WalWalCalendarHeaderView: UIView {
+  
+  private let containerView = UIView()
+  
   private let monthLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 18, weight: .medium)
+    $0.font = .systemFont(ofSize: 16, weight: .bold)
     $0.textColor = .black
     $0.textAlignment = .center
   }
@@ -41,7 +45,7 @@ final public class WalWalCalendarHeaderView: UIView {
   
   
   /// WalWalCalendarHeaderView의 생성자입니다. ( 파라미터는 추후 추가 )
-  /// - Parameter frame: 초기 프레임 설정
+  /// - Parameter :
   public init() {
     super.init(frame: .zero)
     setupViews()
@@ -54,11 +58,13 @@ final public class WalWalCalendarHeaderView: UIView {
   }
   
   private func setupViews() {
-    flex.direction(.row).justifyContent(.spaceBetween).padding(10).define { flex in
-        flex.addItem(prevButton).width(44).height(44) ///
-        flex.addItem(monthLabel).grow(1).shrink(1)
-        flex.addItem(nextButton).width(44).height(44)
-      }
+    addSubview(containerView)
+    
+    containerView.flex.direction(.row).justifyContent(.center).alignItems(.center).define { flex in
+      flex.addItem(prevButton).width(16).height(16).marginLeft(14)
+      flex.addItem(monthLabel).grow(1).shrink(1)
+      flex.addItem(nextButton).width(16).height(16).marginRight(14)
+    }
   }
   
   private func bind() {
@@ -95,6 +101,7 @@ final public class WalWalCalendarHeaderView: UIView {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    flex.layout(mode: .adjustHeight)
+    containerView.pin.top(12).bottom(12).width(100%).height(100%)
+    containerView.flex.layout(mode: .adjustHeight)
   }
 }
