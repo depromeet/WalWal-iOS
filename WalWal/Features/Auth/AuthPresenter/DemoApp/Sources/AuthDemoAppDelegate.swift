@@ -8,12 +8,7 @@
 
 import UIKit
 
-import DependencyFactory
 import DependencyFactoryImp
-import AuthData
-import AuthDomain
-import AuthCoordinator
-import AuthPresenter
 
 @main
 final class AuthAppDelegate: UIResponder, UIApplicationDelegate {

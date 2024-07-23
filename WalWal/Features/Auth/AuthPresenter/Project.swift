@@ -15,28 +15,15 @@ let project = Project.invertedPresenterWithDemoApp(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .ThirdParty.RxSwift,
     .ThirdParty.ReactorKit,
-    .Coordinator.Auth.Interface,
+    
+    .Feature.Auth.Domain.Interface
   ],
   implementDependencies: [
-    .ThirdParty.Then,
-    .ThirdParty.FlexLayout,
-    .ThirdParty.PinLayout,
-    .ThirdParty.RxCocoa,
-    .ThirdParty.RxSwift,
-    .ThirdParty.ReactorKit,
-    
-    .DependencyFactory.Interface,
-    .Coordinator.Auth.Interface,
-    .Feature.Auth.Domain.Interface,
-    
-    .DesignSystem,
-    .ResourceKit
+    .DesignSystem
   ],
   demoAppDependencies: [
-    .DependencyFactory.Interface,
-    .DependencyFactory.Implement,
+    .DependencyFactory.Implement
   ],
   infoPlist: .extendingDefault(
     with:
