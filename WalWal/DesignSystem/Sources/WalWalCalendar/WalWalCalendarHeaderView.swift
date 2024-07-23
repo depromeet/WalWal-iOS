@@ -6,4 +6,95 @@
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import Foundation
+import UIKit
+import RxSwift
+import RxCocoa
+import RxGesture
+import Then
+import FlexLayout
+
+final public class WalWalCalendarHeaderView: UIView {
+  private let monthLabel = UILabel().then {
+    $0.font = .systemFont(ofSize: 18, weight: .medium)
+    $0.textColor = .black
+    $0.textAlignment = .center
+  }
+  
+  private let prevButton = UIImageView().then {
+    $0.image = UIImage(systemName: "chevron.left")
+    $0.contentMode = .scaleAspectFit
+    $0.tintColor = .black
+    $0.isUserInteractionEnabled = true
+  }
+  
+  private let nextButton = UIImageView().then {
+    $0.image = UIImage(systemName: "chevron.right")
+    $0.contentMode = .scaleAspectFit
+    $0.tintColor = .black
+    $0.isUserInteractionEnabled = true
+  }
+  
+  private let disposeBag = DisposeBag()
+  private let currentDate = BehaviorRelay<Date>(value: Date())
+  private let monthChangedSubject = PublishSubject<Date>()
+  private let calendarShouldScrollSubject = PublishSubject<Void>()
+  
+  
+  /// WalWalCalendarHeaderView의 생성자입니다. ( 파라미터는 추후 추가 )
+  /// - Parameter frame: 초기 프레임 설정
+  public init() {
+    super.init(frame: .zero)
+    setupViews()
+    bind()
+  }
+  
+  @available(*, unavailable)
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) is called.")
+  }
+  
+  private func setupViews() {
+    flex.direction(.row).justifyContent(.spaceBetween).padding(10).define { flex in
+        flex.addItem(prevButton).width(44).height(44) ///
+        flex.addItem(monthLabel).grow(1).shrink(1)
+        flex.addItem(nextButton).width(44).height(44)
+      }
+  }
+  
+  private func bind() {
+    prevButton.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.changeMonth(prev: true)
+      })
+      .disposed(by: disposeBag)
+    
+    nextButton.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.changeMonth(prev: false)
+      })
+      .disposed(by: disposeBag)
+    
+    currentDate
+      .map { date -> String in
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 M월"
+        return formatter.string(from: date)
+      }
+      .bind(to: monthLabel.rx.text)
+      .disposed(by: disposeBag)
+  }
+  
+  private func changeMonth(prev isMinus: Bool) {
+    let value = isMinus ? -1 : 1
+    guard let newDate = Calendar.current.date(byAdding: .month, value: value, to: currentDate.value) else { return }
+    currentDate.accept(newDate)
+    
+    monthChangedSubject.onNext(newDate)
+    calendarShouldScrollSubject.onNext(())
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    flex.layout(mode: .adjustHeight)
+  }
+}
