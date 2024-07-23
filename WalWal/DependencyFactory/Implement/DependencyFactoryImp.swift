@@ -51,9 +51,7 @@ public class DependencyFactoryImp: DependencyFactory {
   
   // MARK: - 추가되는 Coordinator에 따라 Dependency를 생성 및 주입하는 함수의 구현부를 작성해주새요
   
-  public func makeSampleAppCoordinator(
-    navigationController: UINavigationController
-  ) -> any SampleAppCoordinator {
+  public func makeSampleAppCoordinator(navigationController: UINavigationController) -> any SampleAppCoordinator {
     return SampleAppCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: nil,
@@ -111,11 +109,11 @@ public class DependencyFactoryImp: DependencyFactory {
   // MARK: - 추가되는 Feature에 따라 Domain Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.
   
   public func makeSampleSignInUsecase() -> SampleSignInUseCase {
-    return SignInUseCaseImp(sampleAuthRepository: makeSampleAuthData())
+    return SampleSignInUseCaseImp(sampleAuthRepository: makeSampleAuthData())
   }
   
   public func makeSampleSignUpUsecase() -> SampleSignUpUseCase {
-    return SignUpUseCaseImp(sampleAuthRepository: makeSampleAuthData())
+    return SampleSignUpUseCaseImp(sampleAuthRepository: makeSampleAuthData())
   }
   
   // MARK: - 추가되는 Feature에 따라 Presenter Dependency를 생성 및 주입하는 함수의 구현부를 작성해주세요.

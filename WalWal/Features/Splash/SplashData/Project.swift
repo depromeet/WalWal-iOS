@@ -14,10 +14,10 @@ let project = Project.invertedDualTargetProject(
   name: "SplashData",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
-  interfaceDependencies: [],
-  implementDependencies: [
+  interfaceDependencies: [
     .WalWalNetwork.Interface
-  ]
+  ],
+  implementDependencies: []
 )
 
 

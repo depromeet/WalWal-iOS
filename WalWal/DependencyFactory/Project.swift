@@ -33,11 +33,11 @@ let project = Project.invertedDualTargetProject(
     .Coordinator.SampleHome.Implement,
     .Coordinator.Auth.Implement,
     
-      .Feature.Splash.Data.Implement,
+    .Feature.Splash.Data.Implement,
     .Feature.Splash.Domain.Implement,
     .Feature.Splash.Presenter.Implement,
     
-      .Feature.Sample.Data.Implement,
+    .Feature.Sample.Data.Implement,
     .Feature.Sample.Data.Implement,
     .Feature.Sample.Domain.Implement,
     .Feature.Sample.Presenter.Implement,

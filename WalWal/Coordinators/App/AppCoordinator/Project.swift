@@ -18,6 +18,6 @@ let project = Project.invertedDualTargetProject(
     .Coordinator.Base.Interface,
   ],
   implementDependencies: [
-    .DependencyFactory.Interface,
+    .DependencyFactory.Interface
   ]
 )
