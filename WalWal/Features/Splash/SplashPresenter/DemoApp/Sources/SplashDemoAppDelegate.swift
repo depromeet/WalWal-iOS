@@ -8,12 +8,7 @@
 
 import UIKit
 
-import DependencyFactory
 import DependencyFactoryImp
-import SplashData
-import SplashDomain
-import SplashCoordinator
-import SplashPresenter
 
 @main
 final class SplashAppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,7 +18,7 @@ final class SplashAppDelegate: UIResponder, UIApplicationDelegate {
     
     let dependencyFactory = DependencyFactoryImp()
     let navigationController = UINavigationController()
-    let coordinator = dependencyFactory.makeSplashCoordinator(navigationController: navigationController)
+    let coordinator = dependencyFactory.makeAppCoordinator(navigationController: navigationController)
     let reactor = dependencyFactory.makeSplashReactor(coordinator: coordinator)
     let viewController = dependencyFactory.makeSplashViewController(reactor: reactor)
     

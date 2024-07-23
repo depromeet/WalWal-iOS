@@ -1,5 +1,5 @@
 //
-//  SampleSignInUseCaseImpl.swift
+//  SampleSignUpUseCaseImp.swift
 //  SampleDomainImp
 //
 //  Created by 조용인 on 7/13/24.
@@ -12,7 +12,7 @@ import SampleDomain
 
 import RxSwift
 
-public final class SignInUseCaseImpl: SampleSignInUseCase {
+public final class SampleSignUpUseCaseImp: SampleSignUpUseCase {
   
   // MARK: - Properties
   
@@ -26,8 +26,8 @@ public final class SignInUseCaseImpl: SampleSignInUseCase {
   
   // MARK: - Methods
   
-  public func execute(id: String, password: String) -> Single<SampleToken> {
-    sampleAuthRepository.signIn(id: id, password: password)
+  public func execute(nickname: String, profile: Data) -> Single<SampleToken> {
+    sampleAuthRepository.signUp(nickname: nickname, profile: profile)
       .map { SampleTokenImp(dto: $0) }
   }
 }

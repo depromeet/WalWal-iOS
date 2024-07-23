@@ -151,8 +151,8 @@ extension Project {
       sources: ["./DemoApp/Sources/**"],
       resources: ["./DemoApp/Resources/**"],
       dependencies: [
-        .target(name: "\(name)"),
-        .target(name: "\(name)Imp"),
+//        .target(name: "\(name)"),
+//        .target(name: "\(name)Imp"),
       ] + demoAppDependencies
     )
     
