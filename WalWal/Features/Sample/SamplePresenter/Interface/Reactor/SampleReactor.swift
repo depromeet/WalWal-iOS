@@ -13,11 +13,17 @@ import SampleDomain
 import ReactorKit
 import RxSwift
 
-public protocol SampleReactorAction {}
-public protocol SampleReactorMutation {}
-public protocol SampleReactorState {}
+public enum SampleReactorAction {
+  
+}
+public enum SampleReactorMutation {
+  
+}
+public struct SampleReactorState {
+  public init() { }
+}
 
-public protocol SampleReactor: Reactor where Action: SampleReactorAction, Mutation: SampleReactorMutation, State: SampleReactorState {
+public protocol SampleReactor: Reactor where Action == SampleReactorAction, Mutation == SampleReactorMutation, State == SampleReactorState {
   var coordinator: any SampleAppCoordinator { get }
   var sampleSignInUsecase: SampleSignInUseCase { get }
   var sampleSignUpUsecase: SampleSignUpUseCase { get }
