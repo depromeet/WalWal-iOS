@@ -49,7 +49,7 @@ final public class WalWalCalendarHeaderView: UIView {
   /// - Parameter :
   public init() {
     super.init(frame: .zero)
-    setupViews()
+    setLayout()
     bind()
   }
   
@@ -58,7 +58,7 @@ final public class WalWalCalendarHeaderView: UIView {
     fatalError("init(coder:) is called.")
   }
   
-  private func setupViews() {
+  private func setLayout() {
     addSubview(containerView)
     
     containerView.flex.direction(.row).justifyContent(.center).alignItems(.center).define { flex in
