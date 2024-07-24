@@ -90,12 +90,6 @@ extension OnboardingCoordinatorImp {
     navigationController.pushViewController(vc, animated: true)
 //    self.pushViewController(viewController: vc, animated: false)
   }
-  fileprivate func showNext() {
-    let reactor = dependencyFactory.makeOnboardingReactor(coordinator: self)
-    let vc = dependencyFactory.makeOnboardingViewController(reactor: reactor)
-    navigationController.pushViewController(vc, animated: true)
-//    self.pushViewController(viewController: vc, animated: false)
-  }
 }
 
 // MARK: - Onboarding(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출

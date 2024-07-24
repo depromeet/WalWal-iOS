@@ -42,7 +42,6 @@ let project = Project.invertedDualTargetProject(
     .Feature.Splash.Presenter.Implement,
     
     .Feature.Sample.Data.Implement,
-    .Feature.Sample.Data.Implement,
     .Feature.Sample.Domain.Implement,
     .Feature.Sample.Presenter.Implement,
     
