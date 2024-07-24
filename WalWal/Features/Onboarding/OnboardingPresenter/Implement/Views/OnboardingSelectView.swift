@@ -146,11 +146,12 @@ extension OnboardingSelectViewController {
   public func bindState(reactor: R) {
     reactor.state
       .map { $0.selectedAnimal }
-      .asDriver(onErrorJustReturn: (false, false))
+      .asDriver(onErrorJustReturn: (nil, nil))
       .drive(with: self) { owner, select in
-        let (dog, cat) = select
-        owner.dogView.isSelected = dog
-        owner.catView.isSelected = cat
+        if let dog = select.0, let cat = select.1 {
+          owner.dogView.isSelected = dog
+          owner.catView.isSelected = cat
+        }
       }
       .disposed(by: disposeBag)
     
