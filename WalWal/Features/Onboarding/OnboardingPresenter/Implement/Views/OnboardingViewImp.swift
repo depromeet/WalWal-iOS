@@ -88,36 +88,20 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
   }
   
   public func setLayout() {
-    rootContainer.flex
-      .define {
-        $0.addItem()
-          .justifyContent(.center)
-          .grow(1)
-          .define {
-            $0.addItem(scrollView)
-              .alignSelf(.center)
-            $0.addItem(pageControl)
-              .marginTop(57)
-              .height(5)
-          }
-        $0.addItem(nextButton)
-          .marginBottom(30)
-          .marginHorizontal(20)
-          .height(56)
+    rootContainer.flex.define {
+      $0.addItem().justifyContent(.center).grow(1).define {
+        $0.addItem(scrollView).alignSelf(.center)
+        $0.addItem(pageControl).marginTop(57).height(5)
       }
+      $0.addItem(nextButton).marginBottom(30).marginHorizontal(20).height(56)
+    }
     
     scrollView.flex
       .direction(.row)
       .define {
-        $0.addItem(descriptionView1)
-          .width(100%)
-          .height(80%)
-        $0.addItem(descriptionView2)
-          .width(100%)
-          .height(80%)
-        $0.addItem(descriptionView3)
-          .width(100%)
-          .height(80%)
+        $0.addItem(descriptionView1).width(100%).height(80%)
+        $0.addItem(descriptionView2).width(100%).height(80%)
+        $0.addItem(descriptionView3).width(100%).height(80%)
       }
   }
   
@@ -141,7 +125,7 @@ extension OnboardingViewControllerImp {
   
   public func bindAction(reactor: R) {
     nextButton.rx.tap
-      .map { Reactor.Action.nextButtonTapped }
+      .map { Reactor.Action.nextButtonTapped(flow: .showSelect) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
@@ -151,12 +135,6 @@ extension OnboardingViewControllerImp {
   }
   
   public func bindEvent() {
-//    nextButton.rx.tap
-//      .subscribe(with: self) { owner, _ in
-//        owner.navigationController?.pushViewController(
-//          OnboardingSelectViewController(reactor: owner.onboardingReactor),
-//          animated: true)
-//      }
-//      .disposed(by: disposeBag)
+    
   }
 }

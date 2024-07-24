@@ -62,11 +62,12 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
     setLayout()
     
     self.reactor = onboardingReactor
+    permissionView.showAlert()
   }
   
   public override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    permissionView.showAlert()
+    
   }
   
   public override func viewDidDisappear(_ animated: Bool) {

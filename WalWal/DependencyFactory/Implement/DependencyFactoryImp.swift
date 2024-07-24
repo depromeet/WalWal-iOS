@@ -180,4 +180,8 @@ public class DependencyFactoryImp: DependencyFactory {
     return OnboardingViewControllerImp(reactor: reactor)
   }
   
+  public func makeOnboardingSelectViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController {
+    return OnboardingSelectViewController(reactor: reactor)
+  }
+  
 }
