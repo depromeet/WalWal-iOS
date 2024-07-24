@@ -14,14 +14,6 @@ import OnboardingCoordinator
 import RxSwift
 import RxCocoa
 
-public enum OnboardingCoordinatorAction: ParentAction {
-  
-}
-
-public enum OnboardingCoordinatorFlow: CoordinatorFlow {
-  
-}
-
 public final class OnboardingCoordinatorImp: OnboardingCoordinator {
   
   public typealias Action = OnboardingCoordinatorAction
@@ -51,7 +43,10 @@ public final class OnboardingCoordinatorImp: OnboardingCoordinator {
   public func bindState() {
     destination
       .subscribe(with: self, onNext: { owner, flow in
-        switch flow { }
+        switch flow { 
+        case .showSelect:
+          owner.showOnboardingSelect()
+        }
       })
       .disposed(by: disposeBag)
   }
@@ -59,20 +54,16 @@ public final class OnboardingCoordinatorImp: OnboardingCoordinator {
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
   /// 여기도, Onboarding이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   public func handleChildEvent<T: ParentAction>(_ event: T) {
-    if let OnboardingEvent = event as? CoordinatorEvent<OnboardingCoordinatorAction> {
-      handleOnboardingEvent(OnboardingEvent)
-    } else if let OnboardingEvent = event as? CoordinatorEvent<OnboardingCoordinatorAction> {
-      handleOnboardingEvent(OnboardingEvent)
-    }
+    
   }
   
   public func start() {
-    /// 이런 Reactor랑 ViewController가 있다 치고~
-    /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
     let reactor = dependencyFactory.makeOnboardingReactor(coordinator: self)
-    let OnboardingVC = dependencyFactory.makeOnboardingViewController(reactor: reactor)
-    self.baseViewController = OnboardingVC
-    self.pushViewController(viewController: OnboardingVC, animated: false)
+    let onboardingVC = dependencyFactory.makeOnboardingViewController(reactor: reactor)
+    self.baseViewController = onboardingVC
+//    navigationController.pushViewController(onboardingVC, animated: true)
+    self.pushViewController(viewController: onboardingVC, animated: false)
+    
   }
 }
 
@@ -93,25 +84,12 @@ extension OnboardingCoordinatorImp {
 // MARK: - Create and Start(Show) with Flow(View)
 
 extension OnboardingCoordinatorImp {
-  
-  /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
-  fileprivate func startOnboarding() {
-    let onboardingCoordinator = dependencyFactory.makeOnboardingCoordinator(
-      navigationController: navigationController, parentCoordinator: nil
-    )
-    childCoordinator = onboardingCoordinator
-    onboardingCoordinator.start()
-  }
-  
-  /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
-  fileprivate func showOnboarding() {
+  fileprivate func showOnboardingSelect() {
     let reactor = dependencyFactory.makeOnboardingReactor(coordinator: self)
-    let OnboardingVC = dependencyFactory.makeOnboardingViewController(reactor: reactor)
-    self.pushViewController(viewController: OnboardingVC, animated: false)
+    let vc = dependencyFactory.makeOnboardingViewController(reactor: reactor)
+    navigationController.pushViewController(vc, animated: true)
   }
 }
-
-
 
 // MARK: - Onboarding(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 

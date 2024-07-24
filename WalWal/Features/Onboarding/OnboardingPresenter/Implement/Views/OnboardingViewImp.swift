@@ -140,7 +140,10 @@ extension OnboardingViewControllerImp {
   }
   
   public func bindAction(reactor: R) {
-    
+    nextButton.rx.tap
+      .map { Reactor.Action.nextButtonTapped }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -148,12 +151,12 @@ extension OnboardingViewControllerImp {
   }
   
   public func bindEvent() {
-    nextButton.rx.tap
-      .subscribe(with: self) { owner, _ in
-        owner.navigationController?.pushViewController(
-          OnboardingSelectViewController(reactor: owner.onboardingReactor),
-          animated: true)
-      }
-      .disposed(by: disposeBag)
+//    nextButton.rx.tap
+//      .subscribe(with: self) { owner, _ in
+//        owner.navigationController?.pushViewController(
+//          OnboardingSelectViewController(reactor: owner.onboardingReactor),
+//          animated: true)
+//      }
+//      .disposed(by: disposeBag)
   }
 }
