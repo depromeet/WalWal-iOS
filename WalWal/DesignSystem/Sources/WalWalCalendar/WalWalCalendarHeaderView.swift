@@ -41,8 +41,8 @@ final public class WalWalCalendarHeaderView: UIView {
   
   private let disposeBag = DisposeBag()
   private let currentDate = BehaviorRelay<Date>(value: Date())
-  private let monthChangedSubject = PublishSubject<Date>()
-  private let calendarShouldScrollSubject = PublishSubject<Void>()
+  fileprivate let monthChangedSubject = PublishSubject<Date>()
+  fileprivate let calendarShouldScrollSubject = PublishSubject<Void>()
   
   
   /// WalWalCalendarHeaderView의 생성자입니다. ( 파라미터는 추후 추가 )
@@ -104,5 +104,17 @@ final public class WalWalCalendarHeaderView: UIView {
     super.layoutSubviews()
     containerView.pin.top(12).bottom(12).width(100%).height(100%)
     containerView.flex.layout(mode: .adjustHeight)
+  }
+}
+
+extension Reactive where Base: WalWalCalendarHeaderView {
+  public var monthChanged: ControlEvent<Date> {
+    let event: Observable<Date> = base.monthChangedSubject.asObservable()
+    return ControlEvent(events: event)
+  }
+  
+  public var calendarShouldScroll:ControlEvent<Void> {
+    let event: Observable<Void> = base.calendarShouldScrollSubject.asObservable()
+    return ControlEvent(events: event)
   }
 }

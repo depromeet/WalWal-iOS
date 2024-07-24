@@ -11,13 +11,21 @@ final class WalWalCalenderDemoViewController: UIViewController {
   
   // MARK: - UI
   
-  private let containerView = UIView().then {
-    $0.backgroundColor = .darkGray
+  private let rootView = UIView().then {
+    $0.backgroundColor = .white
+  }
+  
+  private let headerContainerView = UIView().then {
+    $0.backgroundColor = .lightGray
     $0.layer.masksToBounds = true
     $0.layer.cornerRadius = 16
   }
   
-  private let calenderView = WalWalCalendarHeaderView()
+  private let calenderViewHeaderView = WalWalCalendarHeaderView()
+  
+  private let calendarWeekDayView = WalWalCalendarWeekdayView()
+  
+  private let calendarMonthView = WalWalCalendarMonthView()
   
   // MARK: - Properties
   
@@ -38,24 +46,32 @@ final class WalWalCalenderDemoViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    self.view.addSubview(self.containerView)
+    self.view.addSubview(self.rootView)
     setLayouts()
     bind()
   }
   
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    self.containerView.pin.top(view.pin.safeArea.top).hCenter().width(200).height(44)
-    self.containerView.flex.layout(mode: .fitContainer)
+    self.rootView.pin.all(view.pin.safeArea)
+    self.rootView.flex.layout(mode: .fitContainer)
   }
   
   // MARK: - Methods
   
   private func setLayouts() {
-    self.containerView.flex.justifyContent(.center).alignItems(.center).define { flex in
-      flex.addItem(calenderView).width(100%).height(100%)
+    self.rootView.flex.padding(0, 20).direction(.column).alignItems(.center).define { flex in
+      flex.addItem(headerContainerView).width(200).height(44).justifyContent(.center).alignItems(.center).marginTop(28).define { flex in
+        flex.addItem(calenderViewHeaderView).width(100%).height(100%)
+      }
+      flex.addItem(calendarWeekDayView).width(100%).height(30).marginTop(30)
+      flex.addItem(calendarMonthView).width(100%).height(100%).marginTop(10)
     }
   }
   
-  private func bind() { }
+  private func bind() {
+    calenderViewHeaderView.rx.monthChanged
+      .bind(to: calendarMonthView.monthChangedSubject)
+      .disposed(by: disposeBag)
+  }
 }
