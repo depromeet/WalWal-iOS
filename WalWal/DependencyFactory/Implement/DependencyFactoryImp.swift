@@ -183,4 +183,8 @@ public final class DependencyFactoryImp: DependencyFactory {
   public func makeOnboardingSelectViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController {
     return OnboardingSelectViewController(reactor: reactor)
   }
+  
+  public func makeOnboardingProfileViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController{
+    return OnboardingProfileViewController(reactor: reactor)
+  }
 }

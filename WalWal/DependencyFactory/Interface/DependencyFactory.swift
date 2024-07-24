@@ -71,6 +71,6 @@ public protocol DependencyFactory {
   func makeOnboardingReactor(coordinator: any OnboardingCoordinator) -> any OnboardingReactor
   func makeOnboardingViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController
   func makeOnboardingSelectViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController
-  
+  func makeOnboardingProfileViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController
 }
 
