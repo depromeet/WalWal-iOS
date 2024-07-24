@@ -61,8 +61,7 @@ public final class OnboardingCoordinatorImp: OnboardingCoordinator {
     let reactor = dependencyFactory.makeOnboardingReactor(coordinator: self)
     let onboardingVC = dependencyFactory.makeOnboardingViewController(reactor: reactor)
     self.baseViewController = onboardingVC
-    navigationController.pushViewController(onboardingVC, animated: false)
-//    self.pushViewController(viewController: onboardingVC, animated: false)
+    self.pushViewController(viewController: onboardingVC, animated: false)
     
   }
 }
@@ -87,8 +86,7 @@ extension OnboardingCoordinatorImp {
   fileprivate func showOnboardingSelect() {
     let reactor = dependencyFactory.makeOnboardingReactor(coordinator: self)
     let vc = dependencyFactory.makeOnboardingSelectViewController(reactor: reactor)
-    navigationController.pushViewController(vc, animated: true)
-//    self.pushViewController(viewController: vc, animated: false)
+    self.pushViewController(viewController: vc, animated: false)
   }
 }
 
