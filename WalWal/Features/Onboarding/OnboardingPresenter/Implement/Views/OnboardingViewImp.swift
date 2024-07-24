@@ -66,11 +66,6 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
     self.reactor = onboardingReactor
   }
   
-  public override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
-    
-  }
-  
   // MARK: - Layout
   
   public override func viewDidLayoutSubviews() {

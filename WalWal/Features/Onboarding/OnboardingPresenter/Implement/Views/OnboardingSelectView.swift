@@ -8,6 +8,7 @@
 
 import UIKit
 import OnboardingPresenter
+import DesignSystem
 
 import Then
 import PinLayout
@@ -15,7 +16,6 @@ import FlexLayout
 import ReactorKit
 import RxSwift
 import RxCocoa
-import RxGesture
 
 /// 반려동물 선택하는 페이지
 public final class OnboardingSelectViewController<R: OnboardingReactor>:
@@ -99,12 +99,12 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
     rootContainer.flex.justifyContent(.center).marginHorizontal(20)
     progressView.flex.marginTop(32)
     contentContainer.flex.justifyContent(.start).grow(1).define {
-        $0.addItem(titleLabel).marginTop(48)
-        $0.addItem().direction(.row).marginTop(40).define {
-            $0.addItem(dogView).grow(1)
-            $0.addItem(catView).marginLeft(20).grow(1)
-          }
+      $0.addItem(titleLabel).marginTop(48)
+      $0.addItem().direction(.row).marginTop(40).define {
+        $0.addItem(dogView).grow(1)
+        $0.addItem(catView).marginLeft(20).grow(1)
       }
+    }
     nextButton.flex.marginBottom(30).height(56)
   }
 }
@@ -118,12 +118,10 @@ extension OnboardingSelectViewController {
   
   public func bindAction(reactor: R) {
     /// 강아지 선택 액션
-    let dogViewTapped = dogView.rx.tapGesture()
-      .when(.recognized)
+    let dogViewTapped = dogView.rx.tapped
       .map { _ in return PetType.dog }
     /// 고양이 선택 액션
-    let catViewTapped = catView.rx.tapGesture()
-      .when(.recognized)
+    let catViewTapped = catView.rx.tapped
       .map { _ in return PetType.cat }
     
     /// 반려동물 선택 뷰 둘 중 하나 탭 시 Action

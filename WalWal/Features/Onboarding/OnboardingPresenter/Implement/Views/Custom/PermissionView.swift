@@ -45,9 +45,21 @@ final class PermissionView {
   }
   private let confirmButton = CompleteButton(title: "확인했어요", isEnable: true)
   
-  private let notiPermissionView = PermissionListView(icon: UIImage(systemName: "bell.badge"), type: "알림", content: "미션 알림 메세지 수신")
-  private let cameraPermissionView = PermissionListView(icon: UIImage(systemName: "camera"), type: "카메라", content: "미션 인증 사진 촬영")
-  private let photoPermissionView = PermissionListView(icon: UIImage(systemName: "photo"), type: "사진", content: "프로필 이미지 첨부")
+  private let notiPermissionView = PermissionListView(
+    icon: UIImage(systemName: "bell.badge"),
+    type: "알림",
+    content: "미션 알림 메세지 수신"
+  )
+  private let cameraPermissionView = PermissionListView(
+    icon: UIImage(systemName: "camera"),
+    type: "카메라",
+    content: "미션 인증 사진 촬영"
+  )
+  private let photoPermissionView = PermissionListView(
+    icon: UIImage(systemName: "photo"),
+    type: "사진",
+    content: "프로필 이미지 첨부"
+  )
   private let permissionView = UIView()
   
   // MARK: - Layout
@@ -57,17 +69,17 @@ final class PermissionView {
     alertContainer.flex.justifyContent(.center).alignItems(.stretch)
     
     containerView.flex.marginHorizontal(30).alignItems(.stretch).define {
-        $0.addItem(titleLabel).marginTop(45)
-        $0.addItem(contentLabel).marginTop(8)
-        $0.addItem().direction(.row).justifyContent(.center).marginTop(40).marginBottom(46).define {
-            $0.addItem().define {
-                $0.addItem(notiPermissionView)
-                $0.addItem(cameraPermissionView).marginVertical(25)
-                $0.addItem(photoPermissionView)
-              }
-          }
-        $0.addItem(confirmButton).marginHorizontal(20).marginBottom(20).height(56)
+      $0.addItem(titleLabel).marginTop(45)
+      $0.addItem(contentLabel).marginTop(8)
+      $0.addItem().direction(.row).justifyContent(.center).marginTop(40).marginBottom(46).define {
+        $0.addItem().define {
+          $0.addItem(notiPermissionView)
+          $0.addItem(cameraPermissionView).marginVertical(25)
+          $0.addItem(photoPermissionView)
+        }
       }
+      $0.addItem(confirmButton).marginHorizontal(20).marginBottom(20).height(56)
+    }
     
     containerView.flex.layout(mode: .adjustHeight)
     alertContainer.pin.all()

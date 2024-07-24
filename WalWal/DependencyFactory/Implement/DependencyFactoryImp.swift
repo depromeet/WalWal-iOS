@@ -52,7 +52,7 @@ import OnboardingDomainImp
 import OnboardingPresenter
 import OnboardingPresenterImp
 
-public class DependencyFactoryImp: DependencyFactory {
+public final class DependencyFactoryImp: DependencyFactory {
   public init() {
     
   }
@@ -183,5 +183,4 @@ public class DependencyFactoryImp: DependencyFactory {
   public func makeOnboardingSelectViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController {
     return OnboardingSelectViewController(reactor: reactor)
   }
-  
 }

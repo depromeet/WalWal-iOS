@@ -35,7 +35,6 @@ final class PetView: UIView {
   // MARK: - UI
   
   private let containerView = UIView()
-  // TODO: - 반려동물 타입에 따라 이미지 변경 수정 필요
   private let petImage = UIImageView().then {
     $0.backgroundColor = .white
     $0.image = UIImage(systemName: "teddybear")
