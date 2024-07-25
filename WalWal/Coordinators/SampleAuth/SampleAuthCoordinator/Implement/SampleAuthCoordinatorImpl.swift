@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import DependencyFactory
+import SampleDependencyFactory
 import BaseCoordinator
 import SampleAuthCoordinator
 
@@ -24,14 +24,14 @@ public final class SampleAuthCoordinatorImp: SampleAuthCoordinator {
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
-  public var dependencyFactory: DependencyFactory
+  public var dependencyFactory: SampleDependencyFactory
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
   public init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    dependencyFactory: (any DependencyFactory)
+    dependencyFactory: (any SampleDependencyFactory)
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator

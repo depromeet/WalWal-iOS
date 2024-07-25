@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import DependencyFactoryImp
+import AuthDependencyFactoryImp
 
 @main
 final class AuthAppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,7 +15,7 @@ final class AuthAppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     let window = UIWindow(frame: UIScreen.main.bounds)
     
-    let dependencyFactory = DependencyFactoryImp()
+    let dependencyFactory = AuthDependencyFactoryImp()
     let navigationController = UINavigationController()
     let coordinator = dependencyFactory.makeAuthCoordinator(navigationController: navigationController)
     let reactor = dependencyFactory.makeAuthReactor(coordinator: coordinator)

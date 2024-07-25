@@ -14,8 +14,12 @@ let project = Project.invertedDualTargetProject(
   name: "AuthData",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
-  interfaceDependencies: [],
-  implementDependencies: []
+  interfaceDependencies: [
+    .WalWalNetwork
+  ],
+  implementDependencies: [
+    .DependencyFactory.Auth.Interface,
+  ]
 )
 
 

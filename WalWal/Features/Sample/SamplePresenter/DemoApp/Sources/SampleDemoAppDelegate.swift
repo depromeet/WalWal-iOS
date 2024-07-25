@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import DependencyFactoryImp
+import SampleDependencyFactoryImp
 
 @main
 final class SampleAppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,7 +15,7 @@ final class SampleAppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     let window = UIWindow(frame: UIScreen.main.bounds)
     
-    let dependencyFactory = DependencyFactoryImp()
+    let dependencyFactory = SampleDependencyFactoryImp()
     let navigationController = UINavigationController()
     let coordinator = dependencyFactory.makeSampleAppCoordinator(navigationController: navigationController)
     let reactor = dependencyFactory.makeSampleReactor(coordinator: coordinator)
