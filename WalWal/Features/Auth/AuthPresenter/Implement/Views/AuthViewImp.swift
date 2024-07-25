@@ -57,6 +57,7 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     setAttribute()
     setLayout()
     self.reactor = authReactor
+    
   }
   
   // MARK: - Layout

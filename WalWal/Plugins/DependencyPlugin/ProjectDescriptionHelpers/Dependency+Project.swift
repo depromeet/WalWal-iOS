@@ -99,22 +99,22 @@ extension TargetDependency {
   }
   
   public struct Feature {
-    public struct Splash: WalWalDependency {
-      public struct Data {}
-      public struct Domain {}
-      public struct Presenter {}
+    public struct Splash {
+      public struct Data: WalWalDependency {}
+      public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
     }
     
-    public struct Auth: WalWalDependency {
-      public struct Data {}
-      public struct Domain {}
-      public struct Presenter {}
+    public struct Auth {
+      public struct Data: WalWalDependency {}
+      public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
     }
     
-    public struct Sample: WalWalDependency {
-      public struct Data {}
-      public struct Domain {}
-      public struct Presenter {}
+    public struct Sample {
+      public struct Data: WalWalDependency {}
+      public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
     }
   }
 }
@@ -122,163 +122,96 @@ extension TargetDependency {
 //MARK: - 여기서부터는, DependencyFactory별로 Dependency를 주입시키기 위한 준비
 
 public extension TargetDependency.DependencyFactory.Splash {
-  static let Interface = TargetDependency.DependencyFactory.Splash.project(dependencyName: .splash,
-                                                               isInterface: true)
-  
-  static let Implement = TargetDependency.DependencyFactory.Splash.project(dependencyName: .splash,
-                                                                           isInterface: false)
+  static let Interface = Self.project(dependencyName: .splash, isInterface: true)
+  static let Implement = Self.project(dependencyName: .splash, isInterface: false)
 }
 
 public extension TargetDependency.DependencyFactory.Auth {
-  static let Interface = TargetDependency.DependencyFactory.Splash.project(dependencyName: .auth,
-                                                                           isInterface: true)
-  
-  static let Implement = TargetDependency.DependencyFactory.Splash.project(dependencyName: .auth,
-                                                                           isInterface: false)
+  static let Interface = Self.project(dependencyName: .auth, isInterface: true)
+  static let Implement = Self.project(dependencyName: .auth, isInterface: false)
 }
 
 public extension TargetDependency.DependencyFactory.Sample {
-  static let Interface = TargetDependency.DependencyFactory.Splash.project(dependencyName: .sample,
-                                                                           isInterface: true)
-  
-  static let Implement = TargetDependency.DependencyFactory.Splash.project(dependencyName: .sample,
-                                                                           isInterface: false)
+  static let Interface = Self.project(dependencyName: .sample, isInterface: true)
+  static let Implement = Self.project(dependencyName: .sample, isInterface: false)
 }
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
 
 public extension TargetDependency.Feature.Splash.Presenter {
-  static let Interface = TargetDependency.Feature.Splash.project(name: .splash,
-                                                               layer: .presenter,
-                                                               isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Splash.project(name: .splash,
-                                                              layer: .presenter,
-                                                              isInterface: false)
+  static let Interface = Self.project(name: .splash, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .splash, layer: .presenter, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Splash.Domain {
-  static let Interface = TargetDependency.Feature.Splash.project(name: .splash,
-                                                               layer: .domain,
-                                                               isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Splash.project(name: .splash,
-                                                               layer: .domain,
-                                                               isInterface: false)
+  static let Interface = Self.project(name: .splash, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .splash, layer: .domain, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Splash.Data {
-  static let Interface = TargetDependency.Feature.Splash.project(name: .splash,
-                                                                 layer: .data,
-                                                                 isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Splash.project(name: .splash,
-                                                                 layer: .data,
-                                                                 isInterface: false)
+  static let Interface = Self.project(name: .splash, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .splash, layer: .data, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Auth.Presenter {
-  static let Interface = TargetDependency.Feature.Auth.project(name: .auth,
-                                                               layer: .presenter,
-                                                               isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Auth.project(name: .auth,
-                                                              layer: .presenter,
-                                                              isInterface: false)
+  static let Interface = Self.project(name: .auth, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .auth, layer: .presenter, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Auth.Domain {
-  static let Interface = TargetDependency.Feature.Auth.project(name: .auth,
-                                                               layer: .domain,
-                                                               isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Auth.project(name: .auth,
-                                                               layer: .domain,
-                                                               isInterface: false)
+  static let Interface = Self.project(name: .auth, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .auth, layer: .domain, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Auth.Data {
-  static let Interface = TargetDependency.Feature.Auth.project(name: .auth,
-                                                                 layer: .data,
-                                                                 isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Auth.project(name: .auth,
-                                                                 layer: .data,
-                                                                 isInterface: false)
+  static let Interface = Self.project(name: .auth, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .auth, layer: .data, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Sample.Presenter {
-  static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
-                                                               layer: .presenter,
-                                                               isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
-                                                              layer: .presenter,
-                                                              isInterface: false)
+  static let Interface = Self.project(name: .auth, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .auth, layer: .presenter, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Sample.Domain {
-  static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
-                                                                 layer: .domain,
-                                                                 isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
-                                                                 layer: .domain,
-                                                                 isInterface: false)
+  static let Interface = Self.project(name: .auth, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .auth, layer: .domain, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Sample.Data {
-  static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
-                                                                 layer: .data,
-                                                                 isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
-                                                                 layer: .data,
-                                                                 isInterface: false)
+  static let Interface = Self.project(name: .auth, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .auth, layer: .data, isInterface: false)
 }
 
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
 public extension TargetDependency.Coordinator.SampleApp {
-  static let Interface = TargetDependency.Coordinator.SampleApp.project(name: .sampleApp,
-                                                                        isInterface: true)
-  static let Implement = TargetDependency.Coordinator.SampleApp.project(name: .sampleApp,
-                                                                        isInterface: false)
+  static let Interface = Self.project(name: .sampleApp, isInterface: true)
+  static let Implement = Self.project(name: .sampleApp, isInterface: false)
 }
 
 public extension TargetDependency.Coordinator.SampleAuth {
-  static let Interface = TargetDependency.Coordinator.SampleAuth.project(name: .sampleAuth,
-                                                                        isInterface: true)
-  static let Implement = TargetDependency.Coordinator.SampleAuth.project(name: .sampleAuth,
-                                                                        isInterface: false)
+  static let Interface = Self.project(name: .sampleAuth, isInterface: true)
+  static let Implement = Self.project(name: .sampleAuth, isInterface: false)
 }
 
 public extension TargetDependency.Coordinator.SampleHome {
-  static let Interface = TargetDependency.Coordinator.SampleHome.project(name: .sampleHome,
-                                                                        isInterface: true)
-  static let Implement = TargetDependency.Coordinator.SampleHome.project(name: .sampleHome,
-                                                                        isInterface: false)
+  static let Interface = Self.project(name: .sampleHome, isInterface: true)
+  static let Implement = Self.project(name: .sampleHome, isInterface: false)
 }
 
 public extension TargetDependency.Coordinator.App {
-  static let Interface = TargetDependency.Coordinator.App.project(name: .app,
-                                                                        isInterface: true)
-  static let Implement = TargetDependency.Coordinator.App.project(name: .app,
-                                                                        isInterface: false)
+  static let Interface = Self.project(name: .app, isInterface: true)
+  static let Implement = Self.project(name: .app, isInterface: false)
 }
+
 public extension TargetDependency.Coordinator.Auth {
-  static let Interface = TargetDependency.Coordinator.Auth.project(name: .auth,
-                                                                        isInterface: true)
-  static let Implement = TargetDependency.Coordinator.Auth.project(name: .auth,
-                                                                        isInterface: false)
+  static let Interface = Self.project(name: .auth, isInterface: true)
+  static let Implement = Self.project(name: .auth, isInterface: false)
 }
 
 public extension TargetDependency.Coordinator.Base {
-  static let Interface = TargetDependency.Coordinator.Base.project(name: .base,
-                                                                        isInterface: true)
+  static let Interface = Self.project(name: .base, isInterface: true)
 }
-
-
-
 
 public extension TargetDependency.ThirdParty {
   private static func framework(name: String) -> TargetDependency {
