@@ -15,10 +15,7 @@ let project = Project.framework(
   infoPlist: [
     "CFBundleDevelopmentRegion": "ko_KR",
     "UIAppFonts": [
-      "Item 0": "Pretendard-Medium.otf",
-      "Item 1": "Pretendard-Regular.otf",
-      "Item 2": "Pretendard-SemiBold.otf",
-      "Item 3": "Pretendard-Bold.otf"
+      "Item 0": "chab.otf"
     ]
   ],
   iOSTargetVersion: "15.0.0",
