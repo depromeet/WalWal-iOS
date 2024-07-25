@@ -18,10 +18,8 @@ final class OnboardingAppDelegate: UIResponder, UIApplicationDelegate {
     let dependencyFactory = OnboardingDependencyFactoryImp()
     let navigationController = UINavigationController()
     let coordinator = dependencyFactory.makeOnboardingCoordinator(navigationController: navigationController, parentCoordinator: nil)
-//    coordinator.start()
-    let reactor = dependencyFactory.makeOnboardingReactor(coordinator: coordinator)
-    let vc = dependencyFactory.makeOnboardingProfileViewController(reactor: reactor)
-    window.rootViewController = UINavigationController(rootViewController: vc)//coordinator.navigationController
+    coordinator.start()
+    window.rootViewController = coordinator.navigationController
     window.makeKeyAndVisible()
     self.window = window
     return true
