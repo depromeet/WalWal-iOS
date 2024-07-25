@@ -11,6 +11,7 @@ import Utility
 
 import FlexLayout
 import PinLayout
+import Then
 
 /// `Toast`는 앱 전체에서 토스트 메시지를 표시하는데 사용되는 클래스입니다.
 public final class Toast {
@@ -22,6 +23,8 @@ public final class Toast {
   /// Toast.shared
   /// ```
   public static let shared = Toast()
+
+  private init() {}
 
   /// 토스트 좌우 마진
   private let containerLeadingTrailingInset: CGFloat = 24
@@ -85,22 +88,24 @@ public final class Toast {
 
   /// 토스트 컨테이너를 생성하는 함수
   private func createToastContainer() -> UIView {
-    let toastContainer = UIView(frame: CGRect())
-    toastContainer.backgroundColor = .systemGray
-    toastContainer.layer.cornerRadius = 10
-    toastContainer.clipsToBounds = true
-    toastContainer.alpha = 0.0
+    let toastContainer = UIView().then {
+      $0.backgroundColor = .systemGray
+      $0.layer.cornerRadius = 10
+      $0.clipsToBounds = true
+      $0.alpha = 0.0
+    }
     return toastContainer
   }
 
   /// 토스트 레이블을 생성하는 함수
   private func createToastLabel(message: String) -> UILabel {
-    let toastLabel = UILabel(frame: CGRect())
-    toastLabel.text = message
-    toastLabel.textColor = .white
-    toastLabel.font = .systemFont(ofSize: 14, weight: .bold)
-    toastLabel.numberOfLines = 0
-    toastLabel.textAlignment = .center
+    let toastLabel = UILabel().then {
+      $0.text = message
+      $0.textColor = .white
+      $0.font = .systemFont(ofSize: 14, weight: .bold)
+      $0.numberOfLines = 0
+      $0.textAlignment = .center
+    }
     return toastLabel
   }
 
