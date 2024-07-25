@@ -15,15 +15,27 @@ import RxSwift
 /// 권한 상태 확인 및 요청을 위한 클래스
 public final class PermissionManager {
   public init() { }
-  
+  private let disposeBag = DisposeBag()
   // MARK: - 권한 상태 확인
   
   private var notificationPermission: Observable<Bool> {
-    return Observable<Bool>.create { observer in
+    return Observable<Bool>.create { observable in
       UNUserNotificationCenter.current().getNotificationSettings { settings in
-        let isAuthorized = settings.authorizationStatus == .authorized
-        observer.onNext(isAuthorized)
-        observer.onCompleted()
+        switch settings.authorizationStatus {
+        case .notDetermined:
+          self.requestNotificationPermission()
+            .subscribe(onNext: { isAllowed in
+              observable.onNext(isAllowed)
+              observable.onCompleted()
+            })
+            .disposed(by: self.disposeBag)
+        case .authorized:
+          observable.onNext(true)
+          observable.onCompleted()
+        default:
+          observable.onNext(false)
+          observable.onCompleted()
+        }
       }
       return Disposables.create()
     }
@@ -31,18 +43,46 @@ public final class PermissionManager {
   
   private var cameraPermission: Observable<Bool> {
     return Observable<Bool>.create { observable in
-      let status = AVCaptureDevice.authorizationStatus(for: .video) == .authorized
-      observable.onNext(status)
-      observable.onCompleted()
+      let status = AVCaptureDevice.authorizationStatus(for: .video)
+      switch status {
+      case .notDetermined:
+        self.requestCameraPermission()
+          .subscribe { isAllowed in
+            observable.onNext(isAllowed)
+            observable.onCompleted()
+          }
+          .disposed(by: self.disposeBag)
+      case .authorized:
+        observable.onNext(true)
+        observable.onCompleted()
+      default:
+        observable.onNext(false)
+        observable.onCompleted()
+      }
+      
       return Disposables.create()
     }
   }
   
   private var photoPermission: Observable<Bool> {
     return Observable<Bool>.create { observable in
-      let status = PHPhotoLibrary.authorizationStatus(for: .addOnly) == .authorized
-      observable.onNext(status)
-      observable.onCompleted()
+      let status = PHPhotoLibrary.authorizationStatus(for: .addOnly)
+      switch status {
+      case .notDetermined:
+        self.requestPhotoPermission()
+          .subscribe { isAllowed in
+            observable.onNext(isAllowed)
+            observable.onCompleted()
+          }
+          .disposed(by: self.disposeBag)
+      case .authorized:
+        observable.onNext(true)
+        observable.onCompleted()
+      default:
+        observable.onNext(false)
+        observable.onCompleted()
+      }
+     
       return Disposables.create()
     }
   }
@@ -83,8 +123,8 @@ public final class PermissionManager {
   ///   }
   ///   .disposed(by: disposBag())
   ///
-  public func requestNotificationPermission() -> Observable<Void> {
-    Observable<Void>.create { observable in
+  public func requestNotificationPermission() -> Observable<Bool> {
+    Observable<Bool>.create { observable in
       UNUserNotificationCenter.current()
         .requestAuthorization(
           options: [.alert, .sound, .badge]
@@ -94,7 +134,7 @@ public final class PermissionManager {
           } else {
             print("Push Notification 권한 거부")
           }
-          observable.onNext(())
+          observable.onNext(isAllow)
           observable.onCompleted()
         }
       return Disposables.create()
@@ -113,15 +153,15 @@ public final class PermissionManager {
   ///   }
   ///   .disposed(by: disposBag())
   ///
-  public func requestCameraPermission() -> Observable<Void> {
-    Observable<Void>.create { observable in
+  public func requestCameraPermission() -> Observable<Bool> {
+    Observable<Bool>.create { observable in
       AVCaptureDevice.requestAccess(for: .video) { granted in
         if granted {
           print("카메라 권한 허용")
         } else {
           print("카메라 권한 거부")
         }
-        observable.onNext(())
+        observable.onNext(granted)
         observable.onCompleted()
       }
       return Disposables.create()
@@ -140,16 +180,18 @@ public final class PermissionManager {
   ///   }
   ///   .disposed(by: disposBag())
   ///
-  public func requestPhotoPermission() -> Observable<Void> {
-    Observable<Void>.create { observable in
+  public func requestPhotoPermission() -> Observable<Bool> {
+    Observable<Bool>.create { observable in
       PHPhotoLibrary.requestAuthorization(for: .addOnly) { state in
         if state == .authorized {
           print("앨범 권한 허용")
+          observable.onNext(true)
+          observable.onCompleted()
         } else {
           print("앨범 권한 거부")
+          observable.onNext(false)
+          observable.onCompleted()
         }
-        observable.onNext(())
-        observable.onCompleted()
       }
       return Disposables.create()
     }
