@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import DependencyFactory
+import SplashDependencyFactory
 import BaseCoordinator
 import AppCoordinator
 
@@ -24,14 +24,14 @@ public final class AppCoordinatorImp: AppCoordinator {
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
-  public var dependencyFactory: DependencyFactory
+  public var dependencyFactory: SplashDependencyFactory
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    dependencyFactory: DependencyFactory
+    dependencyFactory: SplashDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator

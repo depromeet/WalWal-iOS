@@ -20,10 +20,11 @@ let project = Project.invertedPresenterWithDemoApp(
     .Feature.Auth.Domain.Interface
   ],
   implementDependencies: [
+    .DependencyFactory.Auth.Interface,
     .DesignSystem
   ],
   demoAppDependencies: [
-    .DependencyFactory.Implement
+    .DependencyFactory.Auth.Implement
   ],
   infoPlist: .extendingDefault(
     with:

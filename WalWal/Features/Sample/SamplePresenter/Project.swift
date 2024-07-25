@@ -20,10 +20,11 @@ let project = Project.invertedPresenterWithDemoApp(
     .Feature.Sample.Domain.Interface
   ],
   implementDependencies: [
+    .DependencyFactory.Sample.Interface,
     .DesignSystem
   ],
   demoAppDependencies: [
-    .DependencyFactory.Implement
+    .DependencyFactory.Sample.Implement
   ]
 )
 

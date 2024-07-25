@@ -18,7 +18,9 @@ let project = Project.invertedDualTargetProject(
   interfaceDependencies: [
     .Feature.Auth.Data.Interface
   ],
-  implementDependencies: []
+  implementDependencies: [
+    .DependencyFactory.Auth.Interface,
+  ]
 )
 
 

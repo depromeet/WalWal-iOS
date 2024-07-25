@@ -1,0 +1,29 @@
+//
+//  {{ name }}DependencyFactoryProject.swift
+//
+//  {{name}}
+//
+//  Created by {{author}}
+//
+
+import ProjectDescription
+import ProjectDescriptionHelpers
+import DependencyPlugin
+
+let project = Project.invertedDualTargetProject(
+  name: "{{name}}DependencyFactory",
+  platform: .iOS,
+  iOSTargetVersion: "15.0.0",
+  interfaceDependencies: [
+    .Coordinator.{{name}}.Interface,
+    
+    .Feature.{{name}}.Presenter.Interface
+  ],
+  implementDependencies: [
+    .Coordinator.{{name}}.Implement
+    
+    .Feature.{{name}}.Data.Implement,
+    .Feature.{{name}}.Domain.Implement,
+    .Feature.{{name}}.Presenter.Implement
+  ]
+)
