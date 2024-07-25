@@ -8,13 +8,7 @@
 
 import UIKit
 
-import DependencyFactory
 import DependencyFactoryImp
-import MissionData
-import MissionDomain
-import MissionCoordinator
-import MissionPresenter
-
 @main
 final class MissionAppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?

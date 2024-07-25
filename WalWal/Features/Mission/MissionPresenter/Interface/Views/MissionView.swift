@@ -11,7 +11,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
-public protocol MissionViewController: UIViewController, View {
+public protocol MissionViewController: UIViewController {
   
   associatedtype MissionReactorType: MissionReactor
   var disposeBag: DisposeBag { get set }
