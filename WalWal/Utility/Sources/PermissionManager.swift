@@ -12,10 +12,13 @@ import Photos
 
 import RxSwift
 
-/// 권한 상태 확인 및 요청을 위한 클래스
+/// 권한 상태 확인 및 요청을 위한 싱글톤 클래스
 public final class PermissionManager {
-  public init() { }
+  
+  public static let shared = PermissionManager()
+  private init() { }
   private let disposeBag = DisposeBag()
+  
   // MARK: - 권한 상태 확인
   
   private var notificationPermission: Observable<Bool> {
