@@ -97,7 +97,7 @@ extension Project {
       name: name,
       platform: platform,
       iOSTargetVersion: iOSTargetVersion,
-      dependencies: implementDependencies + [.target(name: name)]
+      dependencies: implementDependencies /*+ [.target(name: name)]*/
     )
     
     let targets: [Target] = [interfaceTarget, implementTarget]
@@ -135,7 +135,7 @@ extension Project {
       name: name,
       platform: platform,
       iOSTargetVersion: iOSTargetVersion,
-      dependencies: implementDependencies + [.target(name: name)]
+      dependencies: implementDependencies /*+ [.target(name: name)]*/
     )
     
     let demoApp = Target(

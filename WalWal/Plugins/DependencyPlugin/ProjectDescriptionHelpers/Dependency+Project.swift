@@ -17,6 +17,12 @@ enum Layer: String {
   case presenter = "Presenter"
 }
 
+enum DependencyFactoryStr: String {
+  case splash = "Splash"
+  case auth = "Auth"
+  case sample = "Sample"
+}
+
 enum CoordinatorStr: String {
   case base = "Base"
   case app = "App"
@@ -35,6 +41,7 @@ enum FeatureStr: String {
 protocol WalWalDependency {
   static func project(name: FeatureStr, layer: Layer, isInterface: Bool) -> TargetDependency
   static func project(name: CoordinatorStr, isInterface: Bool) -> TargetDependency
+  static func project(dependencyName: DependencyFactoryStr, isInterface: Bool) -> TargetDependency
 }
 
 extension WalWalDependency {
@@ -56,6 +63,15 @@ extension WalWalDependency {
     return .project(target: folderFullName,
                     path: .relativeToRoot("Coordinators/\(name)/\(name)\(layer)"))
   }
+  
+  static func project(dependencyName: DependencyFactoryStr, isInterface: Bool) -> TargetDependency {
+    let name = dependencyName.rawValue
+    let layer = "DependencyFactory"
+    let postfix: String = isInterface ? "" : "Imp"
+    let folderFullName = "\(name)\(layer)\(postfix)"
+    return .project(target: folderFullName,
+                    path: .relativeToRoot("DependencyFactory/\(name)/\(name)\(layer)"))
+  }
 }
 
 extension TargetDependency {
@@ -63,6 +79,15 @@ extension TargetDependency {
   public static let LocalStorage = TargetDependency.project(target: "LocalStorage", path: .relativeToRoot("LocalStorage"))
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
   public static let DesignSystem =  TargetDependency.project(target: "DesignSystem", path: .relativeToRoot("DesignSystem"))
+  public static let WalWalNetwork = TargetDependency.project(target: "WalWalNetwork", path: .relativeToRoot("WalWalNetwork"))
+  
+  public struct ThirdParty { }
+  
+  public struct DependencyFactory {
+    public struct Splash: WalWalDependency { }
+    public struct Sample: WalWalDependency { }
+    public struct Auth: WalWalDependency { }
+  }
   
   public struct Coordinator {
     public struct Base: WalWalDependency { }
@@ -72,12 +97,6 @@ extension TargetDependency {
     public struct SampleHome: WalWalDependency { }
     public struct Auth: WalWalDependency { }
   }
-  
-  public struct DependencyFactory { }
-  
-  public struct WalWalNetwork { }
-  
-  public struct ThirdParty { }
   
   public struct Feature {
     public struct Splash: WalWalDependency {
@@ -98,6 +117,32 @@ extension TargetDependency {
       public struct Presenter {}
     }
   }
+}
+
+//MARK: - 여기서부터는, DependencyFactory별로 Dependency를 주입시키기 위한 준비
+
+public extension TargetDependency.DependencyFactory.Splash {
+  static let Interface = TargetDependency.DependencyFactory.Splash.project(dependencyName: .splash,
+                                                               isInterface: true)
+  
+  static let Implement = TargetDependency.DependencyFactory.Splash.project(dependencyName: .splash,
+                                                                           isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.Auth {
+  static let Interface = TargetDependency.DependencyFactory.Splash.project(dependencyName: .auth,
+                                                                           isInterface: true)
+  
+  static let Implement = TargetDependency.DependencyFactory.Splash.project(dependencyName: .auth,
+                                                                           isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.Sample {
+  static let Interface = TargetDependency.DependencyFactory.Splash.project(dependencyName: .sample,
+                                                                           isInterface: true)
+  
+  static let Implement = TargetDependency.DependencyFactory.Splash.project(dependencyName: .sample,
+                                                                           isInterface: false)
 }
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
@@ -252,14 +297,3 @@ public extension TargetDependency.ThirdParty {
   static let FlexLayout = framework(name: "FlexLayout")
   static let PinLayout = framework(name: "PinLayout")
 }
-
-public extension TargetDependency.WalWalNetwork {
-  static let Interface = TargetDependency.project(target: "WalWalNetwork", path: .relativeToRoot("WalWalNetwork"))
-  static let Implement = TargetDependency.project(target: "WalWalNetworkImp", path: .relativeToRoot("WalWalNetwork"))
-}
-
-public extension TargetDependency.DependencyFactory {
-  static let Interface = TargetDependency.project(target: "DependencyFactory", path: .relativeToRoot("DependencyFactory"))
-  static let Implement = TargetDependency.project(target: "DependencyFactoryImp", path: .relativeToRoot("DependencyFactory"))
-}
-

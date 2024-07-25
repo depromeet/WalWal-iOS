@@ -20,9 +20,10 @@ let project = Project.invertedPresenterWithDemoApp(
     .Feature.Splash.Domain.Interface
   ],
   implementDependencies: [
+    .DependencyFactory.Splash.Interface,
     .DesignSystem
   ],
   demoAppDependencies: [
-    .DependencyFactory.Implement
+    .DependencyFactory.Splash.Implement
   ]
 )
