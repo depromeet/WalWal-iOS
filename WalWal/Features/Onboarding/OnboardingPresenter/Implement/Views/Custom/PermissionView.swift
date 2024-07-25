@@ -19,7 +19,7 @@ final class PermissionView {
   
   private let disposeBag = DisposeBag()
   private var window: UIWindow?
-  private let permissionRequest = PermissionHelper()
+  
   
   // MARK: - UI
   
@@ -132,9 +132,12 @@ final class PermissionView {
       .withUnretained(self)
       .concatMap{ owner, _ in
         Observable<Void>.concat(
-          owner.permissionRequest.requestNotificationPermission(),
-          owner.permissionRequest.requestCameraPermission(),
-          owner.permissionRequest.requestPhotoPermission()
+          PermissionManager.shared.requestNotificationPermission()
+            .map { _ in Void() },
+          PermissionManager.shared.requestCameraPermission()
+            .map { _ in Void() },
+          PermissionManager.shared.requestPhotoPermission()
+            .map { _ in Void() }
         )
       }
       .asDriver(onErrorJustReturn: ())
