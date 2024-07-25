@@ -63,10 +63,16 @@ final class DescriptionView: UIView {
   }
   
   private func setLayout() {
-    containerView.flex.justifyContent(.center).define { flex in
+    containerView.flex
+      .justifyContent(.center)
+      .define { flex in
         flex.addItem(mainTitleLabel)
-        flex.addItem(subTextLabel).marginTop(10)
-        flex.addItem(imageView).alignSelf(.center).marginTop(50).size(220)
+        flex.addItem(subTextLabel)
+          .marginTop(10)
+        flex.addItem(imageView)
+          .alignSelf(.center)
+          .marginTop(50)
+          .size(220)
       }
   }
 }

@@ -66,20 +66,37 @@ final class PermissionView {
   
   private func setLayout() {
     alertContainer.addSubview(containerView)
-    alertContainer.flex.justifyContent(.center).alignItems(.stretch)
+    alertContainer.flex
+      .justifyContent(.center)
     
-    containerView.flex.marginHorizontal(30).alignItems(.stretch).define {
-      $0.addItem(titleLabel).marginTop(45)
-      $0.addItem(contentLabel).marginTop(8)
-      $0.addItem().direction(.row).justifyContent(.center).marginTop(40).marginBottom(46).define {
-        $0.addItem().define {
-          $0.addItem(notiPermissionView)
-          $0.addItem(cameraPermissionView).marginVertical(25)
-          $0.addItem(photoPermissionView)
-        }
+    containerView.flex
+      .marginHorizontal(30)
+      .define {
+        $0.addItem(titleLabel)
+          .marginTop(45)
+        
+        $0.addItem(contentLabel)
+          .marginTop(8)
+        
+        $0.addItem()
+          .direction(.row)
+          .justifyContent(.center)
+          .marginTop(40)
+          .marginBottom(46)
+          .define {
+            $0.addItem().define {
+              $0.addItem(notiPermissionView)
+              $0.addItem(cameraPermissionView)
+                .marginVertical(25)
+              $0.addItem(photoPermissionView)
+            }
+          }
+        
+        $0.addItem(confirmButton)
+          .marginHorizontal(20)
+          .marginBottom(20)
+          .height(56)
       }
-      $0.addItem(confirmButton).marginHorizontal(20).marginBottom(20).height(56)
-    }
     
     containerView.flex.layout(mode: .adjustHeight)
     alertContainer.pin.all()

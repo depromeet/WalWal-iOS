@@ -41,11 +41,19 @@ final class NicknameTextField: UIView {
   
   private func setLayout() {
     self.flex.define {
-      $0.addItem().direction(.row).alignItems(.center).define {
-        $0.addItem(textField).height(51).grow(1)
-        $0.addItem(removeButton).size(24)
-      }
-      $0.addItem(bottomBarView).width(100%).height(1)
+      $0.addItem()
+        .direction(.row)
+        .alignItems(.center)
+        .define {
+          $0.addItem(textField)
+            .height(51)
+            .grow(1)
+          $0.addItem(removeButton)
+            .size(24)
+        }
+      $0.addItem(bottomBarView)
+        .width(100%)
+        .height(1)
     }
   }
   

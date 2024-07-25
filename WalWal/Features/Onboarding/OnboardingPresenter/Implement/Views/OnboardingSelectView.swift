@@ -96,16 +96,33 @@ public final class OnboardingSelectViewController<R: OnboardingReactor>:
   }
   
   public func setLayout() {
-    rootContainer.flex.justifyContent(.center).marginHorizontal(20)
-    progressView.flex.marginTop(32)
-    contentContainer.flex.justifyContent(.start).grow(1).define {
-      $0.addItem(titleLabel).marginTop(48)
-      $0.addItem().direction(.row).marginTop(40).define {
-        $0.addItem(dogView).grow(1)
-        $0.addItem(catView).marginLeft(20).grow(1)
+    rootContainer.flex
+      .justifyContent(.center)
+      .marginHorizontal(20)
+    
+    progressView.flex
+      .marginTop(32)
+    
+    contentContainer.flex
+      .justifyContent(.start)
+      .grow(1)
+      .define {
+        $0.addItem(titleLabel)
+          .marginTop(48)
+        $0.addItem()
+          .direction(.row)
+          .marginTop(40)
+          .define {
+            $0.addItem(dogView)
+              .grow(1)
+            $0.addItem(catView)
+              .marginLeft(20)
+              .grow(1)
+          }
       }
-    }
-    nextButton.flex.marginBottom(30).height(56)
+    nextButton.flex
+      .marginBottom(30)
+      .height(56)
   }
 }
 
@@ -138,6 +155,10 @@ extension OnboardingSelectViewController {
     /// pop이 되었을 때 선택을 초기화 시키기 위한 Action
     initState
       .map { Reactor.Action.initSelectView }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    nextButton.rx.tap
+      .map { Reactor.Action.nextButtonTapped(flow: .showProfile) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }

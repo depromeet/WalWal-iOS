@@ -73,7 +73,10 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
     rootContainer.pin.all(view.pin.safeArea)
     rootContainer.flex.layout()
     
-    scrollView.contentSize = CGSize(width: scrollView.frame.width * 3, height: scrollView.frame.height)
+    scrollView.contentSize = CGSize(
+      width: scrollView.frame.width * 3,
+      height: scrollView.frame.height
+    )
     scrollView.flex.layout(mode: .adjustHeight)
   }
   
@@ -83,20 +86,36 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
   }
   
   public func setLayout() {
-    rootContainer.flex.define {
-      $0.addItem().justifyContent(.center).grow(1).define {
-        $0.addItem(scrollView).alignSelf(.center)
-        $0.addItem(pageControl).marginTop(57).height(5)
+    rootContainer.flex
+      .define {
+        $0.addItem()
+          .justifyContent(.center)
+          .grow(1)
+          .define {
+            $0.addItem(scrollView)
+              .alignSelf(.center)
+            $0.addItem(pageControl)
+              .marginTop(57)
+              .height(5)
+          }
+        $0.addItem(nextButton)
+          .marginBottom(30)
+          .marginHorizontal(20)
+          .height(56)
       }
-      $0.addItem(nextButton).marginBottom(30).marginHorizontal(20).height(56)
-    }
     
     scrollView.flex
       .direction(.row)
       .define {
-        $0.addItem(descriptionView1).width(100%).height(80%)
-        $0.addItem(descriptionView2).width(100%).height(80%)
-        $0.addItem(descriptionView3).width(100%).height(80%)
+        $0.addItem(descriptionView1)
+          .width(100%)
+          .height(80%)
+        $0.addItem(descriptionView2)
+          .width(100%)
+          .height(80%)
+        $0.addItem(descriptionView3)
+          .width(100%)
+          .height(80%)
       }
   }
   

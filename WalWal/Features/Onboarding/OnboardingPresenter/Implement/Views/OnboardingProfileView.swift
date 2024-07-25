@@ -39,6 +39,7 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
     $0.font = .systemFont(ofSize: 14, weight: .medium)
     $0.textColor = .gray
   }
+  private let nicknameTextField = NicknameTextField()
   private let nextButton = CompleteButton(isEnable: false)
   
   
@@ -80,13 +81,31 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
   }
   
   public func setLayout() {
-    rootContainer.flex.justifyContent(.center).marginHorizontal(20)
-    progressView.flex.marginTop(32)
-    contentContainer.flex.justifyContent(.start).grow(1).define {
-      $0.addItem(titleLabel)
-      $0.addItem(subTitleLabel)
-    }
-    nextButton.flex.marginBottom(30).height(56)
+    rootContainer.flex
+      .justifyContent(.center)
+      .marginHorizontal(20)
+    
+    progressView.flex
+      .marginTop(32)
+    
+    contentContainer.flex
+      .justifyContent(.start)
+      .grow(1)
+      .define {
+        $0.addItem(titleLabel)
+          .marginTop(48)
+        $0.addItem(subTitleLabel)
+          .marginTop(4)
+        $0.addItem()
+          .justifyContent(.center)
+          .marginTop(40)
+          .define {
+            $0.addItem(nicknameTextField)
+          }
+      }
+    nextButton.flex
+      .marginBottom(30)
+      .height(56)
   }
 }
 
