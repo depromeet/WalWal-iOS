@@ -9,6 +9,8 @@
 
 import UIKit
 import MissionPresenter
+import Utility
+import ResourceKit
 
 import Then
 import PinLayout
@@ -20,25 +22,25 @@ import RxCocoa
 public final class MissionViewControllerImp<R: MissionReactor>: UIViewController, MissionViewController {
   public var disposeBag = DisposeBag()
   public var missionReactor: R
+  private typealias Assets = ResourceKitAsset.Assets
   
   // MARK: - UI
-  
   
   private let rootContainer = UIView()
   private let missionTimerView = UIView().then {
     $0.backgroundColor = .black.withAlphaComponent(0.3)
-    $0.layer.cornerRadius = 20
+    $0.layer.cornerRadius = 20.adjusted
   }
   private let missionTimerImageView = UIImageView().then {
-    $0.image = UIImage(systemName: "timer")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+    $0.image = Assets.timerFilled.image
   }
   private let missionTimerLabel = UILabel().then {
     $0.text = "오늘의 미션"
     $0.textColor = .white
-    $0.font = .systemFont(ofSize: 14, weight: .semibold)
+    $0.font = .systemFont(ofSize: 14.adjusted, weight: .semibold)
   }
   private let titleLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 28, weight: .bold)
+    $0.font = .systemFont(ofSize: 28.adjusted, weight: .bold)
     $0.textColor = .black
     $0.text = "반려동물과 함께\n산책한 사진을 찍어요"
     $0.numberOfLines = 2
@@ -46,14 +48,14 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   }
   private let missionImageView = UIImageView().then {
     $0.image = UIImage(systemName: "heart.fill")
+    $0.contentMode = .scaleAspectFit
   }
   private let dateLabel = UILabel().then {
     $0.text = "123일째"
+    $0.font = ResourceKitFontFamily.LotteriaChab.H1
   }
   private let missionStartButton = UIButton().then {
     $0.backgroundColor = .black
-    $0.setImage(UIImage(systemName: "flag.fill")?.withTintColor(.white, renderingMode: .alwaysOriginal),
-                for: .normal)
     $0.setTitle("미션하러 가기", for: .normal)
   }
   
@@ -95,17 +97,17 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   }
   
   public func setLayout() {
-    rootContainer.flex.justifyContent(.center).define {
-      $0.addItem(missionTimerView).marginTop(20).height(40).width(120).alignSelf(.center)
-      $0.addItem(titleLabel).marginTop(20)
-      $0.addItem(missionImageView).marginTop(20).marginHorizontal(0).height(341)
-      $0.addItem(dateLabel).marginTop(20).alignSelf(.center)
-      $0.addItem(missionStartButton).marginTop(20).marginHorizontal(20).height(50)
+    rootContainer.flex.paddingTop(40.adjusted).define {
+      $0.addItem(missionTimerView).height(40.adjusted).width(120.adjusted).alignSelf(.center)
+      $0.addItem(titleLabel).marginTop(14.adjusted).marginHorizontal(20.adjusted)
+      $0.addItem(missionImageView).marginTop(14.adjusted).marginHorizontal(0).height(340.adjusted)
+      $0.addItem(dateLabel).marginTop(7.adjusted).alignSelf(.center)
+      $0.addItem(missionStartButton).marginTop(10.adjusted).marginHorizontal(20.adjusted).height(50.adjusted)
     }
     
     missionTimerView.flex.direction(.row).justifyContent(.center).alignItems(.center).define {
-      $0.addItem(missionTimerImageView)
-      $0.addItem(missionTimerLabel).marginLeft(3.5)
+      $0.addItem(missionTimerImageView).size(24.adjusted)
+      $0.addItem(missionTimerLabel).marginLeft((3.5).adjusted)
     }
   }
   
