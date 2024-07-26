@@ -15,11 +15,10 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .ThirdParty.RxSwift
+    .WalWalNetwork
   ],
   implementDependencies: [
-    .ThirdParty.RxSwift,
-    .WalWalNetwork.Interface
+    .DependencyFactory.Mission.Interface
   ]
 )
 
