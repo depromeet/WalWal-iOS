@@ -84,14 +84,6 @@ public class DependencyFactoryImp: DependencyFactory {
       dependencyFactory: self)
   }
   
-  public func makeSampleHomeCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any SampleHomeCoordinator {
-    return SampleHomeCoordinatorImp(
-      navigationController: navigationController,
-      parentCoordinator: parentCoordinator,
-      dependencyFactory: self
-    )
-  }
-  
   public func makeMissionCoordinator(
     navigationController: UINavigationController
   ) -> any MissionCoordinator {

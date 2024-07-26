@@ -7,20 +7,12 @@
 //
 
 import UIKit
-impoer DependencyFactory
+import MissionDependencyFactory
 import BaseCoordinator
 import MissionCoordinator
 
 import RxSwift
 import RxCocoa
-
-public enum MissionCoordinatorAction: ParentAction {
-  
-}
-
-public enum MissionCoordinatorFlow: CoordinatorFlow {
-  
-}
 
 public final class MissionCoordinatorImp: MissionCoordinator {
   
@@ -31,15 +23,15 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   public let destination = PublishSubject<Flow>()
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
-  public weak var parentCoordinator: (any CoordinatorType)?
-  public var dependencyFactory: DependencyFactory
-  public var childCoordinator: (any CoordinatorType)?
+  public weak var parentCoordinator: (any BaseCoordinator)?
+  public var dependencyFactory: MissionDependencyFactory
+  public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
   public required init(
     navigationController: UINavigationController,
-    parentCoordinator: (any CoordinatorType)?,
-    dependencyFactory: DependencyFactory
+    parentCoordinator: (any BaseCoordinator)?,
+    dependencyFactory: MissionDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
