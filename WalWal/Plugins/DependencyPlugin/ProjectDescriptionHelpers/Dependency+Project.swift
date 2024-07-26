@@ -200,8 +200,8 @@ public extension TargetDependency.Feature.Sample.Data {
 }
 
 public extension TargetDependency.Feature.Mission.Presenter {
-  static let interface = Self.project(name: .mission, layer: .presenter, isInterface: true)
-  static let implement = Self.project(name: .mission, layer: .presenter, isInterface: false)
+  static let Interface = Self.project(name: .mission, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .mission, layer: .presenter, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Mission.Domain {
@@ -245,10 +245,8 @@ public extension TargetDependency.Coordinator.Base {
 }
 
 public extension TargetDependency.Coordinator.Mission {
-  static let Interface = TargetDependency.Coordinator.SampleHome.project(name: .mission,
-                                                                        isInterface: true)
-  static let Implement = TargetDependency.Coordinator.SampleHome.project(name: .mission,
-                                                                        isInterface: false)
+  static let Interface = Self.project(name: .mission, isInterface: true)
+  static let Implement = Self.project(name: .mission, isInterface: false)
 }
 
 public extension TargetDependency.ThirdParty {
