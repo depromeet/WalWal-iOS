@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Timer.png",
+      "filename" : "Icon_Alarm.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Timer@2x.png",
+      "filename" : "Icon_Alarm@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Timer@3x.png",
+      "filename" : "Icon_Alarm@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
