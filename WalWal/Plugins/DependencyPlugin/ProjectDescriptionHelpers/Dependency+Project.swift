@@ -21,6 +21,7 @@ enum DependencyFactoryStr: String {
   case splash = "Splash"
   case auth = "Auth"
   case sample = "Sample"
+  case mission = "Mission"
 }
 
 enum CoordinatorStr: String {
@@ -89,6 +90,7 @@ extension TargetDependency {
     public struct Splash: WalWalDependency { }
     public struct Sample: WalWalDependency { }
     public struct Auth: WalWalDependency { }
+    public struct Mission: WalWalDependency { }
   }
   
   public struct Coordinator {
@@ -120,10 +122,10 @@ extension TargetDependency {
       public struct Presenter: WalWalDependency {}
     }
     
-    public struct Mission: WalWalDependency {
-      public struct Data {}
-      public struct Domain {}
-      public struct Presenter {}
+    public struct Mission {
+      public struct Data: WalWalDependency {}
+      public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
     }
   }
 }
@@ -143,6 +145,11 @@ public extension TargetDependency.DependencyFactory.Auth {
 public extension TargetDependency.DependencyFactory.Sample {
   static let Interface = Self.project(dependencyName: .sample, isInterface: true)
   static let Implement = Self.project(dependencyName: .sample, isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.Mission {
+  static let Interface = Self.project(dependencyName: .mission, isInterface: true)
+  static let Implement = Self.project(dependencyName: .mission, isInterface: false)
 }
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
@@ -193,35 +200,19 @@ public extension TargetDependency.Feature.Sample.Data {
 }
 
 public extension TargetDependency.Feature.Mission.Presenter {
-  static let Interface = TargetDependency.Feature.Auth.project(name: .sample,
-                                                               layer: .presenter,
-                                                               isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Auth.project(name: .sample,
-                                                              layer: .presenter,
-                                                              isInterface: false)
+  static let interface = Self.project(name: .mission, layer: .presenter, isInterface: true)
+  static let implement = Self.project(name: .mission, layer: .presenter, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Mission.Domain {
-  static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
-                                                                 layer: .domain,
-                                                                 isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
-                                                                 layer: .domain,
-                                                                 isInterface: false)
+  static let Interface = Self.project(name: .mission, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .mission, layer: .domain, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Mission.Data {
-  static let Interface = TargetDependency.Feature.Sample.project(name: .sample,
-                                                                 layer: .data,
-                                                                 isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Sample.project(name: .sample,
-                                                                 layer: .data,
-                                                                 isInterface: false)
+  static let Interface = Self.project(name: .mission, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .mission, layer: .data, isInterface: false)
 }
-
 
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
 public extension TargetDependency.Coordinator.SampleApp {
