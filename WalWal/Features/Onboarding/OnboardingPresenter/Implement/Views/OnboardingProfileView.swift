@@ -68,9 +68,10 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    let _ = view.pin.keyboardArea.height
     rootContainer.pin.all(view.pin.safeArea)
-    keyboardLayout()
     rootContainer.flex.layout()
+    hideKeyboardLayout()
   }
   
   public func setAttribute() {
@@ -104,14 +105,17 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
             $0.addItem(nicknameTextField)
           }
       }
-    nextButton.flex
-      .marginBottom(30)
-      .height(56)
+    
   }
   
-  /// 키보드 레이아웃 변경 시 레이아웃 재 조정 위한 메서드
-  private func keyboardLayout() {
-    nextButton.pin.bottom(view.pin.keyboardArea.height).height(56)
+  private func updateKeyboardLayout() {
+    let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
+    nextButton.pin.bottom(keyboardTop + 20)
+    view.layoutIfNeeded()
+  }
+  
+  private func hideKeyboardLayout() {
+    nextButton.pin.bottom(30).height(56)
   }
 }
 
@@ -134,15 +138,13 @@ extension OnboardingProfileViewController {
   
   public func bindEvent() {
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
-      .bind(with: self) { owner, noti in
-        owner.keyboardLayout()
-        owner.view.layoutIfNeeded()
+      .bind(with: self) { owner, _ in
+        owner.updateKeyboardLayout()
       }
       .disposed(by: disposeBag)
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
       .bind(with: self) { owner, noti in
-        owner.keyboardLayout()
-        owner.view.layoutIfNeeded()
+        owner.hideKeyboardLayout()
       }
       .disposed(by: disposeBag)
     nicknameTextField.textField.rx.controlEvent(.editingDidEndOnExit)

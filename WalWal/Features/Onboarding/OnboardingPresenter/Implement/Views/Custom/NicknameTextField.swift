@@ -17,7 +17,8 @@ final class NicknameTextField: UIView {
   let textField = UITextField().then {
     $0.placeholder = "닉네임을 입력해주세요"
     $0.textAlignment = .center
-    $0.font = .systemFont(ofSize: 16, weight: .regular)  }
+    $0.font = .systemFont(ofSize: 16, weight: .regular)
+  }
   
   let removeButton = UIButton().then {
     $0.setImage(UIImage(systemName: "xmark"), for: .normal)
