@@ -1,9 +1,23 @@
 //
 //  UIWindow+.swift
-//  DesignSystem
+//  Utility
 //
-//  Created by 조용인 on 7/26/24.
+//  Created by Eddy on 6/26/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+/// 가장 상위의 `UIWindow`를 반환
+/// guard let window = UIWindow.key else { return }
+/// window.addSubview(loadingView)
+extension UIWindow {
+  /// 찾지 못하였을 경우 `nil`을 반환합니다.
+  public static var key: UIWindow? {
+    return UIApplication.shared.connectedScenes
+      .filter { $0.activationState == .foregroundActive || $0.activationState == .foregroundInactive }
+      .first(where: { $0 is UIWindowScene })
+      .flatMap({ $0 as? UIWindowScene })?.windows
+      .first(where: \.isKeyWindow)
+  }
+}

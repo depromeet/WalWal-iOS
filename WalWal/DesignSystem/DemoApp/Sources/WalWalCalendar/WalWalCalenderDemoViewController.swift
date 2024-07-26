@@ -1,5 +1,6 @@
 import UIKit
 import DesignSystem
+import ResourceKit
 
 import FlexLayout
 import PinLayout
@@ -12,20 +13,10 @@ final class WalWalCalenderDemoViewController: UIViewController {
   // MARK: - UI
   
   private let rootView = UIView().then {
-    $0.backgroundColor = .white
+    $0.backgroundColor = UIColor(hex: 0xF7F8FA)
   }
   
-  private let headerContainerView = UIView().then {
-    $0.backgroundColor = .lightGray
-    $0.layer.masksToBounds = true
-    $0.layer.cornerRadius = 16
-  }
-  
-  private let calenderViewHeaderView = WalWalCalendarHeaderView()
-  
-  private let calendarWeekDayView = WalWalCalendarWeekdayView()
-  
-  private let calendarMonthView = WalWalCalendarMonthView()
+  private let calendar: WalWalCalendar
   
   // MARK: - Properties
   
@@ -33,45 +24,87 @@ final class WalWalCalenderDemoViewController: UIViewController {
   
   // MARK: - Initializers
   
-  public init() {
-      super.init(nibName: nil, bundle: nil)
+  /// WalWalCalenderDemoViewController를 초기화합니다.
+  /// - Parameter walwalCalendarModels: 초기 캘린더 데이터 모델
+  public init(walwalCalendarModels: [WalWalCalendarModel] = []) {
+    self.calendar = WalWalCalendar()
+    super.init(nibName: nil, bundle: nil)
+    setupCalendarData(walwalCalendarModels)
   }
   
-  @available(*, unavailable)
   required init?(coder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
+    fatalError("init(coder:) has not been implemented")
   }
   
-  // MARK: - LifeCycle
+  // MARK: - Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    self.view.addSubview(self.rootView)
     setLayouts()
     bind()
   }
   
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    self.rootView.pin.all(view.pin.safeArea)
-    self.rootView.flex.layout(mode: .fitContainer)
+    rootView.pin.all(view.pin.safeArea)
+    rootView.flex.layout(mode: .fitContainer)
   }
   
   // MARK: - Methods
   
   private func setLayouts() {
-    self.rootView.flex.padding(0, 20).direction(.column).alignItems(.center).define { flex in
-      flex.addItem(headerContainerView).width(200).height(44).justifyContent(.center).alignItems(.center).marginTop(28).define { flex in
-        flex.addItem(calenderViewHeaderView).width(100%).height(100%)
-      }
-      flex.addItem(calendarWeekDayView).width(100%).height(30).marginTop(30)
-      flex.addItem(calendarMonthView).width(100%).height(100%).marginTop(10)
+    view.addSubview(rootView)
+    
+    rootView.flex.define { flex in
+      flex.addItem(calendar).grow(1)
     }
   }
   
+  private func setupCalendarData(_ models: [WalWalCalendarModel]) {
+#if DEBUG
+    let sampleData = SampleDataGenerator.createRandomSampleCalendarModels()
+    calendar.walwalCalendarModels.accept(sampleData)
+#else
+    calendar.walwalCalendarModels.accept(models)
+#endif
+  }
+  
   private func bind() {
-    calenderViewHeaderView.rx.monthChanged
-      .bind(to: calendarMonthView.monthChangedSubject)
+    calendar.selectedDayData
+      .subscribe(onNext: { [weak self] in self?.showAlert(with: $0) })
       .disposed(by: disposeBag)
+  }
+  
+  private func showAlert(with data: WalWalCalendarModel) {
+    let alert = UIAlertController(
+      title: "선택된 날짜: \(data.date)",
+      message: "현재 선택된 이미지의 ID는: \"\(data.imageId)\"입니다",
+      preferredStyle: .alert
+    )
+    alert.addAction(UIAlertAction(title: "닫기", style: .default))
+    present(alert, animated: true)
+  }
+}
+
+// MARK: - Sample Data Generator
+
+private enum SampleDataGenerator {
+  static func createRandomSampleCalendarModels(count: Int = 50) -> [WalWalCalendarModel] {
+    let sampleImageData = ResourceKitAsset.Sample.calendarCellSample.image.pngData() ?? Data()
+    let calendar = Calendar.current
+    let today = Date()
+    let oneYearAgo = calendar.date(byAdding: .year, value: -1, to: today)!
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    
+    let sampleModels = (1...count).map { _ -> WalWalCalendarModel in
+      let randomDate = Date(timeIntervalSince1970: .random(in: oneYearAgo.timeIntervalSince1970...today.timeIntervalSince1970))
+      let dateString = dateFormatter.string(from: randomDate)
+      let id = "\(dateString)의 이미지 입니당 🐶"
+      return WalWalCalendarModel(imageId: id, date: dateString, imageData: sampleImageData)
+    }
+    
+    return sampleModels.sorted { $0.date < $1.date }
   }
 }
