@@ -20,7 +20,7 @@ public final class MissionRepositoryImp: MissionRepository {
     self.networkService = networkService
   }
   
-  public func getMissionInfo() -> RxSwift.Single<MissionInfoDTO> {
+  public func getMissionInfo() -> Single<MissionInfoDTO> {
     let endpoint = MissionEndpoint<MissionInfoDTO>.getMissionInfo
     return networkService.request(endpoint: endpoint)
       .compactMap { $0 }
