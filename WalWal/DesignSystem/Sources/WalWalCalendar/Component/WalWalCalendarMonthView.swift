@@ -62,7 +62,9 @@ final class WalWalCalendarMonthView: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    collectionView.pin.all()
+    collectionView
+      .pin
+      .all()
     collectionView.collectionViewLayout.invalidateLayout()
   }
   

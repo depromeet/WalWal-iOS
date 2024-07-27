@@ -54,8 +54,12 @@ final class WalWalCalenderDemoViewController: UIViewController {
   
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    rootView.pin.all(view.pin.safeArea)
-    rootView.flex.layout()
+    rootView
+      .pin
+      .all(view.pin.safeArea)
+    rootView
+      .flex
+      .layout()
   }
   
   // MARK: - Methods
@@ -63,9 +67,13 @@ final class WalWalCalenderDemoViewController: UIViewController {
   private func setLayouts() {
     view.addSubview(rootView)
     
-    rootView.flex.define { flex in
-      flex.addItem(calendar).grow(1)
-    }
+    rootView
+      .flex
+      .define { flex in
+        flex
+          .addItem(calendar)
+          .grow(1)
+      }
   }
   
   private func setupCalendarData(_ models: [WalWalCalendarModel]) {

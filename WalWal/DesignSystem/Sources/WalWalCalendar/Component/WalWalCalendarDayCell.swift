@@ -100,19 +100,35 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     contentView.addSubview(containerView)
     addSubview(flowerImageView)
     
-    containerView.flex.define { flex in
-      flex.addItem(backgroundImageView).position(.absolute).all(0)
-      flex.addItem().direction(.column).grow(1).define { flex in
-        flex.addItem(dateLabel).marginTop(4).width(100%)
+    containerView
+      .flex
+      .define { flex in
+        flex
+          .addItem(backgroundImageView)
+          .position(.absolute)
+          .all(0)
+        flex
+          .addItem()
+          .direction(.column)
+          .grow(1)
+          .define { flex in
+            flex
+              .addItem(dateLabel)
+              .marginTop(4)
+              .width(100%)
+          }
       }
-    }
     
     containerView.layer.addSublayer(dashBorderLayer)
   }
   
   private func applyLayout() {
-    containerView.pin.all()
-    containerView.flex.layout()
+    containerView
+      .pin
+      .all()
+    containerView
+      .flex
+      .layout()
     
     let maskLayer = CAShapeLayer()
     maskLayer.path = UIBezierPath(

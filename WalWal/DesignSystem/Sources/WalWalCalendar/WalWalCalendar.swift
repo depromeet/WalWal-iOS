@@ -60,11 +60,25 @@ public final class WalWalCalendar: UIView {
   // MARK: Methods
   
   private func setLayouts() {
-    flex.direction(.column).padding(Const.horizontalPadding).define { flex in
-      flex.addItem(headerView).width(Const.headerWidth).height(Const.headerHeight).alignSelf(.center).marginTop(Const.headerMarginTop)
-      flex.addItem(weekdayView).width(100%).height(Const.weekdayHeight)
-      flex.addItem(monthView).width(100%).grow(1)
-    }
+    flex
+      .direction(.column)
+      .padding(Const.horizontalPadding)
+      .define { flex in
+        flex
+          .addItem(headerView)
+          .width(Const.headerWidth)
+          .height(Const.headerHeight)
+          .alignSelf(.center)
+          .marginTop(Const.headerMarginTop)
+        flex
+          .addItem(weekdayView)
+          .width(100%)
+          .height(Const.weekdayHeight)
+        flex
+          .addItem(monthView)
+          .width(100%)
+          .grow(1)
+      }
   }
   
   private func bind() {

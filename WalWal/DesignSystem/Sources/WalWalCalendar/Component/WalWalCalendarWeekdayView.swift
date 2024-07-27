@@ -59,11 +59,17 @@ final class WalWalCalendarWeekdayView: UIView {
   private func setupLayout() {
     addSubview(containerView)
     
-    containerView.flex.direction(.row).justifyContent(.spaceAround).define { flex in
-      weekdayLabels.forEach { label in
-        flex.addItem(label).grow(1)
+    containerView
+      .flex
+      .direction(.row)
+      .justifyContent(.spaceAround)
+      .define { flex in
+        weekdayLabels.forEach { label in
+          flex
+            .addItem(label)
+            .grow(1)
+        }
       }
-    }
   }
 }
 

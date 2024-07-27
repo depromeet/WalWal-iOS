@@ -68,7 +68,7 @@ final class WalWalCalendarHeaderView: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    containerView.pin.horizontally().vertically()
+    containerView.pin.all()
     containerView.flex.layout()
   }
   
@@ -77,11 +77,25 @@ final class WalWalCalendarHeaderView: UIView {
   private func setLayouts() {
     addSubview(containerView)
     
-    containerView.flex.direction(.row).justifyContent(.center).alignItems(.center).define { flex in
-      flex.addItem(prevButton).size(Const.buttonSize).marginLeft(Const.horizontalMargin)
-      flex.addItem(monthLabel).grow(1).shrink(1)
-      flex.addItem(nextButton).size(Const.buttonSize).marginRight(Const.horizontalMargin)
-    }
+    containerView
+      .flex
+      .direction(.row)
+      .justifyContent(.center)
+      .alignItems(.center)
+      .define { flex in
+        flex
+          .addItem(prevButton)
+          .size(Const.buttonSize)
+          .marginLeft(Const.horizontalMargin)
+        flex
+          .addItem(monthLabel)
+          .grow(1)
+          .shrink(1)
+        flex
+          .addItem(nextButton)
+          .size(Const.buttonSize)
+          .marginRight(Const.horizontalMargin)
+      }
   }
   
   private func bind() {
