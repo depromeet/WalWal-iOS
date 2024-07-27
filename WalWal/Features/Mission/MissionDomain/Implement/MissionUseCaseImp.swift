@@ -20,7 +20,7 @@ public final class MissionUseCaseImp: MissionUseCase {
     self.missionDataRepository = missionDataRepository
   }
   
-  public func excute() -> RxSwift.Single<MissionModel> {
+  public func excute() -> Single<MissionModel> {
     return missionDataRepository.getMissionInfo()
       .map {
         MissionModel(title: $0.title,
