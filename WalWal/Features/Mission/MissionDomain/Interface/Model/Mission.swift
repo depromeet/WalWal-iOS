@@ -15,7 +15,13 @@ public struct MissionModel {
   public let date: Int
   public let backgroundColorCode: String
   
-  public init(title: String, isStartMission: Bool, imageURL: String, date: Int, backgroundColorCode: String) {
+  public init(
+    title: String,
+    isStartMission: Bool,
+    imageURL: String,
+    date: Int,
+    backgroundColorCode: String
+  ) {
     self.title = title
     self.isStartMission = isStartMission
     self.imageURL = imageURL

@@ -23,11 +23,13 @@ public final class MissionUseCaseImp: MissionUseCase {
   public func excute() -> Single<MissionModel> {
     return missionDataRepository.getMissionInfo()
       .map {
-        MissionModel(title: $0.title,
-                     isStartMission: $0.isStartMission,
-                     imageURL: $0.missionImageURL,
-                     date: $0.date,
-                     backgroundColorCode: $0.backgroundColorCode)
+        MissionModel(
+          title: $0.title,
+          isStartMission: $0.isStartMission,
+          imageURL: $0.missionImageURL,
+          date: $0.date,
+          backgroundColorCode: $0.backgroundColorCode
+        )
       }
       .asObservable()
       .asSingle()

@@ -103,8 +103,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   }
   
   public func setLayout() {
-    rootContainer
-      .flex
+    rootContainer.flex
       .paddingTop(40.adjusted)
       .define {
         $0.addItem(missionTimerView)
@@ -127,8 +126,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
           .height(50.adjusted)
       }
     
-    missionTimerView
-      .flex
+    missionTimerView.flex
       .direction(.row)
       .justifyContent(.center)
       .alignItems(.center)
