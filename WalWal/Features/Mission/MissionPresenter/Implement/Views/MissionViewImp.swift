@@ -9,6 +9,7 @@
 
 import UIKit
 import MissionPresenter
+import MissionDomain
 import Utility
 import ResourceKit
 
@@ -18,11 +19,9 @@ import FlexLayout
 import ReactorKit
 import RxSwift
 import RxCocoa
+import Kingfisher
 
 public final class MissionViewControllerImp<R: MissionReactor>: UIViewController, MissionViewController {
-  public var disposeBag = DisposeBag()
-  public var missionReactor: R
-  private typealias Assets = ResourceKitAsset.Assets
   
   // MARK: - UI
   
@@ -47,7 +46,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     $0.textAlignment = .center
   }
   private let missionImageView = UIImageView().then {
-    $0.image = UIImage(systemName: "heart.fill")
+    $0.image = Assets.sampleImage.image
     $0.contentMode = .scaleAspectFit
   }
   private let dateLabel = UILabel().then {
@@ -58,6 +57,12 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     $0.backgroundColor = .black
     $0.setTitle("미션하러 가기", for: .normal)
   }
+  
+  // MARK: - Properties
+  
+  public var disposeBag = DisposeBag()
+  public var missionReactor: R
+  private typealias Assets = ResourceKitAsset.Assets
   
   // MARK: - Initialize
   
@@ -77,6 +82,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     setAttribute()
     setLayout()
     self.reactor = missionReactor
+    reactor?.action.onNext(.loadMission)
   }
   
   // MARK: - Layout
@@ -97,18 +103,53 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   }
   
   public func setLayout() {
-    rootContainer.flex.paddingTop(40.adjusted).define {
-      $0.addItem(missionTimerView).height(40.adjusted).width(120.adjusted).alignSelf(.center)
-      $0.addItem(titleLabel).marginTop(14.adjusted).marginHorizontal(20.adjusted)
-      $0.addItem(missionImageView).marginTop(14.adjusted).marginHorizontal(0).height(340.adjusted)
-      $0.addItem(dateLabel).marginTop(7.adjusted).alignSelf(.center)
-      $0.addItem(missionStartButton).marginTop(10.adjusted).marginHorizontal(20.adjusted).height(50.adjusted)
-    }
+    rootContainer
+      .flex
+      .paddingTop(40.adjusted)
+      .define {
+        $0.addItem(missionTimerView)
+          .height(40.adjusted)
+          .width(120.adjusted)
+          .alignSelf(.center)
+        $0.addItem(titleLabel)
+          .marginTop(14.adjusted)
+          .marginHorizontal(20.adjusted)
+        $0.addItem(missionImageView)
+          .marginTop(14.adjusted)
+          .marginHorizontal(0)
+          .height(340.adjusted)
+        $0.addItem(dateLabel)
+          .marginTop(7.adjusted)
+          .alignSelf(.center)
+        $0.addItem(missionStartButton)
+          .marginTop(10.adjusted)
+          .marginHorizontal(20.adjusted)
+          .height(50.adjusted)
+      }
     
-    missionTimerView.flex.direction(.row).justifyContent(.center).alignItems(.center).define {
-      $0.addItem(missionTimerImageView).size(24.adjusted)
-      $0.addItem(missionTimerLabel).marginLeft((3.5).adjusted)
-    }
+    missionTimerView
+      .flex
+      .direction(.row)
+      .justifyContent(.center)
+      .alignItems(.center)
+      .define {
+        $0.addItem(missionTimerImageView)
+          .size(24.adjusted)
+        $0.addItem(missionTimerLabel)
+          .marginLeft((3.5).adjusted)
+      }
+  }
+  
+  private func setMissionData(_ model: MissionModel) {
+    titleLabel.text = model.title
+    dateLabel.text = "\(model.date)일째"
+    view.backgroundColor = UIColor(hexCode: model.backgroundColorCode)
+    // TODO: 이미지 넣기
+    //    if let imageUrl = URL(string: model.imageUrl) {
+    //      missionImageView.kf.setImage(with: imageUrl)
+    //    } else {
+    //      missionImageView.image = Assets.sampleImage.image
+    //    }
   }
   
   public func bindEvent() {
@@ -131,6 +172,12 @@ extension MissionViewControllerImp: View {
   }
   
   public func bindState(reactor: R) {
-    
+    reactor.state.map { $0.mission }
+      .subscribe(onNext: { [weak self] mission in
+        if let mission {
+          self?.setMissionData(mission)
+        }
+      })
+      .disposed(by: disposeBag)
   }
 }
