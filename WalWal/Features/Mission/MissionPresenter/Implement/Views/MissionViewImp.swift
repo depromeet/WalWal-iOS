@@ -82,7 +82,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     setAttribute()
     setLayout()
     self.reactor = missionReactor
-    reactor?.action.onNext(.loadMission)
   }
   
   // MARK: - Layout
@@ -166,14 +165,16 @@ extension MissionViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    
+    reactor.action
+      .onNext(.loadMission)
   }
   
   public func bindState(reactor: R) {
-    reactor.state.map { $0.mission }
-      .subscribe(onNext: { [weak self] mission in
-        if let mission {
-          self?.setMissionData(mission)
+    reactor.state
+      .map { $0.mission }
+      .subscribe(with: self, onNext: { weakSelf, mission in
+        if let mission = mission {
+          weakSelf.setMissionData(mission)
         }
       })
       .disposed(by: disposeBag)
