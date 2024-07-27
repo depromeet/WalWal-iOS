@@ -34,7 +34,10 @@ public final class MissionReactorImp: MissionReactor {
     case .loadMission:
       return Observable.concat([
         Observable.just(Mutation.setLoading(true)),
-        fetchMissionData().map { Mutation.setMission($0) },
+        fetchMissionData()
+          .map {
+            Mutation.setMission($0)
+          },
         Observable.just(Mutation.setLoading(false))
       ])
       
@@ -57,11 +60,13 @@ public final class MissionReactorImp: MissionReactor {
   
   private func fetchMissionData() -> Observable<MissionModel> {
     /// 더미데이터
-    let mission = MissionModel(title: "반려동물과 함께\n산책한 사진을 찍어요",
-                               isStartMission: false,
-                               imageURL: "",
-                               date: 123,
-                               backgroundColorCode: "FFDD77")
+    let mission = MissionModel(
+      title: "반려동물과 함께\n산책한 사진을 찍어요",
+      isStartMission: false,
+      imageURL: "",
+      date: 123,
+      backgroundColorCode: "FFDD77"
+    )
     return Observable.just(mission).delay(.seconds(1), scheduler: MainScheduler.instance)
   }
 }
