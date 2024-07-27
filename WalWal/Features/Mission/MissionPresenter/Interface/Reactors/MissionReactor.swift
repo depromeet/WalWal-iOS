@@ -10,18 +10,24 @@ import MissionCoordinator
 
 import ReactorKit
 import RxSwift
+import MissionDomain
 
 public enum MissionReactorAction {
-  
+  case loadMission
+  case startMission
 }
 
 public enum MissionReactorMutation {
-  
+  case setMission(MissionModel)
+  case setLoading(Bool)
 }
 
 public struct MissionReactorState {
-  public init() {
+  public var mission: MissionModel?
+  public var isLoading: Bool = false
   
+  public init() {
+    
   }
 }
 
