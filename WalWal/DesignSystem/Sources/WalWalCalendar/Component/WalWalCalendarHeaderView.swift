@@ -101,7 +101,12 @@ final class WalWalCalendarHeaderView: UIView {
   }
   
   private func changeMonth(by value: Int) {
-    guard let newDate = Calendar.current.date(byAdding: .month, value: value, to: currentDate.value) else { return }
+    guard let newDate = Calendar.current.date(
+      byAdding: .month,
+      value: value,
+      to: currentDate.value
+    ) else { return }
+    
     currentDate.accept(newDate)
     monthChangedSubject.onNext(newDate)
     calendarShouldScrollSubject.onNext(())

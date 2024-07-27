@@ -21,17 +21,26 @@ final class DesignSystemViewController: UITableViewController {
     self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
   }
   
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  override func tableView(
+    _ tableView: UITableView,
+    numberOfRowsInSection section: Int
+  ) -> Int {
     return designSystems.count
   }
   
-  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+  override func tableView(
+    _ tableView: UITableView,
+    cellForRowAt indexPath: IndexPath
+  ) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
     cell.textLabel?.text = self.designSystems[indexPath.item].rawValue
     return cell
   }
   
-  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+  override func tableView(
+    _ tableView: UITableView,
+    heightForRowAt indexPath: IndexPath
+  ) -> CGFloat {
     return 50
   }
   

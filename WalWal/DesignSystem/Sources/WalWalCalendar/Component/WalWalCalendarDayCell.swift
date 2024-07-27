@@ -70,7 +70,14 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
   
   // MARK: - Methods
   
-  func configure(with date: Date, isCurrentMonth: Bool, image: UIImage?, today: Date, showFlower: Bool, index: Int) {
+  func configure(
+    with date: Date,
+    isCurrentMonth: Bool,
+    image: UIImage?,
+    today: Date,
+    showFlower: Bool,
+    index: Int
+  ) {
     setDateLabel(for: date)
     setBackgroundImage(image)
     setColors(for: date, isCurrentMonth: isCurrentMonth, today: today)
@@ -108,10 +115,16 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     containerView.flex.layout()
     
     let maskLayer = CAShapeLayer()
-    maskLayer.path = UIBezierPath(roundedRect: backgroundImageView.bounds, cornerRadius: Metrics.cornerRadius).cgPath
+    maskLayer.path = UIBezierPath(
+      roundedRect: backgroundImageView.bounds,
+      cornerRadius: Metrics.cornerRadius
+    ).cgPath
     backgroundImageView.layer.mask = maskLayer
     
-    let path = UIBezierPath(roundedRect: containerView.bounds, cornerRadius: Metrics.cornerRadius)
+    let path = UIBezierPath(
+      roundedRect: containerView.bounds,
+      cornerRadius: Metrics.cornerRadius
+    )
     dashBorderLayer.path = path.cgPath
     dashBorderLayer.frame = containerView.bounds
     
@@ -139,8 +152,16 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     backgroundImageView.isHidden = image == nil
   }
   
-  private func setColors(for date: Date, isCurrentMonth: Bool, today: Date) {
-    let colorSet = ColorSet.getColors(for: date, isCurrentMonth: isCurrentMonth, today: today)
+  private func setColors(
+    for date: Date,
+    isCurrentMonth: Bool,
+    today: Date
+  ) {
+    let colorSet = ColorSet.getColors(
+      for: date,
+      isCurrentMonth: isCurrentMonth,
+      today: today
+    )
     dateLabel.textColor = colorSet.textColor
     containerView.backgroundColor = colorSet.backgroundColor
   }

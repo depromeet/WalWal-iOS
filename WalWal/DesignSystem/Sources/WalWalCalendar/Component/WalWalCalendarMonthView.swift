@@ -70,7 +70,10 @@ final class WalWalCalendarMonthView: UIView {
   
   private func setLayouts() {
     addSubview(collectionView)
-    collectionView.register(WalWalCalendarDayCell.self, forCellWithReuseIdentifier: Const.cellIdentifier)
+    collectionView.register(
+      WalWalCalendarDayCell.self,
+      forCellWithReuseIdentifier: Const.cellIdentifier
+    )
     collectionView.backgroundColor = UIColor(hex: 0xF7F8FA)
   }
   
@@ -80,13 +83,18 @@ final class WalWalCalendarMonthView: UIView {
     
     Observable.combineLatest(dateRelay, cellDataRelay)
       .map(createDateCellDataPairs)
-      .bind(to: collectionView.rx.items(cellIdentifier: Const.cellIdentifier, cellType: WalWalCalendarDayCell.self)) { [weak self] (index, data, cell) in
+      .bind(to: collectionView.rx.items(
+        cellIdentifier: Const.cellIdentifier,
+        cellType: WalWalCalendarDayCell.self
+      )) { [weak self] (index, data, cell) in
         self?.configureCell(cell, with: data, at: index)
       }
       .disposed(by: disposeBag)
     
     collectionView.rx.itemSelected
-      .withLatestFrom(Observable.combineLatest(dateRelay, cellDataRelay)) { [weak self] indexPath, data in
+      .withLatestFrom(
+        Observable.combineLatest(dateRelay, cellDataRelay)
+      ) { [weak self] indexPath, data in
         self?.getCellDataForIndexPath(indexPath, dates: data.0, cellDatas: data.1)
       }
       .bind(to: cellTappedRelay)
@@ -116,10 +124,21 @@ final class WalWalCalendarMonthView: UIView {
     with data: CellData,
     at index: Int
   ) {
-    let isCurrentMonth = Calendar.current.isDate(data.date, equalTo: currentMonth, toGranularity: .month)
+    let isCurrentMonth = Calendar.current.isDate(
+      data.date,
+      equalTo: currentMonth,
+      toGranularity: .month
+    )
     let image = data.model.flatMap { UIImage(data: $0.imageData) }
     let showFlower = (index + 1) % 10 == 3 && index <= 23
-    cell.configure(with: data.date, isCurrentMonth: isCurrentMonth, image: image, today: today, showFlower: showFlower, index: index)
+    cell.configure(
+      with: data.date,
+      isCurrentMonth: isCurrentMonth,
+      image: image,
+      today: today,
+      showFlower: showFlower, 
+      index: index
+    )
   }
   
   private func getCellDataForIndexPath(
@@ -174,7 +193,11 @@ final class WalWalCalendarMonthView: UIView {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension WalWalCalendarMonthView: UICollectionViewDelegateFlowLayout {
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+  func collectionView(
+    _ collectionView: UICollectionView,
+    layout collectionViewLayout: UICollectionViewLayout,
+    sizeForItemAt indexPath: IndexPath
+  ) -> CGSize {
     return Const.cellSize
   }
 }

@@ -55,7 +55,7 @@ final class WalWalCalenderDemoViewController: UIViewController {
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     rootView.pin.all(view.pin.safeArea)
-    rootView.flex.layout(mode: .fitContainer)
+    rootView.flex.layout()
   }
   
   // MARK: - Methods
