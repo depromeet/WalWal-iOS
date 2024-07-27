@@ -13,7 +13,7 @@ import FlexLayout
 import PinLayout
 import Then
 
-class WalWalCalendarDayCell: UICollectionViewCell {
+final class WalWalCalendarDayCell: UICollectionViewCell {
   
   // MARK: - UI
   
