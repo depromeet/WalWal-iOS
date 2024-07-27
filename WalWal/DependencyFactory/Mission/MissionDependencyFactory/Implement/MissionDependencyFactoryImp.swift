@@ -15,9 +15,7 @@ import MissionCoordinator
 import MissionCoordinatorImp
 
 import MissionData
-import MissionDataImp
 import MissionDomain
-import MissionDomainImp
 import MissionPresenter
 import MissionPresenterImp
 
@@ -25,6 +23,15 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
   
   public init() {
     
+  }
+  
+  public func makeMissionData() -> MissionRepository {
+    let networkService = NetworkService()
+    return MissionRepositoryImp(networkService: networkService)
+  }
+  
+  public func makeMissionUseCase() -> MissionUseCase {
+    return MissionUseCaseImp(missionDataRepository: makeMissionData())
   }
   
   public func makeMissionReactor(coordinator: any MissionCoordinator) -> any MissionReactor {
