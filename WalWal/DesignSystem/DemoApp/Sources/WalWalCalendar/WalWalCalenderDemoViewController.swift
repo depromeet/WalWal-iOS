@@ -79,7 +79,9 @@ final class WalWalCalenderDemoViewController: UIViewController {
   
   private func bind() {
     calendar.selectedDayData
-      .subscribe(onNext: { [weak self] in self?.showAlert(with: $0) })
+      .subscribe(with: self, onNext: { owner, data in
+        owner.showAlert(with: data)
+      })
       .disposed(by: disposeBag)
   }
   
