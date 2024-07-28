@@ -46,7 +46,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     $0.textAlignment = .center
   }
   private let missionImageView = UIImageView().then {
-    $0.image = Assets.sampleImage.image
+    $0.image = SampleAssets.missionSample.image
     $0.contentMode = .scaleAspectFit
   }
   private let dateLabel = UILabel().then {
@@ -63,6 +63,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   public var disposeBag = DisposeBag()
   public var missionReactor: R
   private typealias Assets = ResourceKitAsset.Assets
+  private typealias SampleAssets = ResourceKitAsset.Sample
   
   // MARK: - Initialize
   
