@@ -8,6 +8,7 @@
 
 import UIKit
 import OnboardingPresenter
+import Utility
 
 import Then
 import PinLayout
@@ -28,6 +29,7 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
   private let rootContainer = UIView()
   private let contentContainer = UIView()
   private let progressView = ProgressView(index: 2)
+  private let titleView = UIView()
   private let titleLabel = UILabel().then {
     $0.text = "왈왈에서 사용할\n프로필을 만들어주세요"
     $0.numberOfLines = 2
@@ -39,9 +41,12 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
     $0.font = .systemFont(ofSize: 14, weight: .medium)
     $0.textColor = .gray
   }
+  private var profileSelectView = ProfileSelectView(
+    viewWidth: UIScreen.main.bounds.width,
+    marginItems: 17
+  )
   private let nicknameTextField = NicknameTextField()
   private let nextButton = CompleteButton(isEnable: false)
-  
   
   // MARK: - Initialize
   
@@ -77,36 +82,46 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
   public func setAttribute() {
     view.backgroundColor = .white
     view.addSubview(rootContainer)
-    rootContainer.addSubview(progressView)
-    rootContainer.addSubview(contentContainer)
-    rootContainer.addSubview(nextButton)
+    [progressView, titleView, contentContainer, nextButton].forEach {
+      rootContainer.addSubview($0)
+    }
+    [titleLabel, subTitleLabel].forEach {
+      titleView.addSubview($0)
+    }
   }
   
   public func setLayout() {
     rootContainer.flex
       .justifyContent(.center)
-      .marginHorizontal(20)
-    
     progressView.flex
       .marginTop(32)
-    
-    contentContainer.flex
-      .justifyContent(.start)
-      .grow(1)
+      .marginHorizontal(20)
+    titleView.flex
+      .marginHorizontal(20)
       .define {
         $0.addItem(titleLabel)
           .marginTop(48)
         $0.addItem(subTitleLabel)
           .marginTop(4)
-        $0.addItem()
-          .justifyContent(.center)
-          .marginTop(40)
-          .define {
-            $0.addItem(nicknameTextField)
-          }
       }
-    
+    contentContainer.flex
+      .justifyContent(.start)
+      .grow(1)
+      .define {
+        $0.addItem(profileSelectView)
+          .alignItems(.center)
+          .marginTop(70)
+          .width(100%)
+          .height(170)
+        $0.addItem(nicknameTextField)
+          .justifyContent(.center)
+          .marginTop(32)
+          .marginHorizontal(20)
+      }
+    nextButton.flex
+      .marginHorizontal(20)
   }
+  
   
   private func updateKeyboardLayout() {
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
@@ -153,5 +168,24 @@ extension OnboardingProfileViewController {
         owner.nicknameTextField.textField.resignFirstResponder()
       }
       .disposed(by: disposeBag)
+  }
+}
+
+extension Reactive where Base: UICollectionView {
+  public func datasource<Sequence: Swift.Sequence, Cell: UICollectionViewCell, Source: ObservableType>
+  (_ cellType: Cell.Type = Cell.self)
+  -> (_ source: Source)
+  -> (_ configureCell: @escaping (Int, Sequence.Element, Cell) -> Void)
+  -> Disposable where Source.Element == Sequence, Cell: ReusableView {
+    return { source in
+      return { configureCell in
+        return source.bind(to: self.base.rx.items(
+          cellIdentifier: cellType.reuseIdentifier,
+          cellType: cellType)
+        ) { index, data, cell in
+          configureCell(index, data, cell)
+        }
+      }
+    }
   }
 }
