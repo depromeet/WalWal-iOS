@@ -20,7 +20,7 @@ public final class MissionRepositoryImp: MissionRepository {
     self.networkService = networkService
   }
   
-  public func getMissionInfo() -> Single<MissionInfoDTO> {
+  public func loadMissionInfo() -> Single<MissionInfoDTO> {
     let endpoint = MissionEndpoint<MissionInfoDTO>.loadMissionInfo
     return networkService.request(endpoint: endpoint)
       .compactMap { $0 }

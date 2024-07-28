@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol MissionRepository {
-  func getMissionInfo() -> Single<MissionInfoDTO>
+  func loadMissionInfo() -> Single<MissionInfoDTO>
 }

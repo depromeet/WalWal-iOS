@@ -21,7 +21,7 @@ public final class MissionUseCaseImp: MissionUseCase {
   }
   
   public func excute() -> Single<MissionModel> {
-    return missionDataRepository.getMissionInfo()
+    return missionDataRepository.loadMissionInfo()
       .map {
         MissionModel(
           title: $0.title,
