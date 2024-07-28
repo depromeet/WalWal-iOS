@@ -21,7 +21,7 @@ public final class MissionRepositoryImp: MissionRepository {
   }
   
   public func getMissionInfo() -> Single<MissionInfoDTO> {
-    let endpoint = MissionEndpoint<MissionInfoDTO>.getMissionInfo
+    let endpoint = MissionEndpoint<MissionInfoDTO>.loadMissionInfo
     return networkService.request(endpoint: endpoint)
       .compactMap { $0 }
       .asObservable()

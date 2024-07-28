@@ -14,7 +14,7 @@ import Alamofire
 enum MissionEndpoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
   
-  case getMissionInfo
+  case loadMissionInfo
 }
 
 extension MissionEndpoint {
@@ -24,28 +24,28 @@ extension MissionEndpoint {
   
   var path: String {
     switch self {
-    case .getMissionInfo:
+    case .loadMissionInfo:
       return ""
     }
   }
   
   var method: Alamofire.HTTPMethod {
     switch self {
-    case .getMissionInfo:
+    case .loadMissionInfo:
       return .get
     }
   }
   
   var parameters: WalWalNetwork.RequestParams {
     switch self {
-    case .getMissionInfo:
+    case .loadMissionInfo:
       return .requestPlain
     }
   }
   
   var headers: WalWalNetwork.WalWalHTTPHeader {
     switch self {
-    case .getMissionInfo:
+    case .loadMissionInfo:
       return [
         "Content-Type": "application/json"
       ]
