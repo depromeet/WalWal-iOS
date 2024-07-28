@@ -171,9 +171,9 @@ extension MissionViewControllerImp: View {
   public func bindState(reactor: R) {
     reactor.state
       .map { $0.mission }
-      .subscribe(with: self, onNext: { weakSelf, mission in
+      .subscribe(with: self, onNext: { owner, mission in
         if let mission = mission {
-          weakSelf.setMissionData(mission)
+          owner.setMissionData(mission)
         }
       })
       .disposed(by: disposeBag)
