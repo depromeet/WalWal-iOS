@@ -91,6 +91,7 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
   }
   
   public func setLayout() {
+    print(32/812*UIScreen.main.bounds.height)
     rootContainer.flex
       .justifyContent(.center)
     progressView.flex
@@ -98,9 +99,9 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
       .marginHorizontal(20)
     titleView.flex
       .marginHorizontal(20)
+      .marginTop(32/812*UIScreen.main.bounds.height)
       .define {
         $0.addItem(titleLabel)
-          .marginTop(48)
         $0.addItem(subTitleLabel)
           .marginTop(4)
       }
@@ -110,9 +111,8 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
       .define {
         $0.addItem(profileSelectView)
           .alignItems(.center)
-          .marginTop(70)
+          .marginTop(70/812*UIScreen.main.bounds.height)
           .width(100%)
-          .height(170)
         $0.addItem(nicknameTextField)
           .justifyContent(.center)
           .marginTop(32)
@@ -121,7 +121,6 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
     nextButton.flex
       .marginHorizontal(20)
   }
-  
   
   private func updateKeyboardLayout() {
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom

@@ -76,10 +76,10 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
       .size(140)
     profileImageView.pin
       .center()
-      .size(157)
+      .size(UIScreen.main.bounds.width / 2.4)
     borderView.pin
       .center()
-      .size(168)
+      .size( UIScreen.main.bounds.width / 2.2)
     changeButton.pin
       .width(40)
       .height(40)
