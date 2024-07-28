@@ -137,6 +137,8 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
       }
   }
   
+  // MARK: - Method
+  
   private func setMissionData(_ model: MissionModel) {
     titleLabel.text = model.title
     dateLabel.text = "\(model.date)일째"
@@ -147,10 +149,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     //    } else {
     //      missionImageView.image = Assets.sampleImage.image
     //    }
-  }
-  
-  public func bindEvent() {
-    
   }
 }
 
@@ -178,5 +176,9 @@ extension MissionViewControllerImp: View {
         }
       })
       .disposed(by: disposeBag)
+  }
+  
+  public func bindEvent() {
+    
   }
 }

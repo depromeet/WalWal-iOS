@@ -17,4 +17,4 @@ public enum MissionCoordinatorFlow: CoordinatorFlow {
   
 }
 
-public protocol MissionCoordinator: BaseCoordinator { }
+public protocol MissionCoordinator: BaseCoordinator where Flow == MissionCoordinatorFlow{ }
