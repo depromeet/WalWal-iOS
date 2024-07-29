@@ -1,7 +1,6 @@
 import Foundation
 
 import Alamofire
-import RxAlamofire
 
 /// HTTPHeader 타입 입니다.
 public typealias WalWalHTTPHeader = [String: String]
@@ -15,7 +14,7 @@ public protocol APIEndpoint: URLRequestConvertible {
   var path: String { get }
   var method: HTTPMethod { get }
   var parameters: RequestParams { get }
-  var headers: WalWalHTTPHeader { get }
+  var headerType: HTTPHeaderType { get }
 }
 
 public enum RequestParams {
@@ -26,57 +25,19 @@ public enum RequestParams {
   case uploadMultipart([MultipartFormData])
 }
 
-public extension APIEndpoint {
-  func asURLRequest() throws -> URLRequest {
-    let url = try configureURL(baseURL)
-    var urlRequest = try URLRequest(url: url, method: method)
-    urlRequest = configureHeader(urlRequest)
-    
-    switch parameters {
-    case .requestPlain:
-      break
-    case .requestQuery(let query):
-      urlRequest.url = try configureQueryParams(url: url, query: query)
-    case .requestWithbody(let body):
-      urlRequest.httpBody = try configureBodyParams(body: body)
-    case .requestQueryWithBody(let query, let body):
-      urlRequest.url = try configureQueryParams(url: url, query: query)
-      urlRequest.httpBody = try configureBodyParams(body: body)
-    case .uploadMultipart(_):
-      break
-    }
-    return urlRequest
-  }
-  
-  private func configureURL(_ url: URL) throws -> URL {
-    let baseURL = try baseURL.asURL()
-    let url = baseURL.appendingPathComponent(path)
-    return url
-  }
-  
-  private func configureHeader(_ urlRequest: URLRequest) -> URLRequest {
-    var urlRequest = urlRequest
-    for (headerField, headerValue) in headers {
-      urlRequest.setValue(headerValue, forHTTPHeaderField: headerField)
-    }
-    return urlRequest
-  }
-  
-  private func configureQueryParams(url: URL, query: Encodable?) throws -> URL {
-    let params = query?.toDictionary() ?? [:]
-    let queryParams = params.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
-    var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-    components?.queryItems = queryParams
-    guard let configuredURL = components?.url else {
-      throw URLError(.badURL)
-    }
-    return configuredURL
-  }
-  
-  private func configureBodyParams(body: Encodable?) throws -> Data {
-    let params = body?.toDictionary() ?? [:]
-    return try JSONSerialization.data(withJSONObject: params, options: [])
-  }
+enum HTTPHeaderFieldKey : String {
+  case authentication = "Authorization"
+  case contentType = "Content-Type"
+}
+
+enum HTTPHeaderFieldValue: String {
+    case json = "Application/json"
+    case accessToken
+}
+
+public enum HTTPHeaderType {
+  case plain
+  case authorization(String)
 }
 
 extension Encodable {
