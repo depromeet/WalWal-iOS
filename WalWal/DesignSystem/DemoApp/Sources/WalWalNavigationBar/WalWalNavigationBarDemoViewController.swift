@@ -28,7 +28,7 @@ final class WalWalNavigationBarDemoViewController: UIViewController {
       .close,
       .setting
     ],
-    colorType: .normal
+    colorType: .orange
   )
   
   private let containerView = UIView().then {
