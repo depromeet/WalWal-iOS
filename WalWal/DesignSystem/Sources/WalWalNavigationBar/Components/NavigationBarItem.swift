@@ -13,7 +13,7 @@ import RxSwift
 
 public final class NavigationBarItem: UIButton {
   
-  private let type: NavigationBarItemType
+  public private(set) var type: NavigationBarItemType
   
   public init(_ type: NavigationBarItemType) {
     self.type = type
