@@ -16,6 +16,8 @@ import Then
 
 public final class WalWalTouchArea: UIView {
   
+  private let containerView = UIView()
+  
   public enum TouchAreaState: Int, CaseIterable {
     case normal = 0
     case selected = 1
@@ -39,12 +41,18 @@ public final class WalWalTouchArea: UIView {
   // MARK: - Initializers
   
   /// WalWalTouchArea를 초기화합니다.
-  /// - Parameter image: 기본 이미지. nil이면 빈 이미지가 설정됩니다.
-  public init(image: UIImage? = nil) {
+  ///
+  /// - Parameters
+  ///   - image: 기본 이미지. nil이면 빈 이미지가 설정됩니다.
+  ///   - size: TouchArea의 사이즈 (default: 24)
+  public init(
+    image: UIImage? = nil,
+    size: CGFloat = 24
+  ) {
     super.init(frame: .zero)
     
     configureAttributes(image: image)
-    configureLayout()
+    configureLayout(size: size)
     bind()
   }
   
@@ -69,7 +77,11 @@ public final class WalWalTouchArea: UIView {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    flex.layout()
+
+    containerView.pin
+      .all()
+    containerView.flex
+      .layout()
   }
 }
 
@@ -80,10 +92,15 @@ private extension WalWalTouchArea {
     TouchAreaState.allCases.forEach { setImage(image, for: $0) }
   }
   
-  func configureLayout() {
-    flex.define { flex in
-      flex.addItem(imageView).grow(1)
-    }
+  func configureLayout(size: CGFloat) {
+    addSubview(containerView)
+    
+    containerView.flex
+      .define { flex in
+        flex.addItem(imageView)
+          .width(size)
+          .height(size)
+      }
   }
   
   func bind() {
