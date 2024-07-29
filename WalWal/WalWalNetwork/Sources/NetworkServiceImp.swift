@@ -66,7 +66,7 @@ extension NetworkService {
     
     do {
       let responseModel = try JSONDecoder().decode(BaseResponse<T>.self, from: data)
-      if responseModel.sucess {
+      if responseModel.success {
         responseSuccess(endpoint, result: responseModel)
         return .success(responseModel.data)
       } else {
