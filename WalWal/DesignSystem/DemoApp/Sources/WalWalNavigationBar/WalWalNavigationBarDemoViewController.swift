@@ -41,10 +41,10 @@ final class WalWalNavigationBarDemoViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    self.navigationController?.isNavigationBarHidden = true
+    self.navigationController?.navigationItem.title = "WalWal"
     self.view.addSubview(self.containerView)
     self.configureLayouts()
-    self.navigationController?.navigationBar.isHidden = true
-    self.navigationController?.navigationItem.title = "WalWal"
     self.view.backgroundColor = .white
     
   }
@@ -58,8 +58,8 @@ final class WalWalNavigationBarDemoViewController: UIViewController {
   // MARK: - Methods
   
   private func bind() {
-    navigaionBar.leftItems?[0].rx.tap
-      .debug()
+    navigaionBar.leftItems?[0].rx.tapped
+      .debug("WalWalTouchArea tapped With navigation")
       .subscribe(with: self, onNext: { owner, _ in
         owner.navigationController?.popViewController(animated: true)
       })

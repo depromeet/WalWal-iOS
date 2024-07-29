@@ -31,28 +31,32 @@ public final class WalWalNavigationBar: UIView {
   
   // MARK: - Properties
   
-  public private(set) var leftItems: [NavigationBarItem]?
-  public private(set) var rightItems: [NavigationBarItem]?
+  public private(set) var leftItems: [WalWalTouchArea]?
+  public private(set) var rightItems: [WalWalTouchArea]?
   public private(set) var colorType: NavigationBarColorSet
   
   // MARK: - Initializers
   
   
   /// leftItems와 rightItems에 좌우측에 들어갈 item을 정의합니다.
-  /// WalWalNavigationBar.leftItems[n].rx.tap으로 이벤트를 받아올 수 있습니다.
+  /// WalWalNavigationBar.leftItems[n].rx.tapped으로 이벤트를 받아올 수 있습니다.
   /// - Parameters:
   ///   - leftItems: 네비게이션바의 왼쪽에 위치 할 item들을 정의합니다. (없는 경우는 .none)
+  ///   - leftItemSize: 네비게이션바의 왼쪽에 위치 할 item들의 사이즈를 정의합니다. (default: 24)
   ///   - title: 네비게이션바의 중앙에 오는 Title을 정의합니다.
   ///   - rightItems: 네비게이션바의 오른쪽에 위치 할 item들을 정의합니다. (없는 경우는 .none)
+  ///   - rightItemSize: 네비게이션바의 오른쪽에 위치 할 item들의 사이즈를 정의합니다. (defautl: 24)
   ///   - colorType: 네비게이션의 전체 BackgroundColor와 TintColor를 정의합니다.
   public init(
     leftItems: [NavigationBarItemType],
+    leftItemSize: CGFloat = 24,
     title: String?,
     rightItems: [NavigationBarItemType],
+    rightItemSize: CGFloat = 24,
     colorType: NavigationBarColorSet = .normal
   ) {
-    self.leftItems = leftItems.map { NavigationBarItem($0) }
-    self.rightItems = rightItems.map { NavigationBarItem($0) }
+    self.leftItems = leftItems.map { WalWalTouchArea(image: $0.icon, size: leftItemSize) }
+    self.rightItems = rightItems.map { WalWalTouchArea(image: $0.icon, size: rightItemSize) }
     self.colorType = colorType
     
     super.init(frame: .zero)
@@ -80,12 +84,14 @@ public final class WalWalNavigationBar: UIView {
   
   public func configure(
     leftItems: [NavigationBarItemType],
+    leftItemSize: CGFloat = 24,
     title: String?,
     rightItems: [NavigationBarItemType],
+    rightItemSize: CGFloat = 24,
     colorType: NavigationBarColorSet = .normal
   ) {
-    self.leftItems = leftItems.map { NavigationBarItem($0) }
-    self.rightItems = rightItems.map { NavigationBarItem($0) }
+    self.leftItems = leftItems.map { WalWalTouchArea(image: $0.icon, size: leftItemSize) }
+    self.rightItems = rightItems.map { WalWalTouchArea(image: $0.icon, size: rightItemSize) }
     self.colorType = colorType
     
     self.configureTitle(title)
@@ -121,15 +127,9 @@ extension WalWalNavigationBar {
           .justifyContent(.start)
           .define { flex in
             self.leftItems?.forEach { item in
-              switch item.type {
-              case .close, .setting:
-                flex.addItem(item)
-                  .size(24)
-              case .back:
-                flex.addItem(item)
-                  .size(20)
-              default: break
-              }
+              flex.addItem(item)
+                .width(100%)
+                .height(100%)
             }
           }
           .marginLeft(15)
@@ -146,7 +146,6 @@ extension WalWalNavigationBar {
           .define { flex in
             self.rightItems?.forEach {
               flex.addItem($0)
-                .size(24)
                 .marginLeft(16)
             }
           }
@@ -155,8 +154,6 @@ extension WalWalNavigationBar {
   }
   
   private func configureColor() {
-    leftItems?.forEach { $0.tintColor = self.colorType.tintColor }
-    rightItems?.forEach { $0.tintColor = self.colorType.tintColor }
     titleLabel.textColor = colorType.tintColor
     
     leftItems?.forEach { $0.backgroundColor = self.colorType.backgroundColor }
