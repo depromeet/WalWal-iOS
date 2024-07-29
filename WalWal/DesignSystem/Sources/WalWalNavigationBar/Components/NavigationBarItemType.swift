@@ -10,12 +10,15 @@ import UIKit
 import ResourceKit
 
 public enum NavigationBarItemType {
+  case none
   case close
   case back
   case setting
   
   var icon: UIImage? {
     switch self {
+    case .none:
+      return nil
     case .close:
       return ResourceKitAsset.Assets._24x24Close.image
     case .back:
