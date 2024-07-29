@@ -44,12 +44,12 @@ public final class WalWalNavigationBar: UIView {
   ///   - leftItems: 네비게이션바의 왼쪽에 위치 할 item들을 정의합니다. (없는 경우는 .none)
   ///   - title: 네비게이션바의 중앙에 오는 Title을 정의합니다.
   ///   - rightItems: 네비게이션바의 오른쪽에 위치 할 item들을 정의합니다. (없는 경우는 .none)
-  ///   - colorType: 네비게이션의 전체 BackgroundColor를 정의합니다.
+  ///   - colorType: 네비게이션의 전체 BackgroundColor와 TintColor를 정의합니다.
   public init(
     leftItems: [NavigationBarItemType],
     title: String?,
     rightItems: [NavigationBarItemType],
-    colorType: NavigationBarColorSet = .clear
+    colorType: NavigationBarColorSet = .normal
   ) {
     self.leftItems = leftItems.map { NavigationBarItem($0) }
     self.rightItems = rightItems.map { NavigationBarItem($0) }
@@ -82,7 +82,7 @@ public final class WalWalNavigationBar: UIView {
     leftItems: [NavigationBarItemType],
     title: String?,
     rightItems: [NavigationBarItemType],
-    colorType: NavigationBarColorSet = .clear
+    colorType: NavigationBarColorSet = .normal
   ) {
     self.leftItems = leftItems.map { NavigationBarItem($0) }
     self.rightItems = rightItems.map { NavigationBarItem($0) }
@@ -154,6 +154,10 @@ extension WalWalNavigationBar {
   }
   
   private func configureColor() {
+    leftItems?.forEach { $0.tintColor = self.colorType.tintColor }
+    rightItems?.forEach { $0.tintColor = self.colorType.tintColor }
+    titleLabel.textColor = colorType.tintColor
+    
     leftItems?.forEach { $0.backgroundColor = self.colorType.backgroundColor }
     rightItems?.forEach { $0.backgroundColor = self.colorType.backgroundColor }
     titleLabel.backgroundColor = colorType.backgroundColor

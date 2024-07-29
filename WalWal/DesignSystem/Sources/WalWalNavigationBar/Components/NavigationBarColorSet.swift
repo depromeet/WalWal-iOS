@@ -11,15 +11,25 @@ import UIKit
 import ResourceKit
 
 public enum NavigationBarColorSet {
-  case clear
-  case setted
-  
-  var backgroundColor: UIColor {
-    switch self {
-    case .clear:
-      return .clear
-    case .setted:
-      return ResourceKitAsset.Colors.white.color
+    case normal
+    case dark
+    
+    var tintColor: UIColor {
+        switch self {
+        case .normal:
+            return ResourceKitAsset.Colors.black.color
+        case .dark:
+            return ResourceKitAsset.Colors.white.color
+        }
     }
-  }
+    
+    var backgroundColor: UIColor {
+        switch self {
+        case .normal:
+            return .clear
+        case .dark:
+            return ResourceKitAsset.Colors.black.color
+        }
+    }
 }
+
