@@ -10,11 +10,16 @@ public typealias WalWalHTTPHeader = [String: String]
 public protocol APIEndpoint: URLRequestConvertible {
   associatedtype ResponseType: Decodable
   
-  var baseURL: URL { get }
+  var baseURLType: URLType { get }
   var path: String { get }
   var method: HTTPMethod { get }
   var parameters: RequestParams { get }
   var headerType: HTTPHeaderType { get }
+}
+
+public enum URLType {
+  case walWalBaseURL
+  case presignedURL(String)
 }
 
 public enum RequestParams {

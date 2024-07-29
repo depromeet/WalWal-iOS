@@ -12,7 +12,12 @@ import Alamofire
 
 public extension APIEndpoint {
   var baseURL: URL {
-    return URL(string: "")!
+    switch baseURLType {
+    case .walWalBaseURL:
+      return URL(string: "")!
+    case .presignedURL(let string):
+      return URL(string: string)!
+    }
   }
   
   var headers: WalWalHTTPHeader {
