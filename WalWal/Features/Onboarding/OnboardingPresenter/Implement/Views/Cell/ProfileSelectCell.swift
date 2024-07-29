@@ -97,7 +97,6 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   
   func configCell(isActive: Bool, data: ProfileCellModel) {
     profileImageView.image = data.curImage
-    print(data.profileType)
     if isActive {
       inActiveimageView.isHidden = true
     } else {
@@ -107,18 +106,17 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   
   /// 스와이프 시 비활성화 이미지 뷰와 프로필 뷰의 자연스러운 전환 위한 alpha값 조정 메서드
   func setAlpha(alpha: CGFloat) {
-    if alpha < 0.2 {
-      profileImageView.isHidden = true
-      inActiveimageView.alpha = 1
-    } else if alpha > 0.8 {
-      inActiveimageView.isHidden = true
-      profileImageView.alpha = 1
-    } else {
-      profileImageView.isHidden = false
-      inActiveimageView.isHidden = false
+    let hiddenImageLevel: CGFloat = 0.01
+    let shownImageLevel: CGFloat = 0.99
+    
+    profileImageView.isHidden = alpha < hiddenImageLevel
+    inActiveimageView.isHidden = alpha > shownImageLevel
+    
+    if !profileImageView.isHidden {
       profileImageView.alpha = alpha
-      inActiveimageView.alpha = 1-alpha
+    }
+    if !inActiveimageView.isHidden {
+      inActiveimageView.alpha = 1 - alpha
     }
   }
-  
 }

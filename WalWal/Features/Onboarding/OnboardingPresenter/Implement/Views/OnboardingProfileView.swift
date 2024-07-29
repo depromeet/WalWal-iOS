@@ -91,7 +91,6 @@ public final class OnboardingProfileViewController<R: OnboardingReactor>:
   }
   
   public func setLayout() {
-    print(32/812*UIScreen.main.bounds.height)
     rootContainer.flex
       .justifyContent(.center)
     progressView.flex
