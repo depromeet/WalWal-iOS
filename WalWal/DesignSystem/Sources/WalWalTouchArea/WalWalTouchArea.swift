@@ -105,9 +105,7 @@ private extension WalWalTouchArea {
       .disposed(by: disposeBag)
     
     rx.tapped
-      .debug("WalWalTouchArea tapped")
       .subscribe(with: self, onNext: { owner, _ in
-        print("WalWalTouchArea tapped")
         owner.state.accept(owner.state.value == .normal ? .selected : .normal)
       })
       .disposed(by: disposeBag)
