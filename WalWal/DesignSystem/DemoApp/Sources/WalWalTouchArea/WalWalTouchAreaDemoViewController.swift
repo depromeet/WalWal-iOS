@@ -24,13 +24,13 @@ final class WalWalTouchAreaDemoViewController: UIViewController {
     $0.backgroundColor = ResourceKitAsset.Colors.walwalOrange.color
   }
   
-  private let touchArea1 = WalWalTouchArea()
+  private let touchArea1 = WalWalTouchArea(size: 50)
   
-  private let touchArea2 = WalWalTouchArea()
+  private let touchArea2 = WalWalTouchArea(size: 50)
   
-  private let touchArea3 = WalWalTouchArea()
+  private let touchArea3 = WalWalTouchArea(size: 50)
   
-  private let touchArea4 = WalWalTouchArea(image: ResourceKitAsset.Assets.foldedDocumentFilled.image)
+  private let touchArea4 = WalWalTouchArea(image: ResourceKitAsset.Assets.foldedDocumentFilled.image, size: 50)
   
   private let statusLabel = UILabel().then {
     $0.textAlignment = .center
@@ -84,10 +84,10 @@ final class WalWalTouchAreaDemoViewController: UIViewController {
     
     rootView.flex.justifyContent(.center).define { flex in
       flex.addItem().direction(.row).justifyContent(.spaceEvenly).define { flex in
-        flex.addItem(touchArea1).size(50)
-        flex.addItem(touchArea2).size(50)
-        flex.addItem(touchArea3).size(50)
-        flex.addItem(touchArea4).size(50)
+        flex.addItem(touchArea1)
+        flex.addItem(touchArea2)
+        flex.addItem(touchArea3)
+        flex.addItem(touchArea4)
       }
       flex.addItem(statusLabel).marginTop(20)
     }
