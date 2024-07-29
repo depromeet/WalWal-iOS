@@ -9,7 +9,8 @@
 import UIKit
 
 fileprivate enum DesignSystemType: String, CaseIterable {
-  case calender
+  case WalWalCalendar
+  case WalWalTouchArea
 }
 
 final class DesignSystemViewController: UITableViewController {
@@ -47,8 +48,10 @@ final class DesignSystemViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let designSystem = self.designSystems[indexPath.item]
     switch designSystem {
-    case .calender:
+    case .WalWalCalendar:
       self.navigationController?.pushViewController(WalWalCalenderDemoViewController(), animated: true)
+    case .WalWalTouchArea:
+      self.navigationController?.pushViewController(WalWalTouchAreaDemoViewController(), animated: true)
     default: return
     }
   }
