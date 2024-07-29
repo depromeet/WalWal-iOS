@@ -77,8 +77,10 @@ public class WalWalTouchArea: UIView {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    containerView.pin.all()
-    containerView.flex.layout()
+    containerView.pin
+      .all()
+    containerView.flex
+      .layout()
   }
 }
 
@@ -92,9 +94,12 @@ private extension WalWalTouchArea {
   func configureLayout(size: CGFloat) {
     addSubview(containerView)
     
-    containerView.flex.define { flex in
-      flex.addItem(imageView).width(size).height(size)
-    }
+    containerView.flex
+      .define { flex in
+        flex.addItem(imageView)
+          .width(size)
+          .height(size)
+      }
   }
   
   func bind() {
