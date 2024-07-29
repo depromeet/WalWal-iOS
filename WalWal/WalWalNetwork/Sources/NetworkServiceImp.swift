@@ -6,7 +6,7 @@
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 import Alamofire
 import RxAlamofire
@@ -47,6 +47,31 @@ public final class NetworkService: NetworkServiceProtocol {
       }
     }
     .asSingle()
+  }
+  
+  // MARK: - Image Upload
+  func upload<E: APIEndpoint> (endpoint: E, image: UIImage) -> Single<Bool> where E: APIEndpoint{
+    let url = endpoint.baseURL
+    let headers = HTTPHeaders(endpoint.headers)
+    requestLogging(endpoint)
+    
+    guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+      return Single.error(WalWalNetworkError.invalidRequest)
+    }
+    
+    return Single.create { single -> Disposable in
+      AF.upload(imageData, to: url, method: endpoint.method, headers: headers)
+        .validate(statusCode: 200...299)
+        .responseData(emptyResponseCodes: [200, 204]) { response in
+          switch response.result {
+          case .success(_):
+            single(.success(true))
+          case .failure(let fail):
+            single(.failure(fail))
+          }
+        }
+      return Disposables.create()
+    }
   }
 }
 
