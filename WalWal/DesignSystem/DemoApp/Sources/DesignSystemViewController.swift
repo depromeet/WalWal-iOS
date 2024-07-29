@@ -11,6 +11,7 @@ import UIKit
 fileprivate enum DesignSystemType: String, CaseIterable {
   case WalWalCalendar
   case WalWalNavigation
+  case WalWalTouchArea
 }
 
 final class DesignSystemViewController: UITableViewController {
@@ -52,6 +53,8 @@ final class DesignSystemViewController: UITableViewController {
       self.navigationController?.pushViewController(WalWalCalenderDemoViewController(), animated: true)
     case .WalWalNavigation:
       self.navigationController?.pushViewController(WalWalNavigationBarDemoViewController(), animated: true)
+    case .WalWalTouchArea:
+      self.navigationController?.pushViewController(WalWalTouchAreaDemoViewController(), animated: true)
     default: return
     }
   }
