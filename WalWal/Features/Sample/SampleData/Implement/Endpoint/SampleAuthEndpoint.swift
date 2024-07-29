@@ -20,10 +20,6 @@ enum AuthEndpoint<ResponseType>: APIEndpoint where ResponseType: Decodable {
 }
 
 extension AuthEndpoint {
-  var baseURL: URL {
-    return URL(string: "")!
-  }
-  
   var path: String {
     switch self {
     case .signIn:
@@ -51,18 +47,12 @@ extension AuthEndpoint {
     }
   }
   
-  var headers: WalWalHTTPHeader {
+  var headerType: HTTPHeaderType {
     switch self {
     case .signIn:
-      return [
-        "Content-Type": "application/json"
-      ]
+        .plain
     case .signUp:
-      return [
-        // 회원가입에는 Data타입이랑 같이 보내기 위해서 Presigned-Url 머시기 헤더에 dataform관련해서 올라가지 않을까
-        "Content-Type": "application/json"
-      ]
+        .plain
     }
   }
-  
 }
