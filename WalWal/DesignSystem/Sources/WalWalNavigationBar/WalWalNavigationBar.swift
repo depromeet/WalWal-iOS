@@ -136,6 +136,7 @@ extension WalWalNavigationBar {
         
         flex.addItem(self.titleLabel)
           .grow(1)
+          .shrink(1)
           .alignSelf(.center)
         
         flex.addItem()
@@ -146,10 +147,10 @@ extension WalWalNavigationBar {
             self.rightItems?.forEach {
               flex.addItem($0)
                 .size(24)
-                .marginLeft(20)
+                .marginLeft(16)
             }
           }
-          .marginRight(16)
+          .marginRight(20)
       }
   }
   

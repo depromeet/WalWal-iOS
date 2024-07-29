@@ -23,7 +23,7 @@ final class WalWalNavigationBarDemoViewController: UIViewController {
     leftItems: [
       .back,
     ],
-    title: "WALWAL NavigationBar",
+    title: "최대 12글자 들어간다",
     rightItems: [
       .close,
       .setting
