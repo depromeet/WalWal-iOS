@@ -14,7 +14,7 @@ import PinLayout
 import FlexLayout
 import Then
 
-public class WalWalTouchArea: UIView {
+public final class WalWalTouchArea: UIView {
   
   private let containerView = UIView()
   
@@ -41,6 +41,7 @@ public class WalWalTouchArea: UIView {
   // MARK: - Initializers
   
   /// WalWalTouchArea를 초기화합니다.
+  ///
   /// - Parameters
   ///   - image: 기본 이미지. nil이면 빈 이미지가 설정됩니다.
   ///   - size: TouchArea의 사이즈 (default: 24)
@@ -76,7 +77,7 @@ public class WalWalTouchArea: UIView {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    
+
     containerView.pin
       .all()
     containerView.flex

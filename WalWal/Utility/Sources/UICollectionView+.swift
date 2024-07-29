@@ -8,6 +8,9 @@
 
 import UIKit
 
+import RxSwift
+import RxCocoa
+
 public extension UICollectionView {
     /// UICollectionViewCell 등록
     /// - Parameter type: 등록할 UICollectionViewCell 클래스 (예: UserCollectionViewCell.self)
@@ -54,4 +57,34 @@ public extension UICollectionView {
     func dequeueFooter<T: UICollectionReusableView>(_ : T.Type, for indexPath: IndexPath) -> T where T: ReusableView {
         self.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
+}
+
+extension Reactive where Base: UICollectionView {
+  /// 데이터 스트림을 UICollectionView에 바인딩
+  ///
+  /// ReusableView를 준수하는 UICollectionViewCell에 데이터를 바인딩 할 때 사용하기 위한 메서드
+  ///
+  /// 사용 예시
+  /// ```swift
+  /// Observable.just([1, 2, 3])
+  /// .bind(to: collectionView.rx.items(CustomCell.self)) { index, data, cell in
+  ///
+  /// }
+  /// .disposed(by: disposeBag)
+  public func items<Sequence: Swift.Sequence, Cell: UICollectionViewCell, Source: ObservableType>
+  (_ cellType: Cell.Type = Cell.self)
+  -> (_ source: Source)
+  -> (_ configureCell: @escaping (Int, Sequence.Element, Cell) -> Void)
+  -> Disposable where Source.Element == Sequence, Cell: ReusableView {
+    return { source in
+      return { configureCell in
+        return source.bind(to: self.base.rx.items(
+          cellIdentifier: cellType.reuseIdentifier,
+          cellType: cellType)
+        ) { index, data, cell in
+          configureCell(index, data, cell)
+        }
+      }
+    }
+  }
 }
