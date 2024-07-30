@@ -57,7 +57,7 @@ class TabBarItemView: UIView {
   
   // MARK: - Methods
   
-  fileprivate func selected(_ isSelected: Bool) {
+  func selected(_ isSelected: Bool) {
     isSelectedRelay.accept(isSelected)
   }
 }

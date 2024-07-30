@@ -66,6 +66,8 @@ extension WalWalTabBarView {
       .define { flex in
         customItemViews.forEach {
           flex.addItem($0)
+            .width(60)
+            .height(100%)
         }
     }
   }
