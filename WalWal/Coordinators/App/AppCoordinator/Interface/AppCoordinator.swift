@@ -15,7 +15,7 @@ public enum AppCoordinatorAction: ParentAction {
 
 public enum AppCoordinatorFlow: CoordinatorFlow {
   case startAuth
-  case startHome
+  case startTab
 }
 
 public protocol AppCoordinator: BaseCoordinator { }

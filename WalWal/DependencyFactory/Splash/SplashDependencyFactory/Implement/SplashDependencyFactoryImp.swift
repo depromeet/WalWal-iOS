@@ -8,6 +8,8 @@
 
 import UIKit
 import SplashDependencyFactory
+import WalWalTabBarDependencyFactory
+import WalWalTabBarDependencyFactoryImp
 
 import WalWalNetwork
 
@@ -32,7 +34,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     return AppCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: nil,
-      dependencyFactory: self
+      dependencyFactory: self,
+      walwalTabBarDependencyFactory: WalWalTabBarDependencyFactoryImp()
     )
   }
   

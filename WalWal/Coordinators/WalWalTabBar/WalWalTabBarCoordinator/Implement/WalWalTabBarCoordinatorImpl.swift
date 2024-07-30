@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import DependencyFactory
+import DesignSystem
+import WalWalTabBarDependencyFactory
 import BaseCoordinator
 import WalWalTabBarCoordinator
 
@@ -19,31 +20,43 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   public typealias Action = WalWalTabBarCoordinatorAction
   public typealias Flow = WalWalTabBarCoordinatorFlow
   
+  public let tabBarController: WalWalTabBarViewController
+  
   public let disposeBag = DisposeBag()
   public let destination = PublishSubject<Flow>()
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
-  public var dependencyFactory: DependencyFactory
+  public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
+  
+  private var tabViewControllers: [Flow: UINavigationController] = [:]
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    dependencyFactory: DependencyFactory
+    walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
-    self.dependencyFactory = dependencyFactory
+    self.walwalTabBarDependencyFactory = walwalTabBarDependencyFactory
+    self.tabBarController = WalWalTabBarViewController()
+    
     bindChildToParentAction()
     bindState()
   }
   
   public func bindState() {
-    destination
+    self.tabBarController.selectedFlow
+      .compactMap { Flow(rawValue: $0) }
+      .bind(to: destination)
+      .disposed(by: disposeBag)
+    
+    self.destination
+      .distinctUntilChanged()
       .subscribe(with: self, onNext: { owner, flow in
-        switch flow { }
+        owner.startFlow(flow)
       })
       .disposed(by: disposeBag)
   }
@@ -51,57 +64,121 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
   /// 여기도, WalWalTabBar이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   public func handleChildEvent<T: ParentAction>(_ event: T) {
-    if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
-      handle__Event(__Event)
-    } else if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
-      handle__Event(__Event)
-    }
+    /// if let missionEvent = event as? CoordinatorEvent<MissonCoordinatorAction> {
+    ///   handleMissionEvent(missionEvent)
+    /// } else if let feedEvent = event as? CoordinatorEvent<FeedCoordinatorAction> {
+    ///   handleFeedEvent(feedEvent)
+    /// } else if let notificationEvent = event as? CoordinatorEvent<NotificationCoordinatorAction> {
+    ///   handleNotificationEvent(notificationEvent)
+    /// } else if let myPageEvent = event as? CoordinatorEvent<MyPageCoordinatorAction> {
+    ///   handleMyPageEvent(myPageEvent)
+    /// }
   }
   
   public func start() {
-    /// 이런 Reactor랑 ViewController가 있다 치고~
-    /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let reactor = dependencyFactory.make__Reactor(coordinator: self)
-    let __VC = dependencyFactory.make__ViewController(reactor: reactor)
-    self.baseViewController = __VC
-    self.pushViewController(viewController: __VC, animated: false)
+    setupTabBarController()
+    navigationController.setViewControllers([tabBarController], animated: false)
+    startFlow(.startMission) // 초기 탭 설정
+  }
+  
+  public func startFlow(_ flow: Flow) {
+    if tabViewControllers[flow] == nil {
+      let navController = createNavigationController(for: flow)
+      tabViewControllers[flow] = navController
+    }
+    
+    tabBarController.selectedFlow.accept(flow.rawValue)
+    
+    if childCoordinator == nil {
+      startCoordinator(for: flow)
+    }
   }
 }
 
 // MARK: - Handle Child Actions
 
 extension WalWalTabBarCoordinatorImp {
-  
-  fileprivate func handle__Event(_ event: CoordinatorEvent<__CoordinatorAction>) {
-    switch event {
-    case .finished:
-      childCoordinator = nil
-    case .requireParentAction(let action):
-      switch action { }
-    }
-  }
+  /// fileprivate func missionEvent(_ event: CoordinatorEvent<MissonCoordinatorAction>) {
+  ///   switch event {
+  ///   case .finished:
+  ///     childCoordinator = nil
+  ///   case .requireParentAction(let action):
+  ///     switch action { }
+  ///   }
+  /// }
+  ///
+  /// fileprivate func feedEvent(_ event: CoordinatorEvent<FeedCoordinatorAction>) {
+  ///   switch event {
+  ///   case .finished:
+  ///     childCoordinator = nil
+  ///   case .requireParentAction(let action):
+  ///     switch action { }
+  ///   }
+  /// }
+  ///
+  /// fileprivate func notificationEvent(_ event: CoordinatorEvent<NotificationCoordinatorAction>) {
+  ///   switch event {
+  ///   case .finished:
+  ///     childCoordinator = nil
+  ///   case .requireParentAction(let action):
+  ///     switch action { }
+  ///   }
+  /// }
+  ///
+  /// fileprivate func myPageEvent(_ event: CoordinatorEvent<MyPageCoordinatorAction>) {
+  ///   switch event {
+  ///   case .finished:
+  ///     childCoordinator = nil
+  ///   case .requireParentAction(let action):
+  ///     switch action { }
+  ///   }
+  /// }
 }
 
 // MARK: - Create and Start(Show) with Flow(View)
 
 extension WalWalTabBarCoordinatorImp {
   
-  /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
-  fileprivate func start__() {
-    let __Coordinator = dependencyFactory.make__Coordinator(
-      navigationController: navigationController,
-      parentCoordinator: self
-    )
-    childCoordinator = __Coordinator
-    __Coordinator.start()
+  fileprivate func startMission() {
+    print("미션 탭 선택")
+    /// let missionCoordinator = missionDependencyFactory.makeMissionCoordinator(
+    ///   navigationController: navigationController,
+    ///   parentCoordinator: self
+    /// )
+    /// childCoordinator = missionCoordinator
+    /// missionCoordinator.start()
   }
   
-  /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
-  fileprivate func show__() {
-    let reactor = dependencyFactory.make__Reactor(coordinator: self)
-    let __VC = dependencyFactory.make__ViewController(reactor: reactor)
-    self.pushViewController(viewController: __VC, animated: false)
+  fileprivate func startFeed() {
+    print("피드 탭 선택")
+    /// let feedCoordinator = feedDependencyFactory.makefeedCoordinator(
+    ///   navigationController: navigationController,
+    ///   parentCoordinator: self
+    /// )
+    /// childCoordinator = feedCoordinator
+    /// feedCoordinator.start()
   }
+  
+  fileprivate func startNotification() {
+    print("알림 탭 선택")
+    /// let notificationCoordinator = notificationDependencyFactory.makenotificationCoordinator(
+    ///   navigationController: navigationController,
+    ///   parentCoordinator: self
+    /// )
+    /// childCoordinator = notificationCoordinator
+    /// notificationCoordinator.start()
+  }
+  
+  fileprivate func startMyPage() {
+    print("마이페이지 탭 선택")
+    /// let myPageCoordinator = myPageDependencyFactory.makeMyPageCoordinator(
+    ///   navigationController: navigationController,
+    ///   parentCoordinator: self
+    /// )
+    /// childCoordinator = myPageCoordinator
+    /// myPageCoordinator.start()
+  }
+  
 }
 
 
@@ -110,4 +187,38 @@ extension WalWalTabBarCoordinatorImp {
 
 extension WalWalTabBarCoordinatorImp {
   
+}
+
+// MARK: - Private Method
+
+private extension WalWalTabBarCoordinatorImp {
+  
+  func setupTabBarController() {
+    Flow.allCases.forEach { flow in
+      let navController = createNavigationController(for: flow)
+      tabViewControllers[flow] = navController
+    }
+    tabBarController.setViewControllers(Array(tabViewControllers.values), animated: false)
+  }
+  
+  func createNavigationController(for flow: Flow) -> UINavigationController {
+    let navigationController = UINavigationController()
+    navigationController.setNavigationBarHidden(true, animated: false)
+    return navigationController
+  }
+  
+  func startCoordinator(for flow: Flow) {
+    guard let navController = tabViewControllers[flow] else { return }
+    
+    switch flow {
+    case .startMission:
+      startMission()
+    case .startFeed:
+      startFeed()
+    case .startNotification:
+      startNotification()
+    case .startMyPage:
+      startMyPage()
+    }
+  }
 }

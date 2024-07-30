@@ -8,8 +8,10 @@
 
 import UIKit
 import SplashDependencyFactory
+import WalWalTabBarDependencyFactory
 import BaseCoordinator
 import AppCoordinator
+
 
 import RxSwift
 import RxCocoa
@@ -25,17 +27,20 @@ public final class AppCoordinatorImp: AppCoordinator {
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
   public var dependencyFactory: SplashDependencyFactory
+  public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    dependencyFactory: SplashDependencyFactory
+    dependencyFactory: SplashDependencyFactory,
+    walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.dependencyFactory = dependencyFactory
+    self.walwalTabBarDependencyFactory = walwalTabBarDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -46,8 +51,8 @@ public final class AppCoordinatorImp: AppCoordinator {
         switch flow { 
         case .startAuth:
           owner.startAuth()
-        case .startHome:
-          owner.startAuth()
+        case .startTab:
+          owner.startTabBar()
         }
       })
       .disposed(by: disposeBag)
@@ -68,10 +73,11 @@ public final class AppCoordinatorImp: AppCoordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let reactor = dependencyFactory.makeSplashReactor(coordinator: self)
-    let splashVC = dependencyFactory.makeSplashViewController(reactor: reactor)
-    self.baseViewController = splashVC
-    self.pushViewController(viewController: splashVC, animated: false)
+//    let reactor = dependencyFactory.makeSplashReactor(coordinator: self)
+//    let splashVC = dependencyFactory.makeSplashViewController(reactor: reactor)
+//    self.baseViewController = splashVC
+//    self.pushViewController(viewController: splashVC, animated: false)
+    startTabBar()
   }
 }
 
@@ -128,15 +134,13 @@ extension AppCoordinatorImp {
   
   
   /// 새로운 Coordinator를 통해서 Flow를 새로 생성하기 때문에, start를 prefix로 사용합니다.
-  fileprivate func startHome() {
-    /*
-    let homeCoordinator = dependencyFactory.makeHomeCoordinator(
+  fileprivate func startTabBar() {
+    let walwalTabBarCoordinator = walwalTabBarDependencyFactory.makeTabBarCoordinator(
       navigationController: navigationController,
       parentCoordinator: self
     )
-    childCoordinator = homeCoordinator
-    homeCoordinator.start()
-    */
+    childCoordinator = walwalTabBarCoordinator
+    walwalTabBarCoordinator.start()
   }
 }
 
