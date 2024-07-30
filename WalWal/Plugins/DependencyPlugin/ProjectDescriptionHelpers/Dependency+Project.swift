@@ -169,18 +169,18 @@ public extension TargetDependency.Feature.Auth.Data {
 }
 
 public extension TargetDependency.Feature.Sample.Presenter {
-  static let Interface = Self.project(name: .auth, layer: .presenter, isInterface: true)
-  static let Implement = Self.project(name: .auth, layer: .presenter, isInterface: false)
+  static let Interface = Self.project(name: .sample, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .sample, layer: .presenter, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Sample.Domain {
-  static let Interface = Self.project(name: .auth, layer: .domain, isInterface: true)
-  static let Implement = Self.project(name: .auth, layer: .domain, isInterface: false)
+  static let Interface = Self.project(name: .sample, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .sample, layer: .domain, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Sample.Data {
-  static let Interface = Self.project(name: .auth, layer: .data, isInterface: true)
-  static let Implement = Self.project(name: .auth, layer: .data, isInterface: false)
+  static let Interface = Self.project(name: .sample, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .sample, layer: .data, isInterface: false)
 }
 
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
