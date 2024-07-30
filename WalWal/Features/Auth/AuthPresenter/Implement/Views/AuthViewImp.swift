@@ -21,25 +21,32 @@ import RxCocoa
 public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController {
   typealias Color = ResourceKitAsset.Colors
   typealias Font = ResourceKitFontFamily
+  typealias Image = ResourceKitAsset.Sample
   
   public var disposeBag = DisposeBag()
   public let authReactor: R
   
   // MARK: UI
   
+  private let safeAreaBottom: CGFloat = 34
   private let rootContainer = UIView()
+  private let contentContainer = UIView()
   private let imageView = UIImageView().then {
-    $0.backgroundColor = .gray
+    $0.backgroundColor = .clear
+    $0.image = Image.authImageSample.image
+    $0.contentMode = .scaleAspectFit
   }
   private let titleLabel = UILabel().then {
     $0.text = "왈왈에서 매일 만나요"
     $0.textColor = Color.black.color
     $0.font = .boldSystemFont(ofSize: 24)
+    $0.textAlignment = .center
   }
   private let subTitleLabel = UILabel().then {
     $0.text = "세상 모든 반려동물을 한자리에서!"
     $0.textColor = Color.gray900.color
     $0.font = .systemFont(ofSize: 14)
+    $0.textAlignment = .center
   }
   private var appleLoginButton = SocialLoginButton(socialType: .apple)
   
@@ -75,19 +82,33 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   public func setAttribute() {
     view.backgroundColor = Color.walwalOrange.color
     view.addSubview(rootContainer)
+    rootContainer.addSubview(appleLoginButton)
+    [imageView, titleLabel, subTitleLabel].forEach {
+      contentContainer.addSubview($0)
+    }
   }
   
   public func setLayout() {
-    rootContainer.flex.justifyContent(.spaceBetween).define {
-        $0.addItem().alignItems(.center).paddingTop(35%).define {
-            $0.addItem(imageView).size(220)
-            $0.addItem(titleLabel).marginTop(10).maxWidth(330)
-            $0.addItem(subTitleLabel).marginTop(6).maxWidth(330)
-          }
-        $0.addItem().marginBottom(40).alignItems(.center).define {
-            $0.addItem(appleLoginButton).width(330).height(56)
-          }
+    rootContainer.flex
+      .justifyContent(.center)
+      .define {
+        $0.addItem(contentContainer)
+          .justifyContent(.center)
+          .alignItems(.center)
+          .grow(1)
+        $0.addItem(appleLoginButton)
+          .marginHorizontal(20)
+          .marginBottom(safeAreaBottom+40)
+          .height(56)
       }
+    imageView.flex
+      .marginHorizontal(51)
+    titleLabel.flex
+      .marginTop(6)
+      .width(100%)
+    subTitleLabel.flex
+      .marginTop(6)
+      .width(100%)
   }
 }
 

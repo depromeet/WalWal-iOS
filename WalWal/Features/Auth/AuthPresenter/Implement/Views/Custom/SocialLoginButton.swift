@@ -61,14 +61,18 @@ final class SocialLoginButton: UIButton {
     containerView.pin.all()
     containerView.flex.layout()
     
-    customImageView.pin.left(16).vCenter()
-    customLabel.pin.hCenter().vCenter()
+    customImageView.pin
+      .left(23)
+      .vCenter()
+    customLabel.pin
+      .hCenter()
+      .vCenter()
   }
   
   private func setAttributes() {
     let tintColor: UIColor = socialType == .apple ? .white : .black
     backgroundColor = socialType == .apple ? .black : .yellow
-    layer.cornerRadius = 18
+    layer.cornerRadius = 14
     clipsToBounds = true
     
     containerView.backgroundColor = .clear
@@ -87,9 +91,15 @@ final class SocialLoginButton: UIButton {
   }
   
   private func setLayout() {
-    containerView.flex.direction(.row).alignItems(.center).define {
-        $0.addItem(customImageView).size(22)
-        $0.addItem(customLabel).marginLeft(16).grow(1)
+    containerView.flex
+      .direction(.row)
+      .alignItems(.center)
+      .define {
+        $0.addItem(customImageView)
+          .size(22)
+        $0.addItem(customLabel)
+          .marginLeft(16)
+          .grow(1)
       }
   }
 }
