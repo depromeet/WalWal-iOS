@@ -27,7 +27,7 @@ public enum RequestParams {
   case requestQuery(_ parameter: Encodable?)
   case requestWithbody(_ parameter: Encodable?)
   case requestQueryWithBody(_ queryParameter: Encodable?, _ bodyParameter: Encodable?)
-  case uploadMultipart([MultipartFormData])
+  case uploadImage
 }
 
 enum HTTPHeaderFieldKey : String {

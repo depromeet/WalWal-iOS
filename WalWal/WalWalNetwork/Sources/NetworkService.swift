@@ -19,8 +19,3 @@ public protocol NetworkServiceProtocol {
   /// 공통되는 엔티티를 사용하기 위해 BaseResponse를 사용합니다.
   func request<E: APIEndpoint>(endpoint: E) -> Single<E.ResponseType?> where E: APIEndpoint
 }
-
-public enum UploadData {
-  case file(data: Data, name: String, fileName: String, mimeType: String)
-  case parameter(name: String, value: String)
-}

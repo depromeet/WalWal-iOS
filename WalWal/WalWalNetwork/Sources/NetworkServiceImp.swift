@@ -145,7 +145,7 @@ extension NetworkService {
         .requestWithbody(let parameter),
         .requestQueryWithBody(_, let parameter):
       return parameter?.toDictionary()
-    case .uploadMultipart:
+    case .uploadImage:
       return nil
     }
   }
