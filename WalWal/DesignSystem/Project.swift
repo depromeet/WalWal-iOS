@@ -36,7 +36,7 @@ let project = Project(
         .ThirdParty.RxGesture,
         .ThirdParty.Then,
         .ThirdParty.Kingfisher,
-        .ResourceKit,
+        .ResourceKit
       ]),
     Target(
       name: "DesignSystemDemoApp",

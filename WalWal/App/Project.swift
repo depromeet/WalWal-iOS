@@ -34,6 +34,7 @@ let project = Project(
         .DependencyFactory.Sample.Implement,
         .DependencyFactory.Splash.Implement,
         .DependencyFactory.WalWalTabBar.Implement
+        .DependencyFactory.Mission.Implement
       ]
     )
   ]
