@@ -47,7 +47,15 @@ public final class NetworkService: NetworkServiceProtocol {
   }
   
   // MARK: - Image Upload
-  func upload<E: APIEndpoint> (endpoint: E, image: UIImage) -> Single<Bool> where E: APIEndpoint{
+  
+  /// 이미지를 Presigned URL로 업로드 하는 함수입니다.
+  /// UIImage를 인자로 받아 함수 내에서 BinaryData 타입으로 변환합니다.
+  ///
+  /// 사용 예시
+  /// ``` swift
+  ///
+  /// ```
+  public func upload<E: APIEndpoint> (endpoint: E, image: UIImage) -> Single<Bool> where E: APIEndpoint{
     let url = endpoint.baseURL
     let headers = HTTPHeaders(endpoint.headers)
     requestLogging(endpoint)
