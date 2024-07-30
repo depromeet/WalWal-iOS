@@ -63,7 +63,7 @@ public final class NetworkService: NetworkServiceProtocol {
     return Single.create { single -> Disposable in
       AF.upload(imageData, to: url, method: endpoint.method, headers: headers)
         .validate(statusCode: 200...299)
-        .responseData(emptyResponseCodes: [200, 204]) { response in
+        .responseData(emptyResponseCodes: [200]) { response in
           switch response.result {
           case .success(_):
             single(.success(true))
