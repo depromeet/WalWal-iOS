@@ -32,7 +32,8 @@ let project = Project(
       dependencies: [
         .DependencyFactory.Auth.Implement,
         .DependencyFactory.Sample.Implement,
-        .DependencyFactory.Splash.Implement
+        .DependencyFactory.Splash.Implement,
+        .DependencyFactory.WalWalTabBar.Implement
       ]
     )
   ]

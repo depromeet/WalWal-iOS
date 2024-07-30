@@ -20,6 +20,7 @@ enum Layer: String {
 enum DependencyFactoryStr: String {
   case splash = "Splash"
   case auth = "Auth"
+  case walwalTabBar = "WalWalTabBar"
   case sample = "Sample"
 }
 
@@ -88,6 +89,7 @@ extension TargetDependency {
     public struct Splash: WalWalDependency { }
     public struct Sample: WalWalDependency { }
     public struct Auth: WalWalDependency { }
+    public struct WalWalTabBar: WalWalDependency { }
   }
   
   public struct Coordinator {
@@ -131,6 +133,11 @@ public extension TargetDependency.DependencyFactory.Splash {
 public extension TargetDependency.DependencyFactory.Auth {
   static let Interface = Self.project(dependencyName: .auth, isInterface: true)
   static let Implement = Self.project(dependencyName: .auth, isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.WalWalTabBar {
+  static let Interface = Self.project(dependencyName: .walwalTabBar, isInterface: true)
+  static let Implement = Self.project(dependencyName: .walwalTabBar, isInterface: false)
 }
 
 public extension TargetDependency.DependencyFactory.Sample {
