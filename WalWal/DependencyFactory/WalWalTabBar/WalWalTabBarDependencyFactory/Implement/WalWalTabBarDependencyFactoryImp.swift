@@ -7,10 +7,27 @@
 //
 
 import UIKit
+import WalWalTabBarDependencyFactory
+
+import BaseCoordinator
+import WalWalTabBarCoordinator
+import WalWalTabBarCoordinatorImp
 
 public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
   
   public init() {
     
   }
+  
+  public func makeTabBarCoordinator(
+    navigationController: UINavigationController,
+    parentCoordinator: any BaseCoordinator
+  ) -> any WalWalTabBarCoordinator {
+    return WalWalTabBarCoordinatorImp(
+      navigationController: navigationController,
+      parentCoordinator: parentCoordinator,
+      walwalTabBarDependencyFactory: self
+    )
+  }
+  
 }
