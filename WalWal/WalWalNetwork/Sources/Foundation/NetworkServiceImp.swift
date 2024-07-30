@@ -23,6 +23,8 @@ public final class NetworkService: NetworkServiceProtocol {
   }
   
   public func request<E: APIEndpoint>(endpoint: E) -> Single<E.ResponseType?> where E: APIEndpoint {
+    let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
+    let headers = HTTPHeaders(endpoint.headers)
     requestLogging(endpoint)
     return RxAlamofire.requestJSON(endpoint, interceptor: WalwalInterceptor())
       .do(onError: { error in
@@ -88,6 +90,7 @@ extension NetworkService {
     _ model: T.Type,
     _ endpoint: any APIEndpoint
   ) -> Result<T?, Error> {
+    print(data)
     let statusCode = response.statusCode
     if !(200...299).contains(statusCode) {
       let error = WalWalNetworkError.serverError(statusCode: statusCode)

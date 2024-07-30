@@ -34,7 +34,6 @@ public final class AuthReactorImp: AuthReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .appleLoginTapped(authCode):
-      print(authCode)
       return appleLoginUseCase.excute(authCode: authCode)
         .asObservable()
         .flatMap { result -> Observable<Mutation> in
@@ -42,8 +41,7 @@ public final class AuthReactorImp: AuthReactor {
           return .never()
         }
         .catch { error -> Observable<Mutation> in
-          print("error")
-          return .never()
+          return .just(.loginErrorMsg(msg: "로그인에 실패하였습니다"))
         }
     }
   }
@@ -51,9 +49,8 @@ public final class AuthReactorImp: AuthReactor {
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = State()
     switch mutation {
-    case let .token(token):
-      print(token)
-//      newState.token = token
+    case let .loginErrorMsg(msg):
+      newState.message = msg
     }
     return newState
   }

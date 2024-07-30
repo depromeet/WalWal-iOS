@@ -9,6 +9,7 @@
 import UIKit
 import AuthPresenter
 import ResourceKit
+import DesignSystem
 import AuthenticationServices
 
 import Then
@@ -133,7 +134,13 @@ extension AuthViewControllerImp: View {
   }
   
   public func bindState(reactor: R) {
-    
+    reactor.pulse(\.$message)
+      .asDriver(onErrorJustReturn: "")
+      .filter { !$0.isEmpty }
+      .drive(with: self) { owner, message in
+        Toast.shared.show(message)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

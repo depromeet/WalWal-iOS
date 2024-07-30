@@ -17,12 +17,13 @@ public enum AuthReactorAction {
 }
 
 public enum AuthReactorMutation {
-  case token(token: String)
+  case loginErrorMsg(msg: String)
 }
 
 public struct AuthReactorState {
   /// 구체적인 상태 정의
   public init() { }
+  @Pulse public var message: String = ""
 }
 
 public protocol AuthReactor:
