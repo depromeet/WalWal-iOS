@@ -26,6 +26,7 @@ enum DependencyFactoryStr: String {
 enum CoordinatorStr: String {
   case base = "Base"
   case app = "App"
+  case walwalTabBar = "WalWalTabBar"
   case sampleAuth = "SampleAuth"
   case sampleApp = "SampleApp"
   case sampleHome = "SampleHome"
@@ -92,6 +93,7 @@ extension TargetDependency {
   public struct Coordinator {
     public struct Base: WalWalDependency { }
     public struct App: WalWalDependency { }
+    public struct WalWalTabBar: WalWalDependency { }
     public struct SampleAuth: WalWalDependency { }
     public struct SampleApp: WalWalDependency { }
     public struct SampleHome: WalWalDependency { }
@@ -202,6 +204,11 @@ public extension TargetDependency.Coordinator.SampleHome {
 public extension TargetDependency.Coordinator.App {
   static let Interface = Self.project(name: .app, isInterface: true)
   static let Implement = Self.project(name: .app, isInterface: false)
+}
+
+public extension TargetDependency.Coordinator.WalWalTabBar {
+  static let Interface = Self.project(name: .walwalTabBar, isInterface: true)
+  static let Implement = Self.project(name: .walwalTabBar, isInterface: false)
 }
 
 public extension TargetDependency.Coordinator.Auth {
