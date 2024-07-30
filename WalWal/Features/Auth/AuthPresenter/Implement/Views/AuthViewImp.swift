@@ -8,6 +8,7 @@
 
 import UIKit
 import AuthPresenter
+import ResourceKit
 import AuthenticationServices
 
 import Then
@@ -18,6 +19,9 @@ import RxSwift
 import RxCocoa
 
 public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController {
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily
+  
   public var disposeBag = DisposeBag()
   public let authReactor: R
   
@@ -29,12 +33,12 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   }
   private let titleLabel = UILabel().then {
     $0.text = "왈왈에서 매일 만나요"
-    $0.textColor = .black
+    $0.textColor = Color.black.color
     $0.font = .boldSystemFont(ofSize: 24)
   }
   private let subTitleLabel = UILabel().then {
     $0.text = "세상 모든 반려동물을 한자리에서!"
-    $0.textColor = .black
+    $0.textColor = Color.gray900.color
     $0.font = .systemFont(ofSize: 14)
   }
   private var appleLoginButton = SocialLoginButton(socialType: .apple)
@@ -69,7 +73,7 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   }
   
   public func setAttribute() {
-    view.backgroundColor = .systemOrange
+    view.backgroundColor = Color.walwalOrange.color
     view.addSubview(rootContainer)
   }
   
