@@ -9,6 +9,7 @@
 import UIKit
 import AuthPresenter
 import ResourceKit
+import Utility
 import DesignSystem
 import AuthenticationServices
 
@@ -29,7 +30,6 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   
   // MARK: UI
   
-  private let safeAreaBottom: CGFloat = 34
   private let rootContainer = UIView()
   private let contentContainer = UIView()
   private let imageView = UIImageView().then {
@@ -69,7 +69,6 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     setAttribute()
     setLayout()
     self.reactor = authReactor
-    
   }
   
   // MARK: - Layout
@@ -98,12 +97,12 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
           .alignItems(.center)
           .grow(1)
         $0.addItem(appleLoginButton)
-          .marginHorizontal(20)
-          .marginBottom(safeAreaBottom+40)
+          .marginHorizontal(20.adjusted)
+          .marginBottom(40.adjusted)
           .height(56)
       }
     imageView.flex
-      .marginHorizontal(51)
+      .marginHorizontal(51.adjusted)
     titleLabel.flex
       .marginTop(6)
       .width(100%)
