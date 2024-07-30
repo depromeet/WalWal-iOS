@@ -50,10 +50,6 @@ public final class {{name}}ViewControllerImp<R: {{name}}Reactor>: UIViewControll
   public func setLayout() {
     
   }
-  
-  public func bindEvent() {
-    
-  }
 }
 
 extension {{name}}ViewControllerImp: View {
@@ -71,6 +67,10 @@ extension {{name}}ViewControllerImp: View {
   }
   
   public func bindState(reactor: R) {
+    
+  }
+  
+  public func bindEvent() {
     
   }
 }
