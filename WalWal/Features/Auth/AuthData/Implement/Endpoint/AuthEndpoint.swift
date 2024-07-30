@@ -18,6 +18,13 @@ enum AuthEndpoint<T>: APIEndpoint where T: Decodable {
 }
 
 extension AuthEndpoint {
+  var baseURLType: URLType {
+     switch self {
+     case .appleLogin(_):
+       return .walWalBaseURL
+     }
+   }
+  
   var path: String {
     switch self {
     case .appleLogin:
