@@ -27,10 +27,7 @@ public final class NetworkService: NetworkServiceProtocol {
     let headers = HTTPHeaders(endpoint.headers)
     requestLogging(endpoint)
     /// 추후에 interceptor 추가 가능
-    return RxAlamofire.requestJSON(endpoint.method,
-                                   url,
-                                   parameters: parametersToDictionary(endpoint.parameters),
-                                   headers: headers)
+    return RxAlamofire.requestJSON(endpoint)
     .map{ response, anyData -> (HTTPURLResponse, Data) in
       let convertedData = try JSONSerialization.data(withJSONObject: anyData)
       return (response, convertedData)
