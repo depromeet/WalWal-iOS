@@ -35,14 +35,16 @@ public final class AuthReactorImp: AuthReactor {
     switch action {
     case let .appleLoginTapped(authCode):
       print(authCode)
-      return .never()
-      
-      // TODO: - 추후 api 요청 작업 시 사용 예정
-//      return appleLoginUseCase.excute(authCode: authCode)
-//        .asObservable()
-//        .map { token in
-//          return Mutation.token(token: token.token)
-//        }
+      return appleLoginUseCase.excute(authCode: authCode)
+        .asObservable()
+        .flatMap { result -> Observable<Mutation> in
+          print(result.accessToken)
+          return .never()
+        }
+        .catch { error -> Observable<Mutation> in
+          print("error")
+          return .never()
+        }
     }
   }
   

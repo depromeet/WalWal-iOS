@@ -8,7 +8,8 @@
 
 import Foundation
 
-
 public struct AuthTokenDTO: Decodable {
-  public let token: String
+  public let accessToken: String
+  public let refreshToken: String
+  public let isTemporaryToken: Bool
 }
