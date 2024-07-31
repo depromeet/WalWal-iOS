@@ -8,8 +8,9 @@
 
 import UIKit
 import SplashDependencyFactory
+import AuthDependencyFactory
 import WalWalTabBarDependencyFactory
-import WalWalTabBarDependencyFactoryImp
+import MissionDependencyFactory
 
 import WalWalNetwork
 
@@ -21,8 +22,6 @@ import SplashData
 import SplashDataImp
 import SplashDomain
 import SplashDomainImp
-import SplashPresenter
-import SplashPresenterImp
 
 public class SplashDependencyFactoryImp: SplashDependencyFactory {
   
@@ -30,20 +29,18 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     
   }
   
-  public func makeAppCoordinator(navigationController: UINavigationController) -> any AppCoordinator {
+  public func makeAppCoordinator(
+    navigationController: UINavigationController,
+    authDependencyFactory: AuthDependencyFactory,
+    walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
+    missionDependencyFactory: MissionDependencyFactory
+  ) -> any AppCoordinator {
     return AppCoordinatorImp(
       navigationController: navigationController,
-      parentCoordinator: nil,
-      dependencyFactory: self,
-      walwalTabBarDependencyFactory: WalWalTabBarDependencyFactoryImp()
+      appDependencyFactory: self,
+      authDependencyFactory: authDependencyFactory,
+      walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
+      missionDependencyFactory: missionDependencyFactory
     )
-  }
-  
-  public func makeSplashReactor(coordinator: any AppCoordinator) -> any SplashReactor {
-    return SplashReactorImp(coordinator: coordinator)
-  }
-  
-  public func makeSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController {
-    return SplashViewControllerImp(reactor: reactor)
   }
 }
