@@ -19,6 +19,8 @@ import AuthData
 import AuthDataImp
 import AuthDomain
 import AuthDomainImp
+import AuthPresenter
+import AuthPresenterImp
 
 public class AuthDependencyFactoryImp: AuthDependencyFactory {
   
@@ -44,5 +46,16 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
   
   public func makeAppleLoginUseCase() -> AppleLoginUseCase {
     return AppleLoginUseCaseImp(authDataRepository: makeAuthData())
+  }
+  
+  public func makeAuthReactor<T: AuthCoordinator>(coordinator: T) -> any AuthReactor {
+    return AuthReactorImp(
+      coordinator: coordinator,
+      appleLoginUseCase: makeAppleLoginUseCase()
+    )
+  }
+  
+  public func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController {
+    return AuthViewControllerImp(reactor: reactor)
   }
 }

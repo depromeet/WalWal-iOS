@@ -21,4 +21,6 @@ public protocol AuthDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator
   ) -> any AuthCoordinator
+  func makeAuthReactor<T: AuthCoordinator>(coordinator: T) -> any AuthReactor
+  func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
 }
