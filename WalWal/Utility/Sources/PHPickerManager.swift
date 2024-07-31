@@ -13,11 +13,14 @@ import RxSwift
 
 final public class PHPickerManager {
   
+  public static let shared = PHPickerManager()
+  private init(){}
+  
   /// 선택한 사진을 전달하기위한 프로퍼티
   ///
   /// 사용 예시:
   /// ```swift
-  /// PHPickerManager().selectedPhoto
+  /// PHPickerManager.shared.selectedPhoto
   /// .compactMap { $0 }
   /// .bind(with: self) { owner, image in
   ///   imageView.image = image
@@ -26,15 +29,13 @@ final public class PHPickerManager {
   /// ```
   public let selectedPhoto = PublishSubject<UIImage?>()
   
-  public init(){}
-  
   /// 사용자 앨범을 보여주기 위한 메서드
   ///
   /// 사용예시
   /// ```swift
   /// button.rx.tap
   ///   .bind(with: self) { owner, _ in
-  ///     PHPickerManager().presentPicker(vc: owner)
+  ///     PHPickerManager.shared.presentPicker(vc: owner)
   ///   }
   ///   .disposed(by: disposBag)
   ///  ```
