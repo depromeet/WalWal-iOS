@@ -27,28 +27,18 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
     
   }
   
-  public func makeMissionData() -> MissionRepository {
+  public func makeMissionRepository() -> MissionRepository {
     let networkService = NetworkService()
     return MissionRepositoryImp(networkService: networkService)
   }
   
   public func makeMissionUseCase() -> MissionUseCase {
-    return MissionUseCaseImp(missionDataRepository: makeMissionData())
-  }
-  
-  public func makeMissionReactor(coordinator: any MissionCoordinator) -> any MissionReactor {
-    return MissionReactorImp(coordinator: coordinator)
-  }
-  
-  public func makeMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController {
-    return MissionViewControllerImp(reactor: reactor)
   }
   
   public func makeMissionCoordinator(navigationController: UINavigationController) -> any MissionCoordinator {
     return MissionCoordinatorImp(
       navigationController: navigationController,
-      parentCoordinator: nil,
-      dependencyFactory: self
+      parentCoordinator: nil
     )
   }
 }

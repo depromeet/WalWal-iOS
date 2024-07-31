@@ -16,9 +16,7 @@ import MissionPresenter
 
 public protocol MissionDependencyFactory {
   
-  func makeMissionData() -> MissionRepository
+  func makeMissionRepository() -> MissionRepository
   func makeMissionUseCase() -> MissionUseCase
-  func makeMissionReactor(coordinator: any MissionCoordinator) -> any MissionReactor
-  func makeMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController
   func makeMissionCoordinator(navigationController: UINavigationController) -> any MissionCoordinator
 }
