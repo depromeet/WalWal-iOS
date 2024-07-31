@@ -49,7 +49,7 @@ public extension APIEndpoint {
     case .requestQueryWithBody(let query, let body):
       urlRequest.url = try configureQueryParams(url: url, query: query)
       urlRequest.httpBody = try configureBodyParams(body: body)
-    case .uploadImage:
+    case .upload:
       break
     }
     return urlRequest

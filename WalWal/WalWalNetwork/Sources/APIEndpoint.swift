@@ -37,7 +37,7 @@ public enum RequestParams {
   case requestQuery(_ parameter: Encodable?)
   case requestWithbody(_ parameter: Encodable?)
   case requestQueryWithBody(_ queryParameter: Encodable?, _ bodyParameter: Encodable?)
-  case uploadImage
+  case upload
 }
 
 /// HTTP Header를 상수처럼 사용하기 위해 정의한 Type
