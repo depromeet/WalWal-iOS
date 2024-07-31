@@ -7,9 +7,10 @@
 //
 
 import UIKit
-import MissionDependencyFactory
 import BaseCoordinator
 import MissionCoordinator
+
+import MissionDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -24,18 +25,19 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
-  public var dependencyFactory: MissionDependencyFactory
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
+  
+  public var missionDependencyFactory: MissionDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    dependencyFactory: MissionDependencyFactory
+    missionDependencyFactory: MissionDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
-    self.dependencyFactory = dependencyFactory
+    self.missionDependencyFactory = missionDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -61,8 +63,8 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let reactor = dependencyFactory.makeMissionReactor(coordinator: self)
-    let missionVC = dependencyFactory.makeMissionViewController(reactor: reactor)
+    let reactor = missionDependencyFactory.makeMissionReactor(coordinator: self)
+    let missionVC = missionDependencyFactory.makeMissionViewController(reactor: reactor)
     self.baseViewController = missionVC
     self.pushViewController(viewController: missionVC, animated: false)
   }
