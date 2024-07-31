@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AuthPresenter
 
 import Then
 import PinLayout
@@ -15,7 +16,7 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-public final class OnboardingViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController, UIScrollViewDelegate {
+public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewController, OnboardingViewController, UIScrollViewDelegate {
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
   
@@ -131,7 +132,10 @@ extension OnboardingViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    
+    nextButton.rx.tap
+      .map { Reactor.Action.nextButtonTapped(flow: .showSelect) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
