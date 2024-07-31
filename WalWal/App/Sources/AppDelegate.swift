@@ -7,11 +7,10 @@
 
 import UIKit
 
-import SplashDependencyFactory
 import SplashDependencyFactoryImp
-
-import AppCoordinator
-import AppCoordinatorImp
+import AuthDependencyFactoryImp
+import WalWalTabBarDependencyFactoryImp
+import MissionDependencyFactoryImp
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,19 +19,22 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     let window = UIWindow(frame: UIScreen.main.bounds)
     self.window = window
     
-    let dependencyFactory = SplashDependencyFactoryImp()
-    let navigationController = UINavigationController()
-    /// AppCoordinator 생성 및 시작
-    /// 나중에는 여기서 의존성 다 주입
-    /// ```
-    /// dependencyFactory.makeAppCoordinator(
-    ///     navigationController: navigationController,
-    ///     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
-    /// )
-    /// ```
-    let appCoordinator = dependencyFactory.makeAppCoordinator(navigationController: navigationController)
+    /// 전체 의존성 구현체를 이곳에서 한번에 정의
+    let splashDependencyFactory = SplashDependencyFactoryImp()
+    let authDependencyFactory = AuthDependencyFactoryImp()
+    let walwalTabBarDependencyFactory = WalWalTabBarDependencyFactoryImp()
+    let missionDependencyFactory = MissionDependencyFactoryImp()
     
-    window.rootViewController = navigationController
+    let navigationController = UINavigationController()
+    
+    /// 최상단 코디네이터인 AppCoordinator에 모든 의존성의 인터페이스 주입
+    let appCoordinator = splashDependencyFactory.makeAppCoordinator(
+      navigationController: navigationController,
+      authDependencyFactory: authDependencyFactory,
+      walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
+      missionDependencyFactory: missionDependencyFactory
+    )
+    window.rootViewController = appCoordinator.baseViewController
     window.makeKeyAndVisible()
     
     appCoordinator.start()
