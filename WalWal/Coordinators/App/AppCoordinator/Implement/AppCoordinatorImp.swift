@@ -86,7 +86,7 @@ public final class AppCoordinatorImp: AppCoordinator {
 //    let splashVC = dependencyFactory.makeSplashViewController(reactor: reactor)
 //    self.baseViewController = splashVC
 //    self.pushViewController(viewController: splashVC, animated: false)
-    startAuth()
+    startTabBar()
   }
 }
 

@@ -18,6 +18,8 @@ class TabBarItemView: UIView {
   
   // MARK: - UI
   
+  private let containerView = UIView()
+  
   private let iconImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFit
   }
@@ -40,6 +42,7 @@ class TabBarItemView: UIView {
   init(with item: TabBarItem) {
     self.item = item
     super.init(frame: .zero)
+    configureViews()
     configureLayout()
     bind()
   }
@@ -52,7 +55,8 @@ class TabBarItemView: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    flex.layout()
+    containerView.pin.all()
+    containerView.flex.layout()
   }
   
   // MARK: - Methods
@@ -65,15 +69,28 @@ class TabBarItemView: UIView {
 // MARK: - Private Methods
 
 extension TabBarItemView {
-  private func configureLayout() {
-    flex.define { flex in
-      flex.addItem(iconImageView)
-        .size(24)
-        .marginBottom(4)
-      flex.addItem(titleLabel)
-    }
+  private func configureViews() {
+    addSubview(containerView)
+    containerView.addSubview(iconImageView)
+    containerView.addSubview(titleLabel)
     
     titleLabel.text = item.title
+  }
+  
+  private func configureLayout() {
+    containerView.flex.define { flex in
+      flex.addItem()
+        .justifyContent(.center)
+        .alignItems(.center)
+        .grow(1)
+        .define { flex in
+          flex.addItem(iconImageView)
+            .size(24)
+            .marginBottom(4)
+          flex.addItem(titleLabel)
+            .width(100%)
+        }
+    }
   }
   
   private func bind() {

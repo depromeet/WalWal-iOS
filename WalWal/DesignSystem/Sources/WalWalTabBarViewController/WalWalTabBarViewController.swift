@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import ResourceKit
+
 import RxSwift
 import RxCocoa
 import PinLayout
@@ -16,6 +18,10 @@ import Then
 public final class WalWalTabBarViewController: UITabBarController {
   
   // MARK: - UI
+  
+  private let containerView = UIView().then {
+    $0.backgroundColor = ResourceKitAsset.Colors.white.color
+  }
   
   private let customTabBar = WalWalTabBarView()
   
@@ -41,24 +47,25 @@ public final class WalWalTabBarViewController: UITabBarController {
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    
-    customTabBar.pin
-      .bottom(view.pin.safeArea)
+    additionalSafeAreaInsets.bottom = 68
+    containerView.pin
+      .bottom()
       .left()
       .right()
-      .height(68)
+      .height(view.safeAreaInsets.bottom)
     
-    customTabBar.flex.layout()
+    containerView.flex
+      .layout()
   }
   
   // MARK: - Methods
 
-  func hideCustomTabBar() {
+  public func hideCustomTabBar() {
     self.tabBar.isHidden = true
     customTabBar.isHidden = true
   }
   
-  func showCustomTabBar() {
+  public func showCustomTabBar() {
     self.tabBar.isHidden = true
     customTabBar.isHidden = false
   }
@@ -72,7 +79,13 @@ extension WalWalTabBarViewController {
   }
   
   private func configureViews() {
-    view.addSubview(customTabBar)
+    view.addSubview(containerView)
+    
+    containerView.flex
+      .define { flex in
+        flex.addItem(customTabBar)
+          .grow(1)
+      }
   }
   
   private func bind() {

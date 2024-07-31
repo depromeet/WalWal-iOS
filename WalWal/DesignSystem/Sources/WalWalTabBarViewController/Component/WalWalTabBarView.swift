@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ResourceKit
 
 import RxSwift
 import RxCocoa
@@ -20,8 +21,16 @@ final class WalWalTabBarView: UIView {
   
   private let containerView = UIView()
   
-  private lazy var customItemViews: [TabBarItemView] = TabBarItem.allCases.map {
-    TabBarItemView(with: $0)
+  private let missionItemView = TabBarItemView(with: .mission)
+  
+  private let feedItemView = TabBarItemView(with: .feed)
+  
+  private let notificationItemView = TabBarItemView(with: .notification)
+  
+  private let myPageItemView = TabBarItemView(with: .mypage)
+  
+  private var tabBarItems: [TabBarItemView] {
+    [missionItemView, feedItemView, notificationItemView, myPageItemView]
   }
   
   // MARK: - Properties
@@ -50,7 +59,7 @@ final class WalWalTabBarView: UIView {
     containerView.pin
       .all()
     containerView.flex
-      .layout()
+      .layout(mode: .adjustHeight)
   }
 }
 
@@ -60,31 +69,35 @@ extension WalWalTabBarView {
   private func configureViews() {
     addSubview(containerView)
     
-    containerView.flex
-      .direction(.row)
-      .justifyContent(.spaceAround)
-      .define { flex in
-        customItemViews.forEach {
-          flex.addItem($0)
-            .width(60)
-            .height(100%)
+    containerView.flex.define { flex in
+      flex.addItem()
+        .direction(.row)
+        .justifyContent(.spaceEvenly)
+        .alignItems(.center)
+        .height(68)
+        .define { flex in
+          tabBarItems.forEach { itemView in
+            flex.addItem(itemView)
+              .grow(1)
+              .shrink(1)
+              .basis(0)
+          }
         }
     }
   }
   
   private func bind() {
     Observable.merge(
-      customItemViews.enumerated()
-        .map { index, item in
-          item.rx.tapped.map { index }
-        }
+      tabBarItems.enumerated().map { index, item in
+        item.rx.tapped.map { index }
+      }
     )
     .bind(to: selectedIndex)
     .disposed(by: disposeBag)
     
     selectedIndex
       .subscribe(with: self, onNext: { owner, index in
-        owner.customItemViews.enumerated().forEach { itemIndex, item in
+        owner.tabBarItems.enumerated().forEach { itemIndex, item in
           item.rx.isSelected.onNext(itemIndex == index)
         }
       })

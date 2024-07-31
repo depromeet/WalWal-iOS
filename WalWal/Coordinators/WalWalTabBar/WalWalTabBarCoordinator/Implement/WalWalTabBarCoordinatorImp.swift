@@ -30,6 +30,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
+  private var tabCoordinators: [Flow: any BaseCoordinator] = [:]
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   private var tabViewControllers: [Flow: UINavigationController] = [:]
@@ -55,14 +56,14 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   
   public func bindState() {
     self.tabBarController.selectedFlow
-      .compactMap { Flow(rawValue: $0) }
+      .map { Flow(rawValue: $0) ?? .startMission }
       .bind(to: destination)
       .disposed(by: disposeBag)
     
     self.destination
       .distinctUntilChanged()
       .subscribe(with: self, onNext: { owner, flow in
-        owner.startFlow(flow)
+        owner.tabBarController.selectedIndex = flow.rawValue
       })
       .disposed(by: disposeBag)
   }
@@ -83,21 +84,13 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   
   public func start() {
     setupTabBarController()
+    setupAllTabs()
     navigationController.setViewControllers([tabBarController], animated: false)
-    startFlow(.startMission) // 초기 탭 설정
+    startFlow(.startMission)
   }
   
   public func startFlow(_ flow: Flow) {
-    if tabViewControllers[flow] == nil {
-      let navController = createNavigationController()
-      tabViewControllers[flow] = navController
-    }
-    
-    tabBarController.selectedFlow.accept(flow.rawValue)
-    
-    if childCoordinator == nil {
-      startCoordinator(for: flow)
-    }
+    childCoordinator = tabCoordinators[flow]
   }
 }
 
@@ -145,45 +138,45 @@ extension WalWalTabBarCoordinatorImp {
 
 extension WalWalTabBarCoordinatorImp {
   
-  fileprivate func startMission(navigationController: UINavigationController) {
+  fileprivate func startMission(navigationController: UINavigationController) -> any BaseCoordinator {
     print("미션 탭 선택")
     let missionCoordinator = missionDependencyFactory.makeMissionCoordinator(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator
     )
-    childCoordinator = missionCoordinator
     missionCoordinator.start()
+    return missionCoordinator
   }
   
-  fileprivate func startFeed() {
-    print("피드 탭 선택")
+  /// fileprivate func startFeed() -> any BaseCoordinator {
+    /// print("피드 탭 선택")
     /// let feedCoordinator = feedDependencyFactory.makefeedCoordinator(
     ///   navigationController: navigationController,
     ///   parentCoordinator: self
     /// )
     /// childCoordinator = feedCoordinator
     /// feedCoordinator.start()
-  }
+  /// }
   
-  fileprivate func startNotification() {
-    print("알림 탭 선택")
+  /// fileprivate func startNotification() {
+    /// print("알림 탭 선택")
     /// let notificationCoordinator = notificationDependencyFactory.makenotificationCoordinator(
     ///   navigationController: navigationController,
     ///   parentCoordinator: self
     /// )
     /// childCoordinator = notificationCoordinator
     /// notificationCoordinator.start()
-  }
+  /// }
   
-  fileprivate func startMyPage() {
-    print("마이페이지 탭 선택")
+  /// fileprivate func startMyPage() {
+    /// print("마이페이지 탭 선택")
     /// let myPageCoordinator = myPageDependencyFactory.makeMyPageCoordinator(
     ///   navigationController: navigationController,
     ///   parentCoordinator: self
     /// )
     /// childCoordinator = myPageCoordinator
     /// myPageCoordinator.start()
-  }
+  /// }
   
 }
 
@@ -213,18 +206,26 @@ private extension WalWalTabBarCoordinatorImp {
     return navigationController
   }
   
-  func startCoordinator(for flow: Flow) {
-    guard let navigationController = tabViewControllers[flow] else { return }
-    
+  private func setupAllTabs() {
+    Flow.allCases.forEach { flow in
+      let navController = createNavigationController()
+      tabViewControllers[flow] = navController
+      let coordinator = setupCoordinator(for: flow, with: navController)
+      tabCoordinators[flow] = coordinator
+    }
+    tabBarController.setViewControllers(Array(tabViewControllers.values), animated: false)
+  }
+  
+  private func setupCoordinator(for flow: Flow, with navigationController: UINavigationController) -> any BaseCoordinator {
     switch flow {
     case .startMission:
-      startMission(navigationController: navigationController)
+      return startMission(navigationController: navigationController)
     case .startFeed:
-      startFeed()
+      return startMission(navigationController: navigationController)
     case .startNotification:
-      startNotification()
+      return startMission(navigationController: navigationController)
     case .startMyPage:
-      startMyPage()
+      return startMission(navigationController: navigationController)
     }
   }
 }
