@@ -20,7 +20,7 @@ public final class SampleHomeCoordinatorImp: SampleHomeCoordinator {
   public typealias Flow = SampleHomeCoordinatorFlow
   
   public let disposeBag = DisposeBag()
-  public let destination = PublishSubject<Flow>()
+  public let destination = PublishRelay<Flow>()
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?

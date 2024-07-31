@@ -24,7 +24,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   public typealias Flow = AppCoordinatorFlow
   
   public let disposeBag = DisposeBag()
-  public let destination = PublishSubject<Flow>()
+  public let destination = PublishRelay<Flow>()
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
@@ -86,7 +86,7 @@ public final class AppCoordinatorImp: AppCoordinator {
 //    let splashVC = dependencyFactory.makeSplashViewController(reactor: reactor)
 //    self.baseViewController = splashVC
 //    self.pushViewController(viewController: splashVC, animated: false)
-    startTabBar()
+    destination.accept(.startTab)
   }
 }
 

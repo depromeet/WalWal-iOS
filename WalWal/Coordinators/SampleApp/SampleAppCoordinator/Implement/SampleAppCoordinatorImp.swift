@@ -22,7 +22,7 @@ public final class SampleAppCoordinatorImp: SampleAppCoordinator {
   public typealias Flow = SampleAppCoordinatorFlow
   
   public let disposeBag = DisposeBag()
-  public let destination = PublishSubject<Flow>()
+  public let destination = PublishRelay<Flow>()
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
@@ -89,7 +89,7 @@ extension SampleAppCoordinatorImp {
     case .requireParentAction(let action):
       switch action {
       case .authenticationCompleted:
-        destination.onNext(.startHome)
+        destination.accept(.startHome)
       case .authenticationFailed(let error):
         print("Authentication failed: \(error.localizedDescription)")
         /// 에러 처리 로직
@@ -104,7 +104,7 @@ extension SampleAppCoordinatorImp {
     case .requireParentAction(let action):
       switch action {
       case .logout:
-        destination.onNext(.startAuth)
+        destination.accept(.startAuth)
       }
     }
   }

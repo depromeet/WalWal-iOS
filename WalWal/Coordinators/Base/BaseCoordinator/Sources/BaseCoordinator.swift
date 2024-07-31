@@ -29,8 +29,8 @@ public protocol BaseCoordinator: AnyObject{
   
   var disposeBag: DisposeBag { get }
   
-  /// Coordinator Flow를 전달하는 PublishSubject입니다. 해당 변수에 원하는 Flow를 주입하면, 해당 Flow에 맞게 화면로직이 동작합니다.
-  var destination: PublishSubject<Flow> { get }
+  /// Coordinator Flow를 전달하는 PublishRelay입니다. 해당 변수에 원하는 Flow를 주입하면, 해당 Flow에 맞게 화면로직이 동작합니다.
+  var destination: PublishRelay<Flow> { get }
   
   /// 자식의 요구에 따라 부모가 어떠한 동작을 할 지 관리하는 PublishSubject입니다.
   var requireFromChild: PublishSubject<CoordinatorEvent<Action>> { get }
