@@ -23,7 +23,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   public typealias Action = WalWalTabBarCoordinatorAction
   public typealias Flow = WalWalTabBarCoordinatorFlow
   
-  public let tabBarController: WalWalTabBarViewController
+  private let tabBarController: WalWalTabBarViewController
   
   public let disposeBag = DisposeBag()
   public let destination = PublishSubject<Flow>()
@@ -33,7 +33,6 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   private var tabCoordinators: [Flow: any BaseCoordinator] = [:]
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
-  private var tabViewControllers: [Flow: UINavigationController] = [:]
   
   public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var missionDependencyFactory: MissionDependencyFactory
@@ -51,17 +50,20 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     self.tabBarController = WalWalTabBarViewController()
     
     bindChildToParentAction()
+    setupTabBarController()
     bindState()
   }
   
   public func bindState() {
     self.tabBarController.selectedFlow
       .map { Flow(rawValue: $0) ?? .startMission }
+      .debug()
       .bind(to: destination)
       .disposed(by: disposeBag)
     
     self.destination
       .distinctUntilChanged()
+      .debug()
       .subscribe(with: self, onNext: { owner, flow in
         owner.tabBarController.selectedIndex = flow.rawValue
       })
@@ -83,9 +85,6 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   }
   
   public func start() {
-    setupTabBarController()
-    setupAllTabs()
-    navigationController.setViewControllers([tabBarController], animated: false)
     startFlow(.startMission)
   }
   
@@ -142,7 +141,7 @@ extension WalWalTabBarCoordinatorImp {
     print("미션 탭 선택")
     let missionCoordinator = missionDependencyFactory.makeMissionCoordinator(
       navigationController: navigationController,
-      parentCoordinator: parentCoordinator
+      parentCoordinator: self
     )
     missionCoordinator.start()
     return missionCoordinator
@@ -193,27 +192,21 @@ extension WalWalTabBarCoordinatorImp {
 private extension WalWalTabBarCoordinatorImp {
   
   func setupTabBarController() {
-    Flow.allCases.forEach { flow in
-      let navController = createNavigationController()
-      tabViewControllers[flow] = navController
+    let navigationControllers = Flow.allCases.map { flow in
+      let navigationController = createNavigationController()
+      let childCoordinator = setupCoordinator(for: flow, with: navigationController)
+      tabCoordinators[flow] = childCoordinator
+      return navigationController
     }
-    tabBarController.setViewControllers(Array(tabViewControllers.values), animated: false)
+    self.tabBarController.setViewControllers(navigationControllers, animated: true)
+    self.navigationController.setNavigationBarHidden(true, animated: false)
+    self.navigationController.viewControllers = [tabBarController]
   }
   
   func createNavigationController() -> UINavigationController {
     let navigationController = UINavigationController()
     navigationController.setNavigationBarHidden(true, animated: false)
     return navigationController
-  }
-  
-  private func setupAllTabs() {
-    Flow.allCases.forEach { flow in
-      let navController = createNavigationController()
-      tabViewControllers[flow] = navController
-      let coordinator = setupCoordinator(for: flow, with: navController)
-      tabCoordinators[flow] = coordinator
-    }
-    tabBarController.setViewControllers(Array(tabViewControllers.values), animated: false)
   }
   
   private func setupCoordinator(for flow: Flow, with navigationController: UINavigationController) -> any BaseCoordinator {
