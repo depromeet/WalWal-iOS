@@ -7,26 +7,30 @@
 //
 
 import UIKit
+import ResourceKit
 
 import FlexLayout
 import PinLayout
 import Then
 
 final class NicknameTextField: UIView {
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily.KR
   
   let textField = UITextField().then {
     $0.placeholder = "닉네임을 입력해주세요"
     $0.textAlignment = .center
-    $0.font = .systemFont(ofSize: 16, weight: .regular)
+    $0.font = Font.H6.M
+    $0.textColor = Color.black.color
   }
   
   let removeButton = UIButton().then {
     $0.setImage(UIImage(systemName: "xmark"), for: .normal)
-    $0.tintColor = .lightGray
+    $0.tintColor = Color.gray500.color
   }
   
   private let bottomBarView = UIView().then {
-    $0.backgroundColor = .lightGray
+    $0.backgroundColor = Color.gray300.color
   }
   
   init() {

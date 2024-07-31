@@ -8,6 +8,7 @@
 
 import UIKit
 import Utility
+import ResourceKit
 
 import RxSwift
 import PinLayout
@@ -35,7 +36,7 @@ final class ProfileSelectView: UIView {
   
   private let rootContainer = UIView()
   private lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout()).then {
-    $0.backgroundColor = .white
+    $0.backgroundColor = ResourceKitAsset.Colors.white.color
     $0.register(ProfileSelectCell.self)
     $0.showsHorizontalScrollIndicator = false
     $0.decelerationRate = .fast

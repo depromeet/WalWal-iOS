@@ -15,26 +15,28 @@ import PinLayout
 import Then
 
 final class ProfileSelectCell: UICollectionViewCell, ReusableView {
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily.KR
   
   // MARK: - UI
   
   private let borderView = UIView().then {
     $0.backgroundColor = .clear
-    $0.layer.borderColor = ResourceKitAsset.Colors.walwalOrange.color.cgColor
+    $0.layer.borderColor = Color.walwalOrange.color.cgColor
     $0.layer.borderWidth = 3
   }
   let changeButton = UIButton().then {
     $0.setImage(UIImage(systemName: "repeat"), for: .normal)
-    $0.tintColor = .white
-    $0.backgroundColor = ResourceKitAsset.Colors.walwalOrange.color
+    $0.tintColor = Color.white.color
+    $0.backgroundColor = Color.walwalOrange.color
   }
   private let profileImageView = UIImageView().then {
-    $0.backgroundColor = ResourceKitAsset.Colors.walwalBeige.color
-    $0.tintColor = .gray
+    $0.backgroundColor = Color.walwalBeige.color
+    $0.tintColor = Color.white.color
   }
   private let inActiveimageView = UIImageView().then {
-    $0.backgroundColor = ResourceKitAsset.Colors.gray300.color
-    $0.tintColor = .gray
+    $0.backgroundColor = Color.gray200.color
+//    $0.tintColor = .gray
   }
   
   // MARK: - Initialize
@@ -73,16 +75,15 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   private func setLayout() {
     inActiveimageView.pin
       .center()
-      .size(140)
+      .size(140.adjusted)
     profileImageView.pin
       .center()
-      .size(UIScreen.main.bounds.width / 2.4)
+      .size(158.adjusted)
     borderView.pin
       .center()
-      .size( UIScreen.main.bounds.width / 2.2)
+      .size(170.adjusted)
     changeButton.pin
-      .width(40)
-      .height(40)
+      .size(40.adjusted)
   }
   
   private func changeButtonLayout() {

@@ -8,6 +8,7 @@
 
 import UIKit
 import AuthPresenter
+import ResourceKit
 
 import Then
 import PinLayout
@@ -17,6 +18,9 @@ import RxSwift
 import RxCocoa
 
 public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewController, OnboardingViewController, UIScrollViewDelegate {
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily.KR
+  
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
   
@@ -35,8 +39,8 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewCont
   private lazy var pageControl = UIPageControl().then {
     $0.numberOfPages = 3
     $0.currentPage = 0
-    $0.pageIndicatorTintColor = .lightGray
-    $0.currentPageIndicatorTintColor = .gray
+    $0.pageIndicatorTintColor = Color.gray300.color
+    $0.currentPageIndicatorTintColor = Color.gray600.color
     $0.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
   }
   private let nextButton = CompleteButton(isEnable: true)

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ResourceKit
 
 /// Onboarding에서 재사용하기 위한 다음 버튼
 ///
@@ -14,6 +15,8 @@ import UIKit
 ///   - title: 버튼 타이틀 텍스트로 기본 값으로 "다음"을 가지고 있습니다.
 ///   - isEnable: 버튼 활성화 여부로, 초기에 활성화 여부를 설정할 수 있습니다.
 final class CompleteButton: UIButton {
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily.KR
   
   /// 버튼 활성화 값에 따라 백그라운드 색 변경되도록 설정
   ///
@@ -24,9 +27,9 @@ final class CompleteButton: UIButton {
   override var isEnabled: Bool {
     didSet {
       if self.isEnabled {
-        backgroundColor = .systemOrange
+        backgroundColor = Color.walwalOrange.color
       } else {
-        backgroundColor = .lightGray
+        backgroundColor = Color.gray300.color
       }
     }
   }
@@ -38,7 +41,8 @@ final class CompleteButton: UIButton {
     isEnabled = isEnable
     layer.cornerRadius = 10
     setTitle(title, for: .normal)
-    titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
+    setTitleColor(Color.white.color, for: .normal)
+    titleLabel?.font = Font.H5.B
   }
   
   @available(*, unavailable)

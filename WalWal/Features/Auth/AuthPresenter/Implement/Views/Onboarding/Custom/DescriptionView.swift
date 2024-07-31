@@ -7,29 +7,32 @@
 //
 
 import UIKit
+import ResourceKit
 
 import FlexLayout
 import PinLayout
 
 /// 온보딩 첫 화면 스크롤뷰에서 사용하기위한 뷰
 final class DescriptionView: UIView {
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily.KR
   
   // MARK: - UI
   
   private let containerView = UIView()
   private let mainTitleLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 24, weight: .bold)
-    $0.textColor = .black
+    $0.font = Font.H3
+    $0.textColor = Color.black.color
     $0.numberOfLines = 2
     $0.textAlignment = .center
   }
   private let subTextLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 14)
-    $0.textColor = .lightGray
+    $0.font = Font.B1
+    $0.textColor = Color.gray600.color
     $0.textAlignment = .center
   }
   private let imageView = UIImageView().then {
-    $0.backgroundColor = .systemOrange
+    $0.backgroundColor = Color.walwalBeige.color
   }
   
   // MARK: - Initialize

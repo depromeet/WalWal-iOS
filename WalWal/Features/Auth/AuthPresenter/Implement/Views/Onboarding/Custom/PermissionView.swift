@@ -8,6 +8,7 @@
 
 import UIKit
 import Utility
+import ResourceKit
 
 import FlexLayout
 import PinLayout
@@ -16,32 +17,33 @@ import RxCocoa
 
 /// 권한 확인을 받기 위한 얼럿 뷰
 final class PermissionView {
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily.KR
   
   private let disposeBag = DisposeBag()
   private var window: UIWindow?
   
-  
   // MARK: - UI
   
   private let alertContainer = UIView().then {
-    $0.backgroundColor =  UIColor.black.withAlphaComponent(0.6)
+    $0.backgroundColor = Color.black.color.withAlphaComponent(0.6)
   }
   private let containerView = UIView().then {
-    $0.backgroundColor = .white
-    $0.layer.cornerRadius = 20
+    $0.backgroundColor = Color.white.color
+    $0.layer.cornerRadius = 20.adjusted
   }
   private let titleLabel = UILabel().then {
     $0.text = "시작하기 전에"
     $0.textAlignment = .center
-    $0.font = .systemFont(ofSize: 20, weight: .semibold)
-    $0.textColor = .black
+    $0.font = Font.H4
+    $0.textColor = Color.black.color
   }
   private let contentLabel = UILabel().then {
     $0.text = "원활한 서비스 이용을 위해\n필수 동의가 필요한 내용을 확인해주세요."
     $0.textAlignment = .center
     $0.numberOfLines = 2
-    $0.font = .systemFont(ofSize: 14, weight: .medium)
-    $0.textColor = .gray
+    $0.font = Font.B1
+    $0.textColor = Color.gray600.color
   }
   private let confirmButton = CompleteButton(title: "확인했어요", isEnable: true)
   
@@ -150,17 +152,20 @@ final class PermissionView {
 
 /// 동의를 받아야하는 권한 리스트 뷰를 재사용하기 위한 View
 fileprivate final class PermissionListView: UIView {
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily.KR
+  
   private let iconImageView = UIImageView().then {
-    $0.tintColor = .black
+    $0.tintColor = Color.black.color
     $0.contentMode = .scaleAspectFit
   }
   private let typeLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 18, weight: .medium)
-    $0.textColor = .black
+    $0.font = Font.H5.M
+    $0.textColor = Color.black.color
   }
   private let contentLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 14, weight: .regular)
-    $0.textColor = .darkGray
+    $0.font = Font.B1
+    $0.textColor = Color.gray600.color
   }
   
   /// - Parameters:
@@ -180,11 +185,17 @@ fileprivate final class PermissionListView: UIView {
   }
   
   private func setLayout() {
-    self.flex.direction(.row).justifyContent(.start).alignItems(.start).define {
-      $0.addItem(iconImageView).size(24)
-      $0.addItem(typeLabel).marginHorizontal(12)
-      $0.addItem(contentLabel)
-    }
+    self.flex
+      .direction(.row)
+      .justifyContent(.start)
+      .alignItems(.start)
+      .define {
+        $0.addItem(iconImageView)
+          .size(24)
+        $0.addItem(typeLabel)
+          .marginHorizontal(12)
+        $0.addItem(contentLabel)
+      }
     self.flex.layout(mode: .adjustWidth)
   }
 }

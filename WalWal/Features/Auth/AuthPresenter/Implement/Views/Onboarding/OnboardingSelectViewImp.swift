@@ -9,6 +9,7 @@
 import UIKit
 import AuthPresenter
 import DesignSystem
+import ResourceKit
 
 import Then
 import PinLayout
@@ -22,6 +23,8 @@ import RxCocoa
 public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>:
   UIViewController,
   OnboardingSelectViewController {
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily.KR
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
@@ -36,8 +39,8 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   private let titleLabel = UILabel().then {
     $0.text = "어떤 반려동물을\n키우고 계신가요?"
     $0.numberOfLines = 2
-    $0.font = .boldSystemFont(ofSize: 24)
-    $0.textColor = .black
+    $0.font = Font.H3
+    $0.textColor = Color.black.color
   }
   private let dogView = PetView(petType: .dog)
   private let catView = PetView(petType: .cat)

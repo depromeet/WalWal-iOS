@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ResourceKit
 
 import FlexLayout
 import PinLayout
@@ -24,6 +25,9 @@ final class PetView: UIView {
   
   // MARK: - Properties
   
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily.KR
+  
   /// 반려동물 타입 선택 여부에 따라 스타일 변경하기 위한 프로퍼티
   var isSelected: Bool = false {
     didSet {
@@ -36,13 +40,15 @@ final class PetView: UIView {
   
   private let containerView = UIView()
   private let petImage = UIImageView().then {
-    $0.backgroundColor = .white
+    $0.backgroundColor = Color.white.color
     $0.image = UIImage(systemName: "teddybear")
+    $0.clipsToBounds = true
     $0.contentMode = .scaleAspectFill
-    $0.tintColor = .black
+    $0.tintColor = Color.black.color
   }
   private let typeLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 16)
+    $0.textColor = Color.gray900.color
+    $0.font = Font.H6.M
   }
   
   // MARK: - Initialize
@@ -78,16 +84,8 @@ final class PetView: UIView {
     containerView.flex.layout(mode: .adjustHeight)
     
     petImage.layer.cornerRadius = petImage.frame.width/2
-    
-    /// shadow
-    petImage.layer.shadowPath = UIBezierPath(
-      roundedRect: petImage.bounds,
-      cornerRadius: petImage.layer.cornerRadius
-    ).cgPath
-    petImage.layer.shadowColor = UIColor.lightGray.cgColor
-    petImage.layer.shadowOffset = CGSize(width: 0, height: 5)
-    petImage.layer.shadowOpacity = 0.25
-    petImage.layer.shadowRadius = 8
+    petImage.layer.borderColor = Color.gray200.color.cgColor
+    petImage.layer.borderWidth = 1
   }
   
   // TODO: 디자인 확정시 변경 스타일 변경 필요
@@ -97,13 +95,13 @@ final class PetView: UIView {
   ///   - isSelected: 선택 여부
   private func petSelectedStyle(isSelected: Bool) {
     if isSelected {
-      petImage.backgroundColor = .systemYellow
-      petImage.tintColor = .black
-      typeLabel.textColor = .black
+      petImage.backgroundColor = Color.walwalBeige.color
+      petImage.tintColor = Color.black.color
+      typeLabel.textColor = Color.gray900.color
     } else {
-      petImage.backgroundColor = .white
-      petImage.tintColor = .lightGray
-      typeLabel.textColor = .lightGray
+      petImage.backgroundColor = Color.white.color
+      petImage.tintColor = Color.gray300.color
+      typeLabel.textColor = Color.gray300.color
     }
   }
 }

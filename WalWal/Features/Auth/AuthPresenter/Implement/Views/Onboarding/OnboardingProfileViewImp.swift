@@ -8,6 +8,7 @@
 
 import UIKit
 import AuthPresenter
+import ResourceKit
 
 import Then
 import PinLayout
@@ -19,7 +20,8 @@ import RxCocoa
 public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReactor>:
   UIViewController,
   OnboardingProfileViewController {
-  
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily.KR
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
@@ -33,13 +35,13 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   private let titleLabel = UILabel().then {
     $0.text = "왈왈에서 사용할\n프로필을 만들어주세요"
     $0.numberOfLines = 2
-    $0.font = .boldSystemFont(ofSize: 24)
-    $0.textColor = .black
+    $0.font = Font.H3
+    $0.textColor = Color.black.color
   }
   private let subTitleLabel = UILabel().then {
     $0.text = "반려동물 사진을 직접 추가해보세요!"
-    $0.font = .systemFont(ofSize: 14, weight: .medium)
-    $0.textColor = .gray
+    $0.font = Font.B1
+    $0.textColor = Color.gray600.color
   }
   private var profileSelectView = ProfileSelectView(
     viewWidth: UIScreen.main.bounds.width,
@@ -123,12 +125,15 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   
   private func updateKeyboardLayout() {
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
-    nextButton.pin.bottom(keyboardTop + 20)
+    nextButton.pin
+      .bottom(keyboardTop + 20)
     view.layoutIfNeeded()
   }
   
   private func hideKeyboardLayout() {
-    nextButton.pin.bottom(30).height(56)
+    nextButton.pin
+      .bottom(30)
+      .height(56)
   }
 }
 
