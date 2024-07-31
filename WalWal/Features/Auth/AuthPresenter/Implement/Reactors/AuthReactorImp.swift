@@ -40,7 +40,7 @@ public final class AuthReactorImp: AuthReactor {
         .asObservable()
         .flatMap { result -> Observable<Mutation> in
           UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
-          
+          let _ = KeychainWrapper.shared.setAccessToken(result.accessToken) 
           return .never()
         }
         .catch { error -> Observable<Mutation> in
