@@ -23,8 +23,6 @@ public final class NetworkService: NetworkServiceProtocol {
   }
   
   public func request<E: APIEndpoint>(endpoint: E) -> Single<E.ResponseType?> where E: APIEndpoint {
-    let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
-    let headers = HTTPHeaders(endpoint.headers)
     requestLogging(endpoint)
     return RxAlamofire.requestJSON(endpoint, interceptor: WalwalInterceptor())
       .do(onError: { error in
