@@ -19,8 +19,6 @@ import MissionData
 import MissionDataImp
 import MissionDomain
 import MissionDomainImp
-import MissionPresenter
-import MissionPresenterImp
 
 public class MissionDependencyFactoryImp: MissionDependencyFactory {
   
