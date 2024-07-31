@@ -27,7 +27,7 @@ public final class WalWalTabBarViewController: UITabBarController {
   
   // MARK: - Properties
   
-  public private(set) var selectedFlow = BehaviorRelay<Int>(value: 0)
+  public private(set) var selectedFlow = PublishRelay<Int>()
   
   private let disposeBag = DisposeBag()
   

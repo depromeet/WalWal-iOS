@@ -50,20 +50,19 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     self.tabBarController = WalWalTabBarViewController()
     
     bindChildToParentAction()
-    setupTabBarController()
     bindState()
   }
   
   public func bindState() {
     self.tabBarController.selectedFlow
-      .map { Flow(rawValue: $0) ?? .startMission }
-      .debug()
-      .bind(to: destination)
+      .subscribe(with: self, onNext: { owner, idx in
+        let tabBarItem = Flow(rawValue: idx) ?? .startMission
+        owner.destination.accept(tabBarItem)
+      })
       .disposed(by: disposeBag)
     
     self.destination
       .distinctUntilChanged()
-      .debug()
       .subscribe(with: self, onNext: { owner, flow in
         owner.tabBarController.selectedIndex = flow.rawValue
       })
@@ -85,11 +84,9 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   }
   
   public func start() {
-    startFlow(.startMission)
-  }
-  
-  public func startFlow(_ flow: Flow) {
-    childCoordinator = tabCoordinators[flow]
+    print("탭바코디네이터 스타트 호출")
+    setupTabBarController()
+    childCoordinator = tabCoordinators[.startMission]
   }
 }
 
