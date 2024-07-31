@@ -6,9 +6,11 @@
 //  Created by Jiyeon
 //
 
+import Foundation
 import AuthDomain
 import AuthPresenter
 import AuthCoordinator
+import LocalStorage
 
 import ReactorKit
 import RxSwift
@@ -37,7 +39,8 @@ public final class AuthReactorImp: AuthReactor {
       return appleLoginUseCase.excute(authCode: authCode)
         .asObservable()
         .flatMap { result -> Observable<Mutation> in
-          print(result.accessToken)
+          UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
+          
           return .never()
         }
         .catch { error -> Observable<Mutation> in
