@@ -32,7 +32,9 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
     return MissionRepositoryImp(networkService: networkService)
   }
   
+  /// MissionUseCase라고 통칭해서 이름을 명명하지 않고, 해당 기능에 대한 이름 명시를 확실하게 해주세요
   public func makeMissionUseCase() -> MissionUseCase {
+    return MissionUseCaseImp(missionDataRepository: makeMissionRepository())
   }
   
   public func makeMissionCoordinator(navigationController: UINavigationController) -> any MissionCoordinator {
