@@ -44,7 +44,8 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
   ) -> any MissionCoordinator {
     return MissionCoordinatorImp(
       navigationController: navigationController,
-      parentCoordinator: parentCoordinator
+      parentCoordinator: parentCoordinator,
+      missionDependencyFactort: self
     )
   }
 }
