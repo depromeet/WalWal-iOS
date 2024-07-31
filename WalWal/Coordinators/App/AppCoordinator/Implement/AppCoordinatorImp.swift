@@ -144,7 +144,8 @@ extension AppCoordinatorImp {
   fileprivate func startTabBar() {
     let walwalTabBarCoordinator = walwalTabBarDependencyFactory.makeTabBarCoordinator(
       navigationController: navigationController,
-      parentCoordinator: self
+      parentCoordinator: self,
+      missionDependencyFactory: missionDependencyFactory
     )
     childCoordinator = walwalTabBarCoordinator
     walwalTabBarCoordinator.start()
