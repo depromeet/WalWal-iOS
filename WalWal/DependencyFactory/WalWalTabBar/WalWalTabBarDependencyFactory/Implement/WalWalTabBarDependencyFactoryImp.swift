@@ -8,6 +8,7 @@
 
 import UIKit
 import WalWalTabBarDependencyFactory
+import MissionDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -21,12 +22,14 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
   
   public func makeTabBarCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: any BaseCoordinator
+    parentCoordinator: any BaseCoordinator,
+    missionDependencyFactory: MissionDependencyFactory
   ) -> any WalWalTabBarCoordinator {
     return WalWalTabBarCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
-      walwalTabBarDependencyFactory: self
+      walwalTabBarDependencyFactory: self,
+      missionDependencyFactory: missionDependencyFactory
     )
   }
   
