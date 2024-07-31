@@ -40,7 +40,12 @@ public final class AuthReactorImp: AuthReactor {
         .asObservable()
         .flatMap { result -> Observable<Mutation> in
           UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
-          let _ = KeychainWrapper.shared.setAccessToken(result.accessToken) 
+          let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
+          if result.isTemporaryToken {
+            // TODO: - 온보딩 화면 전환
+          } else {
+            // TODO: - 미션 화면 전환
+          }
           return .never()
         }
         .catch { error -> Observable<Mutation> in
