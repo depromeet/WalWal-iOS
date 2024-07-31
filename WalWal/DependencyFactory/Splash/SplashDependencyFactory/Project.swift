@@ -16,7 +16,8 @@ let project = Project.invertedDualTargetProject(
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
     .Coordinator.App.Interface,
-    
+    .DependencyFactory.Auth.Interface,
+    .DependencyFactory.WalWalTabBar.Interface,
     .Feature.Splash.Presenter.Interface
   ],
   implementDependencies: [

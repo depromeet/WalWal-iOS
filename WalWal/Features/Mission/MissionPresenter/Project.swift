@@ -21,6 +21,7 @@ let project = Project.invertedPresenterWithDemoApp(
   ],
   implementDependencies: [
     .DependencyFactory.Mission.Interface,
+    .Utility,
     .DesignSystem
   ],
   demoAppDependencies: [

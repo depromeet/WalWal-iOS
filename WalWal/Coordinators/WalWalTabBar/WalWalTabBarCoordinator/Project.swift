@@ -20,9 +20,5 @@ let project = Project.invertedDualTargetProject(
   implementDependencies: [
     .DependencyFactory.WalWalTabBar.Interface,
     .DesignSystem
-    /// .DependencyFactory.Mission.Interface
-    /// .DependencyFactory.Feed.Interface,
-    /// .DependencyFactory.Notification.Interface,
-    /// .DependencyFactory.MyPage.Interface,
   ]
 )
