@@ -86,8 +86,8 @@ extension AuthCoordinatorImp {
     self.pushViewController(viewController: vc, animated: true)
   }
   func showOnboardingProfile() {
-    let reactor = dependencyFactory.makeOnboardingSelectReactor(coordinator: self)
-    let vc = dependencyFactory.makeOnboardingSelectViewController(reactor: reactor)
+    let reactor = dependencyFactory.makeOnboardingProfileReactor(coordinator: self)
+    let vc = dependencyFactory.makeOnboardingProfileViewController(reactor: reactor)
     self.pushViewController(viewController: vc, animated: true)
   }
 }
