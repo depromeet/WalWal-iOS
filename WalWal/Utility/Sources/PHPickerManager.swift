@@ -12,7 +12,6 @@ import PhotosUI
 import RxSwift
 
 final public class PHPickerManager {
-  private weak var viewController: UIViewController?
   
   /// 선택한 사진을 전달하기위한 프로퍼티
   ///
@@ -35,12 +34,11 @@ final public class PHPickerManager {
   /// ```swift
   /// button.rx.tap
   ///   .bind(with: self) { owner, _ in
-  ///     PHPickerManager().presentPicker
+  ///     PHPickerManager().presentPicker(vc: owner)
   ///   }
   ///   .disposed(by: disposBag)
   ///  ```
-  public func presentPicker(vc: UIViewController) {
-    self.viewController = vc
+  public func presentPicker(vc: UIViewController?) {
     let filter = PHPickerFilter.images
     var configuration = PHPickerConfiguration()
     configuration.filter = filter
@@ -48,7 +46,7 @@ final public class PHPickerManager {
     
     let picker = PHPickerViewController(configuration: configuration)
     picker.delegate = self
-    viewController?.present(picker, animated: true)
+    vc?.present(picker, animated: true)
   }
 }
 
