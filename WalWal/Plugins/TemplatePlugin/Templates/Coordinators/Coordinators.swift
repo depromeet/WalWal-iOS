@@ -31,7 +31,7 @@ let Coordinators = Template(
       templatePath: "CoordinatorInterface.stencil"
     ),
     .file(
-      path: .CoordinatorBasePath + "/\(name)Coordinator/Implement/\(name)CoordinatorImpl.swift",
+      path: .CoordinatorBasePath + "/\(name)Coordinator/Implement/\(name)CoordinatorImp.swift",
       templatePath: "CoordinatorImplement.stencil"
     )
   ]
