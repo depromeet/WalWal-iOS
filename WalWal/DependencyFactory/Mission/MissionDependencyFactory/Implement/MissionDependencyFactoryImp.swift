@@ -11,6 +11,7 @@ import MissionDependencyFactory
 
 import WalWalNetwork
 
+import BaseCoordinator
 import MissionCoordinator
 import MissionCoordinatorImp
 
@@ -37,10 +38,13 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
     return MissionUseCaseImp(missionDataRepository: makeMissionRepository())
   }
   
-  public func makeMissionCoordinator(navigationController: UINavigationController) -> any MissionCoordinator {
+  public func makeMissionCoordinator(
+    navigationController: UINavigationController,
+    parentCoordinator: any BaseCoordinator
+  ) -> any MissionCoordinator {
     return MissionCoordinatorImp(
       navigationController: navigationController,
-      parentCoordinator: nil
+      parentCoordinator: parentCoordinator
     )
   }
 }

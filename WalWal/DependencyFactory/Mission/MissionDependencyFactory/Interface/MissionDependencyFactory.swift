@@ -18,5 +18,5 @@ public protocol MissionDependencyFactory {
   
   func makeMissionRepository() -> MissionRepository
   func makeMissionUseCase() -> MissionUseCase
-  func makeMissionCoordinator(navigationController: UINavigationController) -> any MissionCoordinator
+  func makeMissionCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any MissionCoordinator
 }
