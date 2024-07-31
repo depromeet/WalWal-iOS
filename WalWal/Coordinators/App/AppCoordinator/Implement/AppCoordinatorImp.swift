@@ -7,11 +7,13 @@
 //
 
 import UIKit
-import SplashDependencyFactory
-import WalWalTabBarDependencyFactory
 import BaseCoordinator
 import AppCoordinator
 
+import SplashDependencyFactory
+import AuthDependencyFactory
+import WalWalTabBarDependencyFactory
+import MissionDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -26,21 +28,28 @@ public final class AppCoordinatorImp: AppCoordinator {
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
-  public var dependencyFactory: SplashDependencyFactory
-  public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
+  public var appDependencyFactory: SplashDependencyFactory
+  public var authDependencyFactory: AuthDependencyFactory
+  public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
+  public var missionDependencyFactory: MissionDependencyFactory
+  
+  /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
+  /// 그리고 하위 Coordinator를 생성할 때 마다, 하위에 해당하는 인터페이스 모두 전달
   public required init(
     navigationController: UINavigationController,
-    parentCoordinator: (any BaseCoordinator)?,
-    dependencyFactory: SplashDependencyFactory,
-    walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
+    appDependencyFactory: SplashDependencyFactory,
+    authDependencyFactory: AuthDependencyFactory,
+    walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
+    missionDependencyFactory: MissionDependencyFactory
   ) {
     self.navigationController = navigationController
-    self.parentCoordinator = parentCoordinator
-    self.dependencyFactory = dependencyFactory
+    self.appDependencyFactory = appDependencyFactory
+    self.authDependencyFactory = authDependencyFactory
     self.walwalTabBarDependencyFactory = walwalTabBarDependencyFactory
+    self.missionDependencyFactory = missionDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -77,7 +86,7 @@ public final class AppCoordinatorImp: AppCoordinator {
 //    let splashVC = dependencyFactory.makeSplashViewController(reactor: reactor)
 //    self.baseViewController = splashVC
 //    self.pushViewController(viewController: splashVC, animated: false)
-    startTabBar()
+    startAuth()
   }
 }
 
@@ -122,14 +131,12 @@ extension AppCoordinatorImp {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func startAuth() {
-    /*
-    let homeCoordinator = dependencyFactory.makeAuthCoordinator(
+    let authCoordinator = authDependencyFactory.makeAuthCoordinator(
       navigationController: navigationController,
       parentCoordinator: self
     )
-    childCoordinator = homeCoordinator
-    homeCoordinator.start()
-    */
+    childCoordinator = authCoordinator
+    authCoordinator.start()
   }
   
   
