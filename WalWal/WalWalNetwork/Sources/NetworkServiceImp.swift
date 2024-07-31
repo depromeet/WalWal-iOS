@@ -23,8 +23,6 @@ public final class NetworkService: NetworkServiceProtocol {
   }
   
   public func request<E: APIEndpoint>(endpoint: E) -> Single<E.ResponseType?> where E: APIEndpoint {
-    let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
-    let headers = HTTPHeaders(endpoint.headers)
     requestLogging(endpoint)
     /// 추후에 interceptor 추가 가능
     return RxAlamofire.requestJSON(endpoint)
@@ -56,12 +54,10 @@ public final class NetworkService: NetworkServiceProtocol {
   /// networkService.upload(endpoint, imageData: imageData)
   /// ```
   public func upload<E: APIEndpoint> (endpoint: E, imageData: Data) -> Single<Bool> where E: APIEndpoint{
-    let url = endpoint.baseURL
-    let headers = HTTPHeaders(endpoint.headers)
     requestLogging(endpoint)
     
     return Single.create { single -> Disposable in
-      AF.upload(imageData, to: url, method: endpoint.method, headers: headers)
+      AF.upload(imageData, with: endpoint)
         .validate(statusCode: 200...299)
         .responseData(emptyResponseCodes: [200]) { response in
           switch response.result {
