@@ -34,7 +34,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
       walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
       missionDependencyFactory: missionDependencyFactory
     )
-    window.rootViewController = appCoordinator.baseViewController
+    window.rootViewController = navigationController
     window.makeKeyAndVisible()
     
     appCoordinator.start()
