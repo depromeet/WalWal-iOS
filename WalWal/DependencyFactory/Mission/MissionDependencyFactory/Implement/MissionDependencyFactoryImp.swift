@@ -19,6 +19,8 @@ import MissionData
 import MissionDataImp
 import MissionDomain
 import MissionDomainImp
+import MissionPresenter
+import MissionPresenterImp
 
 public class MissionDependencyFactoryImp: MissionDependencyFactory {
   
@@ -45,5 +47,15 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
       parentCoordinator: parentCoordinator,
       missionDependencyFactort: self
     )
+  }
+  
+  public func makeMissionReactor<T: MissionCoordinator>(coordinator: T) -> any MissionReactor {
+    return MissionReactorImp(
+      coordinator: coordinator
+    )
+  }
+  
+  public func makeMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController {
+    return MissionViewControllerImp(reactor: reactor)
   }
 }
