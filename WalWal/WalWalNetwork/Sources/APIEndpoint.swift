@@ -1,7 +1,6 @@
 import Foundation
 
 import Alamofire
-import RxAlamofire
 
 /// HTTPHeader 타입 입니다.
 public typealias WalWalHTTPHeader = [String: String]
@@ -11,11 +10,26 @@ public typealias WalWalHTTPHeader = [String: String]
 public protocol APIEndpoint: URLRequestConvertible {
   associatedtype ResponseType: Decodable
   
-  var baseURL: URL { get }
+  var baseURLType: URLType { get }
   var path: String { get }
   var method: HTTPMethod { get }
   var parameters: RequestParams { get }
-  var headers: WalWalHTTPHeader { get }
+  var headerType: HTTPHeaderType { get }
+}
+
+/// 통신을 보낼 URL을 선택하는 enum 값 입니다.
+/// S3 image 업로드 시에는 .presignedURL, 나머지에서는 .walWalBaseURL
+///
+/// 사용 예시
+/// ``` swift
+///     case .loadImagePresignedURL(_): // Presigned URL을 우리 서버에 요청
+///       return .walWalBaseURL
+///     case let .uploadImage(url): // S3 Bucket에 이미지 업로드
+///       return .presignedURL(url)
+///  ```
+public enum URLType {
+  case walWalBaseURL
+  case presignedURL(String)
 }
 
 public enum RequestParams {
@@ -23,60 +37,33 @@ public enum RequestParams {
   case requestQuery(_ parameter: Encodable?)
   case requestWithbody(_ parameter: Encodable?)
   case requestQueryWithBody(_ queryParameter: Encodable?, _ bodyParameter: Encodable?)
-  case uploadMultipart([MultipartFormData])
+  case upload
 }
 
-public extension APIEndpoint {
-  func asURLRequest() throws -> URLRequest {
-    let url = try configureURL(baseURL)
-    var urlRequest = try URLRequest(url: url, method: method)
-    urlRequest = configureHeader(urlRequest)
-    
-    switch parameters {
-    case .requestPlain:
-      break
-    case .requestQuery(let query):
-      urlRequest.url = try configureQueryParams(url: url, query: query)
-    case .requestWithbody(let body):
-      urlRequest.httpBody = try configureBodyParams(body: body)
-    case .requestQueryWithBody(let query, let body):
-      urlRequest.url = try configureQueryParams(url: url, query: query)
-      urlRequest.httpBody = try configureBodyParams(body: body)
-    case .uploadMultipart(_):
-      break
-    }
-    return urlRequest
-  }
-  
-  private func configureURL(_ url: URL) throws -> URL {
-    let baseURL = try baseURL.asURL()
-    let url = baseURL.appendingPathComponent(path)
-    return url
-  }
-  
-  private func configureHeader(_ urlRequest: URLRequest) -> URLRequest {
-    var urlRequest = urlRequest
-    for (headerField, headerValue) in headers {
-      urlRequest.setValue(headerValue, forHTTPHeaderField: headerField)
-    }
-    return urlRequest
-  }
-  
-  private func configureQueryParams(url: URL, query: Encodable?) throws -> URL {
-    let params = query?.toDictionary() ?? [:]
-    let queryParams = params.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
-    var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-    components?.queryItems = queryParams
-    guard let configuredURL = components?.url else {
-      throw URLError(.badURL)
-    }
-    return configuredURL
-  }
-  
-  private func configureBodyParams(body: Encodable?) throws -> Data {
-    let params = body?.toDictionary() ?? [:]
-    return try JSONSerialization.data(withJSONObject: params, options: [])
-  }
+/// HTTP Header를 상수처럼 사용하기 위해 정의한 Type
+enum HTTPHeaderFieldKey : String {
+  case authentication = "Authorization"
+  case contentType = "Content-Type"
+}
+
+enum HTTPHeaderFieldValue: String {
+    case json = "Application/json"
+    case accessToken
+}
+
+/// HTTP Header 설정 enum입니다.
+/// 추후 헤더에 다른 값을 넣게 된다면 case를 추가
+///
+/// 사용 예시
+/// ``` swift
+///     case .loadImagePresignedURL(_): // Presigned URL을 우리 서버에 요청
+///       return .authorization("토큰값")
+///     case let .uploadImage(url): // S3 Bucket에 이미지 업로드
+///       return .plain
+///  ```
+public enum HTTPHeaderType {
+  case plain
+  case authorization(String)
 }
 
 extension Encodable {

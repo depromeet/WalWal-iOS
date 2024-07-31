@@ -18,9 +18,12 @@ enum AuthEndpoint<T>: APIEndpoint where T: Decodable {
 }
 
 extension AuthEndpoint {
-  var baseURL: URL {
-    return URL(string: "")!
-  }
+  var baseURLType: URLType {
+     switch self {
+     case .appleLogin(_):
+       return .walWalBaseURL
+     }
+   }
   
   var path: String {
     switch self {
@@ -43,12 +46,10 @@ extension AuthEndpoint {
     }
   }
   
-  var headers: WalWalHTTPHeader {
+  var headerType: HTTPHeaderType {
     switch self {
     case .appleLogin:
-      return [
-        "Content-Type": "application/json"
-      ]
+      return .plain
     }
   }
 }

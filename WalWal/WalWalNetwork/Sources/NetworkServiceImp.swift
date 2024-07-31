@@ -6,7 +6,7 @@
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 import Alamofire
 import RxAlamofire
@@ -23,14 +23,9 @@ public final class NetworkService: NetworkServiceProtocol {
   }
   
   public func request<E: APIEndpoint>(endpoint: E) -> Single<E.ResponseType?> where E: APIEndpoint {
-    let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
-    let headers = HTTPHeaders(endpoint.headers)
     requestLogging(endpoint)
     /// 추후에 interceptor 추가 가능
-    return RxAlamofire.requestJSON(endpoint.method,
-                                   url,
-                                   parameters: parametersToDictionary(endpoint.parameters),
-                                   headers: headers)
+    return RxAlamofire.requestJSON(endpoint)
     .map{ response, anyData -> (HTTPURLResponse, Data) in
       let convertedData = try JSONSerialization.data(withJSONObject: anyData)
       return (response, convertedData)
@@ -47,6 +42,33 @@ public final class NetworkService: NetworkServiceProtocol {
       }
     }
     .asSingle()
+  }
+  
+  // MARK: - Image Upload
+  
+  /// 이미지를 Presigned URL로 업로드 하는 함수입니다.
+  ///
+  /// 사용 예시
+  /// ``` swift
+  /// let imageData = image.jpegData(compressionQuality: 0.8)! // UIImage -> jpegData
+  /// networkService.upload(endpoint, imageData: imageData)
+  /// ```
+  public func upload<E: APIEndpoint> (endpoint: E, imageData: Data) -> Single<Bool> where E: APIEndpoint{
+    requestLogging(endpoint)
+    
+    return Single.create { single -> Disposable in
+      AF.upload(imageData, with: endpoint)
+        .validate(statusCode: 200...299)
+        .responseData(emptyResponseCodes: [200]) { response in
+          switch response.result {
+          case .success(_):
+            single(.success(true))
+          case .failure(let fail):
+            single(.failure(fail))
+          }
+        }
+      return Disposables.create()
+    }
   }
 }
 
@@ -120,7 +142,7 @@ extension NetworkService {
         .requestWithbody(let parameter),
         .requestQueryWithBody(_, let parameter):
       return parameter?.toDictionary()
-    case .uploadMultipart:
+    case .uploadImage:
       return nil
     }
   }
