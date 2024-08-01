@@ -51,6 +51,9 @@ public final class AuthReactorImp: AuthReactor {
         .catch { error -> Observable<Mutation> in
           return .just(.loginErrorMsg(msg: "로그인에 실패하였습니다"))
         }
+    case let .kakaoLoginTapped(accessToken):
+      print(accessToken)
+      return .never()
     }
   }
   

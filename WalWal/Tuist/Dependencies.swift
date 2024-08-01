@@ -47,7 +47,8 @@ let spm = SwiftPackageManagerDependencies(
     "Kingfisher": .framework,
     "Then": .framework,
     "KakaoSDKAuth": .framework,
-    "KakaoSDKUser": .framework
+    "KakaoSDKUser": .framework,
+    "KakaoSDKCommon": .framework
   ]
 )
 

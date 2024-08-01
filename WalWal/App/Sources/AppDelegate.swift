@@ -14,6 +14,9 @@ import MissionDependencyFactoryImp
 import MyPageDependencyFactoryImp
 import AppCoordinator
 
+import KakaoSDKCommon
+import KakaoSDKAuth
+
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
@@ -21,6 +24,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   var appCoordinator: (any AppCoordinator)?
   
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    KakaoSDK.initSDK(appKey: "29e3431e2dc66a607f511c0a05f0963b")
+    
     let window = UIWindow(frame: UIScreen.main.bounds)
     self.window = window
     
@@ -47,6 +52,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     appCoordinator?.start()
     
     return true
+  }
+  
+  func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    if (AuthApi.isKakaoTalkLoginUrl(url)) {
+      return AuthController.handleOpenUrl(url: url)
+    }
+    return false
   }
 }
 

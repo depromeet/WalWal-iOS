@@ -313,6 +313,7 @@ public extension TargetDependency.ThirdParty {
   static let Then = TargetDependency.external(name: "Then")
   static let KakaoSDKAuth = TargetDependency.external(name: "KakaoSDKAuth")
   static let KakaoSDKUser = TargetDependency.external(name: "KakaoSDKUser")
+  static let KakaoSDKCommon = TargetDependency.external(name: "KakaoSDKCommon")
   
   static let FlexLayout = framework(name: "FlexLayout")
   static let PinLayout = framework(name: "PinLayout")

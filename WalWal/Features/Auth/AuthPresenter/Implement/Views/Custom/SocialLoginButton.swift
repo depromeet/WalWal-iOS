@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import DesignSystem
 
 import FlexLayout
 import PinLayout
@@ -71,7 +72,7 @@ final class SocialLoginButton: UIButton {
   
   private func setAttributes() {
     let tintColor: UIColor = socialType == .apple ? .white : .black
-    backgroundColor = socialType == .apple ? .black : .yellow
+    backgroundColor = socialType == .apple ? .black : UIColor(hex: 0xFEDC00)
     layer.cornerRadius = 14
     clipsToBounds = true
     

@@ -51,6 +51,8 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     $0.textAlignment = .center
   }
   private var appleLoginButton = SocialLoginButton(socialType: .apple)
+  private var kakaoLoginButton = SocialLoginButton(socialType: .kakao)
+  var index = 0
   
   // MARK: - Initialize
   
@@ -83,7 +85,6 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   public func setAttribute() {
     view.backgroundColor = Color.walwalOrange.color
     view.addSubview(rootContainer)
-    rootContainer.addSubview(appleLoginButton)
     [imageView, titleLabel, subTitleLabel].forEach {
       contentContainer.addSubview($0)
     }
@@ -97,10 +98,19 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
           .justifyContent(.center)
           .alignItems(.center)
           .grow(1)
-        $0.addItem(appleLoginButton)
-          .marginHorizontal(20.adjusted)
-          .marginBottom(40.adjusted)
-          .height(56)
+        $0.addItem().marginHorizontal(20.adjusted).define {
+          $0.addItem(kakaoLoginButton)
+            .width(100%)
+            .marginBottom(12.adjusted)
+            .height(56.adjusted)
+          
+          $0.addItem(appleLoginButton)
+            .width(100%)
+            .marginBottom(40.adjusted)
+            .height(56.adjusted)
+        }
+          
+        
       }
     imageView.flex
       .marginHorizontal(51.adjusted)
@@ -130,6 +140,14 @@ extension AuthViewControllerImp: View {
       .compactMap { $0 }
       .map { Reactor.Action.appleLoginTapped(authCode: $0) }
       .subscribe(reactor.action)
+      .disposed(by: disposeBag)
+    
+    kakaoLoginButton.rx.tap
+      .flatMap { _ in
+        KakaoLoginManager().kakaoLogin()
+      }
+      .map { Reactor.Action.kakaoLoginTapped(accessToken: $0) }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
   

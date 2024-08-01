@@ -23,13 +23,26 @@ let project = Project(
             "CFBundleDevelopmentRegion": "ko_KR",
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
-            "UILaunchStoryboardName": "LaunchScreen"
+            "UILaunchStoryboardName": "LaunchScreen",
+            "CFBundleURLTypes": [
+              [
+                "CFBundleTypeRole": "Editor",
+                "CFBundleURLName": "kakaoLogin",
+                "CFBundleURLSchemes": [
+                  "kakao29e3431e2dc66a607f511c0a05f0963b"
+                ]
+              ]
+            ],
+            "LSApplicationQueriesSchemes": [
+              "kakaokompassauth"
+            ]
           ]
       ),
       sources: ["Sources/**"],
       resources: ["Resources/**"],
       entitlements: "../WalWal.entitlements",
       dependencies: [
+        .ThirdParty.KakaoSDKCommon,
         .ThirdParty.KakaoSDKAuth,
         
         .DependencyFactory.Auth.Implement,

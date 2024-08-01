@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "공놀이 1.png",
+      "filename" : "authImageSample.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "공놀이 1@2x.png",
+      "filename" : "authImageSample@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "공놀이 1@3x.png",
+      "filename" : "authImageSample@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
