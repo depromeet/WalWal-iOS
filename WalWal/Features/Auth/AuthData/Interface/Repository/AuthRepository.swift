@@ -12,4 +12,5 @@ import RxSwift
 
 public protocol AuthRepository {
   func appleLogin(token: String) -> Single<AuthTokenDTO>
+  func socialLogin(provider: String, token: String) -> Single<AuthTokenDTO>
 }

@@ -22,38 +22,26 @@ public final class AuthReactorImp: AuthReactor {
   
   public let initialState: State
   public let coordinator: any AuthCoordinator
-  private let appleLoginUseCase: AppleLoginUseCase
+  private let socialLoginUseCase: SocialLoginUseCase
   
   public init(
     coordinator: any AuthCoordinator,
-    appleLoginUseCase: AppleLoginUseCase
+    socialLoginUseCase: SocialLoginUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
-    self.appleLoginUseCase = appleLoginUseCase
+    self.socialLoginUseCase = socialLoginUseCase
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .appleLoginTapped(authCode):
-      return appleLoginUseCase.excute(authCode: authCode)
-        .asObservable()
-        .flatMap { result -> Observable<Mutation> in
-          UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
-          let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
-          if result.isTemporaryToken {
-            // TODO: - 온보딩 화면 전환
-          } else {
-            // TODO: - 미션 화면 전환
-          }
-          return .never()
-        }
-        .catch { error -> Observable<Mutation> in
-          return .just(.loginErrorMsg(msg: "로그인에 실패하였습니다"))
-        }
+      print(authCode)
+      return socialLoginRequest(provider: .apple, token: authCode)
     case let .kakaoLoginTapped(accessToken):
       print(accessToken)
       return .never()
+//       return socialLoginRequest(provider: .kakao, token: accessToken)
     }
   }
   
@@ -64,5 +52,25 @@ public final class AuthReactorImp: AuthReactor {
       newState.message = msg
     }
     return newState
+  }
+}
+
+extension AuthReactorImp {
+  private func socialLoginRequest(provider: ProviderType, token: String) -> Observable<Mutation> {
+    return socialLoginUseCase.excute(provider: .apple, token: token)
+      .asObservable()
+      .flatMap { result -> Observable<Mutation> in
+        UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
+        let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
+        if result.isTemporaryToken {
+          // TODO: - 온보딩 화면 전환
+        } else {
+          // TODO: - 미션 화면 전환
+        }
+        return .never()
+      }
+      .catch { error -> Observable<Mutation> in
+        return .just(.loginErrorMsg(msg: "로그인에 실패하였습니다"))
+      }
   }
 }

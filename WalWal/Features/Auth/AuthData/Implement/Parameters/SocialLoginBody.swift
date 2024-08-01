@@ -1,5 +1,5 @@
 //
-//  AppleLoginBody.swift
+//  SocialLoginBody.swift
 //  AuthData
 //
 //  Created by Jiyeon on 7/17/24.
@@ -8,6 +8,6 @@
 
 import Foundation
 
-struct AppleLoginBody: Encodable {
+struct SocialLoginBody: Encodable {
   let token: String
 }

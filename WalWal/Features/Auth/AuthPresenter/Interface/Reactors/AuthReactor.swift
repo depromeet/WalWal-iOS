@@ -35,6 +35,6 @@ public protocol AuthReactor:
   
   init(
     coordinator: any AuthCoordinator,
-    appleLoginUseCase: AppleLoginUseCase
+    socialLoginUseCase: SocialLoginUseCase
   )
 }
