@@ -76,7 +76,7 @@ final class WalWalCalendarMonthView: UIView {
       WalWalCalendarDayCell.self,
       forCellWithReuseIdentifier: Const.cellIdentifier
     )
-    collectionView.backgroundColor = UIColor(hex: 0xF7F8FA)
+    collectionView.backgroundColor = UIColor(hex: 0xFCFCFC)
   }
   
   private func bind() {
