@@ -30,6 +30,8 @@ let project = Project(
       resources: ["Resources/**"],
       entitlements: "../WalWal.entitlements",
       dependencies: [
+        .ThirdParty.KakaoSDKAuth,
+        
         .DependencyFactory.Auth.Implement,
         .DependencyFactory.Sample.Implement,
         .DependencyFactory.Splash.Implement,

@@ -311,6 +311,8 @@ public extension TargetDependency.ThirdParty {
   static let RxGesture = TargetDependency.external(name: "RxGesture")
   static let Kingfisher = TargetDependency.external(name: "Kingfisher")
   static let Then = TargetDependency.external(name: "Then")
+  static let KakaoSDKAuth = TargetDependency.external(name: "KakaoSDKAuth")
+  static let KakaoSDKUser = TargetDependency.external(name: "KakaoSDKUser")
   
   static let FlexLayout = framework(name: "FlexLayout")
   static let PinLayout = framework(name: "PinLayout")

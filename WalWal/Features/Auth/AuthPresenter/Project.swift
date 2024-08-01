@@ -20,6 +20,9 @@ let project = Project.invertedPresenterWithDemoApp(
     .Feature.Auth.Domain.Interface
   ],
   implementDependencies: [
+    .ThirdParty.KakaoSDKAuth,
+    .ThirdParty.KakaoSDKUser,
+    
     .DependencyFactory.Auth.Interface,
     .DesignSystem,
     .Utility,
