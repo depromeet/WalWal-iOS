@@ -25,7 +25,7 @@ public final class NetworkService: NetworkServiceProtocol {
   public func request<E: APIEndpoint>(endpoint: E) -> Single<E.ResponseType?> where E: APIEndpoint {
     requestLogging(endpoint)
     /// 추후에 interceptor 추가 가능
-    return RxAlamofire.requestJSON(endpoint)
+    return RxAlamofire.requestJSON(endpoint, interceptor: WalwalInterceptor())
     .map{ response, anyData -> (HTTPURLResponse, Data) in
       let convertedData = try JSONSerialization.data(withJSONObject: anyData)
       return (response, convertedData)
