@@ -20,6 +20,7 @@ let project = Project.invertedPresenterWithDemoApp(
     .Feature.MyPage.Domain.Interface,
   ],
   implementDependencies: [
+    .DependencyFactory.MyPage.Interface,
     .DesignSystem
   ],
   demoAppDependencies: [

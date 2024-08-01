@@ -17,7 +17,9 @@ let project = Project.invertedDualTargetProject(
   interfaceDependencies: [
     .WalWalNetwork
   ],
-  implementDependencies: []
+  implementDependencies: [
+    .DependencyFactory.MyPage.Interface,
+  ]
 )
 
 

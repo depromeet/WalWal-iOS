@@ -18,7 +18,9 @@ let project = Project.invertedDualTargetProject(
   interfaceDependencies: [
     .Feature.MyPage.Data.Interface
   ],
-  implementDependencies: []
+  implementDependencies: [
+    .DependencyFactory.MyPage.Interface,
+  ]
 )
 
 
