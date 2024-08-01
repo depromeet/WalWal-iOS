@@ -22,7 +22,7 @@ final class WalWalCalendarHeaderView: UIView {
   private let containerView = UIView()
   
   private let monthLabel = UILabel().then {
-    $0.font = ResourceKitFontFamily.KR.H5
+    $0.font = ResourceKitFontFamily.KR.H5.B
     $0.textColor = ResourceKitAsset.Colors.black.color
     $0.textAlignment = .center
   }

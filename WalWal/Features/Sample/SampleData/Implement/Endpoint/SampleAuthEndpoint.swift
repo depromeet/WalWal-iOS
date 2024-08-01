@@ -11,15 +11,21 @@ import WalWalNetwork
 
 import Alamofire
 
-
-enum AuthEndpoint<ResponseType>: APIEndpoint where ResponseType: Decodable {
-  typealias Response = ResponseType
+enum AuthEndpoint<T>: APIEndpoint where T: Decodable {
+  typealias ResponseType = T
   
   case signUp(body: SampleSignUpBody)
   case signIn(body: SampleSignInBody)
 }
 
 extension AuthEndpoint {
+  var baseURLType: URLType {
+    switch self {
+    case .signIn, .signUp:
+      return .walWalBaseURL
+    }
+  }
+  
   var path: String {
     switch self {
     case .signIn:
