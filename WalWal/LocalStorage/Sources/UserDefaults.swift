@@ -14,6 +14,7 @@ public extension UserDefaults {
   /// 필요한 type case를 추가합니다.
   enum Key: String {
     case notification
+    case refreshToken
   }
   
   // MARK: - GET
