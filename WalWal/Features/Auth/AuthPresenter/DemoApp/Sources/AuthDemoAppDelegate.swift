@@ -17,7 +17,10 @@ final class AuthAppDelegate: UIResponder, UIApplicationDelegate {
     
     let dependencyFactory = AuthDependencyFactoryImp()
     let navigationController = UINavigationController()
-    let coordinator = dependencyFactory.makeAuthCoordinator(navigationController: navigationController)
+    let coordinator = dependencyFactory.makeAuthCoordinator(
+      navigationController: navigationController,
+      parentCoordinator: nil
+    )
     let reactor = dependencyFactory.makeAuthReactor(coordinator: coordinator)
     let viewController = dependencyFactory.makeAuthViewController(reactor: reactor)
     

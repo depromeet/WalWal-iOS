@@ -8,8 +8,8 @@
 
 import UIKit
 
-import DependencyFactory
-import DependencyFactoryImp
+import MyPageDependencyFactory
+import MyPageDependencyFactoryImp
 import MyPageData
 import MyPageDomain
 import MyPageCoordinator
@@ -21,9 +21,12 @@ final class MyPageAppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     let window = UIWindow(frame: UIScreen.main.bounds)
     
-    let dependencyFactory = DependencyFactoryImp()
+    let dependencyFactory = MyPageDependencyFactoryImp()
     let navigationController = UINavigationController()
-    let coordinator = dependencyFactory.make__Coordinator(navigationController: navigationController)
+    let coordinator = dependencyFactory.makeMyPageCoordinator(
+      navigationController: navigationController,
+      parentCoordinator: nil
+    )
     let reactor = dependencyFactory.makeMyPageReactor(coordinator: coordinator)
     let viewController = dependencyFactory.makeMyPageViewController(reactor: reactor)
     

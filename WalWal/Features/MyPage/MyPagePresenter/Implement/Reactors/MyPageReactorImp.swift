@@ -13,16 +13,16 @@ import MyPageCoordinator
 import ReactorKit
 import RxSwift
 
-public final class MyPageReactorImp: SplashReactor {
+public final class MyPageReactorImp: MyPageReactor {
   public typealias Action = MyPageReactorAction
   public typealias Mutation = MyPageReactorMutation
   public typealias State = MyPageReactorState
   
   public let initialState: State
-  public let coordinator: any __Coordinator
+  public let coordinator: any MyPageCoordinator
   
   public init(
-    coordinator: any __Coordinator
+    coordinator: any MyPageCoordinator
   ) {
     self.coordinator = coordinator
     self.initialState = State()

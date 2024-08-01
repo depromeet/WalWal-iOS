@@ -28,9 +28,9 @@ public struct MyPageReactorState {
 
 public protocol MyPageReactor: Reactor where Action == MyPageReactorAction, Mutation == MyPageReactorMutation, State == MyPageReactorState {
   
-  var coordinator: any __Coordinator { get }
+  var coordinator: any MyPageCoordinator { get }
   
   init(
-    coordinator: any __Coordinator
+    coordinator: any MyPageCoordinator
   )
 }
