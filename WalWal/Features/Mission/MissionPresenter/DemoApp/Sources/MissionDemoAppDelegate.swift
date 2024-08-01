@@ -18,7 +18,7 @@ final class MissionAppDelegate: UIResponder, UIApplicationDelegate {
     
     let dependencyFactory = MissionDependencyFactoryImp()
     let navigationController = UINavigationController()
-    let coordinator = dependencyFactory.makeMissionCoordinator(navigationController: navigationController)
+    let coordinator = dependencyFactory.makeMissionCoordinator(navigationController: navigationController, parentCoordinator: nil)
     let reactor = dependencyFactory.makeMissionReactor(coordinator: coordinator)
     let viewController = dependencyFactory.makeMissionViewController(reactor: reactor)
     

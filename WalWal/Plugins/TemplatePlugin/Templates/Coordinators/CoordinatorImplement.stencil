@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import DependencyFactory
+import {{name}}DependencyFactory
 import BaseCoordinator
 import {{name}}Coordinator
 
@@ -20,22 +20,23 @@ public final class {{name}}CoordinatorImp: {{name}}Coordinator {
   public typealias Flow = {{name}}CoordinatorFlow
   
   public let disposeBag = DisposeBag()
-  public let destination = PublishSubject<Flow>()
+  public let destination = PublishRelay<Flow>()
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
-  public var dependencyFactory: DependencyFactory
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
+  
+  public var {{name}}DependencyFactory: {{name}}DependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    dependencyFactory: DependencyFactory
+    {{name}}DependencyFactory: {{name}}DependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
-    self.dependencyFactory = dependencyFactory
+    self.{{name}}DependencyFactory = {{name}}DependencyFactory
     bindChildToParentAction()
     bindState()
   }

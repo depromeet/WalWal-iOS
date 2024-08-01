@@ -7,15 +7,18 @@
 //
 
 import UIKit
-import BaseCoordinator
+
+import AuthDependencyFactory
+import WalWalTabBarDependencyFactory
+import MissionDependencyFactory
+
 import AppCoordinator
 
-import SplashData
-import SplashDomain
-import SplashPresenter
-
 public protocol SplashDependencyFactory {
-  func makeAppCoordinator(navigationController: UINavigationController) -> any AppCoordinator
-  func makeSplashReactor(coordinator: any AppCoordinator) -> any SplashReactor
-  func makeSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController
+  func makeAppCoordinator(
+    navigationController: UINavigationController,
+    authDependencyFactory: AuthDependencyFactory,
+    walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
+    missionDependencyFactory: MissionDependencyFactory
+  ) -> any AppCoordinator
 }

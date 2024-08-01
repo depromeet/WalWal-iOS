@@ -20,22 +20,23 @@ public final class AuthCoordinatorImp: AuthCoordinator {
   public typealias Flow = AuthCoordinatorFlow
   
   public let disposeBag = DisposeBag()
-  public let destination = PublishSubject<Flow>()
+  public let destination = PublishRelay<Flow>()
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
-  public var dependencyFactory: AuthDependencyFactory
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
+  
+  public var authDependencyFactory: AuthDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    dependencyFactory: AuthDependencyFactory
+    authDependencyFactory: AuthDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
-    self.dependencyFactory = dependencyFactory
+    self.authDependencyFactory = authDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -55,8 +56,8 @@ public final class AuthCoordinatorImp: AuthCoordinator {
   }
   
   public func start() {
-    let reactor = dependencyFactory.makeAuthReactor(coordinator: self)
-    let authVC = dependencyFactory.makeAuthViewController(reactor: reactor)
+    let reactor = authDependencyFactory.makeAuthReactor(coordinator: self)
+    let authVC = authDependencyFactory.makeAuthViewController(reactor: reactor)
     self.baseViewController = authVC
     self.pushViewController(viewController: authVC, animated: false)
   }

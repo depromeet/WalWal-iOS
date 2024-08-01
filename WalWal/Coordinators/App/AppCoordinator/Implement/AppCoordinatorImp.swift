@@ -7,9 +7,13 @@
 //
 
 import UIKit
-import SplashDependencyFactory
 import BaseCoordinator
 import AppCoordinator
+
+import SplashDependencyFactory
+import AuthDependencyFactory
+import WalWalTabBarDependencyFactory
+import MissionDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -20,22 +24,32 @@ public final class AppCoordinatorImp: AppCoordinator {
   public typealias Flow = AppCoordinatorFlow
   
   public let disposeBag = DisposeBag()
-  public let destination = PublishSubject<Flow>()
+  public let destination = PublishRelay<Flow>()
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
-  public var dependencyFactory: SplashDependencyFactory
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
+  public var appDependencyFactory: SplashDependencyFactory
+  public var authDependencyFactory: AuthDependencyFactory
+  public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
+  public var missionDependencyFactory: MissionDependencyFactory
+  
+  /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
+  /// 그리고 하위 Coordinator를 생성할 때 마다, 하위에 해당하는 인터페이스 모두 전달
   public required init(
     navigationController: UINavigationController,
-    parentCoordinator: (any BaseCoordinator)?,
-    dependencyFactory: SplashDependencyFactory
+    appDependencyFactory: SplashDependencyFactory,
+    authDependencyFactory: AuthDependencyFactory,
+    walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
+    missionDependencyFactory: MissionDependencyFactory
   ) {
     self.navigationController = navigationController
-    self.parentCoordinator = parentCoordinator
-    self.dependencyFactory = dependencyFactory
+    self.appDependencyFactory = appDependencyFactory
+    self.authDependencyFactory = authDependencyFactory
+    self.walwalTabBarDependencyFactory = walwalTabBarDependencyFactory
+    self.missionDependencyFactory = missionDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -46,8 +60,8 @@ public final class AppCoordinatorImp: AppCoordinator {
         switch flow { 
         case .startAuth:
           owner.startAuth()
-        case .startHome:
-          owner.startAuth()
+        case .startTab:
+          owner.startTabBar()
         }
       })
       .disposed(by: disposeBag)
@@ -68,10 +82,11 @@ public final class AppCoordinatorImp: AppCoordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let reactor = dependencyFactory.makeSplashReactor(coordinator: self)
-    let splashVC = dependencyFactory.makeSplashViewController(reactor: reactor)
-    self.baseViewController = splashVC
-    self.pushViewController(viewController: splashVC, animated: false)
+//    let reactor = dependencyFactory.makeSplashReactor(coordinator: self)
+//    let splashVC = dependencyFactory.makeSplashViewController(reactor: reactor)
+//    self.baseViewController = splashVC
+//    self.pushViewController(viewController: splashVC, animated: false)
+    destination.accept(.startTab)
   }
 }
 
@@ -116,27 +131,24 @@ extension AppCoordinatorImp {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func startAuth() {
-    /*
-    let homeCoordinator = dependencyFactory.makeAuthCoordinator(
+    let authCoordinator = authDependencyFactory.makeAuthCoordinator(
       navigationController: navigationController,
       parentCoordinator: self
     )
-    childCoordinator = homeCoordinator
-    homeCoordinator.start()
-    */
+    childCoordinator = authCoordinator
+    authCoordinator.start()
   }
   
   
   /// 새로운 Coordinator를 통해서 Flow를 새로 생성하기 때문에, start를 prefix로 사용합니다.
-  fileprivate func startHome() {
-    /*
-    let homeCoordinator = dependencyFactory.makeHomeCoordinator(
+  fileprivate func startTabBar() {
+    let walwalTabBarCoordinator = walwalTabBarDependencyFactory.makeTabBarCoordinator(
       navigationController: navigationController,
-      parentCoordinator: self
+      parentCoordinator: self,
+      missionDependencyFactory: missionDependencyFactory
     )
-    childCoordinator = homeCoordinator
-    homeCoordinator.start()
-    */
+    childCoordinator = walwalTabBarCoordinator
+    walwalTabBarCoordinator.start()
   }
 }
 

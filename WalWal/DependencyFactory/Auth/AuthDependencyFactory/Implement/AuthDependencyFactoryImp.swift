@@ -11,6 +11,7 @@ import AuthDependencyFactory
 
 import WalWalNetwork
 
+import BaseCoordinator
 import AuthCoordinator
 import AuthCoordinatorImp
 
@@ -28,12 +29,13 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
   }
   
   public func makeAuthCoordinator(
-    navigationController: UINavigationController
+    navigationController: UINavigationController,
+    parentCoordinator: any BaseCoordinator
   ) -> any AuthCoordinator {
     return AuthCoordinatorImp(
       navigationController: navigationController,
-      parentCoordinator: nil,
-      dependencyFactory: self
+      parentCoordinator: parentCoordinator,
+      authDependencyFactory: self
     )
   }
   
@@ -46,8 +48,11 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     return AppleLoginUseCaseImp(authDataRepository: makeAuthData())
   }
   
-  public func makeAuthReactor(coordinator: any AuthCoordinator) -> any AuthReactor {
-    return AuthReactorImp(coordinator: coordinator, appleLoginUseCase: makeAppleLoginUseCase())
+  public func makeAuthReactor<T: AuthCoordinator>(coordinator: T) -> any AuthReactor {
+    return AuthReactorImp(
+      coordinator: coordinator,
+      appleLoginUseCase: makeAppleLoginUseCase()
+    )
   }
   
   public func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController {

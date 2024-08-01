@@ -11,6 +11,7 @@ import MissionDependencyFactory
 
 import WalWalNetwork
 
+import BaseCoordinator
 import MissionCoordinator
 import MissionCoordinatorImp
 
@@ -27,28 +28,34 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
     
   }
   
-  public func makeMissionData() -> MissionRepository {
+  public func makeMissionRepository() -> MissionRepository {
     let networkService = NetworkService()
     return MissionRepositoryImp(networkService: networkService)
   }
   
+  /// MissionUseCase라고 통칭해서 이름을 명명하지 않고, 해당 기능에 대한 이름 명시를 확실하게 해주세요
   public func makeMissionUseCase() -> MissionUseCase {
-    return MissionUseCaseImp(missionDataRepository: makeMissionData())
+    return MissionUseCaseImp(missionDataRepository: makeMissionRepository())
   }
   
-  public func makeMissionReactor(coordinator: any MissionCoordinator) -> any MissionReactor {
-    return MissionReactorImp(coordinator: coordinator)
+  public func makeMissionCoordinator(
+    navigationController: UINavigationController,
+    parentCoordinator: any BaseCoordinator
+  ) -> any MissionCoordinator {
+    return MissionCoordinatorImp(
+      navigationController: navigationController,
+      parentCoordinator: parentCoordinator,
+      missionDependencyFactory: self
+    )
+  }
+  
+  public func makeMissionReactor<T: MissionCoordinator>(coordinator: T) -> any MissionReactor {
+    return MissionReactorImp(
+      coordinator: coordinator
+    )
   }
   
   public func makeMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController {
     return MissionViewControllerImp(reactor: reactor)
-  }
-  
-  public func makeMissionCoordinator(navigationController: UINavigationController) -> any MissionCoordinator {
-    return MissionCoordinatorImp(
-      navigationController: navigationController,
-      parentCoordinator: nil,
-      dependencyFactory: self
-    )
   }
 }
