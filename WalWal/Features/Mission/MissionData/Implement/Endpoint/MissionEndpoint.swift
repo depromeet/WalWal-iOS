@@ -43,7 +43,7 @@ extension MissionEndpoint {
     }
   }
   
-  var headerType: HTTPHeaderType {
+  var headers: WalWalNetwork.WalWalHTTPHeader {
     switch self {
     case .loadMissionInfo:
       return.plain
