@@ -26,9 +26,12 @@ public final class NetworkService: NetworkServiceProtocol {
     requestLogging(endpoint)
     /// 추후에 interceptor 추가 가능
     return RxAlamofire.requestJSON(endpoint, interceptor: WalwalInterceptor())
-    .map{ response, anyData -> (HTTPURLResponse, Data) in
-      let convertedData = try JSONSerialization.data(withJSONObject: anyData)
-      return (response, convertedData)
+      .do(onError: { error in
+        print("🔴 요청 에러: \(error)")
+      })
+      .map{ response, anyData -> (HTTPURLResponse, Data) in
+        let convertedData = try JSONSerialization.data(withJSONObject: anyData)
+        return (response, convertedData)
     }
     .withUnretained(self)
     .flatMap { owner, result -> Single<E.ResponseType?> in
