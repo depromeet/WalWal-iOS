@@ -14,7 +14,7 @@ public extension APIEndpoint {
   var baseURL: URL {
     switch baseURLType {
     case .walWalBaseURL:
-      return URL(string: "")! // TODO: Config의 BaseURL
+      return URL(string: "https://dev-api.walwal.life")! // TODO: Config의 BaseURL
     case .presignedURL(let string):
       return URL(string: string)!
     }
