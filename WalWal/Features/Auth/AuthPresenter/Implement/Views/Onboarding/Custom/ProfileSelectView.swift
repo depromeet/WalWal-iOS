@@ -53,7 +53,7 @@ final class ProfileSelectView: UIView {
   
   init(viewWidth: CGFloat, marginItems: CGFloat) {
     self.viewWidth = viewWidth
-    profileSize = viewWidth / 2.2
+    profileSize = 170.adjustedWidth//viewWidth / 2.2
     self.marginItems = marginItems
     super.init(frame: .zero)
     setLayout()

@@ -9,6 +9,7 @@
 import UIKit
 import AuthPresenter
 import ResourceKit
+import DesignSystem
 
 import Then
 import PinLayout
@@ -29,6 +30,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   // MARK: - UI
   
   private let rootContainer = UIView()
+  private let navigationBar = WalWalNavigationBar(leftItems: [.back], title: nil, rightItems: [])
   private let contentContainer = UIView()
   private let progressView = ProgressView(index: 2)
   private let titleView = UIView()
@@ -45,7 +47,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   }
   private var profileSelectView = ProfileSelectView(
     viewWidth: UIScreen.main.bounds.width,
-    marginItems: 17
+    marginItems: 17.adjusted
   )
   private let nicknameTextField = NicknameTextField()
   private let nextButton = CompleteButton(isEnable: false)
@@ -101,11 +103,12 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
       .height(50)
     
     progressView.flex
-      .marginTop(32)
-      .marginHorizontal(20)
+      .marginTop(24.adjusted)
+      .marginHorizontal(20.adjustedWidth)
+    
     titleView.flex
-      .marginHorizontal(20)
-      .marginTop(32/812*UIScreen.main.bounds.height)
+      .marginHorizontal(20.adjustedWidth)
+      .marginTop(40.adjusted)
       .define {
         $0.addItem(titleLabel)
         $0.addItem(subTitleLabel)
@@ -117,15 +120,15 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
       .define {
         $0.addItem(profileSelectView)
           .alignItems(.center)
-          .marginTop(70/812*UIScreen.main.bounds.height)
+          .marginTop(70.adjustedHeight)
           .width(100%)
         $0.addItem(nicknameTextField)
           .justifyContent(.center)
-          .marginTop(32)
-          .marginHorizontal(20)
+          .marginTop(32.adjustedHeight)
+          .marginHorizontal(20.adjustedWidth)
       }
     nextButton.flex
-      .marginHorizontal(20)
+      .marginHorizontal(20.adjustedWidth)
   }
   
   private func updateKeyboardLayout() {

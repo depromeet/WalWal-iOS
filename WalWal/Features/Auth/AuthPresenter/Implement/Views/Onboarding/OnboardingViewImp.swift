@@ -92,12 +92,12 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewCont
             $0.addItem(scrollView)
               .alignSelf(.center)
             $0.addItem(pageControl)
-              .marginTop(57)
+              .marginTop(57.adjustedHeight)
               .height(5)
           }
         $0.addItem(nextButton)
           .marginBottom(30)
-          .marginHorizontal(20)
+          .marginHorizontal(20.adjustedWidth)
           .height(56)
       }
     

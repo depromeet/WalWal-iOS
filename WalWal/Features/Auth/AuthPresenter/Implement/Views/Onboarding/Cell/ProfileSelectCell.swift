@@ -23,7 +23,7 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   private let borderView = UIView().then {
     $0.backgroundColor = .clear
     $0.layer.borderColor = Color.walwalOrange.color.cgColor
-    $0.layer.borderWidth = 3
+    $0.layer.borderWidth = 3.adjusted
   }
   let changeButton = UIButton().then {
     $0.setImage(UIImage(systemName: "repeat"), for: .normal)

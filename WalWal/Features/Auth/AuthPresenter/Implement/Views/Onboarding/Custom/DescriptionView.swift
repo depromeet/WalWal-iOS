@@ -75,7 +75,7 @@ final class DescriptionView: UIView {
         flex.addItem(imageView)
           .alignSelf(.center)
           .marginTop(50)
-          .size(220)
+          .size(220.adjustedWidth)
       }
   }
 }
