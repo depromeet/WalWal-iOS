@@ -5,9 +5,9 @@
 //  Created by 이지희 on 8/1/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
-
 import Foundation
 import Utility
+import LocalStorage
 
 import Alamofire
 import RxSwift
@@ -15,7 +15,6 @@ import RxSwift
 final public class WalwalInterceptor: RequestInterceptor {
   
   private var retryLimit = 2
-  private let reissueRepository = ReissueRepository(networkService: NetworkService())
   private let disposeBag = DisposeBag()
   
   init() { }
@@ -36,31 +35,32 @@ final public class WalwalInterceptor: RequestInterceptor {
     
     if request.retryCount < retryLimit {
       if statusCode == 401 {
-        let reissueUsecase = ReissueUsecase(reissueRepository: reissueRepository)
-        // TODO: refreshToken이 없는 경우 error 방출
-        if let refreshToken = UserDefaults.standard.string(forKey: "refreshToken") {
-          reissueUsecase.excute(refreshToken: refreshToken)
-            .subscribe(
-              onSuccess: { token in
-                /// 토큰 변경 로직
-                /// ex)
-                /// UserDefaults.standard.setValue(token.refreshToken, forKey: "refreshToken")
-                ///
-                /// 요청 재시도
-                completion(.retry)
-              },
-              onFailure: { err in
-                print("🚨 토큰 갱신 실패: \(err)")
-                completion(.doNotRetryWithError(error))
-              })
+        /// refresh 토큰이 존재하는 경우
+        let refreshToken = UserDefaults.string(forUserDefaultsKey: .refreshToken)
+        if refreshToken != "" {
+          let endpoint = ReissueEndpoint<Token>.reissue(body: RefreshToken(refreshToken: refreshToken))
+          NetworkService().request(endpoint: endpoint)
+            .subscribe(onSuccess: { token in
+              guard let token = token else {
+                completion(.doNotRetryWithError(WalWalNetworkError.tokenReissueFailed))
+                return
+              }
+              /// 토큰 업데이트
+              UserDefaults.setValue(value: token.refreshToken, forUserDefaultKey: .refreshToken)
+              KeychainWrapper.shared.setAccessToken(token.accessToken) ? completion(.retry) : completion(.doNotRetry)
+            }, onFailure: { err in
+              print("🚨 토큰 갱신 실패: \(err)")
+              completion(.doNotRetryWithError(WalWalNetworkError.tokenReissueFailed))
+            })
             .disposed(by: disposeBag)
+          /// refresh 토큰이 존재하지 않은 경우
         } else  {
-          completion(.doNotRetryWithError(error))
-          /// 로그인 뷰로 이동
+          completion(.doNotRetryWithError(WalWalNetworkError.tokenReissueFailed))
         }
-      } else if statusCode == 404 {
-        /// 유저를 찾을 수 없는 상태
       }
+    } else if statusCode == 404 {
+      /// 유저를 찾을 수 없는 상태
+      completion(.doNotRetry)
     }
   }
 }
