@@ -210,7 +210,7 @@ private extension WalWalCalendarMonthView {
   enum Const {
     static let cellIdentifier = "DayCell"
     static let interitemSpacing: CGFloat = 6
-    static let lineSpacing: CGFloat = 24
+    static let lineSpacing: CGFloat = 20
     static let sectionTopInset: CGFloat = 18
     static let cellSize = CGSize(width: 42, height: 42)
   }

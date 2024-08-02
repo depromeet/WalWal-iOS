@@ -62,6 +62,7 @@ public final class WalWalCalendar: UIView {
   private func setLayouts() {
     flex
       .direction(.column)
+      .padding(Const.varticalPadding, Const.horizontalPadding, 0, Const.horizontalPadding)
       .padding(Const.horizontalPadding)
       .define { flex in
         flex
@@ -69,7 +70,6 @@ public final class WalWalCalendar: UIView {
           .width(Const.headerWidth)
           .height(Const.headerHeight)
           .alignSelf(.center)
-          .marginTop(Const.headerMarginTop)
         flex
           .addItem(weekdayView)
           .width(100%)
@@ -106,10 +106,10 @@ public final class WalWalCalendar: UIView {
 // MARK: - WalWalCalendar Extension
 private extension WalWalCalendar {
   enum Const {
+    static let varticalPadding: CGFloat = 22
     static let horizontalPadding: CGFloat = 20
     static let headerWidth: CGFloat = 200
     static let headerHeight: CGFloat = 44
-    static let headerMarginTop: CGFloat = 28
     static let weekdayHeight: CGFloat = 30
   }
 }
