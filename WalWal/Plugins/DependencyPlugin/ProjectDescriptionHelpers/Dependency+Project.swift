@@ -128,8 +128,6 @@ extension TargetDependency {
     public struct SampleAuth: WalWalDependency { }
     public struct SampleApp: WalWalDependency { }
     public struct SampleHome: WalWalDependency { }
-    public struct Auth: WalWalDependency { }
-    public struct Mission: WalWalDependency { }
   }
   
   public struct Feature {
