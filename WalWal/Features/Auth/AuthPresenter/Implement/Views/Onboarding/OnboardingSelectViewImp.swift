@@ -34,6 +34,7 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   // MARK: - UI
   
   private let rootContainer = UIView()
+  private let navigationBar = WalWalNavigationBar(leftItems: [.back], title: nil, rightItems: [])
   private let contentContainer = UIView()
   private let progressView = ProgressView(index: 1)
   private let titleLabel = UILabel().then {
@@ -94,15 +95,17 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   public func setAttribute() {
     view.backgroundColor = .white
     view.addSubview(rootContainer)
-    rootContainer.addSubview(progressView)
-    rootContainer.addSubview(contentContainer)
-    rootContainer.addSubview(nextButton)
+    [navigationBar, progressView, contentContainer, nextButton].forEach {
+      rootContainer.addSubview($0)
+    }
   }
   
   public func setLayout() {
     rootContainer.flex
       .justifyContent(.center)
       .marginHorizontal(20)
+    navigationBar.flex
+      .width(100%)
     
     progressView.flex
       .marginTop(32)

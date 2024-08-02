@@ -29,7 +29,7 @@ public final class OnboardingReactorImp: OnboardingReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .nextButtonTapped(flow):
-      coordinator.destination.onNext(flow)
+      coordinator.destination.accept(flow)
       return .never()
     }
   }

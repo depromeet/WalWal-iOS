@@ -75,19 +75,19 @@ extension AuthCoordinatorImp {
 
 extension AuthCoordinatorImp {
   public func startOnboarding() {
-    let reactor = dependencyFactory.makeOnboardingReactor(coordinator: self)
-    let vc = dependencyFactory.makeOnboardingViewController(reactor: reactor)
+    let reactor = authDependencyFactory.makeOnboardingReactor(coordinator: self)
+    let vc = authDependencyFactory.makeOnboardingViewController(reactor: reactor)
     self.baseViewController = vc
     self.pushViewController(viewController: vc, animated: false)
   }
   func showOnboardingSelect() {
-    let reactor = dependencyFactory.makeOnboardingSelectReactor(coordinator: self)
-    let vc = dependencyFactory.makeOnboardingSelectViewController(reactor: reactor)
+    let reactor = authDependencyFactory.makeOnboardingSelectReactor(coordinator: self)
+    let vc = authDependencyFactory.makeOnboardingSelectViewController(reactor: reactor)
     self.pushViewController(viewController: vc, animated: true)
   }
   func showOnboardingProfile() {
-    let reactor = dependencyFactory.makeOnboardingProfileReactor(coordinator: self)
-    let vc = dependencyFactory.makeOnboardingProfileViewController(reactor: reactor)
+    let reactor = authDependencyFactory.makeOnboardingProfileReactor(coordinator: self)
+    let vc = authDependencyFactory.makeOnboardingProfileViewController(reactor: reactor)
     self.pushViewController(viewController: vc, animated: true)
   }
 }
