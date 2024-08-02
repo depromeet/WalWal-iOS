@@ -66,10 +66,10 @@ final class WalWalInputBoxDemoViewController: UIViewController {
   
   private func setupLayout() {
     rootFlexContainer.flex.define { flex in
-      flex.addItem(normalInputBox).height(72).marginHorizontal(20).marginTop(20)
-      flex.addItem(passwordInputBox).height(72).marginHorizontal(20).marginTop(20)
-      flex.addItem(disabledInputBox).height(72).marginHorizontal(20).marginTop(20)
-      flex.addItem(errorInputBox).height(72).marginHorizontal(20).marginTop(20)
+      flex.addItem(normalInputBox).marginHorizontal(20).marginTop(20)
+      flex.addItem(passwordInputBox).marginHorizontal(20).marginTop(20)
+      flex.addItem(disabledInputBox).marginHorizontal(20).marginTop(20)
+      flex.addItem(errorInputBox).marginHorizontal(20).marginTop(20)
     }
   }
   

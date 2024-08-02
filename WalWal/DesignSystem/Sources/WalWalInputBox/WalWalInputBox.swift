@@ -80,6 +80,7 @@ public final class WalWalInputBox: UIView {
   fileprivate let errorLabel = UILabel().then {
     $0.numberOfLines = 1
     $0.font = ResourceKitFontFamily.KR.B2
+    $0.minimumScaleFactor = 0.8
     $0.textColor = .red
     $0.textAlignment = .center
   }
@@ -117,6 +118,15 @@ public final class WalWalInputBox: UIView {
     fatalError("init(coder:) has not been implemented")
   }
   
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    containerView.pin.left().right().top().height(52)
+    containerView.flex.layout()
+    
+    errorLabel.pin.left().right().top(to: containerView.edge.bottom).marginTop(6).height(20)
+    errorLabel.flex.layout()
+  }
+  
   // MARK: - Methods
   
   private func configureAttributes(placeholder: String) {
@@ -130,6 +140,7 @@ public final class WalWalInputBox: UIView {
   
   private func configureLayouts() {
     addSubview(containerView)
+    addSubview(errorLabel)
     
     containerView.flex.define { flex in
       flex.addItem()
@@ -153,10 +164,9 @@ public final class WalWalInputBox: UIView {
       flex.addItem(separatorView)
         .height(1)
         .marginTop(15)
-      flex.addItem(errorLabel)
-        .marginTop(6)
-        .grow(1)
     }
+    errorLabel.flex
+      .marginTop(8)
   }
   
   private func bind() {
@@ -219,15 +229,7 @@ public final class WalWalInputBox: UIView {
     }
   }
   
-  // MARK: - Layout
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    containerView.pin.all()
-    containerView.flex.layout()
-  }
-  
-  // MARK: - Private Methods
+  // MARK: - Methods
   
   private func updateAppearance(activeState: InputBoxActiveState) {
     switch activeState {
