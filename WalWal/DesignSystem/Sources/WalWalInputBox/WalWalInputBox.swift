@@ -192,17 +192,11 @@ public final class WalWalInputBox: UIView {
       .share(replay: 1)
     
     Observable.combineLatest(isTextFieldActive, isTextFieldEmpty)
+      .debug()
       .map { (isActive, isEmpty) in
         return isActive || !isEmpty
       }
       .bind(to: placeholderLabel.rx.isHidden)
-      .disposed(by: disposeBag)
-    
-    rightButton.rx.tapped
-      .bind(to: Binder(self) { inputBox, _ in
-        inputBox.textField.text = ""
-        inputBox.errorRelay.accept(nil)
-      })
       .disposed(by: disposeBag)
     
     errorRelay
@@ -223,9 +217,10 @@ public final class WalWalInputBox: UIView {
     switch rightIcon {
     case .close:
       rightButton.rx.tapped
-        .bind(to: Binder(self) { inputBox, _ in
-          inputBox.textField.text = ""
-          inputBox.errorRelay.accept(nil)
+        .subscribe(with: self, onNext: { owner, _ in
+          owner.textField.text = ""
+          owner.textField.sendActions(for: .valueChanged)
+          owner.errorRelay.accept(nil)
         })
         .disposed(by: disposeBag)
     case .show:
