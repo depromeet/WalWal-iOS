@@ -33,7 +33,8 @@ final class WalWalChipDemoViewController: UIViewController {
   private let interactiveChip = WalWalChip(
     text: "뾰로롱",
     size: CGSize(width: 120, height: 72),
-    style: .filled
+    style: .filled,
+    font: ResourceKitFontFamily.KR.H2
   )
   
   private let statusLabel = UILabel().then {
@@ -125,6 +126,7 @@ final class WalWalChipDemoViewController: UIViewController {
       .bind(to: statusLabel.rx.text)
       .disposed(by: disposeBag)
     
+    /// 버튼을 눌렀을 때, state를 바꾸는 예시 코드
     interactiveChip.rx.tapped
       .scan(WalWalChip.ChipStyle.filled) { (currentStyle, _) in
         switch currentStyle {

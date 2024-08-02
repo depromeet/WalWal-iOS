@@ -31,13 +31,13 @@ public class WalWalChip: UIView {
   
   fileprivate let label = UILabel().then {
     $0.textAlignment = .center
-    $0.font = ResourceKitFontFamily.KR.B2
   }
   
   // MARK: - Properties
   
   private let cornerRadius: CGFloat
   private let size: CGSize
+  private let font: UIFont
   
   // MARK: - Initializers
   
@@ -46,13 +46,16 @@ public class WalWalChip: UIView {
   ///   - text: 초기 Chip의 타이틀 입니다
   ///   - size: Chip의 사이즈 입니다. (default: 64x28)
   ///   - style: Chip의 스타일 입니다.
+  ///   - fond: Chip의 폰트 입니다. (default: ResourceKitFontFamily.KR.B2)
   public init(
     text: String? = nil,
     size: CGSize = CGSize(width: 64, height: 28),
-    style: ChipStyle
+    style: ChipStyle,
+    font: UIFont = ResourceKitFontFamily.KR.B2
   ) {
     self.cornerRadius = size.height / 2
     self.size = size
+    self.font = font
     super.init(frame: .zero)
     configureLayout()
     configureStyle(style: style)
@@ -80,6 +83,8 @@ public class WalWalChip: UIView {
   private func configureAttributes() {
     layer.cornerRadius = cornerRadius
     clipsToBounds = true
+    
+    label.font = font
   }
   
   private func configureLayout() {
