@@ -120,11 +120,22 @@ public final class WalWalInputBox: UIView {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    containerView.pin.left().right().top().height(52)
-    containerView.flex.layout()
+    containerView.pin
+      .left()
+      .right()
+      .top()
+      .height(52)
+    containerView.flex
+      .layout()
     
-    errorLabel.pin.left().right().top(to: containerView.edge.bottom).marginTop(6).height(20)
-    errorLabel.flex.layout()
+    errorLabel.pin
+      .left()
+      .right()
+      .top(to: containerView.edge.bottom)
+      .marginTop(6)
+      .height(20)
+    errorLabel.flex
+      .layout()
   }
   
   // MARK: - Methods

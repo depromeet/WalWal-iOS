@@ -65,12 +65,21 @@ final class WalWalInputBoxDemoViewController: UIViewController {
   }
   
   private func setupLayout() {
-    rootFlexContainer.flex.define { flex in
-      flex.addItem(normalInputBox).marginHorizontal(20).marginTop(20)
-      flex.addItem(passwordInputBox).marginHorizontal(20).marginTop(20)
-      flex.addItem(disabledInputBox).marginHorizontal(20).marginTop(20)
-      flex.addItem(errorInputBox).marginHorizontal(20).marginTop(20)
-    }
+    rootFlexContainer.flex
+      .define { flex in
+        flex.addItem(normalInputBox)
+          .marginHorizontal(20)
+          .marginTop(20)
+        flex.addItem(passwordInputBox)
+          .marginHorizontal(20)
+          .marginTop(20)
+        flex.addItem(disabledInputBox)
+          .marginHorizontal(20)
+          .marginTop(20)
+        flex.addItem(errorInputBox)
+          .marginHorizontal(20)
+          .marginTop(20)
+      }
   }
   
   private func setupBindings() {
