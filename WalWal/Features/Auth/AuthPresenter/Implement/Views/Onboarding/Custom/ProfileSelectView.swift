@@ -11,31 +11,52 @@ import Utility
 import ResourceKit
 
 import RxSwift
+import RxCocoa
 import PinLayout
 import FlexLayout
 
 /// 프로필 이미지 선택 뷰
 final class ProfileSelectView: UIView {
   
-  private var profileSize: CGFloat
-  private var viewWidth: CGFloat
-  private var marginItems: CGFloat
-  private var disposeBag = DisposeBag()
-  private let profileItem = [
+  /// ViewController에게 PHPickerView presnest 요청하기 위한 이벤트
+  ///
+  /// 사용 예시:
+  /// ```swift
+  /// profileView.showPHPicker
+  ///   .bind(with: self) { owner, _ in
+  ///    PHPickerManager.shared.presentPicker(vc: owner)
+  ///   }
+  ///   .disposed(by: disposeBag)
+  let showPHPicker = PublishRelay<Void>()
+  
+  /// 현재 포커스되어있는 셀의 이미지 데이터
+  ///
+  /// 완료 버튼 터치 시 포커스되어있는 프로필 이미지 정보 가져옴
+  var focusProfileItem: ProfileCellModel {
+    return profileItem[focusIndex]
+  }
+  /// 현재 포커스 셀 인덱스
+  private var focusIndex: Int = 0
+  private let changeSelectImage = PublishRelay<ProfileSelectCell>()
+  private var profileItem = [
     ProfileCellModel(
       profileType: .defaultImage,
-      curImage: UIImage(systemName: "star")
+      curImage: UIImage(systemName: "star") // TODO: - 기본 이미지 설정
     ),
     ProfileCellModel(
       profileType: .selectImage,
-      curImage: UIImage(systemName: "star")
+      curImage: UIImage(systemName: "star") // TODO: - 기본 이미지 설정
     )
   ]
-  
+  private var disposeBag = DisposeBag()
   // MARK: - UI
   
+  private let profileSize: CGFloat = 170.adjusted
+  private let viewWidth: CGFloat = UIScreen.main.bounds.width
+  private let marginItems: CGFloat = 17.adjusted
+  
   private let rootContainer = UIView()
-  private lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout()).then {
+  lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout()).then {
     $0.backgroundColor = ResourceKitAsset.Colors.white.color
     $0.register(ProfileSelectCell.self)
     $0.showsHorizontalScrollIndicator = false
@@ -51,10 +72,7 @@ final class ProfileSelectView: UIView {
     $0.bounces = false
   }
   
-  init(viewWidth: CGFloat, marginItems: CGFloat) {
-    self.viewWidth = viewWidth
-    profileSize = 170.adjustedWidth//viewWidth / 2.2
-    self.marginItems = marginItems
+  init() {
     super.init(frame: .zero)
     setLayout()
     bind()
@@ -96,7 +114,19 @@ final class ProfileSelectView: UIView {
   private func bind() {
     Observable.just(profileItem)
       .bind(to: collectionView.rx.items(ProfileSelectCell.self)) { index, data, cell in
-        cell.configCell(isActive: index==0, data: data)
+        cell.configInitialCell(isActive: index==0, data: data)
+        cell.changeButton.rx.tap
+          .asDriver()
+          .drive(with: self) { owner, _ in
+            if data.profileType == .defaultImage {
+              cell.changeProfileImage(.defaultImage)
+            } else {
+              owner.showPHPicker.accept(())
+              owner.changeSelectImage.accept((cell))
+            }
+            
+          }
+          .disposed(by: cell.disposeBag)
       }
       .disposed(by: disposeBag)
     
@@ -110,6 +140,19 @@ final class ProfileSelectView: UIView {
           at: .centeredHorizontally,
           animated: true
         )
+      }
+      .disposed(by: disposeBag)
+    
+    /// 유저 앨범 이미지
+    Observable.combineLatest(changeSelectImage, PHPickerManager.shared.selectedPhoto)
+      .map {
+        return ($0, $1)
+      }
+      .observe(on: MainScheduler.instance)
+      .bind(with: self) { owner, result in
+        let (cell, photo) = result
+        cell.changeProfileImage(.selectImage, image: photo)
+        owner.profileItem[1].curImage = photo
       }
       .disposed(by: disposeBag)
   }
@@ -137,6 +180,10 @@ extension ProfileSelectView: UICollectionViewDelegateFlowLayout {
   }
   
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    let scrolledOffset = scrollView.contentOffset.x + scrollView.contentInset.left
+    let cellWidth = profileSize + marginItems
+    let index = Int(round(scrolledOffset / cellWidth))
+    focusIndex = index
     let centerX = scrollView.center.x + scrollView.contentOffset.x
     
     for cell in collectionView.visibleCells {

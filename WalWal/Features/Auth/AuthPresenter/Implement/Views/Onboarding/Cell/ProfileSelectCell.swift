@@ -10,6 +10,7 @@ import UIKit
 import ResourceKit
 import Utility
 
+import RxSwift
 import FlexLayout
 import PinLayout
 import Then
@@ -19,6 +20,9 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   typealias Font = ResourceKitFontFamily.KR
   typealias Image = ResourceKitAsset.Assets
   
+  var disposeBag = DisposeBag()
+  private let defaultImages: [UIColor] = [.brown, .systemYellow, .systemGreen] // TODO: - 이미지로 변경 필요
+  private var defaultIndex: Int = 0
   // MARK: - UI
   
   private let borderView = UIView().then {
@@ -52,6 +56,11 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
     fatalError("init(coder:) has not been implemented")
   }
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    disposeBag = DisposeBag()
+  }
+  
   // MARK: - Layout
   
   override func layoutSubviews() {
@@ -59,6 +68,7 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
     
     [profileImageView, inActiveimageView, borderView, changeButton].forEach {
       $0.layer.cornerRadius = $0.frame.width/2
+      $0.clipsToBounds = true
     }
     changeButtonLayout()
     contentView.flex.layout(mode: .fitContainer)
@@ -97,10 +107,16 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
       
   }
   
-  func configCell(isActive: Bool, data: ProfileCellModel) {
+  /// 셀 초기 설정 메서드
+  ///
+  /// - Parameters:
+  ///   - isActive: 현재 활성화 여부(가운데에 위치하는 셀인지)
+  ///   - data: 셀 데이터
+  func configInitialCell(isActive: Bool, data: ProfileCellModel) {
     profileImageView.image = data.curImage
     if data.profileType == .defaultImage {
       changeButton.setImage(Image.changeDefaultImage.image, for: .normal)
+      profileImageView.backgroundColor = defaultImages[defaultIndex]
     } else {
       changeButton.setImage(Image.selectImage.image, for: .normal)
     }
@@ -131,5 +147,28 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
     if !inActiveimageView.isHidden {
       inActiveimageView.alpha = 1 - alpha
     }
+  }
+  
+  /// 프로필 이미지 변경 위한 메서드
+  ///
+  /// 사용 예시
+  /// - `cell.changeProfileImage(.selectImage, image: profileImage)`
+  ///
+  /// - `cell.changeProfileImage(.defaultImage)`
+  ///
+  /// - Parameters:
+  ///   - type: 프로필 이미지 타입(`.defaultImage` , `.selectImage)
+  ///   - image: 앨범 선택 이미지
+  func changeProfileImage(_ type: ProfileType, image: UIImage? = nil) {
+    switch type {
+    case .defaultImage:
+      // TODO: - 기본 이미지 리스트로 변경
+      defaultIndex = (defaultIndex+1) % defaultImages.count
+      print(defaultIndex, defaultImages.count)
+      profileImageView.backgroundColor = defaultImages[defaultIndex]
+    case .selectImage:
+      profileImageView.image = image
+    }
+    
   }
 }

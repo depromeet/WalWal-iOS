@@ -10,6 +10,7 @@ import UIKit
 import AuthPresenter
 import ResourceKit
 import DesignSystem
+import Utility
 
 import Then
 import PinLayout
@@ -23,6 +24,9 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   OnboardingProfileViewController {
   typealias Color = ResourceKitAsset.Colors
   typealias Font = ResourceKitFontFamily.KR
+  
+  private let profileSize: CGFloat = 170.adjusted
+  private let marginProfileItem: CGFloat = 17.adjusted
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
@@ -45,10 +49,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     $0.font = Font.B1
     $0.textColor = Color.gray600.color
   }
-  private var profileSelectView = ProfileSelectView(
-    viewWidth: UIScreen.main.bounds.width,
-    marginItems: 17.adjusted
-  )
+  private let profileSelectView = ProfileSelectView()
   private let nicknameTextField = NicknameTextField()
   private let nextButton = CompleteButton(isEnable: false)
   
@@ -156,7 +157,12 @@ extension OnboardingProfileViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    
+    nextButton.rx.tap
+      .asDriver()
+      .drive(with: self) { owner, _ in
+        dump(owner.profileSelectView.focusProfileItem)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -174,6 +180,7 @@ extension OnboardingProfileViewControllerImp: View {
         owner.hideKeyboardLayout()
       }
       .disposed(by: disposeBag)
+    
     nicknameTextField.textField.rx.controlEvent(.editingDidEndOnExit)
       .asDriver()
       .drive(with: self) { owner, _ in
@@ -187,6 +194,14 @@ extension OnboardingProfileViewControllerImp: View {
         owner.navigationController?.popViewController(animated: true)
       }
       .disposed(by: disposeBag)
+
+    profileSelectView.showPHPicker
+      .bind(with: self) { owner, _ in
+        PHPickerManager.shared.presentPicker(vc: owner)
+      }
+      .disposed(by: disposeBag)
+    
+    
   }
 }
 
