@@ -81,8 +81,10 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     containerView.flex
       .direction(.column)
       .define { flex in
-        flex.addItem(navigationBar).height(60)
-        flex.addItem(calendar).grow(1)
+        flex.addItem(navigationBar)
+          .height(60)
+        flex.addItem(calendar)
+          .grow(1)
       }
   }
 }
