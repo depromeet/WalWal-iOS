@@ -177,7 +177,7 @@ extension Reactive where Base: WalWalChip {
     }
   }
   
-  public var isSelected: Observable<Bool> {
+  public var isTapped: Observable<Bool> {
     return base.isSelected.asObservable()
   }
 }
