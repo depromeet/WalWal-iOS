@@ -84,7 +84,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   public func setAttribute() {
     view.backgroundColor = .white
     view.addSubview(rootContainer)
-    [progressView, titleView, contentContainer, nextButton].forEach {
+    [navigationBar, progressView, titleView, contentContainer, nextButton].forEach {
       rootContainer.addSubview($0)
     }
     [titleLabel, subTitleLabel].forEach {
@@ -95,6 +95,11 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   public func setLayout() {
     rootContainer.flex
       .justifyContent(.center)
+    
+    navigationBar.flex
+      .width(100%)
+      .height(50)
+    
     progressView.flex
       .marginTop(32)
       .marginHorizontal(20)
@@ -169,6 +174,13 @@ extension OnboardingProfileViewControllerImp: View {
       .asDriver()
       .drive(with: self) { owner, _ in
         owner.nicknameTextField.textField.resignFirstResponder()
+      }
+      .disposed(by: disposeBag)
+    
+    navigationBar.leftItems?.first?.rx.tapped
+      .asDriver()
+      .drive(with: self) { owner, _ in
+        owner.navigationController?.popViewController(animated: true)
       }
       .disposed(by: disposeBag)
   }

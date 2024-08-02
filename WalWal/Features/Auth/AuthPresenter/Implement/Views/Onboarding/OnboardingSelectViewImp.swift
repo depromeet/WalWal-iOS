@@ -106,6 +106,7 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
       .marginHorizontal(20)
     navigationBar.flex
       .width(100%)
+      .height(50)
     
     progressView.flex
       .marginTop(32)
@@ -211,6 +212,12 @@ extension OnboardingSelectViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
+    navigationBar.leftItems?.first?.rx.tapped
+      .asDriver()
+      .drive(with: self) { owner, _ in
+        owner.navigationController?.popViewController(animated: true)
+      }
+      .disposed(by: disposeBag)
   }
   
 }

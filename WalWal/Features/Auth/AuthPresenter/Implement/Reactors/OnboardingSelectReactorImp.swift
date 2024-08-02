@@ -39,7 +39,7 @@ public final class OnboardingSelectReactorImp: OnboardingSelectReactor {
         .just(.selectCompleteButtonEnable(false))
       ])
     case let .nextButtonTapped(flow):
-      coordinator.destination.onNext(flow)
+      coordinator.destination.accept(flow)
       return .never()
     }
   }
