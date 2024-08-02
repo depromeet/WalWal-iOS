@@ -116,21 +116,19 @@ final class WalWalInputBoxDemoViewController: UIViewController {
       })
       .disposed(by: disposeBag)
     
-    /// 화면 탭 하면 EndEditing
-    view.rx.tapped
-      .bind(to: normalInputBox.rx.endEditing)
-      .disposed(by: disposeBag)
+  }
+  
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    super.touchesBegan(touches, with: event)
     
-    view.rx.tapped
-      .bind(to: passwordInputBox.rx.endEditing)
-      .disposed(by: disposeBag)
+    guard let touch = touches.first else { return }
+    let location = touch.location(in: view)
     
-    view.rx.tapped
-      .bind(to: disabledInputBox.rx.endEditing)
-      .disposed(by: disposeBag)
+    let inputBoxes = [normalInputBox, passwordInputBox, disabledInputBox, errorInputBox]
+    let touchedOutside = inputBoxes.allSatisfy { !$0.frame.contains(location) }
     
-    view.rx.tapped
-      .bind(to: errorInputBox.rx.endEditing)
-      .disposed(by: disposeBag)
+    if touchedOutside {
+      view.endEditing(true)
+    }
   }
 }
