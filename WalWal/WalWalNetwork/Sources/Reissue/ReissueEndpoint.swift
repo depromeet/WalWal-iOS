@@ -13,7 +13,7 @@ import Alamofire
 enum ReissueEndpoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
   
-  case reissue(body: ReissueRequestDTO)
+  case reissue(body: RefreshToken)
 }
 
 extension ReissueEndpoint {
