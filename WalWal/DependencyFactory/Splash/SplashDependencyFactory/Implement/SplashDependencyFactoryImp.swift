@@ -11,6 +11,7 @@ import SplashDependencyFactory
 import AuthDependencyFactory
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
+import MyPageDependencyFactory
 
 import WalWalNetwork
 
@@ -33,14 +34,16 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     navigationController: UINavigationController,
     authDependencyFactory: AuthDependencyFactory,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
-    missionDependencyFactory: MissionDependencyFactory
+    missionDependencyFactory: MissionDependencyFactory,
+    myPageDependencyFactory: MyPageDependencyFactory
   ) -> any AppCoordinator {
     return AppCoordinatorImp(
       navigationController: navigationController,
       appDependencyFactory: self,
       authDependencyFactory: authDependencyFactory,
       walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
-      missionDependencyFactory: missionDependencyFactory
+      missionDependencyFactory: missionDependencyFactory,
+      myPageDependencyFactory: myPageDependencyFactory
     )
   }
 }

@@ -9,6 +9,7 @@
 import UIKit
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
+import MyPageDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -23,13 +24,15 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
   public func makeTabBarCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
-    missionDependencyFactory: MissionDependencyFactory
+    missionDependencyFactory: MissionDependencyFactory,
+    myPageDependencyFactory: MyPageDependencyFactory
   ) -> any WalWalTabBarCoordinator {
     return WalWalTabBarCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       walwalTabBarDependencyFactory: self,
-      missionDependencyFactory: missionDependencyFactory
+      missionDependencyFactory: missionDependencyFactory,
+      myPageDependencyFactory: myPageDependencyFactory
     )
   }
   

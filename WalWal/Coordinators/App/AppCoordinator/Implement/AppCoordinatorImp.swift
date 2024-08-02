@@ -14,6 +14,7 @@ import SplashDependencyFactory
 import AuthDependencyFactory
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
+import MyPageDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -35,6 +36,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   public var authDependencyFactory: AuthDependencyFactory
   public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var missionDependencyFactory: MissionDependencyFactory
+  public var myPageDependencyFactory: MyPageDependencyFactory
   
   /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
   /// 그리고 하위 Coordinator를 생성할 때 마다, 하위에 해당하는 인터페이스 모두 전달
@@ -43,13 +45,15 @@ public final class AppCoordinatorImp: AppCoordinator {
     appDependencyFactory: SplashDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
-    missionDependencyFactory: MissionDependencyFactory
+    missionDependencyFactory: MissionDependencyFactory,
+    myPageDependencyFactory: MyPageDependencyFactory
   ) {
     self.navigationController = navigationController
     self.appDependencyFactory = appDependencyFactory
     self.authDependencyFactory = authDependencyFactory
     self.walwalTabBarDependencyFactory = walwalTabBarDependencyFactory
     self.missionDependencyFactory = missionDependencyFactory
+    self.myPageDependencyFactory = myPageDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -145,7 +149,8 @@ extension AppCoordinatorImp {
     let walwalTabBarCoordinator = walwalTabBarDependencyFactory.makeTabBarCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
-      missionDependencyFactory: missionDependencyFactory
+      missionDependencyFactory: missionDependencyFactory,
+      myPageDependencyFactory: myPageDependencyFactory
     )
     childCoordinator = walwalTabBarCoordinator
     walwalTabBarCoordinator.start()
