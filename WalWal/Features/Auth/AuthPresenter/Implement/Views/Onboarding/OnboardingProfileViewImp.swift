@@ -84,6 +84,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   }
   
   public func setAttribute() {
+    navigationController?.navigationBar.isHidden = true
     view.backgroundColor = .white
     view.addSubview(rootContainer)
     [navigationBar, progressView, titleView, contentContainer, nextButton].forEach {
@@ -104,7 +105,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     
     progressView.flex
       .marginTop(24.adjusted)
-      .marginHorizontal(20.adjustedWidth)
+      .marginHorizontal(20)
     
     titleView.flex
       .marginHorizontal(20.adjustedWidth)

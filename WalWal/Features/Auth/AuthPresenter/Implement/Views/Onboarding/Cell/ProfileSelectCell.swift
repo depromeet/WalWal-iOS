@@ -17,6 +17,7 @@ import Then
 final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   typealias Color = ResourceKitAsset.Colors
   typealias Font = ResourceKitFontFamily.KR
+  typealias Image = ResourceKitAsset.Assets
   
   // MARK: - UI
   
@@ -36,7 +37,6 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   }
   private let inActiveimageView = UIImageView().then {
     $0.backgroundColor = Color.gray200.color
-//    $0.tintColor = .gray
   }
   
   // MARK: - Initialize
@@ -67,21 +67,21 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   
   private func setAttribute() {
     contentView.addSubview(inActiveimageView)
-    contentView.addSubview(profileImageView)
-    profileImageView.addSubview(borderView)
-    borderView.addSubview(changeButton)
+    contentView.addSubview(borderView)
+    borderView.addSubview(profileImageView)
+    contentView.addSubview(changeButton)
   }
   
   private func setLayout() {
     inActiveimageView.pin
       .center()
       .size(140.adjusted)
-    profileImageView.pin
-      .center()
-      .size(158.adjusted)
     borderView.pin
       .center()
       .size(170.adjusted)
+    profileImageView.pin
+      .center()
+      .size(158.adjusted)
     changeButton.pin
       .size(40.adjusted)
   }
@@ -94,14 +94,22 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
     changeButton.pin
       .vCenter(xOffset)
       .hCenter(yOffset)
+      
   }
   
   func configCell(isActive: Bool, data: ProfileCellModel) {
     profileImageView.image = data.curImage
+    if data.profileType == .defaultImage {
+      changeButton.setImage(Image.changeDefaultImage.image, for: .normal)
+    } else {
+      changeButton.setImage(Image.selectImage.image, for: .normal)
+    }
     if isActive {
       inActiveimageView.isHidden = true
     } else {
       profileImageView.isHidden = true
+      borderView.isHidden = true
+      changeButton.isHidden = true
     }
   }
   
@@ -111,10 +119,14 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
     let shownImageLevel: CGFloat = 0.99
     
     profileImageView.isHidden = alpha < hiddenImageLevel
+    borderView.isHidden = alpha < hiddenImageLevel
+    changeButton.isHidden = alpha < hiddenImageLevel
     inActiveimageView.isHidden = alpha > shownImageLevel
     
     if !profileImageView.isHidden {
       profileImageView.alpha = alpha
+      borderView.alpha = alpha
+      changeButton.alpha = alpha
     }
     if !inActiveimageView.isHidden {
       inActiveimageView.alpha = 1 - alpha
