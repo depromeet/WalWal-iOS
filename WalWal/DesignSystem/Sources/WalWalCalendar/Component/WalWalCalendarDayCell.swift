@@ -81,8 +81,9 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     setDateLabel(for: date)
     setBackgroundImage(image)
     setColors(for: date, isCurrentMonth: isCurrentMonth, today: today)
-    setFlower(showFlower: showFlower, index: index)
-    setDashBorder(for: date, today: today)
+    setDashBorder(for: date, today: today, isCurrentMonth: isCurrentMonth)
+    setFlower(showFlower: showFlower, index: index, isCurrentMonth: isCurrentMonth)
+    guardUserInteraction(isCurrentMonth: isCurrentMonth)
   }
   
   private func setAttributes() {
@@ -103,17 +104,14 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     containerView
       .flex
       .define { flex in
-        flex
-          .addItem(backgroundImageView)
+        flex.addItem(backgroundImageView)
           .position(.absolute)
           .all(0)
-        flex
-          .addItem()
+        flex.addItem()
           .direction(.column)
           .grow(1)
           .define { flex in
-            flex
-              .addItem(dateLabel)
+            flex.addItem(dateLabel)
               .marginTop(4)
               .width(100%)
           }
@@ -182,8 +180,8 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     containerView.backgroundColor = colorSet.backgroundColor
   }
   
-  private func setFlower(showFlower: Bool, index: Int) {
-    flowerImageView.isHidden = !showFlower
+  private func setFlower(showFlower: Bool, index: Int, isCurrentMonth: Bool) {
+    flowerImageView.isHidden = !showFlower || !isCurrentMonth
     if showFlower {
       currentFlowerPosition = FlowerPosition.getPosition(for: index)
       setNeedsLayout()
@@ -192,12 +190,16 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     }
   }
   
-  private func setDashBorder(for date: Date, today: Date) {
-    dashBorderLayer.isHidden = !Calendar.current.isDate(date, inSameDayAs: today)
+  private func setDashBorder(for date: Date, today: Date, isCurrentMonth: Bool) {
+    dashBorderLayer.isHidden = !Calendar.current.isDate(date, inSameDayAs: today) || !isCurrentMonth
   }
   
   private func updateFlowerPosition(_ position: FlowerPosition) {
     flowerImageView.frame = position.frame(in: bounds)
+  }
+  
+  private func guardUserInteraction(isCurrentMonth: Bool) {
+    isUserInteractionEnabled = isCurrentMonth
   }
 }
 
@@ -245,13 +247,15 @@ extension WalWalCalendarDayCell {
       if date < today {
         return isCurrentMonth
         ? (ResourceKitAsset.Colors.white.color, UIColor(hex: 0xCCCCCC))
-        : (UIColor(hex: 0xCCCCCC), UIColor(hex: 0xA3A3A3))
+        : ((ResourceKitAsset.Colors.gray100.color), (ResourceKitAsset.Colors.gray100.color))
       } else if Calendar.current.isDate(date, inSameDayAs: today) {
-        return (ResourceKitAsset.Colors.walwalOrange.color, ResourceKitAsset.Colors.walwalBeige.color)
+        return isCurrentMonth
+        ? (ResourceKitAsset.Colors.walwalOrange.color, ResourceKitAsset.Colors.walwalBeige.color)
+        : ((ResourceKitAsset.Colors.gray100.color), (ResourceKitAsset.Colors.gray100.color))
       } else {
         return isCurrentMonth
         ? (ResourceKitAsset.Colors.black.color, UIColor(hex: 0xEFEFEF))
-        : (UIColor(hex: 0xCCCCCC), UIColor(hex: 0xF4F4F4))
+        : ((ResourceKitAsset.Colors.gray100.color), (ResourceKitAsset.Colors.gray100.color))
       }
     }
   }

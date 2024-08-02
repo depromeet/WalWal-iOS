@@ -10,6 +10,7 @@ import UIKit
 import DesignSystem
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
+import MyPageDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -36,17 +37,21 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   
   public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var missionDependencyFactory: MissionDependencyFactory
+  public var myPageDependencyFactory: MyPageDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
-    missionDependencyFactory: MissionDependencyFactory
+    missionDependencyFactory: MissionDependencyFactory,
+    myPageDependencyFactory: MyPageDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.walwalTabBarDependencyFactory = walwalTabBarDependencyFactory
     self.missionDependencyFactory = missionDependencyFactory
+    self.myPageDependencyFactory = myPageDependencyFactory
+    
     self.tabBarController = WalWalTabBarViewController()
     
     bindChildToParentAction()
@@ -164,16 +169,15 @@ extension WalWalTabBarCoordinatorImp {
     /// notificationCoordinator.start()
   /// }
   
-  /// fileprivate func startMyPage() {
-    /// print("마이페이지 탭 선택")
-    /// let myPageCoordinator = myPageDependencyFactory.makeMyPageCoordinator(
-    ///   navigationController: navigationController,
-    ///   parentCoordinator: self
-    /// )
-    /// childCoordinator = myPageCoordinator
-    /// myPageCoordinator.start()
-  /// }
-  
+  fileprivate func startMyPage(navigationController: UINavigationController) -> any BaseCoordinator{
+    print("마이페이지 탭 선택")
+    let myPageCoordinator = myPageDependencyFactory.makeMyPageCoordinator(
+      navigationController: navigationController,
+      parentCoordinator: self
+    )
+    myPageCoordinator.start()
+    return myPageCoordinator
+  }
 }
 
 
@@ -215,7 +219,7 @@ private extension WalWalTabBarCoordinatorImp {
     case .startNotification:
       return startMission(navigationController: navigationController)
     case .startMyPage:
-      return startMission(navigationController: navigationController)
+      return startMyPage(navigationController: navigationController)
     }
   }
 }

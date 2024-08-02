@@ -22,22 +22,24 @@ final class WalWalCalendarHeaderView: UIView {
   private let containerView = UIView()
   
   private let monthLabel = UILabel().then {
-    $0.font = ResourceKitFontFamily.KR.H5.B
+    $0.font = ResourceKitFontFamily.KR.H6.B
     $0.textColor = ResourceKitAsset.Colors.black.color
     $0.textAlignment = .center
   }
   
-  private let prevButton = UIImageView().then {
+  private let prevButton = WalWalTouchArea(
+    image: ResourceKitAsset.Assets._16x16PrevButton.image,
+    size: 16
+  ).then {
     $0.contentMode = .scaleAspectFit
-    $0.tintColor = ResourceKitAsset.Colors.gray600.color
-    $0.image = UIImage(systemName: "chevron.left")
     $0.isUserInteractionEnabled = true
   }
   
-  private let nextButton = UIImageView().then {
+  private let nextButton = WalWalTouchArea(
+    image: ResourceKitAsset.Assets._16x16NextButton.image,
+    size: 16
+  ).then {
     $0.contentMode = .scaleAspectFit
-    $0.tintColor = ResourceKitAsset.Colors.gray600.color
-    $0.image = UIImage(systemName: "chevron.right")
     $0.isUserInteractionEnabled = true
   }
   
@@ -83,18 +85,13 @@ final class WalWalCalendarHeaderView: UIView {
       .justifyContent(.center)
       .alignItems(.center)
       .define { flex in
-        flex
-          .addItem(prevButton)
+        flex.addItem(prevButton)
           .size(Const.buttonSize)
-          .marginLeft(Const.horizontalMargin)
-        flex
-          .addItem(monthLabel)
+        flex.addItem(monthLabel)
           .grow(1)
           .shrink(1)
-        flex
-          .addItem(nextButton)
+        flex.addItem(nextButton)
           .size(Const.buttonSize)
-          .marginRight(Const.horizontalMargin)
       }
   }
   
@@ -131,8 +128,7 @@ final class WalWalCalendarHeaderView: UIView {
 
 private extension WalWalCalendarHeaderView {
   enum Const {
-    static let buttonSize: CGFloat = 16
-    static let horizontalMargin: CGFloat = 14
+    static let buttonSize: CGFloat = 44
     static let dateFormatter: DateFormatter = {
       let formatter = DateFormatter()
       formatter.dateFormat = "yyyy년 M월"

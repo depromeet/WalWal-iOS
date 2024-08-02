@@ -21,8 +21,9 @@ enum DependencyFactoryStr: String {
   case splash = "Splash"
   case auth = "Auth"
   case walwalTabBar = "WalWalTabBar"
-  case sample = "Sample"
   case mission = "Mission"
+  case myPage = "MyPage"
+  case sample = "Sample"
 }
 
 enum CoordinatorStr: String {
@@ -34,6 +35,7 @@ enum CoordinatorStr: String {
   case sampleHome = "SampleHome"
   case auth = "Auth"
   case mission = "Mission"
+  case myPage = "MyPage"
 }
 
 enum FeatureStr: String {
@@ -41,6 +43,7 @@ enum FeatureStr: String {
   case auth = "Auth"
   case sample = "Sample"
   case mission = "Mission"
+  case myPage = "MyPage"
 }
 
 protocol WalWalDependency {
@@ -91,6 +94,7 @@ extension TargetDependency {
   public struct DependencyFactory {
     public struct Splash: WalWalDependency { }
     public struct Sample: WalWalDependency { }
+    public struct MyPage: WalWalDependency { }
     public struct Auth: WalWalDependency { }
     public struct WalWalTabBar: WalWalDependency { }
     public struct Mission: WalWalDependency { }
@@ -100,11 +104,12 @@ extension TargetDependency {
     public struct Base: WalWalDependency { }
     public struct App: WalWalDependency { }
     public struct WalWalTabBar: WalWalDependency { }
+    public struct Auth: WalWalDependency { }
+    public struct Mission: WalWalDependency { }
+    public struct MyPage: WalWalDependency { }
     public struct SampleAuth: WalWalDependency { }
     public struct SampleApp: WalWalDependency { }
     public struct SampleHome: WalWalDependency { }
-    public struct Auth: WalWalDependency { }
-    public struct Mission: WalWalDependency { }
   }
   
   public struct Feature {
@@ -127,6 +132,12 @@ extension TargetDependency {
     }
     
     public struct Mission {
+      public struct Data: WalWalDependency {}
+      public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
+    }
+    
+    public struct MyPage: WalWalDependency {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
       public struct Presenter: WalWalDependency {}
@@ -159,6 +170,11 @@ public extension TargetDependency.DependencyFactory.Sample {
 public extension TargetDependency.DependencyFactory.Mission {
   static let Interface = Self.project(dependencyName: .mission, isInterface: true)
   static let Implement = Self.project(dependencyName: .mission, isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.MyPage {
+  static let Interface = Self.project(dependencyName: .myPage, isInterface: true)
+  static let Implement = Self.project(dependencyName: .myPage, isInterface: false)
 }
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
@@ -223,6 +239,20 @@ public extension TargetDependency.Feature.Mission.Data {
   static let Implement = Self.project(name: .mission, layer: .data, isInterface: false)
 }
 
+public extension TargetDependency.Feature.MyPage.Presenter {
+  static let Interface = Self.project(name: .myPage, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .myPage, layer: .presenter, isInterface: false)
+}
+
+public extension TargetDependency.Feature.MyPage.Domain {
+  static let Interface = Self.project(name: .myPage, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .myPage, layer: .domain, isInterface: false)
+}
+
+public extension TargetDependency.Feature.MyPage.Data {
+  static let Interface = Self.project(name: .myPage, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .myPage, layer: .data, isInterface: false)
+}
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
 public extension TargetDependency.Coordinator.SampleApp {
   static let Interface = Self.project(name: .sampleApp, isInterface: true)
@@ -261,6 +291,11 @@ public extension TargetDependency.Coordinator.Base {
 public extension TargetDependency.Coordinator.Mission {
   static let Interface = Self.project(name: .mission, isInterface: true)
   static let Implement = Self.project(name: .mission, isInterface: false)
+}
+
+public extension TargetDependency.Coordinator.MyPage {
+  static let Interface = Self.project(name: .myPage, isInterface: true)
+  static let Implement = Self.project(name: .myPage, isInterface: false)
 }
 
 public extension TargetDependency.ThirdParty {

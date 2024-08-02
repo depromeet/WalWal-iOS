@@ -65,8 +65,7 @@ final class WalWalCalendarWeekdayView: UIView {
       .justifyContent(.spaceAround)
       .define { flex in
         weekdayLabels.forEach { label in
-          flex
-            .addItem(label)
+          flex.addItem(label)
             .grow(1)
         }
       }

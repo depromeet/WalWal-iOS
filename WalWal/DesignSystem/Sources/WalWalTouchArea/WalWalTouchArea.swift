@@ -96,6 +96,8 @@ private extension WalWalTouchArea {
     addSubview(containerView)
     
     containerView.flex
+      .alignItems(.center)
+      .justifyContent(.center)
       .define { flex in
         flex.addItem(imageView)
           .width(size)

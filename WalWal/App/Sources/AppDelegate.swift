@@ -11,6 +11,7 @@ import SplashDependencyFactoryImp
 import AuthDependencyFactoryImp
 import WalWalTabBarDependencyFactoryImp
 import MissionDependencyFactoryImp
+import MyPageDependencyFactoryImp
 import AppCoordinator
 
 @main
@@ -28,6 +29,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     let authDependencyFactory = AuthDependencyFactoryImp()
     let walwalTabBarDependencyFactory = WalWalTabBarDependencyFactoryImp()
     let missionDependencyFactory = MissionDependencyFactoryImp()
+    let myPageDependencyFactory = MyPageDependencyFactoryImp()
     
     let navigationController = UINavigationController()
     
@@ -36,7 +38,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
       navigationController: navigationController,
       authDependencyFactory: authDependencyFactory,
       walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
-      missionDependencyFactory: missionDependencyFactory
+      missionDependencyFactory: missionDependencyFactory,
+      myPageDependencyFactory: myPageDependencyFactory
     )
     window.rootViewController = navigationController
     window.makeKeyAndVisible()

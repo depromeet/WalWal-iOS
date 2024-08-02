@@ -11,6 +11,7 @@ import UIKit
 import AuthDependencyFactory
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
+import MyPageDependencyFactory
 
 import AppCoordinator
 
@@ -19,6 +20,7 @@ public protocol SplashDependencyFactory {
     navigationController: UINavigationController,
     authDependencyFactory: AuthDependencyFactory,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
-    missionDependencyFactory: MissionDependencyFactory
+    missionDependencyFactory: MissionDependencyFactory,
+    myPageDependencyFactory: MyPageDependencyFactory
   ) -> any AppCoordinator
 }
