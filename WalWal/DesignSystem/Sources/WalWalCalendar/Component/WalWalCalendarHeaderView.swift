@@ -85,15 +85,12 @@ final class WalWalCalendarHeaderView: UIView {
       .justifyContent(.center)
       .alignItems(.center)
       .define { flex in
-        flex
-          .addItem(prevButton)
+        flex.addItem(prevButton)
           .size(Const.buttonSize)
-        flex
-          .addItem(monthLabel)
+        flex.addItem(monthLabel)
           .grow(1)
           .shrink(1)
-        flex
-          .addItem(nextButton)
+        flex.addItem(nextButton)
           .size(Const.buttonSize)
       }
   }

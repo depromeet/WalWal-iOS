@@ -65,17 +65,14 @@ public final class WalWalCalendar: UIView {
       .padding(Const.varticalPadding, Const.horizontalPadding, 0, Const.horizontalPadding)
       .padding(Const.horizontalPadding)
       .define { flex in
-        flex
-          .addItem(headerView)
+        flex.addItem(headerView)
           .width(Const.headerWidth)
           .height(Const.headerHeight)
           .alignSelf(.center)
-        flex
-          .addItem(weekdayView)
+        flex.addItem(weekdayView)
           .width(100%)
           .height(Const.weekdayHeight)
-        flex
-          .addItem(monthView)
+        flex.addItem(monthView)
           .width(100%)
           .grow(1)
       }

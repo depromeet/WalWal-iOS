@@ -104,17 +104,14 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     containerView
       .flex
       .define { flex in
-        flex
-          .addItem(backgroundImageView)
+        flex.addItem(backgroundImageView)
           .position(.absolute)
           .all(0)
-        flex
-          .addItem()
+        flex.addItem()
           .direction(.column)
           .grow(1)
           .define { flex in
-            flex
-              .addItem(dateLabel)
+            flex.addItem(dateLabel)
               .marginTop(4)
               .width(100%)
           }

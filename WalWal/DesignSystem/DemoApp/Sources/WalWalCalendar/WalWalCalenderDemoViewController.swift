@@ -70,8 +70,7 @@ final class WalWalCalenderDemoViewController: UIViewController {
     rootView
       .flex
       .define { flex in
-        flex
-          .addItem(calendar)
+        flex.addItem(calendar)
           .grow(1)
       }
   }

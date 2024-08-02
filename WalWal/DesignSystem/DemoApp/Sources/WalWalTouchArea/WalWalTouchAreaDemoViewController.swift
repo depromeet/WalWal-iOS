@@ -88,8 +88,7 @@ final class WalWalTouchAreaDemoViewController: UIViewController {
     rootView.flex
       .justifyContent(.center)
       .define { flex in
-        flex
-          .addItem()
+        flex.addItem()
           .direction(.row)
           .justifyContent(.spaceEvenly)
           .define { flex in
