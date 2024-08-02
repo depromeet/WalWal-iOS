@@ -96,11 +96,10 @@ final class WalWalInputBoxDemoViewController: UIViewController {
     disabledInputBox.stateRelay.accept(.inActive)
     
     /// 에러 상태 입력 박스
-    errorInputBox.rx.text
-      .orEmpty
-      .distinctUntilChanged()
+    errorInputBox.rx.controlEvent(.editingDidEnd)
+      .withLatestFrom(errorInputBox.rx.text.orEmpty)
       .subscribe(with: self, onNext: { owner, text in
-        if text.count < 5 {
+        if text.count < 5 && text.count > 0 {
           owner.errorInputBox.rx.errorMessage.onNext("5글자 이상 입력해주세요")
         } else {
           owner.errorInputBox.rx.errorMessage.onNext(nil)

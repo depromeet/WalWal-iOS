@@ -259,4 +259,9 @@ extension Reactive where Base: WalWalInputBox {
       inputBox.textField.endEditing(true)
     }
   }
+  
+  public func controlEvent(_ events: UIControl.Event) -> ControlEvent<Void> {
+    let source = self.base.textField.rx.controlEvent(events).map { _ in }
+    return ControlEvent(events: source)
+  }
 }
