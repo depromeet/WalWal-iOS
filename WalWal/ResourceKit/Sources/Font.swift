@@ -34,6 +34,7 @@ extension ResourceKitFontFamily {
     /// 14px
     public struct H7 {
       public static let B = UIFont.systemFont(ofSize: 14, weight: .bold)
+      public static let SB = UIFont.systemFont(ofSize: 14, weight: .semibold)
       public static let M = UIFont.systemFont(ofSize: 14, weight: .medium)
     }
     /// 14px regular
