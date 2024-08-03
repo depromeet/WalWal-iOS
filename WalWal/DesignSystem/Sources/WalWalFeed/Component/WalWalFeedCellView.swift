@@ -92,8 +92,10 @@ final class WalWalFeedCellView: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    containerView.pin.all()
-    containerView.flex.layout()
+    containerView.pin
+      .all()
+    containerView.flex
+      .layout()
   }
   
   // MARK: - Methods
@@ -134,16 +136,14 @@ final class WalWalFeedCellView: UIView {
   }
   
   private func setLayouts() {
-    containerView
-      .flex
+    containerView.flex
       .define {
         $0.addItem(profileHeaderView)
           .margin(20, 20)
         $0.addItem(feedContentView)
       }
     
-    profileHeaderView
-      .flex
+    profileHeaderView.flex
       .direction(.row)
       .alignItems(.center)
       .width(100%)
@@ -158,16 +158,14 @@ final class WalWalFeedCellView: UIView {
           .marginLeft(10)
       }
     
-    profileInfoView
-      .flex
+    profileInfoView.flex
       .define {
         $0.addItem(userNickNameLabel)
           .marginBottom(2)
         $0.addItem(missionLabel)
       }
     
-    feedContentView
-      .flex
+    feedContentView.flex
       .direction(.column)
       .justifyContent(.center)
       .define {
@@ -184,8 +182,7 @@ final class WalWalFeedCellView: UIView {
           .marginBottom(16)
       }
     
-    boostLabelView
-      .flex
+    boostLabelView.flex
       .direction(.row)
       .define {
         $0.addItem(boostIconImageView)

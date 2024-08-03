@@ -63,7 +63,8 @@ public final class WalWalFeed: UIView {
   
   private func setLayouts() {
     flex.define { flex in
-      flex.addItem(collectionView).grow(1)
+      flex.addItem(collectionView)
+        .grow(1)
     }
   }
   

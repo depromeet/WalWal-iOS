@@ -39,8 +39,10 @@ final class WalWalFeedCell: UICollectionViewCell {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    feedView.pin.all()
-    feedView.flex.layout()
+    feedView.pin
+      .all()
+    feedView.flex
+      .layout()
   }
   
   override func prepareForReuse() {
@@ -59,8 +61,7 @@ final class WalWalFeedCell: UICollectionViewCell {
   }
   
   private func setLayouts() {
-    contentView
-      .flex
+    contentView.flex
       .grow(1)
       .define {
         $0.addItem(feedView)
