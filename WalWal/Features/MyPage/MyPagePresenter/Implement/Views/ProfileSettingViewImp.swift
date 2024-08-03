@@ -19,14 +19,57 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UIViewController, ProfileSettingViewController {
 
+struct Setting {
+  let title: String
+  let iconImage: UIImage
+  let subTitle: String
+  let rightText: String
+}
+
+
+public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UIViewController, ProfileSettingViewController {
+  
+  private typealias FontKR = ResourceKitFontFamily.KR
+  private typealias FontEN = ResourceKitFontFamily.EN
+  private typealias AssetColor = ResourceKitAsset.Colors
+  private typealias AssetImage = ResourceKitAsset.Assets
+  
+  // MARK: - UI
+  private let containerView = UIView()
+  private let navigationBar = WalWalNavigationBar(
+    leftItems: [.back],
+    title: "설정",
+    rightItems: []
+  )
+  private let settingTableView = UITableView(frame: .zero, style: .plain).then {
+    $0.register(ProfileSettingTableViewCell.self, forCellReuseIdentifier: "ProfileSettingTableViewCell")
+    $0.rowHeight = 56
+  }
+  
   public var disposeBag = DisposeBag()
   public var __reactor: R
+  var versionText: String = "1.0.0"
+  var isRecentVersion: Bool = true
+  private lazy var settings: [Setting] = [
+    .init(title: "로그아웃",
+          iconImage: AssetImage._16x16NextButton.image,
+          subTitle: "",
+          rightText: ""),
+    .init(title: "버전 정보",
+          iconImage: AssetImage._16x16NextButton.image,
+          subTitle: versionText,
+          rightText: isRecentVersion ? "최신 버전입니다." : "업데이트 필요"),
+    .init(title: "회원 탈퇴",
+          iconImage: AssetImage._16x16NextButton.image,
+          subTitle: "",
+          rightText: "")
+  ]
   
+  // MARK: - Initializer
   
   public init(
-      reactor: R
+    reactor: R
   ) {
     self.__reactor = reactor
     super.init(nibName: nil, bundle: nil)
@@ -34,15 +77,54 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
-    super.init(nibName: nil, bundle: nil)
+  }
+  
+  // MARK: - Lifecycle
+  
+  public override func viewDidLoad() {
+    self.reactor = __reactor
+    super.viewDidLoad()
+    setAttribute()
+    setLayout()
+    bind()
+  }
+  
+  public override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    containerView.pin
+      .all(view.pin.safeArea)
+    containerView.flex
+      .layout()
+  }
+  
+  
+  public func setAttribute() {
+    view.backgroundColor = AssetColor.gray100.color
   }
   
   public func setLayout() {
-    <#code#>
+    view.addSubview(containerView)
+    
+    containerView.flex
+      .direction(.column)
+      .define {
+        $0.addItem(navigationBar)
+        $0.addItem(settingTableView)
+          .grow(1)
+      }
   }
   
-  public func setAttribute() {
-    <#code#>
+  private func bind() {
+    Observable.just(settings)
+      .bind(to: self.settingTableView.rx
+        .items(cellIdentifier: "ProfileSettingTableViewCell",
+               cellType: ProfileSettingTableViewCell.self)) { row, element, cell in
+        cell.configureCell(iconImage: element.iconImage,
+                           title: element.title,
+                           subTitle: element.subTitle,
+                           rightText: element.rightText)
+      }
+               .disposed(by: disposeBag)
   }
 }
 
