@@ -335,11 +335,9 @@ public final class WalWalFeed: UIView {
         delay += 0.1
       }
       
-      startY += labelFont.lineHeight
+      startY += labelFont.lineHeight - (labelFont.lineHeight*0.25)
     }
   }
-  
-  
   
   private func addBorderLayer(to view: UIView) {
     let borderLayer = CAShapeLayer()
@@ -348,7 +346,7 @@ public final class WalWalFeed: UIView {
     borderLayer.path = path.cgPath
     borderLayer.fillColor = UIColor.clear.cgColor
     borderLayer.strokeColor = ResourceKitAsset.Colors.walwalOrange.color.cgColor
-    borderLayer.lineWidth = 3
+    borderLayer.lineWidth = 5
     borderLayer.strokeEnd = 0
     view.layer.addSublayer(borderLayer)
     
@@ -359,7 +357,7 @@ public final class WalWalFeed: UIView {
     let animation = CABasicAnimation(keyPath: "strokeEnd")
     animation.fromValue = 0
     animation.toValue = 1
-    animation.duration = 1.0 // 1초 동안 애니메이션 진행
+    animation.duration = 2.5
     animation.isRemovedOnCompletion = false
     animation.fillMode = .forwards
     
@@ -452,7 +450,7 @@ public final class WalWalFeed: UIView {
     heartCell.lifetime = 2.0
     heartCell.lifetimeRange = 0.5
     heartCell.birthRate = 0 // 초기에는 0으로 설정
-    heartCell.velocity = 200 // 속도 증가
+    heartCell.velocity = 800 // 속도 증가
     heartCell.velocityRange = 50
     heartCell.emissionRange = .pi * 2 // 360도 전 방향으로 발사
     heartCell.spin = 3.14
@@ -465,12 +463,17 @@ public final class WalWalFeed: UIView {
   private func startHeartAnimation() {
     guard let detailView = currentDetailView else { return }
     
-    // 이미터 위치를 detailView의 중앙 하단으로 설정
+    // 이미터의 모양을 원으로 설정
+    heartEmitter.emitterShape = .circle
+    
+    // 이미터의 중심 위치를 detailView의 중앙으로 설정
     heartEmitter.emitterPosition = CGPoint(x: detailView.bounds.width / 2, y: detailView.bounds.height / 2)
-    heartEmitter.emitterSize = CGSize(width: detailView.bounds.width, height: 1)
+    
+    // 이미터의 크기를 반지름 60의 원으로 설정
+    heartEmitter.emitterSize = CGSize(width: detailView.bounds.width / 4, height: detailView.bounds.width / 4)
     
     // birthRate를 설정하여 애니메이션 시작
-    heartCell.birthRate = 30
+    heartCell.birthRate = 200
     
     detailView.layer.addSublayer(heartEmitter)
   }

@@ -72,4 +72,20 @@ extension ResourceKitFontFamily.LotteriaChab {
   public static let H1 = Self.regular.font(size: 48)
   public static let H2 = Self.regular.font(size: 34)
   public static let H3 = Self.regular.font(size: 24)
+  
 }
+
+/// 일단 롯데리아 챱챱만,,,,
+extension ResourceKitFontFamily {
+  public static func lineHeight(of font: ResourceKitFontConvertible.Font) -> CGFloat {
+    if font == Self.LotteriaChab.Buster_Cute { return 95 }
+    else if font == Self.LotteriaChab.Buster_Cool { return 50 }
+    else if font == Self.LotteriaChab.Buster_Lovely { return 50 }
+    else if font == Self.LotteriaChab.H1 { return 50 }
+    else if font == Self.LotteriaChab.H2 { return 50 }
+    else if font == Self.LotteriaChab.H3 { return 50 }
+    else { return 0 }
+  }
+}
+
+
