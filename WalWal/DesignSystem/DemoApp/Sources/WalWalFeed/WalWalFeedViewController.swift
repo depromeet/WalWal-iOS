@@ -29,17 +29,23 @@ final class WalWalFeedViewController: UIViewController {
   // MARK: - Properties
   
   private let dummyData: [WalWalFeedModel] = [
-    .init(nickname: "찐찐도그",
+    .init(isFeedCell: false,
+          date: "2024년 8월 10일",
+          nickname: "찐찐도그",
           missionTitle: "산책 미션을 수행했어요!",
           profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
           missionImage: ResourceKitAsset.Sample.feedSample.image,
           boostCount: 324),
-    .init(nickname: "찐찐도그",
+    .init(isFeedCell: true,
+          date: "2024년 8월 10일",
+          nickname: "찐찐도그",
           missionTitle: "산책 미션을 수행했어요!",
           profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
           missionImage: ResourceKitAsset.Sample.feedSample.image,
           boostCount: 324),
-    .init(nickname: "찐찐도그",
+    .init(isFeedCell: false,
+          date: "2024년 8월 10일",
+          nickname: "찐찐도그",
           missionTitle: "산책 미션을 수행했어요!",
           profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
           missionImage: ResourceKitAsset.Sample.feedSample.image,
@@ -69,15 +75,11 @@ final class WalWalFeedViewController: UIViewController {
   
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    rootView.pin.all(view.pin.safeArea)
+    rootView.pin.all()
     rootView.flex.layout()
   }
   
   // MARK: - Methods
-  
-  private func setAttributes() {
-    view.backgroundColor = .white
-  }
   
   private func setLayouts() {
     view.addSubview(rootView)
