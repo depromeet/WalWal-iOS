@@ -128,8 +128,7 @@ extension WalWalNavigationBar {
           .define { flex in
             self.leftItems?.forEach { item in
               flex.addItem(item)
-                .width(100%)
-                .height(100%)
+                .marginRight(16)
             }
           }
           .marginLeft(15)
