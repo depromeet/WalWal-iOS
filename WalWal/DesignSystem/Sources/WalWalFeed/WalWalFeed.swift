@@ -8,28 +8,42 @@
 
 import UIKit
 
+import FlexLayout
+import PinLayout
 import RxSwift
+import RxCocoa
 
 public final class WalWalFeed: UIView {
-  private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: .init()).then {
+  
+  public var feedData = PublishRelay<[WalWalFeedModel]>()
+  
+  private let disposeBag = DisposeBag()
+  
+  private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
     let flowLayout = UICollectionViewFlowLayout()
-    flowLayout.itemSize = .init(width: 342.adjusted, height: 470.adjusted)
-    flowLayout.minimumLineSpacing = 4
+    flowLayout.itemSize = CGSize(width: 342, height: 470)
+    flowLayout.minimumLineSpacing = 14
     
     $0.collectionViewLayout = flowLayout
-    $0.register(WalWalFeedCell.self, forCellWithReuseIdentifier: "WalWalFeed")
+    $0.register(WalWalFeedCell.self, forCellWithReuseIdentifier: "WalWalFeedCell")
   }
   
-  private var feedData: [WalWalFeedModel]
-  
   // MARK: - Initializers
+  public override init(frame: CGRect) {
+    super.init(frame: frame)
+    configureCollectionView()
+    setAttributes()
+    setLayouts()
+    bindFeedData()
+  }
   
   public init(feedData: [WalWalFeedModel]) {
-    self.feedData = feedData
     super.init(frame: .zero)
     configureCollectionView()
     setAttributes()
     setLayouts()
+    bindFeedData()
+    self.feedData.accept(feedData)
   }
   
   required init?(coder: NSCoder) {
@@ -37,7 +51,6 @@ public final class WalWalFeed: UIView {
   }
   
   // MARK: - Lifecycle
-  
   public override func layoutSubviews() {
     super.layoutSubviews()
     flex.layout()
@@ -45,37 +58,24 @@ public final class WalWalFeed: UIView {
   
   // MARK: - Methods
   private func setAttributes() {
-    self.backgroundColor = .white
+    
   }
   
   private func setLayouts() {
-    flex.define {
-      $0.addItem(collectionView)
-        .grow(1)
+    flex.define { flex in
+      flex.addItem(collectionView).grow(1)
     }
   }
   
   private func configureCollectionView() {
-    collectionView.dataSource = self
+    // Configure the collection view layout here if needed
   }
   
-}
-
-extension WalWalFeed: UICollectionViewDataSource {
-  public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return feedData.count
+  private func bindFeedData() {
+    feedData
+      .bind(to: collectionView.rx.items(cellIdentifier: "WalWalFeedCell", cellType: WalWalFeedCell.self)) { index, model, cell in
+        cell.configureCell(feedData: model)
+      }
+      .disposed(by: disposeBag)
   }
-  
-  public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WalWalFeed", for: indexPath) as? WalWalFeedCell
-    else { return UICollectionViewCell() }
-    cell.configureCell(nickName: feedData[indexPath.item].nickname,
-                       missionTitle: feedData[indexPath.item].missionTitle,
-                       profileImage: feedData[indexPath.item].profileImage,
-                       missionImage: feedData[indexPath.item].missionImage,
-                       boostCount: feedData[indexPath.item].boostCount)
-    return cell
-  }
-  
-  
 }
