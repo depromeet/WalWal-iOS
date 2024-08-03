@@ -106,11 +106,10 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
       
     navigationBar.flex
       .width(100%)
-      .height(50)
     
     progressView.flex
       .marginTop(24.adjustedHeight)
-      .marginHorizontal(20.adjustedWidth)
+      .marginHorizontal(20)
     
     contentContainer.flex
       .marginHorizontal(20.adjustedWidth)

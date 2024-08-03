@@ -50,7 +50,11 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     $0.textColor = Color.gray600.color
   }
   private let profileSelectView = ProfileSelectView()
-  private let nicknameTextField = NicknameTextField()
+  private let nicknameTextField = WalWalInputBox(
+    defaultState: .active,
+    placeholder: "닉네임을 입력해주세요",
+    rightIcon: .close
+  )
   private let nextButton = CompleteButton(isEnable: false)
   
   // MARK: - Initialize
@@ -102,7 +106,6 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     
     navigationBar.flex
       .width(100%)
-      .height(50)
     
     progressView.flex
       .marginTop(24.adjusted)
@@ -181,12 +184,6 @@ extension OnboardingProfileViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
-    nicknameTextField.textField.rx.controlEvent(.editingDidEndOnExit)
-      .asDriver()
-      .drive(with: self) { owner, _ in
-        owner.nicknameTextField.textField.resignFirstResponder()
-      }
-      .disposed(by: disposeBag)
     
     navigationBar.leftItems?.first?.rx.tapped
       .asDriver()
