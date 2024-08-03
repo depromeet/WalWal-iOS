@@ -44,6 +44,9 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   )
   private let settingTableView = UITableView(frame: .zero, style: .plain).then {
     $0.register(ProfileSettingTableViewCell.self, forCellReuseIdentifier: "ProfileSettingTableViewCell")
+    $0.backgroundColor = AssetColor.gray100.color
+    $0.isScrollEnabled = false
+    $0.separatorStyle = .none
     $0.rowHeight = 56
   }
   
@@ -99,7 +102,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   
   
   public func setAttribute() {
-    view.backgroundColor = AssetColor.gray100.color
+    view.backgroundColor = AssetColor.white.color
   }
   
   public func setLayout() {
@@ -123,6 +126,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
                            title: element.title,
                            subTitle: element.subTitle,
                            rightText: element.rightText)
+        cell.selectionStyle = .none
       }
                .disposed(by: disposeBag)
   }
