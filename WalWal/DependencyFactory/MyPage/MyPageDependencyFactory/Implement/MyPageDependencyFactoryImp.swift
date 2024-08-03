@@ -53,4 +53,14 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     return ProfileSettingViewControllerImp(reactor: reactor)
   }
   
+  public func makeRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor {
+    return RecordDetailReactorImp(
+      coordinator: coordinator
+    )
+  }
+  
+  public func makeRecordDetailReactorViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController {
+    return RecordDetailViewControllerImp(reactor: reactor)
+  }
+  
 }
