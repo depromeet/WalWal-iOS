@@ -53,7 +53,7 @@ final class WalWalFeedCell: UICollectionViewCell {
   // MARK: - Methods
   
   func configureCell(feedData: WalWalFeedModel) {
-    feedView.ConfigureFeed(feedData: feedData)
+    feedView.configureFeed(feedData: feedData)
   }
   
   private func setAttributes() {

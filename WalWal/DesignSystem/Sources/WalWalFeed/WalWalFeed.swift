@@ -74,7 +74,10 @@ public final class WalWalFeed: UIView {
   
   private func bindFeedData() {
     feedData
-      .bind(to: collectionView.rx.items(cellIdentifier: "WalWalFeedCell", cellType: WalWalFeedCell.self)) { index, model, cell in
+      .bind(to: collectionView.rx.items(
+        cellIdentifier: "WalWalFeedCell",
+        cellType: WalWalFeedCell.self
+      )) { index, model, cell in
         cell.configureCell(feedData: model)
       }
       .disposed(by: disposeBag)

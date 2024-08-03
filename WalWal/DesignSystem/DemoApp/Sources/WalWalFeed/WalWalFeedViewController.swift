@@ -84,8 +84,7 @@ final class WalWalFeedViewController: UIViewController {
   private func setLayouts() {
     view.addSubview(rootView)
     
-    rootView
-      .flex
+    rootView.flex
       .define {
         $0.addItem(feed)
           .grow(1)

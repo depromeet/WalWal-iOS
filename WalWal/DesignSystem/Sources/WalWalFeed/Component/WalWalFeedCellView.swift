@@ -100,7 +100,7 @@ final class WalWalFeedCellView: UIView {
   
   // MARK: - Methods
   
-  func ConfigureFeed(feedData: WalWalFeedModel) {
+  func configureFeed(feedData: WalWalFeedModel) {
     followButton.alpha = feedData.isFeedCell ? 1 : 0
     missionDateChip.alpha = feedData.isFeedCell ? 0 : 1
     missionDateChip.configureText(text: feedData.date)
