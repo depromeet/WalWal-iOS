@@ -91,12 +91,4 @@ final class WalWalFeedViewController: UIViewController {
           .grow(1)
       }
   }
-  
-//  private func bind() {
-//    calendar.selectedDayData
-//      .subscribe(with: self, onNext: { owner, data in
-//        owner.showAlert(with: data)
-//      })
-//      .disposed(by: disposeBag)
-//  }
 }
