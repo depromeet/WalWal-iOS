@@ -44,7 +44,7 @@ final class WalWalProfileCardDemoViewController: UIViewController {
   
   private lazy var profileCard3 = WalWalProfileCardView(
     profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
-    name: "인인인인인인인인인인인인",
+    name: "인인인인인인인인인인인인인인",
     subDescription: "WWWWWWWWWWWWWWWWWWWW",
     chipStyle: .filled,
     chipTitle: "👍🏻",

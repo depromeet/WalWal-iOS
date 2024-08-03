@@ -15,7 +15,7 @@ import FlexLayout
 import PinLayout
 import Then
 
-public class WalWalProfileCardView: UIView {
+public final class WalWalProfileCardView: UIView {
   
   // MARK: - UI
   
@@ -23,12 +23,12 @@ public class WalWalProfileCardView: UIView {
   
   private let profileImageView = UIImageView()
   
-  private let nameLabel = UILabel()
+  private let nameLabel = UILabel().then {
+    $0.numberOfLines = 1
+  }
   
   private let subDescriptionLabel = UILabel().then {
     $0.numberOfLines = 1
-    $0.adjustsFontSizeToFitWidth = true
-    $0.minimumScaleFactor = 0.5
   }
   
   fileprivate let actionChip: WalWalChip
