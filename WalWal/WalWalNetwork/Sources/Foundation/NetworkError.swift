@@ -16,6 +16,7 @@ public enum WalWalNetworkError: Error {
   case networkError(Int)
   case serverError(statusCode: Int)
   case decodingError(Error)
+  case tokenReissueFailed
   case unknown(Error)
 }
 
@@ -30,6 +31,8 @@ extension WalWalNetworkError: LocalizedError {
       return "서버 에러가 발생했습니다. \(code)"
     case .networkError(let code):
       return "네트워크 오류입니다 \(code)"
+    case .tokenReissueFailed:
+      return "토큰 재발급에 실패했습니다. 다시 로그인해주세요."
     case .unknown(let error):
       return "알 수 없는 에러 입니다. : \(error)"
     }
