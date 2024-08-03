@@ -24,24 +24,29 @@ public final class NetworkService: NetworkServiceProtocol {
   
   public func request<E: APIEndpoint>(endpoint: E) -> Single<E.ResponseType?> where E: APIEndpoint {
     requestLogging(endpoint)
-    /// 추후에 interceptor 추가 가능
-    return RxAlamofire.requestJSON(endpoint)
-    .map{ response, anyData -> (HTTPURLResponse, Data) in
-      let convertedData = try JSONSerialization.data(withJSONObject: anyData)
-      return (response, convertedData)
-    }
-    .withUnretained(self)
-    .flatMap { owner, result -> Single<E.ResponseType?> in
-      let (response, data) = result
-      let convertedResult = self.convertToResponse(response, data, E.ResponseType.self, endpoint)
-      switch convertedResult {
-      case .success(let responseData):
-        return .just(responseData)
-      case .failure(let error):
-        return .error(error)
+    return RxAlamofire.requestJSON(endpoint, interceptor: WalwalInterceptor())
+      .do(onError: { error in
+        print("🔴 요청 에러: \(error)")
+      })
+      .map { response, anyData -> (HTTPURLResponse, Data) in
+        let convertedData = try JSONSerialization.data(withJSONObject: anyData)
+        return (response, convertedData)
       }
-    }
-    .asSingle()
+      .withUnretained(self)
+      .flatMap { owner, result -> Single<E.ResponseType?> in
+        let (response, data) = result
+        let convertedResult = owner.convertToResponse(response, data, E.ResponseType.self, endpoint)
+        switch convertedResult {
+        case .success(let responseData):
+          return .just(responseData)
+        case .failure(let error):
+          if let error = error as? WalWalNetworkError {
+            owner.responseError(endpoint, result: error)
+          }
+          return .error(error)
+        }
+      }
+      .asSingle()
   }
   
   // MARK: - Image Upload
@@ -64,7 +69,9 @@ public final class NetworkService: NetworkServiceProtocol {
           case .success(_):
             single(.success(true))
           case .failure(let fail):
-            single(.failure(fail))
+            let error = WalWalNetworkError.networkError(fail.responseCode ?? 0)
+            self.responseError(endpoint, result: error)
+            single(.failure(error))
           }
         }
       return Disposables.create()
@@ -83,7 +90,9 @@ extension NetworkService {
   ) -> Result<T?, Error> {
     let statusCode = response.statusCode
     if !(200...299).contains(statusCode) {
-      return .failure(WalWalNetworkError.serverError(statusCode: statusCode))
+      let error = WalWalNetworkError.serverError(statusCode: statusCode)
+      responseError(endpoint, result: error)
+      return .failure(error)
     }
     
     do {
@@ -97,7 +106,9 @@ extension NetworkService {
         return .failure(error)
       }
     } catch {
-      return .failure(WalWalNetworkError.decodingError(error))
+      let decodingError = WalWalNetworkError.decodingError(error)
+      responseError(endpoint, result: decodingError)
+      return .failure(decodingError)
     }
   }
   
