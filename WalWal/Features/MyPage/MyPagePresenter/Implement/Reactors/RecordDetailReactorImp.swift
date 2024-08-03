@@ -7,12 +7,14 @@
 //
 
 import MyPageDomain
+import MyPagePresenter
 import MyPageCoordinator
 
 import ReactorKit
 import RxSwift
 
 public final class RecordDetailReactorImp: RecordDetailReactor {
+  
   public typealias Action = RecordDetailReactorAction
   public typealias Mutation = RecordDetailReactorMutation
   public typealias State = RecordDetailReactorState
@@ -23,27 +25,14 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
   public init(
     coordinator: any MyPageCoordinator
   ) {
-    self.coordinator = coordinator
+    
     self.initialState = State()
+    self.coordinator = coordinator
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
-    switch action {
-    case .fetchFeed: 
-      break
-//      return feedService.fetchFeed()
-//        .map { feedData in
-//          return Mutation.setFeedData(feedData)
-//        }
-    }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
-    var newState = state
-    switch mutation {
-    case let .setFeedData(feedData):
-      newState.feedData = feedData
-    }
-    return newState
   }
 }

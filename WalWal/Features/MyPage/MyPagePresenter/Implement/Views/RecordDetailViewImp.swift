@@ -9,6 +9,8 @@
 import UIKit
 import DesignSystem
 import ResourceKit
+import MyPagePresenter
+
 
 import Then
 import PinLayout
@@ -37,17 +39,44 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   ).then {
     $0.backgroundColor = ResourceKitAsset.Colors.white.color
   }
-  private let feed = WalWalFeed()
+  private var feed = WalWalFeed()
   
   // MARK: - Property
   
   public var disposeBag = DisposeBag()
   public var recordDetailReactor: R
   
+  private let dummyData: [WalWalFeedModel] = [
+    .init(isFeedCell: false,
+          date: "2024년 8월 10일",
+          nickname: "찐찐도그",
+          missionTitle: "산책 미션을 수행했어요!",
+          profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
+          missionImage: ResourceKitAsset.Sample.feedSample.image,
+          boostCount: 324),
+    .init(isFeedCell: false,
+          date: "2024년 8월 10일",
+          nickname: "찐찐도그",
+          missionTitle: "산책 미션을 수행했어요!",
+          profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
+          missionImage: ResourceKitAsset.Sample.feedSample.image,
+          boostCount: 324),
+    .init(isFeedCell: false,
+          date: "2024년 8월 10일",
+          nickname: "찐찐도그",
+          missionTitle: "산책 미션을 수행했어요!",
+          profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
+          missionImage: ResourceKitAsset.Sample.feedSample.image,
+          boostCount: 324)
+  ]
+
+  
   public init(
     reactor: R
   ) {
     self.recordDetailReactor = reactor
+    self.feed = WalWalFeed(feedData: dummyData)
+
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -102,16 +131,9 @@ extension RecordDetailViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    reactor.action.onNext(.fetchFeed)
   }
   
   public func bindState(reactor: R) {
-    reactor.state
-      .map { $0.feedData }
-      .bind(with: self) { owner, model in
-        
-      }
-      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
