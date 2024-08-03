@@ -79,7 +79,7 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     index: Int
   ) {
     setDateLabel(for: date)
-    setBackgroundImage(image)
+    setBackgroundImage(image, isCurrentMonth: isCurrentMonth)
     setColors(for: date, isCurrentMonth: isCurrentMonth, today: today)
     setDashBorder(for: date, today: today, isCurrentMonth: isCurrentMonth)
     setFlower(showFlower: showFlower, index: index, isCurrentMonth: isCurrentMonth)
@@ -160,8 +160,8 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     dateLabel.text = "\(day)"
   }
   
-  private func setBackgroundImage(_ image: UIImage?) {
-    backgroundImageView.image = image
+  private func setBackgroundImage(_ image: UIImage?, isCurrentMonth: Bool) {
+    backgroundImageView.image = isCurrentMonth ? image : nil
     backgroundImageView.layer.opacity = image != nil ? 0.8 : 1
     backgroundImageView.isHidden = image == nil
   }
