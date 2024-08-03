@@ -255,6 +255,11 @@ public final class WalWalInputBox: UIView {
       isUserInteractionEnabled = false
     }
   }
+  
+  /// textfield text를 직접적으로 변경하기 위한 메서드
+  public func changeText(text: String) {
+    textField.text = text
+  }
 }
 
 // MARK: - Reactive Extension

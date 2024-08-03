@@ -55,7 +55,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     placeholder: "닉네임을 입력해주세요",
     rightIcon: .close
   )
-  private let nextButton = CompleteButton(isEnable: false)
+  private let nextButton = CompleteButton(isEnable: true)
   
   // MARK: - Initialize
   
@@ -161,15 +161,27 @@ extension OnboardingProfileViewControllerImp: View {
   
   public func bindAction(reactor: R) {
     nextButton.rx.tap
-      .asDriver()
-      .drive(with: self) { owner, _ in
-        dump(owner.profileSelectView.focusProfileItem)
+      .withLatestFrom(nicknameTextField.rx.text.orEmpty) {
+        if $1.count > 14 {
+          return self.cutNickname(text: $1)
+        }
+        return $1
       }
+      .map { Reactor.Action.checkNickname($0) }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
-    
+    reactor.pulse(\.$invalidMessage)
+      .asDriver(onErrorJustReturn: "")
+      .filter {
+        !$0.isEmpty
+      }
+      .drive(with: self) { owner, message in
+        owner.nicknameTextField.rx.errorMessage.onNext(message)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
@@ -178,12 +190,12 @@ extension OnboardingProfileViewControllerImp: View {
         owner.updateKeyboardLayout()
       }
       .disposed(by: disposeBag)
+    
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
       .bind(with: self) { owner, noti in
         owner.hideKeyboardLayout()
       }
       .disposed(by: disposeBag)
-    
     
     navigationBar.leftItems?.first?.rx.tapped
       .asDriver()
@@ -191,14 +203,31 @@ extension OnboardingProfileViewControllerImp: View {
         owner.navigationController?.popViewController(animated: true)
       }
       .disposed(by: disposeBag)
-
+    
     profileSelectView.showPHPicker
       .bind(with: self) { owner, _ in
         PHPickerManager.shared.presentPicker(vc: owner)
       }
       .disposed(by: disposeBag)
     
+    nicknameTextField.rx.text.orEmpty
+      .subscribe(with: self, onNext: { owner, text in
+        owner.nextButton.isEnabled = text.count > 1
+        if text.count > 14 {
+          let cutText = owner.cutNickname(text: text)
+          owner.nicknameTextField.changeText(text: cutText)
+        }
+      })
+      .disposed(by: disposeBag)
     
+  }
+  
+  /// 닉네임 14글자로 자르는 메서드
+  private func cutNickname(text: String) -> String {
+    let maxIndex = text.index(text.startIndex, offsetBy: 13)
+    let startIndex = text.startIndex
+    let cutting = String(text[startIndex...maxIndex])
+    return cutting
   }
 }
 
