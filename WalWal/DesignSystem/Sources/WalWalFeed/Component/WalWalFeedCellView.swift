@@ -57,8 +57,6 @@ final class WalWalFeedCellView: UIView {
   
   private let missionImageView = UIImageView()
   
-  private let missionDateChip = WalWalChip(opacity: 0.5, style: .filled)
-  
   private let boostIconImageView = UIImageView().then {
     $0.image = ResourceKitAsset.Sample.fire.image
   }
@@ -72,6 +70,16 @@ final class WalWalFeedCellView: UIView {
     $0.text = "부스터"
     $0.font = Fonts.EN.Caption
     $0.textColor = Colors.gray500.color
+  }
+  
+  private let seperatorCircle = UIView().then {
+    $0.backgroundColor = AssetColor.gray500.color
+    $0.layer.cornerRadius = 1
+  }
+  
+  private let missionDateLabel = UILabel().then {
+    $0.font = FontKR.B2
+    $0.textColor = AssetColor.gray500.color
   }
   
   // MARK: - Initializers
@@ -106,6 +114,24 @@ final class WalWalFeedCellView: UIView {
     profileImageView.image = feedData.profileImage
     missionImageView.image = feedData.missionImage
     boostCountLabel.text = "\(feedData.boostCount)"
+    
+    let missionDate = feedData.date
+    let attributedString = NSMutableAttributedString(string: missionDate)
+    
+    let numberFont = FontEN.Caption // 숫자에 적용할 폰트
+    let defaultFont = FontKR.B2 // 기본 폰트
+    
+    attributedString.addAttribute(.font, value: defaultFont, range: NSRange(location: 0, length: missionDate.count))
+    
+    let numberPattern = "[0-9]"
+    if let regex = try? NSRegularExpression(pattern: numberPattern, options: []) {
+        let matches = regex.matches(in: missionDate, options: [], range: NSRange(location: 0, length: missionDate.count))
+        for match in matches {
+            attributedString.addAttribute(.font, value: numberFont, range: match.range)
+        }
+    }
+    
+    missionDateLabel.attributedText = attributedString
   }
   
   private func setAttributes() {
@@ -123,11 +149,11 @@ final class WalWalFeedCellView: UIView {
       profileInfoView.addSubview($0)
     }
     
-    [missionImageView, missionDateChip, boostLabelView].forEach {
+    [missionImageView, boostLabelView].forEach {
       feedContentView.addSubview($0)
     }
     
-    [boostIconImageView, boostCountLabel, boostLabel].forEach {
+    [boostIconImageView, boostCountLabel, boostLabel, missionDateLabel].forEach {
       boostLabelView.addSubview($0)
     }
   }
@@ -168,10 +194,6 @@ final class WalWalFeedCellView: UIView {
         $0.addItem(missionImageView)
           .size(343)
           .position(.relative)
-        $0.addItem(missionDateChip)
-          .position(.absolute)
-          .top(12)
-          .alignSelf(.center)
         $0.addItem(boostLabelView)
           .marginTop(15)
           .marginLeft(20)
@@ -180,10 +202,16 @@ final class WalWalFeedCellView: UIView {
     
     boostLabelView.flex
       .direction(.row)
+      .alignItems(.center)
       .define {
         $0.addItem(boostIconImageView)
         $0.addItem(boostCountLabel)
         $0.addItem(boostLabel)
+          .marginRight(4)
+        $0.addItem(seperatorCircle)
+          .size(2)
+        $0.addItem(missionDateLabel)
+          .marginLeft(4)
       }
   }
 }
