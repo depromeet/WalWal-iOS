@@ -27,13 +27,13 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   // MARK: - UI
   
   private let containerView = UIView().then {
-    $0.backgroundColor = ResourceKitAsset.Colors.gray100.color
+    $0.backgroundColor = ResourceKitAsset.Colors.gray150.color
   }
   
   private let navigationBar = WalWalNavigationBar(
     leftItems: [.back],
     title: "기록",
-    rightItems: [.setting]
+    rightItems: []
   ).then {
     $0.backgroundColor = ResourceKitAsset.Colors.white.color
   }
@@ -101,7 +101,7 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   
   
   public func setAttribute() {
-    view.backgroundColor = ResourceKitAsset.Colors.white.color
+    view.backgroundColor = AssetColor.white.color
   }
   
   public func setLayout() {

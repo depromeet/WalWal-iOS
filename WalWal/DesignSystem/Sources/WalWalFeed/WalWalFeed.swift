@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ResourceKit
 
 import FlexLayout
 import PinLayout
@@ -25,7 +26,9 @@ public final class WalWalFeed: UIView {
     flowLayout.minimumLineSpacing = 14
     
     $0.collectionViewLayout = flowLayout
+    $0.backgroundColor = .clear
     $0.register(WalWalFeedCell.self, forCellWithReuseIdentifier: "WalWalFeedCell")
+    $0.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 24, right: 0)
   }
   
   // MARK: - Initializers
