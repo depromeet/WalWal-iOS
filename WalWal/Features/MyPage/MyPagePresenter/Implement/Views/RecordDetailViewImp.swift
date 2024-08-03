@@ -37,42 +37,17 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   ).then {
     $0.backgroundColor = ResourceKitAsset.Colors.white.color
   }
-  private let feed: WalWalFeed
+  private let feed = WalWalFeed()
   
   // MARK: - Property
   
   public var disposeBag = DisposeBag()
-  public var __reactor: R
-  
-  private let dummyData: [WalWalFeedModel] = [
-    .init(isFeedCell: false,
-          date: "2024년 8월 10일",
-          nickname: "찐찐도그",
-          missionTitle: "산책 미션을 수행했어요!",
-          profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
-          missionImage: ResourceKitAsset.Sample.feedSample.image,
-          boostCount: 324),
-    .init(isFeedCell: false,
-          date: "2024년 8월 10일",
-          nickname: "찐찐도그",
-          missionTitle: "산책 미션을 수행했어요!",
-          profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
-          missionImage: ResourceKitAsset.Sample.feedSample.image,
-          boostCount: 324),
-    .init(isFeedCell: false,
-          date: "2024년 8월 10일",
-          nickname: "찐찐도그",
-          missionTitle: "산책 미션을 수행했어요!",
-          profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
-          missionImage: ResourceKitAsset.Sample.feedSample.image,
-          boostCount: 324)
-  ]
+  public var recordDetailReactor: R
   
   public init(
     reactor: R
   ) {
-    self.__reactor = reactor
-    self.feed = WalWalFeed(feedData: dummyData)
+    self.recordDetailReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -84,9 +59,9 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    self.reactor = __reactor
     setAttribute()
     setLayout()
+    bind(reactor: recordDetailReactor)
   }
   
   public override func viewDidLayoutSubviews() {
@@ -98,7 +73,6 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   }
   
   // MARK: - Methods
-  
   
   public func setAttribute() {
     view.backgroundColor = AssetColor.white.color
@@ -128,11 +102,16 @@ extension RecordDetailViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    
+    reactor.action.onNext(.fetchFeed)
   }
   
   public func bindState(reactor: R) {
-    
+    reactor.state
+      .map { $0.feedData }
+      .bind(with: self) { owner, model in
+        
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

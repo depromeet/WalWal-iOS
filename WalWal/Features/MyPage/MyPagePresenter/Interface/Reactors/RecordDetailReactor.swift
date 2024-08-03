@@ -13,18 +13,17 @@ import ReactorKit
 import RxSwift
 
 public enum RecordDetailReactorAction {
-  
+  case fetchFeed
 }
 
 public enum RecordDetailReactorMutation {
-  
+  case setFeedData([RecordModel])
 }
 
 public struct RecordDetailReactorState {
-  public init() {
-  
-  }
+  var feedData: [RecordModel] = []
 }
+
 
 public protocol RecordDetailReactor: Reactor where Action == RecordDetailReactorAction,
                                                    Mutation == RecordDetailReactorMutation,

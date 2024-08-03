@@ -7,7 +7,6 @@
 //
 
 import MyPageDomain
-import MyPagePresenter
 import MyPageCoordinator
 
 import ReactorKit
@@ -29,10 +28,22 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
-    
+    switch action {
+    case .fetchFeed: 
+      break
+//      return feedService.fetchFeed()
+//        .map { feedData in
+//          return Mutation.setFeedData(feedData)
+//        }
+    }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
-    
+    var newState = state
+    switch mutation {
+    case let .setFeedData(feedData):
+      newState.feedData = feedData
+    }
+    return newState
   }
 }
