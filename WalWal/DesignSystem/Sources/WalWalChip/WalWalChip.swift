@@ -174,7 +174,6 @@ public class WalWalChip: UIView {
       backgroundColor = ResourceKitAsset.Colors.gray900.color.withAlphaComponent(0.5)
       label.textColor = ResourceKitAsset.Colors.white.color
       layer.borderWidth = 0
-    }
     case .outlined:
       containerView.backgroundColor = Colors.white.color.withAlphaComponent(opacity)
       label.textColor = Colors.gray900.color
