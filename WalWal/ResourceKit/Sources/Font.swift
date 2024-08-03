@@ -66,6 +66,9 @@ extension ResourceKitFontFamily {
 extension ResourceKitFontFamily.LotteriaChab {
   /// 사용 방법
   /// $0.font = ResourceKitFontFamily.LotteriaChab.H1
+  public static let Buster_Cute = Self.regular.font(size: 80)
+  public static let Buster_Cool = Self.regular.font(size: 90)
+  public static let Buster_Lovely = Self.regular.font(size: 64)
   public static let H1 = Self.regular.font(size: 48)
   public static let H2 = Self.regular.font(size: 34)
   public static let H3 = Self.regular.font(size: 24)

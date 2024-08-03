@@ -16,6 +16,44 @@ import RxCocoa
 
 public final class WalWalFeed: UIView {
   
+  public enum WalWalBurstString {
+    case cute
+    case cool
+    case lovely
+    
+    var BurstFond: UIFont {
+      switch self {
+      case .cute: return ResourceKitFontFamily.LotteriaChab.Buster_Cute
+      case .cool: return ResourceKitFontFamily.LotteriaChab.Buster_Cool
+      case .lovely: return ResourceKitFontFamily.LotteriaChab.Buster_Lovely
+      }
+    }
+    
+    var normalText: String {
+      switch self {
+      case .cute: return "귀여워!"
+      case .cool: return "멋져!"
+      case .lovely: return "사랑스러워!"
+      }
+    }
+    
+    var goodText: String {
+      switch self {
+      case .cute: return "너무 귀여워!"
+      case .cool: return "너무 멋져!"
+      case .lovely: return "너무 사랑스러워!"
+      }
+    }
+    
+    var greatText: String {
+      switch self {
+      case .cute: return "너무너무 귀여워!"
+      case .cool: return "너무너무 멋져!"
+      case .lovely: return "너무너무 사랑스러워!"
+      }
+    }
+  }
+  
   public var feedData = BehaviorRelay<[WalWalFeedModel]>(value: [])
   
   private var longPressGesture: UILongPressGestureRecognizer!
@@ -23,9 +61,15 @@ public final class WalWalFeed: UIView {
   private var currentBackgroundView: UIView?
   private var borderLayer: CAShapeLayer?
   private var borderAnimation: CABasicAnimation?
+  private var centerLabels: [UILabel] = []
+  private var centerShadowLabels: [UILabel] = []
+  private var countLabel: UILabel?
+  private var countTimer: Timer?
+  private var count: Int = 0
   private let heartEmitter = CAEmitterLayer()
   private let heartCell = CAEmitterCell()
   private var isBorderFilled: Bool = false
+  private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
   
   private let disposeBag = DisposeBag()
   
@@ -106,9 +150,9 @@ public final class WalWalFeed: UIView {
   @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
     switch gesture.state {
     case .began:
+      feedbackGenerator.prepare()
       presentDetailView(for: gesture)
       startBorderAnimation()
-      startHeartAnimation()
     case .ended, .cancelled:
       dismissDetailView()
       stopBorderAnimation()
@@ -139,6 +183,32 @@ public final class WalWalFeed: UIView {
     window.addSubview(backgroundView)
     window.addSubview(detailView)
     
+    let selectCase = [WalWalBurstString.cute, WalWalBurstString.cool, WalWalBurstString.lovely].randomElement() ?? .cute
+    // 중앙에 각 글자를 개별적으로 애니메이션 처리
+    updateCenterLabels(with: selectCase.normalText, in: detailView, window: window, burstMode: selectCase)
+    
+    // 카운트 라벨 추가
+    count = 0
+    let countLabel = UILabel()
+    let attrString = NSAttributedString(
+      string: "\(count)",
+      attributes: [
+        NSAttributedString.Key.strokeColor: ResourceKitAsset.Colors.black.color,
+        NSAttributedString.Key.foregroundColor: ResourceKitAsset.Colors.white.color,
+        NSAttributedString.Key.strokeWidth: -7.0,
+        NSAttributedString.Key.font: ResourceKitFontFamily.LotteriaChab.H1
+      ]
+    )
+    countLabel.attributedText = attrString
+    countLabel.textAlignment = .center
+    countLabel.sizeToFit()
+    countLabel.center = CGPoint(x: detailView.center.x, y: detailView.center.y - 40)
+    countLabel.alpha = 0 // Initially hidden
+    window.addSubview(countLabel)
+    self.countLabel = countLabel
+    
+    startCountTimer(in: detailView, window: window, burstCase: selectCase)
+    
     detailView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
     
     UIView.animate(withDuration: 0.3) {
@@ -149,12 +219,127 @@ public final class WalWalFeed: UIView {
     currentDetailView = detailView
     currentBackgroundView = backgroundView
     
-    currentDetailView = detailView
-    currentBackgroundView = backgroundView
-    
     addBorderLayer(to: detailView)
-    startHeartAnimation()
   }
+  
+  private func updateCenterLabels(with text: String, in detailView: UIView, window: UIWindow, burstMode: WalWalBurstString) {
+    // Remove existing labels
+    for label in centerLabels {
+      label.removeFromSuperview()
+    }
+    for label in centerShadowLabels {
+      label.removeFromSuperview()
+    }
+    centerLabels.removeAll()
+    centerShadowLabels.removeAll()
+    
+    // Create new labels
+    let words = text.split(separator: " ")
+    var lines: [[String]] = [[]]
+    
+    let labelFont = burstMode.BurstFond
+    let windowWidth = window.bounds.width
+    var currentLineWidth: CGFloat = 0
+    
+    for word in words {
+      let testLabel = UILabel()
+      testLabel.attributedText = NSAttributedString(
+        string: String(word),
+        attributes: [
+          NSAttributedString.Key.font: labelFont
+        ]
+      )
+      testLabel.sizeToFit()
+      let wordWidth = testLabel.bounds.width
+      
+      if currentLineWidth + wordWidth > windowWidth {
+        lines.append([String(word)])
+        currentLineWidth = wordWidth
+      } else {
+        lines[lines.count - 1].append(String(word))
+        currentLineWidth += wordWidth // Add space for next word
+      }
+    }
+    
+    let countLabelY = detailView.center.y - 40
+    var startY = countLabelY + 60 // Adjust this value to ensure proper spacing
+    
+    for line in lines {
+      let lineText = line.joined(separator: " ")
+      let characters = Array(lineText)
+      var delay: TimeInterval = 0
+      var totalWidth: CGFloat = 0
+      
+      for char in characters {
+        let testLabel = UILabel()
+        testLabel.attributedText = NSAttributedString(
+          string: String(char),
+          attributes: [
+            NSAttributedString.Key.font: labelFont
+          ]
+        )
+        testLabel.sizeToFit()
+        totalWidth += testLabel.bounds.width
+      }
+      
+      var startX = detailView.center.x - totalWidth / 2
+      
+      for char in characters {
+        let shadowLabel = UILabel()
+        let shadowAttrString = NSAttributedString(
+          string: String(char),
+          attributes: [
+            NSAttributedString.Key.strokeColor: UIColor.black,
+            NSAttributedString.Key.foregroundColor: UIColor.black,
+            NSAttributedString.Key.strokeWidth: -4,
+            NSAttributedString.Key.font: labelFont
+          ]
+        )
+        shadowLabel.attributedText = shadowAttrString
+        shadowLabel.textAlignment = .center
+        shadowLabel.sizeToFit()
+        shadowLabel.alpha = 0
+        
+        let label = UILabel()
+        let attrString = NSAttributedString(
+          string: String(char),
+          attributes: [
+            NSAttributedString.Key.strokeColor: ResourceKitAsset.Colors.black.color,
+            NSAttributedString.Key.font: labelFont,
+            NSAttributedString.Key.foregroundColor: ResourceKitAsset.Colors.white.color,
+            NSAttributedString.Key.strokeWidth: -4,
+          ]
+        )
+        label.attributedText = attrString
+        label.textAlignment = .center
+        label.sizeToFit()
+        label.alpha = 0
+        
+        centerLabels.append(label)
+        centerShadowLabels.append(shadowLabel)
+        
+        let initialY = startY + window.bounds.height / 2
+        shadowLabel.center = CGPoint(x: startX + shadowLabel.bounds.width / 2 + 4, y: initialY + 4)
+        label.center = CGPoint(x: startX + label.bounds.width / 2, y: initialY)
+        startX += label.bounds.width
+        window.addSubview(shadowLabel)
+        window.addSubview(label)
+        
+        UIView.animate(withDuration: 0.5, delay: delay, options: [], animations: {
+          shadowLabel.alpha = 1
+          shadowLabel.center.y = startY + 4
+          label.alpha = 1
+          label.center.y = startY
+        }, completion: nil)
+        
+        delay += 0.1
+      }
+      
+      startY += labelFont.lineHeight
+    }
+  }
+  
+  
   
   private func addBorderLayer(to view: UIView) {
     let borderLayer = CAShapeLayer()
@@ -192,42 +377,89 @@ public final class WalWalFeed: UIView {
     isBorderFilled = false
   }
   
+  private func startCountTimer(in detailView: UIView, window: UIWindow, burstCase: WalWalBurstString) {
+    countTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] timer in
+      guard let self = self else { return }
+      self.count += 1
+      let attrString = NSAttributedString(
+        string: "\(self.count)",
+        attributes: [
+          NSAttributedString.Key.strokeColor: ResourceKitAsset.Colors.black.color,
+          NSAttributedString.Key.foregroundColor: ResourceKitAsset.Colors.white.color,
+          NSAttributedString.Key.strokeWidth: -6.73,
+          NSAttributedString.Key.font: ResourceKitFontFamily.LotteriaChab.H1
+        ]
+      )
+      self.countLabel?.attributedText = attrString
+      self.countLabel?.sizeToFit()
+      self.countLabel?.center = CGPoint(x: detailView.center.x, y: detailView.center.y - 50)
+      
+      if self.count >= 10 {
+        if self.countLabel?.alpha == 0 {
+          UIView.animate(withDuration: 1.0) {
+            self.countLabel?.alpha = 1
+          }
+          self.startHeartAnimation()
+        }
+      }
+      self.feedbackGenerator.impactOccurred()
+      if self.count == 50 {
+        self.updateCenterLabels(with: burstCase.goodText, in: detailView, window: window, burstMode: burstCase)
+      } else if self.count == 100 {
+        self.updateCenterLabels(with: burstCase.greatText, in: detailView, window: window, burstMode: burstCase)
+      }
+    }
+  }
+  
+  private func stopCountTimer() {
+    countTimer?.invalidate()
+    countTimer = nil
+  }
+  
   private func dismissDetailView() {
     guard let detailView = currentDetailView,
           let backgroundView = currentBackgroundView else { return }
     
-    UIView.animate(withDuration: 0.3, animations: {
-      backgroundView.alpha = 0
-      detailView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-    }) { _ in
-      backgroundView.removeFromSuperview()
-      detailView.removeFromSuperview()
-      self.currentDetailView = nil
-      self.currentBackgroundView = nil
-      self.stopBorderAnimation()
+    backgroundView.removeFromSuperview()
+    detailView.removeFromSuperview()
+    for label in centerLabels {
+      label.removeFromSuperview()
     }
+    for label in centerShadowLabels {
+      label.removeFromSuperview()
+    }
+    centerLabels.removeAll()
+    centerShadowLabels.removeAll()
+    countLabel?.removeFromSuperview()
+    countLabel = nil
+    stopCountTimer()
+    
+    self.currentDetailView = nil
+    self.currentBackgroundView = nil
+    self.stopBorderAnimation()
+    self.stopHeartAnimation()
   }
   
   private func setupHeartEmitter() {
-      heartEmitter.emitterShape = .point
-      heartEmitter.emitterMode = .outline
-      heartEmitter.renderMode = .additive
-      
-      heartCell.contents = ResourceKitAsset.Sample.walwalEmitterDog.image.cgImage
-      heartCell.scale = 0.2
-      heartCell.scaleRange = 0.1
-      heartCell.scaleSpeed = 0.2 // 시간이 지날수록 크기가 작아짐
-      heartCell.lifetime = 2.0
-      heartCell.lifetimeRange = 0.5
-      heartCell.birthRate = 0 // 초기에는 0으로 설정
-      heartCell.velocity = 200 // 속도 증가
-      heartCell.velocityRange = 50
-      heartCell.emissionRange = .pi * 2 // 360도 전 방향으로 발사
-      heartCell.spin = 3.14
-      heartCell.spinRange = 6.28
-      heartCell.alphaSpeed = -0.5 // 시간이 지날수록 투명해짐
-      
-      heartEmitter.emitterCells = [heartCell]
+    heartEmitter.emitterShape = .point
+    heartEmitter.emitterMode = .outline
+    heartEmitter.renderMode = .additive
+    
+    heartCell.contents = ResourceKitAsset.Sample.walwalEmitterDog.image.cgImage
+    heartCell.scale = 0.2
+    heartCell.scaleRange = 0.1
+    heartCell.scaleSpeed = 0.2 // 시간이 지날수록 크기가 작아짐
+    heartCell.lifetime = 2.0
+    heartCell.lifetimeRange = 0.5
+    heartCell.birthRate = 0 // 초기에는 0으로 설정
+    heartCell.velocity = 200 // 속도 증가
+    heartCell.velocityRange = 50
+    heartCell.emissionRange = .pi * 2 // 360도 전 방향으로 발사
+    heartCell.spin = 3.14
+    heartCell.spinRange = 6.28
+    heartCell.alphaSpeed = -0.5 // 시간이 지날수록 투명해짐
+    
+    heartEmitter.emitterCells = [heartCell]
   }
   
   private func startHeartAnimation() {
