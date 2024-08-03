@@ -74,7 +74,7 @@ public final class WalWalCalendar: UIView {
           .height(Const.weekdayHeight)
         flex.addItem(monthView)
           .width(100%)
-          .grow(1)
+          .height(372)
       }
   }
   

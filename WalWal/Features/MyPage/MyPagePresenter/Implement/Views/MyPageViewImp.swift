@@ -33,7 +33,21 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     rightItems: [.setting]
   ).then { $0.backgroundColor = ResourceKitAsset.Colors.white.color }
   
+  private let seperator = UIView().then {
+    $0.backgroundColor = ResourceKitAsset.Colors.gray150.color
+  }
+  
   private let calendar = WalWalCalendar(initialModels: [])
+  
+  private let profileCardView = WalWalProfileCardView(
+    profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
+    name: "조용인",
+    subDescription: "안녕하세요 반가워요 👍🏻",
+    chipStyle: .tonal,
+    chipTitle: "눌러봐",
+    selectedChipStyle: .filled,
+    selectedChipTitle: "🔥"
+  )
   
   public var disposeBag = DisposeBag()
   public var __reactor: R
@@ -72,7 +86,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   
   
   public func setAttribute() {
-    
+    view.backgroundColor = ResourceKitAsset.Colors.white.color
   }
   
   public func setLayout() {
@@ -82,9 +96,12 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
       .direction(.column)
       .define { flex in
         flex.addItem(navigationBar)
-          .height(60)
+        flex.addItem(seperator)
+          .height(1)
+          .width(100%)
         flex.addItem(calendar)
           .grow(1)
+        flex.addItem(profileCardView)
       }
   }
 }
