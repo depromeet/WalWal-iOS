@@ -23,6 +23,7 @@ public class WalWalChip: UIView {
   
   public enum ChipStyle {
     case none /// 아무것도 없는 상태
+    case date
     case filled
     case outlined
     case tonal
@@ -169,6 +170,11 @@ public class WalWalChip: UIView {
       containerView.backgroundColor = Colors.gray900.color.withAlphaComponent(opacity)
       label.textColor = Colors.white.color
       layer.borderWidth = 0
+    case .date:
+      backgroundColor = ResourceKitAsset.Colors.gray900.color.withAlphaComponent(0.5)
+      label.textColor = ResourceKitAsset.Colors.white.color
+      layer.borderWidth = 0
+    }
     case .outlined:
       containerView.backgroundColor = Colors.white.color.withAlphaComponent(opacity)
       label.textColor = Colors.gray900.color
@@ -180,7 +186,6 @@ public class WalWalChip: UIView {
       layer.borderWidth = 0
     case .none:
       break
-    }
   }
 }
 
