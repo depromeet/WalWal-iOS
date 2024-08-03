@@ -18,6 +18,7 @@ import Then
 public class WalWalChip: UIView {
   
   public enum ChipStyle {
+    case none /// 아무것도 없는 상태
     case filled
     case outlined
     case tonal
@@ -35,31 +36,47 @@ public class WalWalChip: UIView {
   
   // MARK: - Properties
   
+  private let text: String?
+  private let selectedText: String?
+  private let style: ChipStyle
+  private let selectedStyle: ChipStyle
   private let cornerRadius: CGFloat
   private let size: CGSize
   private let font: UIFont
+  
+  private let disposeBag = DisposeBag()
+  fileprivate let isSelected = BehaviorRelay<Bool>(value: false)
   
   // MARK: - Initializers
   
   /// WalWalChip을 초기화합니다.
   /// - Parameters:
   ///   - text: 초기 Chip의 타이틀 입니다
+  ///   - selectedText: 선택되었을 때의 Chip의 타이틀 입니다.
   ///   - size: Chip의 사이즈 입니다. (default: 64x28)
   ///   - style: Chip의 스타일 입니다.
+  ///   - selectedStyle: 선택되었을 때의 Chip의 스타일 입니다. (default: .none)
   ///   - fond: Chip의 폰트 입니다. (default: ResourceKitFontFamily.KR.B2)
   public init(
     text: String? = nil,
-    size: CGSize = CGSize(width: 64, height: 28),
+    selectedText: String? = nil,
     style: ChipStyle,
+    selectedStyle: ChipStyle = .none,
+    size: CGSize = CGSize(width: 64, height: 28),
     font: UIFont = ResourceKitFontFamily.KR.B2
   ) {
     self.cornerRadius = size.height / 2
     self.size = size
     self.font = font
+    self.text = text
+    self.selectedText = selectedText == nil ? text : selectedText
+    self.style = style
+    self.selectedStyle = selectedStyle == .none ? style : selectedStyle
     super.init(frame: .zero)
     configureLayout()
     configureStyle(style: style)
     configureText(text: text)
+    bind()
   }
   
   required init?(coder: NSCoder) {
@@ -79,6 +96,26 @@ public class WalWalChip: UIView {
   }
   
   // MARK: - Methods
+  
+  private func bind() {
+    self.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        let newValue = !owner.isSelected.value
+        owner.isSelected.accept(newValue)
+      })
+      .disposed(by: disposeBag)
+    
+    isSelected
+      .subscribe(with: self, onNext: { owner, isSelected in
+        owner.setSelected(isSelected)
+      })
+      .disposed(by: disposeBag)
+  }
+  
+  private func setSelected(_ isSelected: Bool) {
+    configureStyle(style: isSelected ? selectedStyle : style)
+    configureText(text: isSelected ? selectedText : text)
+  }
   
   private func configureAttributes() {
     layer.cornerRadius = cornerRadius
@@ -114,6 +151,8 @@ public class WalWalChip: UIView {
       backgroundColor = ResourceKitAsset.Colors.gray150.color
       label.textColor = ResourceKitAsset.Colors.gray600.color
       layer.borderWidth = 0
+    case .none:
+      break
     }
   }
   
@@ -136,5 +175,9 @@ extension Reactive where Base: WalWalChip {
     return Binder(base) { chip, style in
       chip.configureStyle(style: style)
     }
+  }
+  
+  public var isTapped: Observable<Bool> {
+    return base.isSelected.asObservable()
   }
 }

@@ -32,8 +32,10 @@ final class WalWalChipDemoViewController: UIViewController {
   
   private let interactiveChip = WalWalChip(
     text: "뾰로롱",
-    size: CGSize(width: 120, height: 72),
+    selectedText: "선택됨",
     style: .filled,
+    selectedStyle: .tonal,
+    size: CGSize(width: 120, height: 72),
     font: ResourceKitFontFamily.KR.H2
   )
   
@@ -124,18 +126,6 @@ final class WalWalChipDemoViewController: UIViewController {
       .scan(0) { (count, _) in count + 1 }
       .map { "Tapped \($0) times" }
       .bind(to: statusLabel.rx.text)
-      .disposed(by: disposeBag)
-    
-    /// 버튼을 눌렀을 때, state를 바꾸는 예시 코드
-    interactiveChip.rx.tapped
-      .scan(WalWalChip.ChipStyle.filled) { (currentStyle, _) in
-        switch currentStyle {
-        case .filled: return .outlined
-        case .outlined: return .tonal
-        case .tonal: return .filled
-        }
-      }
-      .bind(to: interactiveChip.rx.style)
       .disposed(by: disposeBag)
   }
 }
