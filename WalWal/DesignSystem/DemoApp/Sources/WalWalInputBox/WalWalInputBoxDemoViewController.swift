@@ -60,8 +60,10 @@ final class WalWalInputBoxDemoViewController: UIViewController {
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     
-    rootFlexContainer.pin.all(view.pin.safeArea)
-    rootFlexContainer.flex.layout()
+    rootFlexContainer.pin
+      .all(view.pin.safeArea)
+    rootFlexContainer.flex
+      .layout()
   }
   
   private func setupLayout() {
