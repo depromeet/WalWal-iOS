@@ -49,13 +49,13 @@ final class WalWalFeedCellView: UIView {
     $0.textColor = AssetColor.gray700.color
   }
   
-  private let followButton = UIButton().then {
-    $0.setTitle("팔로우", for: .normal)
-    $0.titleLabel?.font = FontKR.B2
-    $0.setTitleColor(.white, for: .normal)
-    $0.backgroundColor = AssetColor.gray800.color
-    $0.layer.cornerRadius = 14
-  }
+  private let followButton = WalWalChip(
+    text: "팔로우",
+    style: .filled,
+    selectedStyle: .outlined,
+    size: CGSize(width: 64, height: 28),
+    font: FontKR.B2
+  )
   
   private let missionImageView = UIImageView()
   
