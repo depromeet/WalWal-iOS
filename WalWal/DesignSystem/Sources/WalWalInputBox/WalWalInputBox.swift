@@ -191,8 +191,12 @@ public final class WalWalInputBox: UIView {
       .distinctUntilChanged()
       .share(replay: 1)
     
+    textField.rx.text.orEmpty
+      .map{ $0.isEmpty}
+      .bind(to: rightButton.rx.isHidden)
+      .disposed(by: disposeBag)
+    
     Observable.combineLatest(isTextFieldActive, isTextFieldEmpty)
-      .debug()
       .map { (isActive, isEmpty) in
         return isActive || !isEmpty
       }
