@@ -28,7 +28,7 @@ extension UIColor {
   ///  ``` swift
   ///  UIColor(hexCode:"FFDD77")
   ///  ```
-  convenience init(hexCode: String, alpha: CGFloat = 1.0) {
+  public convenience init(hexCode: String, alpha: CGFloat = 1.0) {
     var hexFormatted: String = hexCode.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
     
     if hexFormatted.hasPrefix("#") {
