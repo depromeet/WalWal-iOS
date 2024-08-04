@@ -152,7 +152,6 @@ public final class WalWalFeed: UIView {
     case .began:
       feedbackGenerator.prepare()
       presentDetailView(for: gesture)
-      startBorderAnimation()
     case .ended, .cancelled:
       dismissDetailView()
       stopBorderAnimation()
@@ -220,6 +219,7 @@ public final class WalWalFeed: UIView {
     currentBackgroundView = backgroundView
     
     addBorderLayer(to: detailView)
+    startBorderAnimation(borderColor: ResourceKitAsset.Colors.yellow.color)
   }
   
   private func updateCenterLabels(with text: String, in detailView: UIView, window: UIWindow, burstMode: WalWalBurstString) {
@@ -345,7 +345,7 @@ public final class WalWalFeed: UIView {
     let path = UIBezierPath(roundedRect: view.bounds, cornerRadius: cornerRadius)
     borderLayer.path = path.cgPath
     borderLayer.fillColor = UIColor.clear.cgColor
-    borderLayer.strokeColor = ResourceKitAsset.Colors.walwalOrange.color.cgColor
+//    borderLayer.strokeColor = ResourceKitAsset.Colors.walwalOrange.color.cgColor
     borderLayer.lineWidth = 5
     borderLayer.strokeEnd = 0
     view.layer.addSublayer(borderLayer)
@@ -353,7 +353,7 @@ public final class WalWalFeed: UIView {
     self.borderLayer = borderLayer
   }
   
-  private func startBorderAnimation() {
+  private func startBorderAnimation(borderColor: UIColor) {
     let animation = CABasicAnimation(keyPath: "strokeEnd")
     animation.fromValue = 0
     animation.toValue = 1
@@ -363,6 +363,7 @@ public final class WalWalFeed: UIView {
     
     animation.delegate = self
     
+    borderLayer?.strokeColor = borderColor.cgColor
     borderLayer?.add(animation, forKey: "borderAnimation")
     borderAnimation = animation
   }
@@ -403,8 +404,10 @@ public final class WalWalFeed: UIView {
       self.feedbackGenerator.impactOccurred()
       if self.count == 50 {
         self.updateCenterLabels(with: burstCase.goodText, in: detailView, window: window, burstMode: burstCase)
+        startBorderAnimation(borderColor: ResourceKitAsset.Colors.walwalOrange.color)
       } else if self.count == 100 {
         self.updateCenterLabels(with: burstCase.greatText, in: detailView, window: window, burstMode: burstCase)
+        startBorderAnimation(borderColor: .red)
       }
     }
   }
@@ -469,7 +472,7 @@ public final class WalWalFeed: UIView {
     // 이미터의 중심 위치를 detailView의 중앙으로 설정
     heartEmitter.emitterPosition = CGPoint(x: detailView.bounds.width / 2, y: detailView.bounds.height / 2)
     
-    // 이미터의 크기를 반지름 60의 원으로 설정
+    // 이미터의 크기를 반지름 (width / 4)의 원으로 설정
     heartEmitter.emitterSize = CGSize(width: detailView.bounds.width / 4, height: detailView.bounds.width / 4)
     
     // birthRate를 설정하여 애니메이션 시작
