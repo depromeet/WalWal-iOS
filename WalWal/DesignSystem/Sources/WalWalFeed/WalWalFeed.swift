@@ -59,6 +59,7 @@ public final class WalWalFeed: UIView {
   private var longPressGesture: UILongPressGestureRecognizer!
   private var currentDetailView: WalWalFeedCellView?
   private var currentBackgroundView: UIView?
+  private var currentBlackOverayView: UIView?
   private var borderLayer: CAShapeLayer?
   private var borderAnimation: CABasicAnimation?
   private var centerLabels: [UILabel] = []
@@ -179,7 +180,11 @@ public final class WalWalFeed: UIView {
     backgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
     backgroundView.alpha = 0
     
+    let overlayView = UIView(frame: cellFrameInWindow)
+    overlayView.backgroundColor = ResourceKitAsset.Colors.black.color
+    
     window.addSubview(backgroundView)
+    window.addSubview(overlayView)
     window.addSubview(detailView)
     
     let selectCase = [WalWalBurstString.cute, WalWalBurstString.cool, WalWalBurstString.lovely].randomElement() ?? .cute
@@ -212,11 +217,13 @@ public final class WalWalFeed: UIView {
     
     UIView.animate(withDuration: 0.3) {
       backgroundView.alpha = 1
+      overlayView.alpha = 1
       detailView.transform = .identity
     }
     
     currentDetailView = detailView
     currentBackgroundView = backgroundView
+    currentBlackOverayView = overlayView
     
     addBorderLayer(to: detailView)
     startBorderAnimation(borderColor: ResourceKitAsset.Colors.yellow.color)
@@ -345,7 +352,7 @@ public final class WalWalFeed: UIView {
     let path = UIBezierPath(roundedRect: view.bounds, cornerRadius: cornerRadius)
     borderLayer.path = path.cgPath
     borderLayer.fillColor = UIColor.clear.cgColor
-//    borderLayer.strokeColor = ResourceKitAsset.Colors.walwalOrange.color.cgColor
+    //    borderLayer.strokeColor = ResourceKitAsset.Colors.walwalOrange.color.cgColor
     borderLayer.lineWidth = 5
     borderLayer.strokeEnd = 0
     view.layer.addSublayer(borderLayer)
@@ -353,19 +360,60 @@ public final class WalWalFeed: UIView {
     self.borderLayer = borderLayer
   }
   
-  private func startBorderAnimation(borderColor: UIColor) {
-    let animation = CABasicAnimation(keyPath: "strokeEnd")
-    animation.fromValue = 0
-    animation.toValue = 1
-    animation.duration = 2.5
-    animation.isRemovedOnCompletion = false
-    animation.fillMode = .forwards
-    
-    animation.delegate = self
-    
-    borderLayer?.strokeColor = borderColor.cgColor
-    borderLayer?.add(animation, forKey: "borderAnimation")
-    borderAnimation = animation
+  private func startBorderAnimation(borderColor: UIColor, isRainbow: Bool = false) {
+    if isRainbow {
+      let colors: [CGColor] = [
+        UIColor.red.cgColor,
+        UIColor.orange.cgColor,
+        UIColor.yellow.cgColor,
+        UIColor.green.cgColor,
+        UIColor.blue.cgColor,
+        UIColor.purple.cgColor,
+        UIColor.red.cgColor // 마지막 색상을 처음 색상과 동일하게 하여 원활한 반복
+      ]
+      
+      let rainbowAnimation = CAKeyframeAnimation(keyPath: "strokeColor")
+      rainbowAnimation.values = colors
+      rainbowAnimation.keyTimes = [0, 0.17, 0.34, 0.51, 0.68, 0.85, 1.0]
+      rainbowAnimation.duration = 5.0 // 애니메이션 지속 시간
+      rainbowAnimation.repeatCount = .infinity
+      
+      borderLayer?.add(rainbowAnimation, forKey: "rainbowBorderAnimation")
+      
+      // 좌우로 기울이는 애니메이션 추가
+      let tiltAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+      
+      let frames = 60
+      var values = [Double]()
+      var keyTimes = [NSNumber]()
+      
+      for i in 0...frames {
+        let progress = Double(i) / Double(frames)
+        let angle = sin(progress * 2 * .pi) * (Double.pi / 16)
+        values.append(angle)
+        keyTimes.append(NSNumber(value: progress))
+      }
+      
+      tiltAnimation.values = values
+      tiltAnimation.keyTimes = keyTimes
+      tiltAnimation.duration = 1.0
+      tiltAnimation.repeatCount = .infinity
+      
+      currentDetailView?.layer.add(tiltAnimation, forKey: "tilt")
+    } else {
+      let animation = CABasicAnimation(keyPath: "strokeEnd")
+      animation.fromValue = 0
+      animation.toValue = 1
+      animation.duration = 2.5
+      animation.isRemovedOnCompletion = false
+      animation.fillMode = .forwards
+      
+      animation.delegate = self
+      
+      borderLayer?.strokeColor = borderColor.cgColor
+      borderLayer?.add(animation, forKey: "borderAnimation")
+      borderAnimation = animation
+    }
   }
   
   private func stopBorderAnimation() {
@@ -404,13 +452,16 @@ public final class WalWalFeed: UIView {
       self.feedbackGenerator.impactOccurred()
       if self.count == 50 {
         self.updateCenterLabels(with: burstCase.goodText, in: detailView, window: window, burstMode: burstCase)
-        startBorderAnimation(borderColor: ResourceKitAsset.Colors.walwalOrange.color)
+        self.startBorderAnimation(borderColor: ResourceKitAsset.Colors.walwalOrange.color)
       } else if self.count == 100 {
         self.updateCenterLabels(with: burstCase.greatText, in: detailView, window: window, burstMode: burstCase)
-        startBorderAnimation(borderColor: .red)
+        self.startBorderAnimation(borderColor: .red)
+      } else if self.count == 150 { // 세 번째 게이지가 다 찰 때
+        self.startBorderAnimation(borderColor: .clear, isRainbow: true)
       }
     }
   }
+
   
   private func stopCountTimer() {
     countTimer?.invalidate()
@@ -419,10 +470,13 @@ public final class WalWalFeed: UIView {
   
   private func dismissDetailView() {
     guard let detailView = currentDetailView,
-          let backgroundView = currentBackgroundView else { return }
+          let backgroundView = currentBackgroundView,
+          let overlayView = currentBlackOverayView else { return }
     
     backgroundView.removeFromSuperview()
     detailView.removeFromSuperview()
+    overlayView.removeFromSuperview()
+    
     for label in centerLabels {
       label.removeFromSuperview()
     }
@@ -437,6 +491,7 @@ public final class WalWalFeed: UIView {
     
     self.currentDetailView = nil
     self.currentBackgroundView = nil
+    self.currentBlackOverayView = nil
     self.stopBorderAnimation()
     self.stopHeartAnimation()
   }
