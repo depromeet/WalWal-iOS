@@ -21,7 +21,10 @@ public struct ProfileSettingItemModel {
   public let subTitle: String
   public let rightText: String
   
-  public init(title: String, iconImage: UIImage, subTitle: String, rightText: String) {
+  public init(title: String,
+              iconImage: UIImage,
+              subTitle: String,
+              rightText: String) {
     self.title = title
     self.iconImage = iconImage
     self.subTitle = subTitle
@@ -33,8 +36,7 @@ public struct ProfileSettingItemModel {
 public enum ProfileSettingReactorAction {
   
   case viewDidLoad
-  case tapLogoutButton
-  case tapRevokeButton
+  case didSelectItem(at: IndexPath)
 }
 
 public enum ProfileSettingReactorMutation {
@@ -48,7 +50,7 @@ public enum ProfileSettingReactorMutation {
 public struct ProfileSettingReactorState {
   public var isLoading: Bool
   public var isLogoutSuccess: Bool
-  public var isRevokeSucess: Bool
+  public var isRevokeSuccess: Bool
   public var appVersionString: String
   public var settings: [ProfileSettingItemModel]
   
@@ -61,7 +63,7 @@ public struct ProfileSettingReactorState {
   ) {
     self.isLoading = isLoading
     self.isLogoutSuccess = isLogoutSuccess
-    self.isRevokeSucess = isRevokeSuccess
+    self.isRevokeSuccess = isRevokeSuccess
     self.appVersionString = appVersionString
     self.settings = settings
   }

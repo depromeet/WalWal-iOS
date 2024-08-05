@@ -29,7 +29,13 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     coordinator: any MyPageCoordinator
   ) {
     self.coordinator = coordinator
-    self.initialState = State()
+    self.initialState = State(
+      isLoading: false,
+      isLogoutSuccess: false,
+      isRevokeSuccess: false,
+      appVersionString: "",
+      settings: []
+    )
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -37,49 +43,64 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     case .viewDidLoad:
       return Observable.concat([
         Observable.just(.setLoading(true)),
-        fetchAppVersion().map { Mutation.setAppVersion($0) },
+        fetchAppVersion()
+          .map { Mutation.setAppVersion($0) },
         Observable.just(.setLoading(false))
       ])
-    case .tapLogoutButton:
-      // TODO: logout
-      return Observable.just(.setLogout(true))
-    case .tapRevokeButton:
-      // TODO: logout
-      return Observable.just(.setRevoke(true))
+    case let .didSelectItem(at: indexPath):
+      return handleSelection(at: indexPath)
     }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
+    let currentVersion = getCurrentAppVersion()
+    var isRecent: Bool = true
+    
     switch mutation {
     case let .setLoading(isLoading):
       newState.isLoading = isLoading
     case let .setAppVersion(fetchedVersion):
-      let currentVersion = getCurrentAppVersion()
+      isRecent = currentVersion >= fetchedVersion
       newState.appVersionString = currentVersion
-      let isRecent = fetchedVersion <= currentVersion
-      newState.settings = [
-        .init(title: "로그아웃",
-              iconImage: AssetImage._16x16NextButton.image,
+      if state.settings.isEmpty {
+        // Only update settings if it's empty, or handle differently
+        newState.settings = [
+          .init(title: "로그아웃",
+                iconImage: AssetImage._16x16NextButton.image,
               subTitle: "",
               rightText: ""),
-        .init(title: "버전 정보",
-              iconImage: AssetImage._16x16NextButton.image,
-              subTitle: currentVersion,
-              rightText: isRecent ? "최신 버전입니다." : "업데이트 필요"),
-        .init(title: "회원 탈퇴",
-              iconImage: AssetImage._16x16NextButton.image,
+          .init(title: "버전 정보",
+                iconImage: AssetImage._16x16NextButton.image,
+                subTitle: currentVersion,
+                rightText: isRecent ? "최신 버전입니다." : "업데이트 필요"),
+          .init(title: "회원 탈퇴",
+                iconImage: AssetImage._16x16NextButton.image,
               subTitle: "",
               rightText: "")
-      ]
-    case let .setSettingItemModel(settings):
-      newState.settings = settings
+        ]
+      }
+    case let .setSettingItemModel(setting):
+      newState.settings = setting
     case let .setLogout(success):
       newState.isLogoutSuccess = success
     case let .setRevoke(success):
-      newState.isRevokeSucess = success
+      newState.isRevokeSuccess = success
     }
     return newState
+  }
+  
+  private func handleSelection(at indexPath: IndexPath) -> Observable<Mutation> {
+    if indexPath.row == 0 {
+      // 로그아웃 로직 추가
+      print("로그아웃")
+      return Observable.just(.setLogout(true))
+    } else if indexPath.row == 2 {
+      // 회원 탈퇴 로직 추가
+      print("회원탈퇴")
+      return Observable.just(.setRevoke(true))
+    }
+    return Observable.empty()
   }
   
   
