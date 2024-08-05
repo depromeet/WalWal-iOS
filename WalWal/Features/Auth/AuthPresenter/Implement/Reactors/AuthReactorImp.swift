@@ -36,9 +36,15 @@ public final class AuthReactorImp: AuthReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .appleLoginTapped(authCode):
-      return socialLoginRequest(provider: .apple, token: authCode)
+      return .concat([
+        .just(.showIndicator(show: true)),
+        socialLoginRequest(provider: .apple, token: authCode)
+      ])
     case let .kakaoLoginTapped(accessToken):
-       return socialLoginRequest(provider: .kakao, token: accessToken)
+      return .concat([
+        .just(.showIndicator(show: true)),
+        socialLoginRequest(provider: .kakao, token: accessToken)
+      ])
     }
   }
   
@@ -47,6 +53,8 @@ public final class AuthReactorImp: AuthReactor {
     switch mutation {
     case let .loginErrorMsg(msg):
       newState.message = msg
+    case let .showIndicator(show):
+      newState.showIndicator = show
     }
     return newState
   }
@@ -64,10 +72,13 @@ extension AuthReactorImp {
         } else {
           self.coordinator.startMission()
         }
-        return .never()
+        return .just(.showIndicator(show: false))
       }
       .catch { error -> Observable<Mutation> in
-        return .just(.loginErrorMsg(msg: "로그인에 실패하였습니다"))
+        return .concat([
+          .just(.showIndicator(show: false)),
+          .just(.loginErrorMsg(msg: "로그인에 실패하였습니다"))
+        ])
       }
   }
 }

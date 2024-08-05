@@ -19,12 +19,14 @@ public enum AuthReactorAction {
 
 public enum AuthReactorMutation {
   case loginErrorMsg(msg: String)
+  case showIndicator(show: Bool)
 }
 
 public struct AuthReactorState {
   /// 구체적인 상태 정의
   public init() { }
   @Pulse public var message: String = ""
+  public var showIndicator: Bool = false
 }
 
 public protocol AuthReactor:

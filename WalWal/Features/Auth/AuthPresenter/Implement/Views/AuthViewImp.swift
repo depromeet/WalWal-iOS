@@ -100,6 +100,7 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
           .justifyContent(.center)
           .alignItems(.center)
           .grow(1)
+        
         $0.addItem()
           .marginHorizontal(20.adjustedWidth)
           .define {
@@ -117,9 +118,9 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
         
       }
     imageView.flex
-      .marginHorizontal(51.adjusted)
+      .marginHorizontal(40.adjusted)
     titleLabel.flex
-      .marginTop(6)
+      .marginTop(16)
       .width(100%)
     subTitleLabel.flex
       .marginTop(6)
@@ -143,7 +144,7 @@ extension AuthViewControllerImp: View {
       }
       .compactMap { $0 }
       .map { Reactor.Action.appleLoginTapped(authCode: $0) }
-      .subscribe(reactor.action)
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
     kakaoLoginButton.rx.tap
@@ -161,6 +162,15 @@ extension AuthViewControllerImp: View {
       .filter { !$0.isEmpty }
       .drive(with: self) { owner, message in
         Toast.shared.show(message)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.showIndicator }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, show in
+        ActivityIndicator.shared.showIndicator.accept(show)
       }
       .disposed(by: disposeBag)
   }
