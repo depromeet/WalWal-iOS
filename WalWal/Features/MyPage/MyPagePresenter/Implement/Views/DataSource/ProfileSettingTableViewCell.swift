@@ -7,13 +7,14 @@
 //
 
 import UIKit
+import DesignSystem
 import ResourceKit
 
 import Then
 import PinLayout
 import FlexLayout
 
-final class ProfileSettingTableViewCell: UITableViewCell {
+final class ProfileSettingTableViewCell: UITableViewCell, ReusableView {
   
   private typealias FontKR = ResourceKitFontFamily.KR
   private typealias FontEN = ResourceKitFontFamily.EN
@@ -37,6 +38,8 @@ final class ProfileSettingTableViewCell: UITableViewCell {
     $0.textAlignment = .right
   }
   
+  private var isVersionCell: Bool = false
+  
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setAttribute()
@@ -47,8 +50,19 @@ final class ProfileSettingTableViewCell: UITableViewCell {
     fatalError("init(coder:) has not been implemented")
   }
   
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    containerView.pin.all()
+    containerView.flex.layout()
+  }
+  
+  override func prepareForReuse() {
+    resetCell()
+  }
+  
   private func setAttribute() {
-    self.selectionStyle = .none
+    self.selectionStyle = .default
     contentView.backgroundColor = ResourceKitAsset.Colors.white.color
   }
   
@@ -61,48 +75,49 @@ final class ProfileSettingTableViewCell: UITableViewCell {
     containerView.flex
       .direction(.row)
       .alignItems(.center)
-      .paddingHorizontal(16)
-      .paddingVertical(12)
       .define {
         $0.addItem(iconImageView)
           .size(22)
-        
+          .marginLeft(20)
         $0.addItem()
           .direction(.row)
           .alignItems(.center)
-          .marginLeft(6)
           .grow(1)
+          .marginLeft(6)
           .define {
             $0.addItem(titleLabel)
+              .minWidth(58)
             $0.addItem(subTitleLabel)
+              .grow(1)
               .marginLeft(20)
           }
-        
         $0.addItem(rightLabel)
-          .marginLeft(19)
+          .marginRight(19)
+          .alignSelf(.center)
+          .grow(1)
       }
   }
   
-  override func layoutSubviews() {
-    super.layoutSubviews()
-    
-    containerView.pin.all()
-    containerView.flex.layout()
+  private func resetCell() {
+    iconImageView.image = nil
+    isVersionCell = false
   }
   
   func configureCell(
     iconImage: UIImage,
     title: String,
     subTitle: String = "",
-    rightText: String = ""
+    rightText: String = "",
+    isVersionCell: Bool = false
   ) {
+    self.isVersionCell = isVersionCell
     iconImageView.image = iconImage
     titleLabel.text = title
     subTitleLabel.text = subTitle
     rightLabel.text = rightText
     
-    // 레이아웃을 다시 설정합니다.
-    setNeedsLayout()
-    layoutIfNeeded()
+    // Show or hide subTitleLabel and rightLabel based on the isSpecialCell flag
+    subTitleLabel.isHidden = !isVersionCell
+    rightLabel.isHidden = !isVersionCell
   }
 }
