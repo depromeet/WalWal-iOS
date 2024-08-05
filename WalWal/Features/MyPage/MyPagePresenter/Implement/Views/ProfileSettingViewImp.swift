@@ -43,22 +43,6 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   
   public var disposeBag = DisposeBag()
   public var __reactor: R
-  var versionText: String = "1.0.0"
-  var isRecentVersion: Bool = true
-  private lazy var settings: [Setting] = [
-    .init(title: "로그아웃",
-          iconImage: AssetImage._16x16NextButton.image,
-          subTitle: "",
-          rightText: ""),
-    .init(title: "버전 정보",
-          iconImage: AssetImage._16x16NextButton.image,
-          subTitle: versionText,
-          rightText: isRecentVersion ? "최신 버전입니다." : "업데이트 필요"),
-    .init(title: "회원 탈퇴",
-          iconImage: AssetImage._16x16NextButton.image,
-          subTitle: "",
-          rightText: "")
-  ]
   
   // MARK: - Initializer
   
@@ -80,7 +64,6 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
     super.viewDidLoad()
     setAttribute()
     setLayout()
-    bind()
   }
   
   public override func viewDidLayoutSubviews() {
@@ -107,19 +90,6 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
           .grow(1)
       }
   }
-  
-  private func bind() {
-    Observable.just(settings)
-      .bind(to: self.settingTableView.rx
-        .items(cellIdentifier: "ProfileSettingTableViewCell",
-               cellType: ProfileSettingTableViewCell.self)) { row, element, cell in
-        cell.configureCell(iconImage: element.iconImage,
-                           title: element.title,
-                           subTitle: element.subTitle,
-                           rightText: element.rightText)
-      }
-               .disposed(by: disposeBag)
-  }
 }
 
 extension ProfileSettingViewControllerImp: View {
@@ -133,11 +103,22 @@ extension ProfileSettingViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    
+    reactor.action
+      .onNext(.viewDidLoad)
   }
   
   public func bindState(reactor: R) {
-    
+    reactor.state
+      .map { $0.settings }
+      .bind(to: settingTableView.rx
+        .items(cellIdentifier: "ProfileSettingTableViewCell", cellType: ProfileSettingTableViewCell.self)) { row, model, cell in
+          cell.configureCell(iconImage: model.iconImage,
+                             title: model.title,
+                             subTitle: model.subTitle,
+                             rightText: model.rightText)
+          
+        }
+        .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
