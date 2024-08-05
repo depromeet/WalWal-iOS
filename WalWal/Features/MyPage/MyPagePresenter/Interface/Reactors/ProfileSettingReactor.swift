@@ -13,25 +13,52 @@ import MyPageCoordinator
 import ReactorKit
 import RxSwift
 
+
 // Cell 구성 모델
-public struct Setting {
-  let title: String
-  let iconImage: UIImage
-  let subTitle: String
-  let rightText: String
+public struct ProfileSettingItemModel {
+  public let title: String
+  public let iconImage: UIImage
+  public let subTitle: String
+  public let rightText: String
+  
+  public init(title: String, iconImage: UIImage, subTitle: String, rightText: String) {
+    self.title = title
+    self.iconImage = iconImage
+    self.subTitle = subTitle
+    self.rightText = rightText
+  }
 }
+
 
 public enum ProfileSettingReactorAction {
   
+  case viewDidLoad
+  case tapLogoutButton
 }
 
 public enum ProfileSettingReactorMutation {
-  
+  case setLoading(Bool)
+  case setAppVersion(String)
+  case setSettingItemModel([ProfileSettingItemModel])
+  case setLogout(Bool)
 }
 
 public struct ProfileSettingReactorState {
-  public init() {
+  public var isLoading: Bool
+  public var isSuccess: Bool
+  public var appVersionString: String
+  public var settings: [ProfileSettingItemModel]
   
+  public init(
+    isLoading: Bool = false,
+    isSuccess: Bool = false,
+    appVersionString: String = "",
+    settings: [ProfileSettingItemModel] = []
+  ) {
+    self.isLoading = isLoading
+    self.isSuccess = isSuccess
+    self.appVersionString = appVersionString
+    self.settings = settings
   }
 }
 
