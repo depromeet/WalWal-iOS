@@ -103,20 +103,31 @@ extension ProfileSettingViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    reactor.action
-      .onNext(.viewDidLoad)
+    Observable.just(())
+      .map { ProfileSettingReactorAction.viewDidLoad }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    
+    settingTableView.rx
+      .itemSelected
+      .map { ProfileSettingReactorAction.didSelectItem(at: $0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
     reactor.state
       .map { $0.settings }
       .bind(to: settingTableView.rx
-        .items(cellIdentifier: "ProfileSettingTableViewCell", cellType: ProfileSettingTableViewCell.self)) { row, model, cell in
-          cell.configureCell(iconImage: model.iconImage,
-                             title: model.title,
-                             subTitle: model.subTitle,
-                             rightText: model.rightText)
-          
+        .items(ProfileSettingTableViewCell.self)) { row, model, cell in
+          cell.configureCell(
+            iconImage: model.iconImage,
+            title: model.title,
+            subTitle: model.subTitle,
+            rightText: model.rightText,
+            isVersionCell: !model.rightText.isEmpty
+          )
         }
         .disposed(by: disposeBag)
   }
