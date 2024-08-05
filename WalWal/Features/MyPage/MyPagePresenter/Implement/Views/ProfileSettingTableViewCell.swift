@@ -48,6 +48,7 @@ final class ProfileSettingTableViewCell: UITableViewCell {
   }
   
   private func setAttribute() {
+    self.selectionStyle = .none
     contentView.backgroundColor = ResourceKitAsset.Colors.white.color
   }
   

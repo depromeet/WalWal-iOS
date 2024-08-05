@@ -6,11 +6,20 @@
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
+import UIKit
 import MyPageDomain
 import MyPageCoordinator
 
 import ReactorKit
 import RxSwift
+
+// Cell 구성 모델
+public struct Setting {
+  let title: String
+  let iconImage: UIImage
+  let subTitle: String
+  let rightText: String
+}
 
 public enum ProfileSettingReactorAction {
   

@@ -19,15 +19,6 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-
-struct Setting {
-  let title: String
-  let iconImage: UIImage
-  let subTitle: String
-  let rightText: String
-}
-
-
 public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UIViewController, ProfileSettingViewController {
   
   private typealias FontKR = ResourceKitFontFamily.KR
@@ -126,7 +117,6 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
                            title: element.title,
                            subTitle: element.subTitle,
                            rightText: element.rightText)
-        cell.selectionStyle = .none
       }
                .disposed(by: disposeBag)
   }
