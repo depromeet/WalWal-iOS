@@ -78,5 +78,10 @@ extension AuthCoordinatorImp {
 // MARK: - Auth(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
 extension AuthCoordinatorImp {
-  
+  public func startOnboarding() {
+    requireParentAction(.startOnboarding)
+  }
+  public func startMission() {
+    requireParentAction(.startMission)
+  }
 }

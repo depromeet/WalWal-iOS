@@ -36,12 +36,9 @@ public final class AuthReactorImp: AuthReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .appleLoginTapped(authCode):
-      print(authCode)
       return socialLoginRequest(provider: .apple, token: authCode)
     case let .kakaoLoginTapped(accessToken):
-      print(accessToken)
-      return .never()
-//       return socialLoginRequest(provider: .kakao, token: accessToken)
+       return socialLoginRequest(provider: .kakao, token: accessToken)
     }
   }
   
@@ -57,15 +54,15 @@ public final class AuthReactorImp: AuthReactor {
 
 extension AuthReactorImp {
   private func socialLoginRequest(provider: ProviderType, token: String) -> Observable<Mutation> {
-    return socialLoginUseCase.excute(provider: .apple, token: token)
+    return socialLoginUseCase.excute(provider: provider, token: token)
       .asObservable()
       .flatMap { result -> Observable<Mutation> in
         UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
         let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
         if result.isTemporaryToken {
-          // TODO: - 온보딩 화면 전환
+          self.coordinator.startOnboarding()
         } else {
-          // TODO: - 미션 화면 전환
+          self.coordinator.startMission()
         }
         return .never()
       }
