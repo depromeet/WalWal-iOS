@@ -34,6 +34,7 @@ public enum ProfileSettingReactorAction {
   
   case viewDidLoad
   case tapLogoutButton
+  case tapRevokeButton
 }
 
 public enum ProfileSettingReactorMutation {
@@ -41,29 +42,32 @@ public enum ProfileSettingReactorMutation {
   case setAppVersion(String)
   case setSettingItemModel([ProfileSettingItemModel])
   case setLogout(Bool)
+  case setRevoke(Bool)
 }
 
 public struct ProfileSettingReactorState {
   public var isLoading: Bool
-  public var isSuccess: Bool
+  public var isLogoutSuccess: Bool
+  public var isRevokeSucess: Bool
   public var appVersionString: String
   public var settings: [ProfileSettingItemModel]
   
   public init(
     isLoading: Bool = false,
-    isSuccess: Bool = false,
+    isLogoutSuccess: Bool = false,
+    isRevokeSuccess: Bool = false,
     appVersionString: String = "",
     settings: [ProfileSettingItemModel] = []
   ) {
     self.isLoading = isLoading
-    self.isSuccess = isSuccess
+    self.isLogoutSuccess = isLogoutSuccess
+    self.isRevokeSucess = isRevokeSuccess
     self.appVersionString = appVersionString
     self.settings = settings
   }
 }
 
 public protocol ProfileSettingReactor: Reactor where Action == ProfileSettingReactorAction, Mutation == ProfileSettingReactorMutation, State == ProfileSettingReactorState {
-  
   var coordinator: any MyPageCoordinator { get }
   
   init(

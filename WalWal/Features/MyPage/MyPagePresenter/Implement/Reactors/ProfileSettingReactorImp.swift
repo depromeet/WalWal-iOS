@@ -41,8 +41,11 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
         Observable.just(.setLoading(false))
       ])
     case .tapLogoutButton:
-      // Handle logout logic here
+      // TODO: logout
       return Observable.just(.setLogout(true))
+    case .tapRevokeButton:
+      // TODO: logout
+      return Observable.just(.setRevoke(true))
     }
   }
   
@@ -72,28 +75,30 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     case let .setSettingItemModel(settings):
       newState.settings = settings
     case let .setLogout(success):
-      newState.isSuccess = success
+      newState.isLogoutSuccess = success
+    case let .setRevoke(success):
+      newState.isRevokeSucess = success
     }
     return newState
   }
   
   
   private func fetchAppVersion() -> Observable<String> {
-      return Observable<String>.create { observer in
-        // 실제 마켓 버전 받아오는 로직 필요
-          let fetchedVersion = "1.0"
-          observer.onNext(fetchedVersion)
-          observer.onCompleted()
-          return Disposables.create()
-      }
+    return Observable<String>.create { observer in
+      // 실제 마켓 버전 받아오는 로직 필요
+      let fetchedVersion = "1.0"
+      observer.onNext(fetchedVersion)
+      observer.onCompleted()
+      return Disposables.create()
+    }
   }
-
+  
   private func getCurrentAppVersion() -> String {
-      guard let dictionary = Bundle.main.infoDictionary,
-            let version = dictionary["CFBundleShortVersionString"] as? String else {
-          return ""
-      }
-      return version
+    guard let dictionary = Bundle.main.infoDictionary,
+          let version = dictionary["CFBundleShortVersionString"] as? String else {
+      return ""
+    }
+    return version
   }
 }
 
