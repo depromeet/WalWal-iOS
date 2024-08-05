@@ -114,8 +114,6 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
               .marginBottom(40.adjustedHeight)
               .height(buttonHeight)
           }
-        
-        
       }
     imageView.flex
       .marginHorizontal(40.adjusted)

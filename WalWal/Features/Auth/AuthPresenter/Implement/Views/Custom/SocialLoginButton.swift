@@ -46,7 +46,7 @@ final class SocialLoginButton: UIButton {
   private let customImageView = UIImageView()
   private let customLabel = UILabel().then {
     $0.font = Font.H6.M
-    $0.textColor = .white
+    $0.textColor = Color.white.color
   }
   
   init(socialType: SocialLoginType) {
@@ -63,8 +63,10 @@ final class SocialLoginButton: UIButton {
   override func layoutSubviews() {
     super.layoutSubviews()
     
-    containerView.pin.all()
-    containerView.flex.layout()
+    containerView.pin
+      .all()
+    containerView.flex
+      .layout()
     
     customImageView.pin
       .left(16)

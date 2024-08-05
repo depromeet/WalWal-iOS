@@ -89,7 +89,6 @@ public final class AppCoordinatorImp: AppCoordinator {
 
 extension AppCoordinatorImp {
   
-  
   fileprivate func handleAuthEvent(_ event: CoordinatorEvent<AuthCoordinatorAction>) {
     switch event {
     case .finished:
@@ -99,7 +98,6 @@ extension AppCoordinatorImp {
       case .startOnboarding:
         // TODO: - Onboarding 연결
         print("온보딩 화면")
-        break
       case .startMission:
         destination.accept(.startTab)
       }
@@ -120,7 +118,6 @@ extension AppCoordinatorImp {
     childCoordinator = authCoordinator
     authCoordinator.start()
   }
-  
   
   /// 새로운 Coordinator를 통해서 Flow를 새로 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func startTabBar() {

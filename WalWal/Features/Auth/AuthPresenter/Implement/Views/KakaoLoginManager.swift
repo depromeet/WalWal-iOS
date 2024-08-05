@@ -98,7 +98,6 @@ final class KakaoLoginManager {
     return Single<Void>.create { single in
       UserApi.shared.unlink { error in
         if let error = error {
-          print(error)
           single(.failure(error))
         }
         else {
@@ -107,7 +106,6 @@ final class KakaoLoginManager {
       }
       return Disposables.create()
     }
-    
   }
   
 }

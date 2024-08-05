@@ -34,25 +34,18 @@ public final class NetworkService: NetworkServiceProtocol {
       }
       .withUnretained(self)
       .flatMap { owner, result -> Single<E.ResponseType?> in
-        print("==flatmap==")
         let (response, data) = result
         let convertedResult = owner.convertToResponse(response, data, E.ResponseType.self, endpoint)
         switch convertedResult {
         case .success(let responseData):
           return .just(responseData)
         case .failure(let error):
-          print("[single fail] ", error.localizedDescription)
           if let error = error as? WalWalNetworkError {
-            print("[single fail walwal] ", error.localizedDescription)
             owner.responseError(endpoint, result: error)
           }
           return .error(error)
         }
       }
-      .catch({ error in
-        print("[catch] ", error.localizedDescription)
-        return .error(error)
-      })
       .asSingle()
   }
   
