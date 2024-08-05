@@ -23,7 +23,7 @@ import RxCocoa
 
 public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController {
   typealias Color = ResourceKitAsset.Colors
-  typealias Font = ResourceKitFontFamily
+  typealias Font = ResourceKitFontFamily.KR
   typealias Image = ResourceKitAsset.Sample
   
   public var disposeBag = DisposeBag()
@@ -41,18 +41,18 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   private let titleLabel = UILabel().then {
     $0.text = "왈왈에서 매일 만나요"
     $0.textColor = Color.black.color
-    $0.font = .boldSystemFont(ofSize: 24)
+    $0.font = Font.H3
     $0.textAlignment = .center
   }
   private let subTitleLabel = UILabel().then {
     $0.text = "세상 모든 반려동물을 한자리에서!"
     $0.textColor = Color.gray900.color
-    $0.font = .systemFont(ofSize: 14)
+    $0.font = Font.H7.M
     $0.textAlignment = .center
   }
   private var appleLoginButton = SocialLoginButton(socialType: .apple)
   private var kakaoLoginButton = SocialLoginButton(socialType: .kakao)
-  var index = 0
+  private let buttonHeight = 19+(19.adjustedHeight*2)
   
   // MARK: - Initialize
   
@@ -78,8 +78,10 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
   
   override public func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    rootContainer.pin.all(view.pin.safeArea)
-    rootContainer.flex.layout()
+    rootContainer.pin
+      .all(view.pin.safeArea)
+    rootContainer.flex
+      .layout()
   }
   
   public func setAttribute() {
@@ -98,18 +100,20 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
           .justifyContent(.center)
           .alignItems(.center)
           .grow(1)
-        $0.addItem().marginHorizontal(20.adjusted).define {
-          $0.addItem(kakaoLoginButton)
-            .width(100%)
-            .marginBottom(12.adjusted)
-            .height(56.adjusted)
-          
-          $0.addItem(appleLoginButton)
-            .width(100%)
-            .marginBottom(40.adjusted)
-            .height(56.adjusted)
-        }
-          
+        $0.addItem()
+          .marginHorizontal(20.adjustedWidth)
+          .define {
+            $0.addItem(kakaoLoginButton)
+              .width(100%)
+              .marginBottom(12.adjustedHeight)
+              .height(buttonHeight)
+            
+            $0.addItem(appleLoginButton)
+              .width(100%)
+              .marginBottom(40.adjustedHeight)
+              .height(buttonHeight)
+          }
+        
         
       }
     imageView.flex

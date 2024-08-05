@@ -8,6 +8,7 @@
 
 import UIKit
 import DesignSystem
+import ResourceKit
 
 import FlexLayout
 import PinLayout
@@ -34,6 +35,9 @@ enum SocialLoginType {
 ///     - .kakao: 카카오 로그인
 ///     - .apple: 애플 로그인
 final class SocialLoginButton: UIButton {
+  typealias Color = ResourceKitAsset.Colors
+  typealias Font = ResourceKitFontFamily.KR
+  typealias Image = ResourceKitAsset.Assets
   
   private var socialType: SocialLoginType = .apple
   private let containerView = UIView().then {
@@ -41,7 +45,7 @@ final class SocialLoginButton: UIButton {
   }
   private let customImageView = UIImageView()
   private let customLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 16)
+    $0.font = Font.H6.M
     $0.textColor = .white
   }
   
@@ -63,7 +67,7 @@ final class SocialLoginButton: UIButton {
     containerView.flex.layout()
     
     customImageView.pin
-      .left(23)
+      .left(16)
       .vCenter()
     customLabel.pin
       .hCenter()
@@ -72,23 +76,22 @@ final class SocialLoginButton: UIButton {
   
   private func setAttributes() {
     let tintColor: UIColor = socialType == .apple ? .white : .black
+    let icon: UIImage? = socialType == .apple ? Image.appleIcon.image : Image.kakaoIcon.image
     backgroundColor = socialType == .apple ? .black : UIColor(hex: 0xFEDC00)
-    layer.cornerRadius = 14
+    layer.cornerRadius = 14.adjusted
     clipsToBounds = true
     
     containerView.backgroundColor = .clear
     addSubview(containerView)
     
     customImageView.tintColor = tintColor
-    customImageView.image = UIImage(systemName: "apple.logo")
+    customImageView.image = icon
     customImageView.contentMode = .scaleAspectFit
     
     customLabel.text = socialType.buttonTitle
     customLabel.textColor = tintColor
     customLabel.textAlignment = .center
     
-    containerView.addSubview(customImageView)
-    containerView.addSubview(customLabel)
   }
   
   private func setLayout() {
@@ -97,7 +100,7 @@ final class SocialLoginButton: UIButton {
       .alignItems(.center)
       .define {
         $0.addItem(customImageView)
-          .size(22)
+          .size(32.adjusted)
         $0.addItem(customLabel)
           .marginLeft(16)
           .grow(1)
