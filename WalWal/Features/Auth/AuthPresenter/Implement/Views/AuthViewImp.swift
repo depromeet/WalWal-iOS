@@ -139,8 +139,15 @@ extension AuthViewControllerImp: View {
   
   public func bindAction(reactor: R) {
     appleLoginButton.rx.tap
-      .flatMap { _ in
-        ASAuthorizationAppleIDProvider().rx.appleLogin(scope: [.email, .fullName], window: self.view.window)
+      .flatMapLatest { _ in
+        ASAuthorizationAppleIDProvider().rx.appleLogin(
+          scope: [.email, .fullName],
+          window: self.view.window
+        )
+        .asObservable()
+        .catch { _ in
+          return .empty()
+        }
       }
       .compactMap { $0 }
       .map { Reactor.Action.appleLoginTapped(authCode: $0) }
