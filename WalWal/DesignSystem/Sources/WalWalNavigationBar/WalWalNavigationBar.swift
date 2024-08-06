@@ -16,15 +16,19 @@ import RxSwift
 
 public final class WalWalNavigationBar: UIView {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   
   private let containerView = UIView()
   
   private lazy var titleLabel: UILabel = {
     let label = UILabel()
-    label.textColor = ResourceKitAsset.Colors.black.color
+    label.textColor = Colors.black.color
     label.textAlignment = .center
-    label.font = ResourceKitFontFamily.KR.H4
+    label.font = Fonts.KR.H4
     return label
   }()
   

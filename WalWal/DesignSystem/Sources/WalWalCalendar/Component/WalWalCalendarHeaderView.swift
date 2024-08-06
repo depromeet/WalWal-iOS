@@ -18,26 +18,30 @@ import PinLayout
 
 final class WalWalCalendarHeaderView: UIView {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   private let containerView = UIView()
   
   private let monthLabel = UILabel().then {
-    $0.font = ResourceKitFontFamily.KR.H6.B
-    $0.textColor = ResourceKitAsset.Colors.black.color
+    $0.font = Fonts.KR.H6.B
+    $0.textColor = Colors.black.color
     $0.textAlignment = .center
   }
   
   private let prevButton = WalWalTouchArea(
-    image: ResourceKitAsset.Assets._16x16PrevButton.image,
-    size: 16
+    image: Images.backS.image.withTintColor(Colors.gray500.color),
+    size: 20
   ).then {
     $0.contentMode = .scaleAspectFit
     $0.isUserInteractionEnabled = true
   }
   
   private let nextButton = WalWalTouchArea(
-    image: ResourceKitAsset.Assets._16x16NextButton.image,
-    size: 16
+    image: Images.backS.image.rotate(radians: .pi)?.withTintColor(Colors.gray500.color),
+    size: 20
   ).then {
     $0.contentMode = .scaleAspectFit
     $0.isUserInteractionEnabled = true

@@ -10,6 +10,11 @@ import UIKit
 import ResourceKit
 
 public enum NavigationBarItemType {
+  
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   case none
   case close
   case back
@@ -20,11 +25,11 @@ public enum NavigationBarItemType {
     case .none:
       return nil
     case .close:
-      return ResourceKitAsset.Assets._24x24Close.image
+      return Images.closeL.image
     case .back:
-      return ResourceKitAsset.Assets._20x20ChevronLeft.image
+      return Images.backL.image
     case .setting:
-      return ResourceKitAsset.Assets._24x24Settings.image
+      return Images.settingL.image
     }
   }
 }

@@ -18,21 +18,25 @@ import RxCocoa
 
 final class WalWalTouchAreaDemoViewController: UIViewController {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   
   private let rootView = UIView().then {
-    $0.backgroundColor = ResourceKitAsset.Colors.walwalOrange.color
+    $0.backgroundColor = Colors.walwalOrange.color
   }
   
-  private let touchArea1 = WalWalTouchArea(size: 50)
+  private let touchArea1 = WalWalTouchArea(size: 40)
   
-  private let touchArea2 = WalWalTouchArea(size: 50)
+  private let touchArea2 = WalWalTouchArea(size: 40)
   
-  private let touchArea3 = WalWalTouchArea(size: 50)
+  private let touchArea3 = WalWalTouchArea(size: 40)
   
   private let touchArea4 = WalWalTouchArea(
-    image: ResourceKitAsset.Assets.foldedDocumentFilled.image,
-    size: 50
+    image: Images.calendarL.image,
+    size: 40
   )
   
   private let statusLabel = UILabel().then {
@@ -72,14 +76,14 @@ final class WalWalTouchAreaDemoViewController: UIViewController {
   // MARK: - Methods
   
   private func configureTouchAreas() {
-    touchArea1.setImage(ResourceKitAsset.Assets.calendarLight.image, for: .normal)
-    touchArea1.setImage(ResourceKitAsset.Assets.calendarFilled.image, for: .selected)
+    touchArea1.setImage(Images.calendarL.image, for: .normal)
+    touchArea1.setImage(Images.cameraL.image, for: .selected)
     
-    touchArea2.setImage(ResourceKitAsset.Assets.cameraLight.image, for: .normal)
-    touchArea2.setImage(ResourceKitAsset.Assets.cameraFilled.image, for: .selected)
+    touchArea2.setImage(Images.swapL.image, for: .normal)
+    touchArea2.setImage(Images.settingL.image, for: .selected)
     
-    touchArea3.setImage(ResourceKitAsset.Assets.categoryLight.image, for: .normal)
-    touchArea3.setImage(ResourceKitAsset.Assets.categoryFilled.image, for: .selected)
+    touchArea3.setImage(Images.calendarL.image, for: .normal)
+    touchArea3.setImage(Images.backL.image, for: .selected)
   }
   
   private func configureLayouts() {

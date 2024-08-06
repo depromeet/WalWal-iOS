@@ -21,20 +21,24 @@ import RxCocoa
 
 public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, MyPageViewController {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   
   private let containerView = UIView().then {
-    $0.backgroundColor = ResourceKitAsset.Colors.gray100.color
+    $0.backgroundColor = Colors.gray100.color
   }
   
   private let navigationBar = WalWalNavigationBar(
     leftItems: [],
     title: "내 정보",
     rightItems: [.setting]
-  ).then { $0.backgroundColor = ResourceKitAsset.Colors.white.color }
+  ).then { $0.backgroundColor = Colors.white.color }
   
   private let seperator = UIView().then {
-    $0.backgroundColor = ResourceKitAsset.Colors.gray150.color
+    $0.backgroundColor = Colors.gray150.color
   }
   
   private let calendar = WalWalCalendar(initialModels: [])
@@ -86,7 +90,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   
   
   public func setAttribute() {
-    view.backgroundColor = ResourceKitAsset.Colors.white.color
+    view.backgroundColor = Colors.white.color
   }
   
   public func setLayout() {
