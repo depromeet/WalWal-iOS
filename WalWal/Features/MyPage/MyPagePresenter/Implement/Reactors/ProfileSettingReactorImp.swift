@@ -70,7 +70,6 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       newState.isLogoutSuccess = success
     case let .setRevoke(success):
       newState.isRevokeSuccess = success
-      print(newState)
     case let .setIsRecentVersion(isRecent):
       newState.isRecent = isRecent
     }
@@ -91,17 +90,14 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   }
   
   private func fetchAppVersion() -> Observable<Mutation> {
-    return Observable<Mutation>.create { observer in
-      // 실제 마켓 버전 받아오는 로직 필요
-      let fetchedVersion = "1.0"
-      let currentVersion = self.getCurrentAppVersion()
-      let isRecent = currentVersion >= fetchedVersion
-      
-      observer.onNext(.setAppVersion(fetchedVersion))
-      observer.onNext(.setIsRecentVersion(isRecent))
-      observer.onCompleted()
-      return Disposables.create()
-    }
+    let fetchedVersion = "1.0" // 실제 앱스토어 버전 받아오는 로직 필요
+    let currentVersion = self.getCurrentAppVersion()
+    let isRecent = currentVersion >= fetchedVersion
+    
+    return Observable.just([
+      .setAppVersion(currentVersion),
+      .setIsRecentVersion(isRecent)
+    ]).flatMap { Observable.from($0) }
   }
   
   private func getCurrentAppVersion() -> String {

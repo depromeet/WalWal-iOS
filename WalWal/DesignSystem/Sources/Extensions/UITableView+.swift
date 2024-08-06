@@ -44,14 +44,14 @@ public extension UITableView {
 }
 
 extension Reactive where Base: UITableView {
-  /// 데이터 스트림을 UICollectionView에 바인딩
+  /// 데이터 스트림을 UITableView에 바인딩
   ///
-  /// ReusableView를 준수하는 UICollectionViewCell에 데이터를 바인딩 할 때 사용하기 위한 메서드
+  /// ReusableView를 준수하는 UITableViewCell에 데이터를 바인딩 할 때 사용하기 위한 메서드
   ///
   /// 사용 예시
   /// ```swift
   /// Observable.just([1, 2, 3])
-  /// .bind(to: collectionView.rx.items(CustomCell.self)) { index, data, cell in
+  /// .bind(to: tableView.rx.items(CustomCell.self)) { index, data, cell in
   ///
   /// }
   /// .disposed(by: disposeBag)
