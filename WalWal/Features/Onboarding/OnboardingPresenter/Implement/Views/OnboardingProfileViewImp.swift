@@ -59,9 +59,10 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   
   // MARK: - Initialize
   
-  public init(reactor: R) {
+  public init(reactor: R, petType: String = "") {
     self.onboardingReactor = reactor
     super.init(nibName: nil, bundle: nil)
+    print(petType)
   }
   
   @available(*, unavailable)

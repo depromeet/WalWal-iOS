@@ -47,8 +47,8 @@ public final class OnboardingCoordinatorImp: OnboardingCoordinator {
         switch flow { 
         case .showSelect:
           owner.showOnboardingSelect()
-        case .showProfile:
-          owner.showOnboardingProfile()
+        case let .showProfile(petType):
+          owner.showOnboardingProfile(petType)
         }
       })
       .disposed(by: disposeBag)
@@ -86,9 +86,10 @@ extension OnboardingCoordinatorImp {
     let vc = onboardingDependencyFactory.makeOnboardingSelectViewController(reactor: reactor)
     self.pushViewController(viewController: vc, animated: true)
   }
-  func showOnboardingProfile() {
+  
+  func showOnboardingProfile(_ petType: String) {
     let reactor = onboardingDependencyFactory.makeOnboardingProfileReactor(coordinator: self)
-    let vc = onboardingDependencyFactory.makeOnboardingProfileViewController(reactor: reactor)
+    let vc = onboardingDependencyFactory.makeOnboardingProfileViewController(reactor: reactor, petType: petType)
     self.pushViewController(viewController: vc, animated: true)
   }
 }

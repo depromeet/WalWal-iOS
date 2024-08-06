@@ -30,6 +30,7 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   private var onboardingReactor: R
   /// 현재 뷰가 pop됐을 경우에 선택 값을 리셋하도록 설정하기 위한 이벤트
   private let initState = PublishSubject<Void>()
+  private let selectPetType = PublishRelay<String>()
   
   // MARK: - UI
   
@@ -153,8 +154,10 @@ extension OnboardingSelectViewControllerImp: View {
     
     /// 반려동물 선택 뷰 둘 중 하나 탭 시 Action
     Observable.merge(dogViewTapped, catViewTapped)
-      .map { petType in
-        Reactor.Action.selectAnimal(
+      .withUnretained(self)
+      .map { owner, petType in
+        owner.selectPetType.accept(petType.type)
+        return Reactor.Action.selectAnimal(
           dog: petType == .dog,
           cat: petType == .cat
         )
@@ -167,8 +170,10 @@ extension OnboardingSelectViewControllerImp: View {
       .map { Reactor.Action.initSelectView }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
     nextButton.rx.tap
-      .map { Reactor.Action.nextButtonTapped(flow: .showProfile) }
+      .withLatestFrom(selectPetType)
+      .map { Reactor.Action.nextButtonTapped(flow: .showProfile(petType: $0))}
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }

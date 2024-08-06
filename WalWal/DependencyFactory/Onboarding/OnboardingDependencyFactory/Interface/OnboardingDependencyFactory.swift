@@ -30,6 +30,6 @@ public protocol OnboardingDependencyFactory {
   
   func makeOnboardingViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController
   func makeOnboardingSelectViewController<T: OnboardingSelectReactor>(reactor: T) -> any OnboardingSelectViewController
-  func makeOnboardingProfileViewController<T: OnboardingProfileReactor>(reactor: T) -> any OnboardingProfileViewController
+  func makeOnboardingProfileViewController<T: OnboardingProfileReactor>(reactor: T, petType: String) -> any OnboardingProfileViewController
   
 }

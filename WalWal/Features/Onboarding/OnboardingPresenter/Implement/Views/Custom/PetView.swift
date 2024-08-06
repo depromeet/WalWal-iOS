@@ -16,6 +16,16 @@ import PinLayout
 enum PetType: String {
   case dog = "강아지"
   case cat = "고양이"
+  
+  /// 회원가입 시 사용할 반려동물 종류 프로퍼티
+  var type: String {
+    switch self {
+    case .dog:
+      return "DOG"
+    case .cat:
+      return "CAT"
+    }
+  }
 }
 
 /// 반려동물 타입을 보여주기 위한 뷰

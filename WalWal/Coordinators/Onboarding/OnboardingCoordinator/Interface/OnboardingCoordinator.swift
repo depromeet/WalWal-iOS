@@ -15,7 +15,7 @@ public enum OnboardingCoordinatorAction: ParentAction {
 
 public enum OnboardingCoordinatorFlow: CoordinatorFlow {
   case showSelect
-  case showProfile
+  case showProfile(petType: String)
 }
 
 public protocol OnboardingCoordinator: BaseCoordinator
