@@ -82,8 +82,12 @@ public final class ActivityIndicator {
   }
   
   private func setLayout() {
-    container.pin.all()
-    activityIndicator.pin.center().size(30)
-    container.flex.layout()
+    container.pin
+      .all()
+    activityIndicator.pin
+      .center()
+      .size(30)
+    container.flex
+      .layout()
   }
 }
