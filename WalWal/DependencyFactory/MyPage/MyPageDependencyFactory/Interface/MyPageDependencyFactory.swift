@@ -22,4 +22,6 @@ public protocol MyPageDependencyFactory {
   ) -> any MyPageCoordinator
   func makeMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor
   func makeMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
+  func makeRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor
+  func makeRecordDetailReactorViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController
 }

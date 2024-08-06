@@ -44,7 +44,10 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   public func bindState() {
     destination
       .subscribe(with: self, onNext: { owner, flow in
-        switch flow { }
+        switch flow {
+        case .showRecordDetail:
+          self.showRecordDetailVC()
+        }
       })
       .disposed(by: disposeBag)
   }
@@ -98,10 +101,10 @@ extension MyPageCoordinatorImp {
   }
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
-  fileprivate func show__() {
-    /// let reactor = dependencyFactory.make__Reactor(coordinator: self)
-    /// let __VC = dependencyFactory.make__ViewController(reactor: reactor)
-    /// self.pushViewController(viewController: __VC, animated: false)
+  fileprivate func showRecordDetailVC() {
+    let reactor = myPageDependencyFactory.makeRecordDetailReactor(coordinator: self)
+     let RecordDetailVC = myPageDependencyFactory.makeRecordDetailReactorViewController(reactor: reactor)
+     self.pushViewController(viewController: RecordDetailVC, animated: false)
   }
 }
 
