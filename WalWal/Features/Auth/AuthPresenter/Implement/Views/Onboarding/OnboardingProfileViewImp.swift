@@ -27,6 +27,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   
   private let profileSize: CGFloat = 170.adjusted
   private let marginProfileItem: CGFloat = 17.adjusted
+  private let maxNicknameLength: Int = 14
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
@@ -127,6 +128,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
           .alignItems(.center)
           .marginTop(70.adjustedHeight)
           .width(100%)
+        
         $0.addItem(nicknameTextField)
           .justifyContent(.center)
           .marginTop(32.adjustedHeight)
@@ -225,25 +227,14 @@ extension OnboardingProfileViewControllerImp: View {
       .disposed(by: disposeBag)
     
     nicknameTextField.rx.text.orEmpty
-      .subscribe(with: self, onNext: { owner, text in
-        if text.count > 14 {
-          let cutText = owner.cutNickname(text: text)
-          owner.nicknameTextField.changeText(text: cutText)
+      .asDriver()
+      .drive(with: self) { owner, text in
+        if text.count > owner.maxNicknameLength {
+          owner.nicknameTextField.cutText(length: owner.maxNicknameLength, text: text)
         }
-      })
+      }
       .disposed(by: disposeBag)
     
     
   }
-}
-
-extension OnboardingProfileViewControllerImp {
-  /// 닉네임 14글자로 자르는 메서드
-  private func cutNickname(text: String) -> String {
-    let maxIndex = text.index(text.startIndex, offsetBy: 13)
-    let startIndex = text.startIndex
-    let cutting = String(text[startIndex...maxIndex])
-    return cutting
-  }
-  
 }

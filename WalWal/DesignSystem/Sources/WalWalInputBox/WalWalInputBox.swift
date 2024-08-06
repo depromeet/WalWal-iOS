@@ -256,9 +256,12 @@ public final class WalWalInputBox: UIView {
     }
   }
   
-  /// textfield text를 직접적으로 변경하기 위한 메서드
-  public func changeText(text: String) {
-    textField.text = text
+  /// 특정 글자 수 제한에 맞게 자르기 위한 메서드
+  public func cutText(length: Int, text: String) {
+    let maxIndex = text.index(text.startIndex, offsetBy: length-1)
+    let startIndex = text.startIndex
+    let cutting = String(text[startIndex...maxIndex])
+    textField.text = cutting
   }
 }
 
