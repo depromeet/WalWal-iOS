@@ -102,8 +102,7 @@ final class WalWalFeedCellView: UIView {
   
   func configureFeed(feedData: WalWalFeedModel) {
     followButton.alpha = feedData.isFeedCell ? 1 : 0
-    missionDateChip.alpha = feedData.isFeedCell ? 0 : 1
-    missionDateChip.configureText(text: feedData.date)
+    missionDateChip.rx.text.onNext(feedData.date)
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = feedData.missionTitle
     profileImageView.image = feedData.profileImage

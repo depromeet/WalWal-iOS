@@ -19,7 +19,6 @@ public class WalWalChip: UIView {
   
   public enum ChipStyle {
     case none /// 아무것도 없는 상태
-    case date
     case filled
     case outlined
     case tonal
@@ -31,14 +30,24 @@ public class WalWalChip: UIView {
     $0.backgroundColor = .clear
   }
   
+  private let chipContainer = UIView().then {
+    $0.backgroundColor = .clear
+  }
+  
   fileprivate let label = UILabel().then {
     $0.textAlignment = .center
   }
   
+  fileprivate let leftIcon = UIImageView().then {
+    $0.contentMode = .scaleAspectFit
+  }
+  
   // MARK: - Properties
   
-  private let text: String?
-  private let selectedText: String?
+  private var text: String?
+  private var selectedText: String?
+  private let opacity: Float
+  private let image: UIImage?
   private let style: ChipStyle
   private let selectedStyle: ChipStyle
   private let cornerRadius: CGFloat
@@ -54,6 +63,8 @@ public class WalWalChip: UIView {
   /// - Parameters:
   ///   - text: 초기 Chip의 타이틀 입니다
   ///   - selectedText: 선택되었을 때의 Chip의 타이틀 입니다.
+  ///   - opacity: Chip의 투명도 입니다. (default: 1)
+  ///   - image: Chip의 왼쪽에 들어갈 아이콘 입니다.
   ///   - size: Chip의 사이즈 입니다. (default: 64x28)
   ///   - style: Chip의 스타일 입니다.
   ///   - selectedStyle: 선택되었을 때의 Chip의 스타일 입니다. (default: .none)
@@ -61,18 +72,23 @@ public class WalWalChip: UIView {
   public init(
     text: String? = nil,
     selectedText: String? = nil,
+    opacity: Float = 1,
+    image: UIImage? = nil,
     style: ChipStyle,
     selectedStyle: ChipStyle = .none,
     size: CGSize = CGSize(width: 64, height: 28),
     font: UIFont = ResourceKitFontFamily.KR.B2
   ) {
-    self.cornerRadius = size.height / 2
-    self.size = size
-    self.font = font
     self.text = text
     self.selectedText = selectedText == nil ? text : selectedText
+    self.opacity = opacity
+    self.image = image
+    self.size = size
     self.style = style
     self.selectedStyle = selectedStyle == .none ? style : selectedStyle
+    self.font = font
+    
+    self.cornerRadius = size.height / 2
     super.init(frame: .zero)
     configureLayout()
     configureStyle(style: style)
@@ -93,12 +109,21 @@ public class WalWalChip: UIView {
     containerView.flex
       .layout()
     
+    chipContainer.pin
+      .all()
+    chipContainer.flex
+      .layout()
+    
     configureAttributes()
   }
   
   // MARK: - Methods
   
   func configureText(text: String?) {
+    if self.text == nil {
+      self.text = text
+      self.selectedText = text
+    }
     label.text = text
   }
   
@@ -126,38 +151,52 @@ public class WalWalChip: UIView {
     layer.cornerRadius = cornerRadius
     clipsToBounds = true
     
+    containerView.layer.opacity = opacity
+    chipContainer.layer.opacity = 1
     label.font = font
+    leftIcon.image = image
   }
   
   private func configureLayout() {
     addSubview(containerView)
+    addSubview(chipContainer)
     
     containerView.flex
       .alignItems(.center)
       .justifyContent(.center)
+      .size(size)
+    
+    chipContainer.flex
+      .direction(.row)
+      .alignItems(.center)
+      .justifyContent(.center)
+      .position(.absolute)
+      .size(size)
       .define { flex in
-      flex.addItem(label)
-          .size(size)
-    }
+        if image != nil {
+          flex.addItem(leftIcon)
+            .size(20)
+        }
+        flex.addItem(label)
+          .marginLeft(2)
+          .grow(1)
+          .shrink(1)
+      }
   }
   
   fileprivate func configureStyle(style: ChipStyle) {
     switch style {
     case .filled:
-      backgroundColor = ResourceKitAsset.Colors.gray900.color
-      label.textColor = ResourceKitAsset.Colors.white.color
-      layer.borderWidth = 0
-    case .date:
-      backgroundColor = ResourceKitAsset.Colors.gray900.color.withAlphaComponent(0.5)
+      containerView.backgroundColor = ResourceKitAsset.Colors.gray900.color
       label.textColor = ResourceKitAsset.Colors.white.color
       layer.borderWidth = 0
     case .outlined:
-      backgroundColor = ResourceKitAsset.Colors.white.color
+      containerView.backgroundColor = ResourceKitAsset.Colors.white.color
       label.textColor = ResourceKitAsset.Colors.gray900.color
       layer.borderWidth = 1
       layer.borderColor = ResourceKitAsset.Colors.gray150.color.cgColor
     case .tonal:
-      backgroundColor = ResourceKitAsset.Colors.gray150.color
+      containerView.backgroundColor = ResourceKitAsset.Colors.gray150.color
       label.textColor = ResourceKitAsset.Colors.gray600.color
       layer.borderWidth = 0
     case .none:

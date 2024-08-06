@@ -24,11 +24,22 @@ final class WalWalChipDemoViewController: UIViewController {
     $0.backgroundColor = ResourceKitAsset.Colors.white.color
   }
   
-  private let filledChip = WalWalChip(text: "Filled", style: .filled)
+  private let filledChip = WalWalChip(
+    text: "Filled",
+    opacity: 0.9,
+    style: .filled
+  )
   
-  private let outlinedChip = WalWalChip(text: "Outlined", style: .outlined)
+  private let outlinedChip = WalWalChip(
+    text: "Outlined",
+    style: .outlined
+  )
   
-  private let tonalChip = WalWalChip(text: "Tonal", style: .tonal)
+  private let tonalChip = WalWalChip(
+    text: "Tonal",
+    opacity: 0.5,
+    style: .tonal
+  )
   
   private let interactiveChip = WalWalChip(
     text: "뾰로롱",
@@ -108,7 +119,7 @@ final class WalWalChipDemoViewController: UIViewController {
   private func bind() {
     
     filledChip.rx.tapped
-      .map { "Filled Chip Tapped" }
+      .map { "Filled Chip Tapped && Opacity 0.9" }
       .bind(to: statusLabel.rx.text)
       .disposed(by: disposeBag)
     
@@ -118,7 +129,7 @@ final class WalWalChipDemoViewController: UIViewController {
       .disposed(by: disposeBag)
     
     tonalChip.rx.tapped
-      .map { "Tonal Chip Tapped" }
+      .map { "Tonal Chip Tapped && Opacity 0.5" }
       .bind(to: statusLabel.rx.text)
       .disposed(by: disposeBag)
     
