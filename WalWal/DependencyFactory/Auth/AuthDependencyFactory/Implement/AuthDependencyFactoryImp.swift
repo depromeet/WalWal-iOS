@@ -44,14 +44,14 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     return AuthRepositoryImp(networkService: networkService)
   }
   
-  public func makeAppleLoginUseCase() -> AppleLoginUseCase {
-    return AppleLoginUseCaseImp(authDataRepository: makeAuthData())
+  public func makeSocialLoginUseCase() -> SocialLoginUseCase {
+    return SocialLoginUseCaseImp(authDataRepository: makeAuthData())
   }
   
   public func makeAuthReactor<T: AuthCoordinator>(coordinator: T) -> any AuthReactor {
     return AuthReactorImp(
       coordinator: coordinator,
-      appleLoginUseCase: makeAppleLoginUseCase()
+      socialLoginUseCase: makeSocialLoginUseCase()
     )
   }
   

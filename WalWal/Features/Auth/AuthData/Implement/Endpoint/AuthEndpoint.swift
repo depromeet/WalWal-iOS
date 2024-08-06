@@ -13,42 +13,41 @@ import Alamofire
 
 enum AuthEndpoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
-  
-  case appleLogin(body: AppleLoginBody)
+  case socialLogin(provider: String, body: SocialLoginBody)
 }
 
 extension AuthEndpoint {
   var baseURLType: URLType {
      switch self {
-     case .appleLogin(_):
+     case .socialLogin:
        return .walWalBaseURL
      }
    }
   
   var path: String {
     switch self {
-    case .appleLogin:
-      return "/auth/social-login/apple"
+    case let .socialLogin(provider, _):
+      return "/auth/social-login/\(provider)"
     }
   }
   
   var method: HTTPMethod {
     switch self {
-    case .appleLogin:
+    case .socialLogin:
       return .post
     }
   }
   
   var parameters: RequestParams {
     switch self {
-    case let .appleLogin(body):
+    case let .socialLogin(_, body):
       return .requestWithbody(body)
     }
   }
   
   var headerType: HTTPHeaderType {
     switch self {
-    case .appleLogin:
+    case .socialLogin:
       return .plain
     }
   }

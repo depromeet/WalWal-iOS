@@ -14,15 +14,19 @@ import RxSwift
 
 public enum AuthReactorAction {
   case appleLoginTapped(authCode: String)
+  case kakaoLoginTapped(accessToken: String)
 }
 
 public enum AuthReactorMutation {
-  case token(token: String)
+  case loginErrorMsg(msg: String)
+  case showIndicator(show: Bool)
 }
 
 public struct AuthReactorState {
   /// 구체적인 상태 정의
   public init() { }
+  @Pulse public var message: String = ""
+  public var showIndicator: Bool = false
 }
 
 public protocol AuthReactor:
@@ -33,6 +37,6 @@ public protocol AuthReactor:
   
   init(
     coordinator: any AuthCoordinator,
-    appleLoginUseCase: AppleLoginUseCase
+    socialLoginUseCase: SocialLoginUseCase
   )
 }

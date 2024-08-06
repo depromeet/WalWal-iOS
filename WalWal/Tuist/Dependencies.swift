@@ -34,6 +34,8 @@ let spm = SwiftPackageManagerDependencies(
             requirement: .upToNextMajor(from: "7.12.0")),
     .remote(url: "https://github.com/devxoul/Then",
             requirement: .upToNextMajor(from: "2.0.0")),
+    .remote(url: "https://github.com/kakao/kakao-ios-sdk",
+            requirement: .upToNextMajor(from: "2.22.4"))
   ],
   productTypes: [
     "RxAlamofire": .framework,
@@ -44,6 +46,9 @@ let spm = SwiftPackageManagerDependencies(
     "RxGesture": .framework,
     "Kingfisher": .framework,
     "Then": .framework,
+    "KakaoSDKAuth": .framework,
+    "KakaoSDKUser": .framework,
+    "KakaoSDKCommon": .framework
   ]
 )
 

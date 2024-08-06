@@ -15,6 +15,7 @@ public extension UserDefaults {
   enum Key: String {
     case notification
     case refreshToken
+    case temporaryToken
   }
   
   // MARK: - GET

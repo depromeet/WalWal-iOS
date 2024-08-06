@@ -8,7 +8,11 @@
 
 import UIKit
 import AuthPresenter
+import ResourceKit
+import Utility
+import DesignSystem
 import AuthenticationServices
+import LocalStorage
 
 import Then
 import PinLayout
@@ -18,26 +22,37 @@ import RxSwift
 import RxCocoa
 
 public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController {
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Font = ResourceKitFontFamily.KR
+  private typealias Image = ResourceKitAsset.Sample
+  
   public var disposeBag = DisposeBag()
   public let authReactor: R
   
   // MARK: UI
   
   private let rootContainer = UIView()
+  private let contentContainer = UIView()
   private let imageView = UIImageView().then {
-    $0.backgroundColor = .gray
+    $0.backgroundColor = .clear
+    $0.image = Image.authImageSample.image
+    $0.contentMode = .scaleAspectFit
   }
   private let titleLabel = UILabel().then {
     $0.text = "왈왈에서 매일 만나요"
-    $0.textColor = .black
-    $0.font = .boldSystemFont(ofSize: 24)
+    $0.textColor = Color.black.color
+    $0.font = Font.H3
+    $0.textAlignment = .center
   }
   private let subTitleLabel = UILabel().then {
     $0.text = "세상 모든 반려동물을 한자리에서!"
-    $0.textColor = .black
-    $0.font = .systemFont(ofSize: 14)
+    $0.textColor = Color.gray900.color
+    $0.font = Font.H7.M
+    $0.textAlignment = .center
   }
   private var appleLoginButton = SocialLoginButton(socialType: .apple)
+  private var kakaoLoginButton = SocialLoginButton(socialType: .kakao)
+  private let buttonHeight = 19+(19.adjustedHeight*2)
   
   // MARK: - Initialize
   
@@ -57,33 +72,57 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     setAttribute()
     setLayout()
     self.reactor = authReactor
-    
   }
   
   // MARK: - Layout
   
   override public func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    rootContainer.pin.all(view.pin.safeArea)
-    rootContainer.flex.layout()
+    rootContainer.pin
+      .all(view.pin.safeArea)
+    rootContainer.flex
+      .layout()
   }
   
   public func setAttribute() {
-    view.backgroundColor = .systemOrange
+    view.backgroundColor = Color.walwalOrange.color
     view.addSubview(rootContainer)
+    [imageView, titleLabel, subTitleLabel].forEach {
+      contentContainer.addSubview($0)
+    }
   }
   
   public func setLayout() {
-    rootContainer.flex.justifyContent(.spaceBetween).define {
-        $0.addItem().alignItems(.center).paddingTop(35%).define {
-            $0.addItem(imageView).size(220)
-            $0.addItem(titleLabel).marginTop(10).maxWidth(330)
-            $0.addItem(subTitleLabel).marginTop(6).maxWidth(330)
-          }
-        $0.addItem().marginBottom(40).alignItems(.center).define {
-            $0.addItem(appleLoginButton).width(330).height(56)
+    rootContainer.flex
+      .justifyContent(.center)
+      .define {
+        $0.addItem(contentContainer)
+          .justifyContent(.center)
+          .alignItems(.center)
+          .grow(1)
+        
+        $0.addItem()
+          .marginHorizontal(20.adjustedWidth)
+          .define {
+            $0.addItem(kakaoLoginButton)
+              .width(100%)
+              .marginBottom(12.adjustedHeight)
+              .height(buttonHeight)
+            
+            $0.addItem(appleLoginButton)
+              .width(100%)
+              .marginBottom(40.adjustedHeight)
+              .height(buttonHeight)
           }
       }
+    imageView.flex
+      .marginHorizontal(40.adjusted)
+    titleLabel.flex
+      .marginTop(16)
+      .width(100%)
+    subTitleLabel.flex
+      .marginTop(6)
+      .width(100%)
   }
 }
 
@@ -98,17 +137,47 @@ extension AuthViewControllerImp: View {
   
   public func bindAction(reactor: R) {
     appleLoginButton.rx.tap
-      .flatMap { _ in
-        ASAuthorizationAppleIDProvider().rx.appleLogin(scope: [.email, .fullName], window: self.view.window)
+      .flatMapLatest { _ in
+        ASAuthorizationAppleIDProvider().rx.appleLogin(
+          scope: [.email, .fullName],
+          window: self.view.window
+        )
+        .asObservable()
+        .catch { _ in
+          return .empty()
+        }
       }
       .compactMap { $0 }
       .map { Reactor.Action.appleLoginTapped(authCode: $0) }
-      .subscribe(reactor.action)
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    kakaoLoginButton.rx.tap
+      .flatMap { _ in
+        KakaoLoginManager().kakaoLogin()
+      }
+      .map { Reactor.Action.kakaoLoginTapped(accessToken: $0) }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
+    reactor.pulse(\.$message)
+      .asDriver(onErrorJustReturn: "")
+      .filter { !$0.isEmpty }
+      .drive(with: self) { owner, message in
+        Toast.shared.show(message)
+      }
+      .disposed(by: disposeBag)
     
+    reactor.state
+      .map { $0.showIndicator }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, show in
+        ActivityIndicator.shared.showIndicator.accept(show)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

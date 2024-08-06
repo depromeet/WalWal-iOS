@@ -20,9 +20,9 @@ public final class AuthRepositoryImp: AuthRepository {
     self.networkService = networkService
   }
   
-  public func appleLogin(token: String) -> Single<AuthTokenDTO> {
-    let body = AppleLoginBody(token: token)
-    let endPoint = AuthEndpoint<AuthTokenDTO>.appleLogin(body: body)
+  public func socialLogin(provider: String, token: String) -> Single<AuthTokenDTO> {
+    let body = SocialLoginBody(token: token)
+    let endPoint = AuthEndpoint<AuthTokenDTO>.socialLogin(provider: provider, body: body)
     return networkService.request(endpoint: endPoint)
       .compactMap{ $0 }
       .asObservable()

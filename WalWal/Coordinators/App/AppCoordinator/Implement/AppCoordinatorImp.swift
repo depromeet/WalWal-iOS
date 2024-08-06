@@ -9,6 +9,7 @@
 import UIKit
 import BaseCoordinator
 import AppCoordinator
+import AuthCoordinator
 
 import SplashDependencyFactory
 import AuthDependencyFactory
@@ -61,7 +62,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   public func bindState() {
     destination
       .subscribe(with: self, onNext: { owner, flow in
-        switch flow { 
+        switch flow {
         case .startAuth:
           owner.startAuth()
         case .startTab:
@@ -74,23 +75,13 @@ public final class AppCoordinatorImp: AppCoordinator {
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
   /// 여기도, App이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   public func handleChildEvent<T: ParentAction>(_ event: T) {
-    /*
-    if let authEvent = event as? CoordinatorEvent<AuthCoordinatorAction> {
-      handleAuthEvent(authEvent)
-    } else if let homeEvent = event as? CoordinatorEvent<HomeCoordinatorAction> {
-      handleHomeEvent(homeEvent)
+    if let authEvent = event as? AuthCoordinatorAction {
+      handleAuthEvent(.requireParentAction(authEvent))
     }
-    */
   }
   
   public func start() {
-    /// 이런 Reactor랑 ViewController가 있다 치고~
-    /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-//    let reactor = dependencyFactory.makeSplashReactor(coordinator: self)
-//    let splashVC = dependencyFactory.makeSplashViewController(reactor: reactor)
-//    self.baseViewController = splashVC
-//    self.pushViewController(viewController: splashVC, animated: false)
-    destination.accept(.startTab)
+    destination.accept(.startAuth)
   }
 }
 
@@ -98,35 +89,20 @@ public final class AppCoordinatorImp: AppCoordinator {
 
 extension AppCoordinatorImp {
   
-  /*
   fileprivate func handleAuthEvent(_ event: CoordinatorEvent<AuthCoordinatorAction>) {
     switch event {
     case .finished:
       childCoordinator = nil
-    case .requireParentAction(let action):
+    case let .requireParentAction(action):
       switch action {
-      case .authenticationCompleted:
-        destination.onNext(.startHome)
-      case .authenticationFailed(let error):
-        print("Authentication failed: \(error.localizedDescription)")
-        /// 에러 처리 로직
+      case .startOnboarding:
+        // TODO: - Onboarding 연결
+        print("온보딩 화면")
+      case .startMission:
+        destination.accept(.startTab)
       }
     }
   }
-  */
-  /*
-  fileprivate func handleHomeEvent(_ event: CoordinatorEvent<HomeCoordinatorAction>) {
-    switch event {
-    case .finished:
-      childCoordinator = nil
-    case .requireParentAction(let action):
-      switch action {
-      case .logout:
-        destination.onNext(.startAuth)
-      }
-    }
-  }
-  */
 }
 
 // MARK: - Create and Start(Show) with Flow(View)
@@ -142,7 +118,6 @@ extension AppCoordinatorImp {
     childCoordinator = authCoordinator
     authCoordinator.start()
   }
-  
   
   /// 새로운 Coordinator를 통해서 Flow를 새로 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func startTabBar() {

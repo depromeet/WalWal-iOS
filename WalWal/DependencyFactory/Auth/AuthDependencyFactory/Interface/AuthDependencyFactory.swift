@@ -16,7 +16,7 @@ import AuthPresenter
 
 public protocol AuthDependencyFactory {
   func makeAuthData() -> AuthRepository
-  func makeAppleLoginUseCase() -> AppleLoginUseCase
+  func makeSocialLoginUseCase() -> SocialLoginUseCase
   func makeAuthCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator

@@ -6,9 +6,11 @@
 //  Created by Jiyeon
 //
 
+import Foundation
 import AuthDomain
 import AuthPresenter
 import AuthCoordinator
+import LocalStorage
 
 import ReactorKit
 import RxSwift
@@ -20,39 +22,64 @@ public final class AuthReactorImp: AuthReactor {
   
   public let initialState: State
   public let coordinator: any AuthCoordinator
-  private let appleLoginUseCase: AppleLoginUseCase
+  private let socialLoginUseCase: SocialLoginUseCase
   
   public init(
     coordinator: any AuthCoordinator,
-    appleLoginUseCase: AppleLoginUseCase
+    socialLoginUseCase: SocialLoginUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
-    self.appleLoginUseCase = appleLoginUseCase
+    self.socialLoginUseCase = socialLoginUseCase
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .appleLoginTapped(authCode):
-      print(authCode)
-      return .never()
-      
-      // TODO: - 추후 api 요청 작업 시 사용 예정
-//      return appleLoginUseCase.excute(authCode: authCode)
-//        .asObservable()
-//        .map { token in
-//          return Mutation.token(token: token.token)
-//        }
+      return .concat([
+        .just(.showIndicator(show: true)),
+        socialLoginRequest(provider: .apple, token: authCode)
+      ])
+    case let .kakaoLoginTapped(accessToken):
+      return .concat([
+        .just(.showIndicator(show: true)),
+        socialLoginRequest(provider: .kakao, token: accessToken)
+      ])
     }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = State()
     switch mutation {
-    case let .token(token):
-      print(token)
-//      newState.token = token
+    case let .loginErrorMsg(msg):
+      newState.message = msg
+    case let .showIndicator(show):
+      newState.showIndicator = show
     }
     return newState
+  }
+}
+
+extension AuthReactorImp {
+  private func socialLoginRequest(provider: ProviderType, token: String) -> Observable<Mutation> {
+    return socialLoginUseCase.excute(provider: provider, token: token)
+      .asObservable()
+      .flatMap { result -> Observable<Mutation> in
+        if result.isTemporaryToken {
+          UserDefaults.setValue(value: result.accessToken, forUserDefaultKey: .temporaryToken)
+          self.coordinator.startOnboarding()
+        } else {
+          UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
+          let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
+          self.coordinator.startMission()
+        }
+        return .just(.showIndicator(show: false))
+      }
+      .catch { error -> Observable<Mutation> in
+        return .concat([
+          .just(.showIndicator(show: false)),
+          .just(.loginErrorMsg(msg: "로그인에 실패하였습니다"))
+        ])
+      }
   }
 }
