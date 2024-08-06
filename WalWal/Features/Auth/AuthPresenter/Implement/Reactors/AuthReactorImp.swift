@@ -65,11 +65,12 @@ extension AuthReactorImp {
     return socialLoginUseCase.excute(provider: provider, token: token)
       .asObservable()
       .flatMap { result -> Observable<Mutation> in
-        UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
-        let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
         if result.isTemporaryToken {
+          UserDefaults.setValue(value: result.accessToken, forUserDefaultKey: .temporaryToken)
           self.coordinator.startOnboarding()
         } else {
+          UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
+          let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
           self.coordinator.startMission()
         }
         return .just(.showIndicator(show: false))
