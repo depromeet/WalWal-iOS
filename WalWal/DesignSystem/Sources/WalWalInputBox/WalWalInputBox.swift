@@ -17,6 +17,10 @@ import Then
 
 public final class WalWalInputBox: UIView {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   /// 우측 버튼으로 들어갈 수 있는 케이스...
   /// 케이스 별로 동작 처리가 달라질 수 있음
   public enum WlaWalInputBoxIcon {
@@ -28,9 +32,9 @@ public final class WalWalInputBox: UIView {
     var image: UIImage? {
       switch self {
       case .close:
-        return ResourceKitAsset.Assets._24x24Close.image
+        return Images.closeL.image
       case .show:
-        return ResourceKitAsset.Assets._24x24Settings.image.withTintColor(.blue)
+        return Images.settingL.image.withTintColor(.blue)
       case .none:
         return nil
       }
@@ -40,9 +44,9 @@ public final class WalWalInputBox: UIView {
     var selectedImage: UIImage? {
       switch self {
       case .close:
-        return ResourceKitAsset.Assets._24x24Close.image
+        return Images.closeL.image
       case .show:
-        return ResourceKitAsset.Assets._24x24Settings.image.withTintColor(.blue)
+        return Images.settingL.image.withTintColor(.blue)
       case .none:
         return nil
       }
@@ -61,25 +65,25 @@ public final class WalWalInputBox: UIView {
   
   fileprivate let textField = UITextField().then {
     $0.textAlignment = .center
-    $0.font = ResourceKitFontFamily.KR.H6.M
-    $0.textColor = ResourceKitAsset.Colors.black.color
+    $0.font = Fonts.KR.H6.M
+    $0.textColor = Colors.black.color
   }
   
   fileprivate let placeholderLabel = UILabel().then {
-    $0.font = ResourceKitFontFamily.KR.H6.M
-    $0.textColor = ResourceKitAsset.Colors.gray500.color
+    $0.font = Fonts.KR.H6.M
+    $0.textColor = Colors.gray500.color
     $0.textAlignment = .center
   }
   
   fileprivate let rightButton: WalWalTouchArea
   
   fileprivate let separatorView = UIView().then {
-    $0.backgroundColor = ResourceKitAsset.Colors.gray300.color
+    $0.backgroundColor = Colors.gray300.color
   }
   
   fileprivate let errorLabel = UILabel().then {
     $0.numberOfLines = 1
-    $0.font = ResourceKitFontFamily.KR.B2
+    $0.font = Fonts.KR.B2
     $0.minimumScaleFactor = 0.8
     $0.textColor = .red
     $0.textAlignment = .center
@@ -244,10 +248,10 @@ public final class WalWalInputBox: UIView {
   private func updateAppearance(activeState: InputBoxActiveState) {
     switch activeState {
     case .active:
-      textField.textColor = ResourceKitAsset.Colors.black.color
+      textField.textColor = Colors.black.color
       isUserInteractionEnabled = true
     case .inActive:
-      textField.textColor = ResourceKitAsset.Colors.gray500.color
+      textField.textColor = Colors.gray500.color
       isUserInteractionEnabled = false
     }
   }

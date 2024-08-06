@@ -24,6 +24,10 @@ import Kingfisher
 
 public final class MissionViewControllerImp<R: MissionReactor>: UIViewController, MissionViewController {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   
   private let rootContainer = UIView()
@@ -32,7 +36,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     $0.layer.cornerRadius = 20.adjusted
   }
   private let missionTimerImageView = UIImageView().then {
-    $0.image = Assets.timerFilled.image
+    $0.image = Images.watchS.image
   }
   private let missionTimerLabel = UILabel().then {
     $0.text = "오늘의 미션"
@@ -47,12 +51,12 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     $0.textAlignment = .center
   }
   private let missionImageView = UIImageView().then {
-    $0.image = SampleAssets.missionSample.image
+    $0.image = ResourceKitAsset.Sample.missionSample.image
     $0.contentMode = .scaleAspectFit
   }
   private let dateLabel = UILabel().then {
     $0.text = "123일째"
-    $0.font = ResourceKitFontFamily.LotteriaChab.H1
+    $0.font = Fonts.LotteriaChab.H1
   }
   private let missionStartButton = UIButton().then {
     $0.backgroundColor = .black
@@ -63,8 +67,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public var disposeBag = DisposeBag()
   public var missionReactor: R
-  private typealias Assets = ResourceKitAsset.Assets
-  private typealias SampleAssets = ResourceKitAsset.Sample
   
   // MARK: - Initialize
   

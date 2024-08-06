@@ -17,6 +17,10 @@ import Then
 
 public final class WalWalProfileCardView: UIView {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   
   private let containerView = UIView()
@@ -135,21 +139,21 @@ public final class WalWalProfileCardView: UIView {
     nameLabel.text = name
     subDescriptionLabel.text = subDescription
     
-    backgroundColor = ResourceKitAsset.Colors.white.color
+    backgroundColor = Colors.white.color
     layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     layer.cornerRadius = 20
     layer.borderWidth = 1
-    layer.borderColor = ResourceKitAsset.Colors.gray150.color.cgColor
+    layer.borderColor = Colors.gray150.color.cgColor
     
     profileImageView.layer.cornerRadius = 27
     profileImageView.clipsToBounds = true
     profileImageView.contentMode = .scaleAspectFill
     
-    nameLabel.font = ResourceKitFontFamily.KR.H6.B
-    nameLabel.textColor = ResourceKitAsset.Colors.black.color
+    nameLabel.font = Fonts.KR.H6.B
+    nameLabel.textColor = Colors.black.color
     
-    subDescriptionLabel.font = ResourceKitFontFamily.KR.B1
-    subDescriptionLabel.textColor = ResourceKitAsset.Colors.gray600.color
+    subDescriptionLabel.font = Fonts.KR.B1
+    subDescriptionLabel.textColor = Colors.gray600.color
   }
 }
 

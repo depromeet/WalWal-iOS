@@ -17,6 +17,10 @@ import Then
 
 public class WalWalChip: UIView {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   public enum ChipStyle {
     case none /// 아무것도 없는 상태
     case date
@@ -57,7 +61,7 @@ public class WalWalChip: UIView {
   ///   - size: Chip의 사이즈 입니다. (default: 64x28)
   ///   - style: Chip의 스타일 입니다.
   ///   - selectedStyle: 선택되었을 때의 Chip의 스타일 입니다. (default: .none)
-  ///   - fond: Chip의 폰트 입니다. (default: ResourceKitFontFamily.KR.B2)
+  ///   - fond: Chip의 폰트 입니다. (default: Fonts.KR.B2)
   public init(
     text: String? = nil,
     selectedText: String? = nil,
@@ -144,21 +148,21 @@ public class WalWalChip: UIView {
   fileprivate func configureStyle(style: ChipStyle) {
     switch style {
     case .filled:
-      backgroundColor = ResourceKitAsset.Colors.gray900.color
-      label.textColor = ResourceKitAsset.Colors.white.color
+      backgroundColor = Colors.gray900.color
+      label.textColor = Colors.white.color
       layer.borderWidth = 0
     case .date:
-      backgroundColor = ResourceKitAsset.Colors.gray900.color.withAlphaComponent(0.5)
-      label.textColor = ResourceKitAsset.Colors.white.color
+      backgroundColor = Colors.gray900.color.withAlphaComponent(0.5)
+      label.textColor = Colors.white.color
       layer.borderWidth = 0
     case .outlined:
-      backgroundColor = ResourceKitAsset.Colors.white.color
-      label.textColor = ResourceKitAsset.Colors.gray900.color
+      backgroundColor = Colors.white.color
+      label.textColor = Colors.gray900.color
       layer.borderWidth = 1
-      layer.borderColor = ResourceKitAsset.Colors.gray150.color.cgColor
+      layer.borderColor = Colors.gray150.color.cgColor
     case .tonal:
-      backgroundColor = ResourceKitAsset.Colors.gray150.color
-      label.textColor = ResourceKitAsset.Colors.gray600.color
+      backgroundColor = Colors.gray150.color
+      label.textColor = Colors.gray600.color
       layer.borderWidth = 0
     case .none:
       break

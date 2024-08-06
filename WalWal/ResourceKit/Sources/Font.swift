@@ -54,8 +54,10 @@ extension ResourceKitFontFamily {
     public static let H2 = UIFont.systemFont(ofSize: 14, weight: .semibold)
     /// 14px medium
     public static let H3 = UIFont.systemFont(ofSize: 14, weight: .medium)
-    ///14px regular
+    /// 14px regular
     public static let B1 = UIFont.systemFont(ofSize: 14, weight: .regular)
+    /// 12px semibold
+    public static let B2 = UIFont.systemFont(ofSize: 12, weight: .semibold)
     /// 12px regular
     public static let Caption = UIFont.systemFont(ofSize: 12, weight: .regular)
   }

@@ -16,17 +16,16 @@ import RxSwift
 
 final class WalWalFeedCellView: UIView {
   
-  private typealias FontKR = ResourceKitFontFamily.KR
-  private typealias FontEN = ResourceKitFontFamily.EN
-  private typealias AssetColor = ResourceKitAsset.Colors
-  private typealias AssetImage = ResourceKitAsset.Assets
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
   
   // MARK: - Components
   private let containerView = UIView().then {
     $0.layer.cornerRadius = 20
     $0.clipsToBounds = true
-    $0.backgroundColor = AssetColor.white.color
-    $0.addBorder(with: AssetColor.gray200.color, width: 1)
+    $0.backgroundColor = Colors.white.color
+    $0.addBorder(with: Colors.gray200.color, width: 1)
   }
   
   private let profileHeaderView = UIView()
@@ -40,13 +39,13 @@ final class WalWalFeedCellView: UIView {
   }
   
   private let userNickNameLabel = UILabel().then {
-    $0.font = FontKR.H7.B
-    $0.textColor = AssetColor.black.color
+    $0.font = Fonts.KR.H7.B
+    $0.textColor = Colors.black.color
   }
   
   private let missionLabel = UILabel().then {
-    $0.font = FontKR.B2
-    $0.textColor = AssetColor.gray700.color
+    $0.font = Fonts.KR.B2
+    $0.textColor = Colors.gray700.color
   }
   
   private let followButton = WalWalChip(
@@ -54,7 +53,7 @@ final class WalWalFeedCellView: UIView {
     style: .filled,
     selectedStyle: .outlined,
     size: CGSize(width: 64, height: 28),
-    font: FontKR.B2
+    font: Fonts.KR.B2
   )
   
   private let missionImageView = UIImageView()
@@ -66,14 +65,14 @@ final class WalWalFeedCellView: UIView {
   }
   
   private let boostCountLabel = UILabel().then {
-    $0.font = FontKR.B2
-    $0.textColor = AssetColor.gray500.color
+    $0.font = Fonts.KR.B2
+    $0.textColor = Colors.gray500.color
   }
   
   private let boostLabel = UILabel().then {
     $0.text = "부스터"
-    $0.font = FontEN.Caption
-    $0.textColor = AssetColor.gray500.color
+    $0.font = Fonts.EN.Caption
+    $0.textColor = Colors.gray500.color
   }
   
   // MARK: - Initializers

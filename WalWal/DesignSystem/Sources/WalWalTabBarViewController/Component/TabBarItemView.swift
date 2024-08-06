@@ -16,6 +16,10 @@ import RxCocoa
 
 class TabBarItemView: UIView {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   
   private let containerView = UIView()
@@ -25,7 +29,7 @@ class TabBarItemView: UIView {
   }
   
   private let titleLabel = UILabel().then {
-    $0.font = ResourceKitFontFamily.KR.Caption
+    $0.font = Fonts.KR.Caption
     $0.textAlignment = .center
   }
   
@@ -85,8 +89,8 @@ extension TabBarItemView {
         .grow(1)
         .define { flex in
           flex.addItem(iconImageView)
-            .size(24)
-            .marginBottom(4)
+            .size(40)
+            .marginBottom(-3)
           flex.addItem(titleLabel)
             .width(100%)
         }
@@ -107,8 +111,8 @@ extension TabBarItemView {
     ? item.selectedIcon
     : item.icon
     titleLabel.textColor = isSelected
-    ? ResourceKitAsset.Colors.black.color
-    : ResourceKitAsset.Colors.gray200.color
+    ? Colors.black.color
+    : Colors.gray200.color
   }
 }
 

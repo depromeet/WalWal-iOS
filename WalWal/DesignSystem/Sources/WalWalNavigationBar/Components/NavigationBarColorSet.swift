@@ -11,6 +11,11 @@ import UIKit
 import ResourceKit
 
 public enum NavigationBarColorSet {
+  
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   case normal
   case dark
   case orange
@@ -18,9 +23,9 @@ public enum NavigationBarColorSet {
   var tintColor: UIColor {
     switch self {
     case .normal:
-      return ResourceKitAsset.Colors.black.color
+      return Colors.black.color
     case .dark, .orange:
-      return ResourceKitAsset.Colors.white.color
+      return Colors.white.color
     }
   }
   
@@ -29,9 +34,9 @@ public enum NavigationBarColorSet {
     case .normal:
       return .clear
     case .dark:
-      return ResourceKitAsset.Colors.black.color
+      return Colors.black.color
     case .orange:
-      return ResourceKitAsset.Colors.walwalOrange.color
+      return Colors.walwalOrange.color
     }
   }
 }
