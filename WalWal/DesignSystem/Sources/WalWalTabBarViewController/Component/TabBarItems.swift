@@ -10,6 +10,10 @@ import UIKit
 import ResourceKit
 
 public enum TabBarItem: Int, CaseIterable {
+  
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Image = ResourceKitAsset.Images
+  
   case mission
   case feed
   case notification
@@ -17,19 +21,19 @@ public enum TabBarItem: Int, CaseIterable {
   
   var icon: UIImage {
     switch self {
-    case .mission: return ResourceKitAsset.Assets.flagLight.image
-    case .feed: return ResourceKitAsset.Assets.giftLight.image
-    case .notification: return ResourceKitAsset.Assets.locationLight.image
-    case .mypage: return ResourceKitAsset.Assets.imageLight.image
+    case .mission: return Image.flagL.image.withTintColor(Color.gray300.color)
+    case .feed: return Image.feedL.image.withTintColor(Color.gray300.color)
+    case .notification: return Image.noticeL.image.withTintColor(Color.gray300.color)
+    case .mypage: return Image.profileL.image.withTintColor(Color.gray300.color)
     }
   }
   
   var selectedIcon: UIImage {
     switch self {
-    case .mission: return ResourceKitAsset.Assets.flagFilled.image
-    case .feed: return ResourceKitAsset.Assets.giftFilled.image
-    case .notification: return ResourceKitAsset.Assets.locationFilled.image
-    case .mypage: return ResourceKitAsset.Assets.imageFilled.image
+    case .mission: return Image.flagL.image.withTintColor(Color.black.color)
+    case .feed: return Image.feedL.image.withTintColor(Color.black.color)
+    case .notification: return Image.noticeL.image.withTintColor(Color.black.color)
+    case .mypage: return Image.profileL.image.withTintColor(Color.black.color)
     }
   }
   

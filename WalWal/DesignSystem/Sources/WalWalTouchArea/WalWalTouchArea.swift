@@ -44,7 +44,7 @@ public final class WalWalTouchArea: UIView {
   ///
   /// - Parameters
   ///   - image: 기본 이미지. nil이면 빈 이미지가 설정됩니다.
-  ///   - size: TouchArea의 사이즈 (default: 24)
+  ///   - size: TouchArea 아이콘의 사이즈 (default: 24)
   public init(
     image: UIImage? = nil,
     size: CGFloat = 24

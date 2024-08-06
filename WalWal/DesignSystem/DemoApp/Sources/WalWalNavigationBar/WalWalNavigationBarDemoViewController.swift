@@ -17,6 +17,10 @@ import RxGesture
 
 final class WalWalNavigationBarDemoViewController: UIViewController {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   
   private let navigaionBar = WalWalNavigationBar(
@@ -32,7 +36,7 @@ final class WalWalNavigationBarDemoViewController: UIViewController {
   )
   
   private let containerView = UIView().then {
-    $0.backgroundColor = ResourceKitAsset.Colors.white.color
+    $0.backgroundColor = Colors.white.color
   }
   
   // MARK: - Properties

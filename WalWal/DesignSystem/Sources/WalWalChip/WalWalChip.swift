@@ -17,6 +17,10 @@ import Then
 
 public class WalWalChip: UIView {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   public enum ChipStyle {
     case none /// 아무것도 없는 상태
     case filled
@@ -61,7 +65,7 @@ public class WalWalChip: UIView {
   ///   - image: Chip의 왼쪽에 들어갈 아이콘 입니다.
   ///   - style: Chip의 스타일 입니다.
   ///   - selectedStyle: 선택되었을 때의 Chip의 스타일 입니다. (default: .none)
-  ///   - fond: Chip의 폰트 입니다. (default: ResourceKitFontFamily.KR.B2)
+  ///   - fond: Chip의 폰트 입니다. (default: Fonts.KR.B2)
   public init(
     text: String? = nil,
     selectedText: String? = nil,
@@ -162,17 +166,17 @@ public class WalWalChip: UIView {
   fileprivate func configureStyle(style: ChipStyle) {
     switch style {
     case .filled:
-      containerView.backgroundColor = ResourceKitAsset.Colors.gray900.color.withAlphaComponent(opacity)
-      label.textColor = ResourceKitAsset.Colors.white.color
+      containerView.backgroundColor = Colors.gray900.color.withAlphaComponent(opacity)
+      label.textColor = Colors.white.color
       layer.borderWidth = 0
     case .outlined:
-      containerView.backgroundColor = ResourceKitAsset.Colors.white.color.withAlphaComponent(opacity)
-      label.textColor = ResourceKitAsset.Colors.gray900.color
+      containerView.backgroundColor = Colors.white.color.withAlphaComponent(opacity)
+      label.textColor = Colors.gray900.color
       layer.borderWidth = 1
-      layer.borderColor = ResourceKitAsset.Colors.gray150.color.cgColor
+      layer.borderColor = Colors.gray150.color.cgColor
     case .tonal:
-      containerView.backgroundColor = ResourceKitAsset.Colors.gray150.color.withAlphaComponent(opacity)
-      label.textColor = ResourceKitAsset.Colors.gray600.color
+      containerView.backgroundColor = Colors.gray150.color.withAlphaComponent(opacity)
+      label.textColor = Colors.gray600.color
       layer.borderWidth = 0
     case .none:
       break

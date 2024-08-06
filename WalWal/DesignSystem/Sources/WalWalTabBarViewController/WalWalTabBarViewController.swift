@@ -17,10 +17,14 @@ import Then
 
 public final class WalWalTabBarViewController: UITabBarController {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   
   private let containerView = UIView().then {
-    $0.backgroundColor = ResourceKitAsset.Colors.white.color
+    $0.backgroundColor = Colors.white.color
   }
   
   private let customTabBar = WalWalTabBarView()

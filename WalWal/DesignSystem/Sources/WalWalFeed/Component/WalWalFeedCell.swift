@@ -15,10 +15,9 @@ import RxSwift
 
 final class WalWalFeedCell: UICollectionViewCell {
   
-  private typealias FontKR = ResourceKitFontFamily.KR
-  private typealias FontEN = ResourceKitFontFamily.EN
-  private typealias AssetColor = ResourceKitAsset.Colors
-  private typealias AssetImage = ResourceKitAsset.Assets
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
   
   // MARK: - Components
   private let feedView = WalWalFeedCellView()

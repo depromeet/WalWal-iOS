@@ -15,6 +15,10 @@ import Then
 
 final class WalWalCalendarDayCell: UICollectionViewCell {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   
   private let containerView = UIView().then {
@@ -92,7 +96,7 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     flowerImageView.layer.zPosition = 1000
     
     dashBorderLayer.fillColor = nil
-    dashBorderLayer.strokeColor = ResourceKitAsset.Colors.walwalOrange.color.cgColor
+    dashBorderLayer.strokeColor = Colors.walwalOrange.color.cgColor
     dashBorderLayer.lineDashPattern = [2.7, 1]
     dashBorderLayer.lineWidth = 2
   }
@@ -246,16 +250,16 @@ extension WalWalCalendarDayCell {
     ) -> (textColor: UIColor, backgroundColor: UIColor) {
       if date < today {
         return isCurrentMonth
-        ? (ResourceKitAsset.Colors.white.color, UIColor(hex: 0xCCCCCC))
-        : ((ResourceKitAsset.Colors.gray100.color), (ResourceKitAsset.Colors.gray100.color))
+        ? (Colors.white.color, UIColor(hex: 0xCCCCCC))
+        : ((Colors.gray100.color), (Colors.gray100.color))
       } else if Calendar.current.isDate(date, inSameDayAs: today) {
         return isCurrentMonth
-        ? (ResourceKitAsset.Colors.walwalOrange.color, ResourceKitAsset.Colors.walwalBeige.color)
-        : ((ResourceKitAsset.Colors.gray100.color), (ResourceKitAsset.Colors.gray100.color))
+        ? (Colors.walwalOrange.color, Colors.walwalBeige.color)
+        : ((Colors.gray100.color), (Colors.gray100.color))
       } else {
         return isCurrentMonth
-        ? (ResourceKitAsset.Colors.black.color, UIColor(hex: 0xEFEFEF))
-        : ((ResourceKitAsset.Colors.gray100.color), (ResourceKitAsset.Colors.gray100.color))
+        ? (Colors.black.color, UIColor(hex: 0xEFEFEF))
+        : ((Colors.gray100.color), (Colors.gray100.color))
       }
     }
   }

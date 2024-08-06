@@ -18,10 +18,14 @@ import RxCocoa
 
 final class WalWalInputBoxDemoViewController: UIViewController {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   private let disposeBag = DisposeBag()
   
   private let rootFlexContainer = UIView().then {
-    $0.backgroundColor = ResourceKitAsset.Colors.gray700.color
+    $0.backgroundColor = Colors.gray700.color
   }
   
   private let normalInputBox = WalWalInputBox(

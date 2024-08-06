@@ -15,6 +15,10 @@ import Then
 
 final class WalWalCalendarWeekdayView: UIView {
   
+  fileprivate typealias Images = ResourceKitAsset.Images
+  fileprivate typealias Colors = ResourceKitAsset.Colors
+  fileprivate typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   
   private let containerView = UIView()
@@ -49,7 +53,7 @@ final class WalWalCalendarWeekdayView: UIView {
     weekdayLabels = Weekday.allCases.enumerated().map { index, weekday in
       UILabel().then {
         $0.text = weekday.shortName
-        $0.font = ResourceKitFontFamily.KR.B1
+        $0.font = Fonts.KR.B1
         $0.textAlignment = .center
         $0.textColor = index == today ? Const.todayColor : Const.defaultColor
       }
@@ -76,8 +80,8 @@ final class WalWalCalendarWeekdayView: UIView {
 
 private extension WalWalCalendarWeekdayView {
   enum Const {
-    static let todayColor = ResourceKitAsset.Colors.gray700.color
-    static let defaultColor = ResourceKitAsset.Colors.gray500.color
+    static let todayColor = Colors.gray700.color
+    static let defaultColor = Colors.gray500.color
   }
   
   enum Weekday: Int, CaseIterable {

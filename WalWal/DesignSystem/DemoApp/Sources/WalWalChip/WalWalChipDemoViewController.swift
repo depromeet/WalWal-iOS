@@ -18,10 +18,14 @@ import RxCocoa
 
 final class WalWalChipDemoViewController: UIViewController {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   // MARK: - UI
   
   private let rootView = UIView().then {
-    $0.backgroundColor = ResourceKitAsset.Colors.white.color
+    $0.backgroundColor = Colors.white.color
   }
   
   private let filledChip = WalWalChip(
@@ -50,14 +54,14 @@ final class WalWalChipDemoViewController: UIViewController {
     image: ResourceKitAsset.Assets._20x20ChevronLeft.image.withTintColor(.white),
     style: .filled,
     selectedStyle: .tonal,
-    font: ResourceKitFontFamily.KR.H7.B
+    font: Fonts.KR.H7.B
   )
   
   private let statusLabel = UILabel().then {
     $0.textAlignment = .center
     $0.numberOfLines = 0
-    $0.textColor = ResourceKitAsset.Colors.black.color
-    $0.font = ResourceKitFontFamily.KR.B2
+    $0.textColor = Colors.black.color
+    $0.font = Fonts.KR.B2
   }
   
   // MARK: - Properties
