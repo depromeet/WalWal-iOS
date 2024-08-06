@@ -98,11 +98,6 @@ public class WalWalChip: UIView {
     containerView.flex
       .layout()
     
-    chipContainer.pin
-      .all()
-    chipContainer.flex
-      .layout()
-    
     configureAttributes()
   }
   
@@ -114,6 +109,8 @@ public class WalWalChip: UIView {
       self.selectedText = text
     }
     label.text = text
+    label.sizeToFit()
+    layoutSubviews()
   }
   
   private func bind() {
@@ -146,27 +143,18 @@ public class WalWalChip: UIView {
   
   private func configureLayout() {
     addSubview(containerView)
-    addSubview(chipContainer)
     
     containerView.flex
-      .alignItems(.center)
-      .justifyContent(.center)
-      .size(size)
-    
-    chipContainer.flex
       .direction(.row)
       .alignItems(.center)
       .justifyContent(.center)
-      .position(.absolute)
-      .size(size)
+      .padding(8, 15)
       .define { flex in
         if image != nil {
           flex.addItem(leftIcon)
-            .size(20)
+            .marginRight(2)
         }
         flex.addItem(label)
-          .marginLeft(2)
-          .grow(1)
           .shrink(1)
       }
   }

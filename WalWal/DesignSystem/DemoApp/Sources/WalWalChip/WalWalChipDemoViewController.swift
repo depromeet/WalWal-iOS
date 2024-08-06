@@ -26,28 +26,31 @@ final class WalWalChipDemoViewController: UIViewController {
   
   private let filledChip = WalWalChip(
     text: "Filled",
+    selectedText: "😵😵😵😵😵😵",
     opacity: 0.9,
     style: .filled
   )
   
   private let outlinedChip = WalWalChip(
     text: "Outlined",
+    selectedText: "😵😵😵😵😵😵",
     style: .outlined
   )
   
   private let tonalChip = WalWalChip(
     text: "Tonal",
+    selectedText: "😵😵😵😵😵😵",
     opacity: 0.5,
     style: .tonal
   )
   
   private let interactiveChip = WalWalChip(
-    text: "뾰로롱",
+    text: "너의 이름은 무엇이니",
     selectedText: "선택됨",
-    image: ResourceKitAsset.Sample.authImageSample.image,
+    image: ResourceKitAsset.Assets._20x20ChevronLeft.image.withTintColor(.white),
     style: .filled,
     selectedStyle: .tonal,
-    font: ResourceKitFontFamily.KR.H2
+    font: ResourceKitFontFamily.KR.H7.B
   )
   
   private let statusLabel = UILabel().then {
