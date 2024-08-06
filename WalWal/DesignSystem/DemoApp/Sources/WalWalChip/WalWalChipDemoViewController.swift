@@ -44,9 +44,9 @@ final class WalWalChipDemoViewController: UIViewController {
   private let interactiveChip = WalWalChip(
     text: "뾰로롱",
     selectedText: "선택됨",
+    image: ResourceKitAsset.Sample.authImageSample.image,
     style: .filled,
     selectedStyle: .tonal,
-    size: CGSize(width: 120, height: 72),
     font: ResourceKitFontFamily.KR.H2
   )
   

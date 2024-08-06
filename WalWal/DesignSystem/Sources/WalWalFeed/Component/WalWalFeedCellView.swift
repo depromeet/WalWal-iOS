@@ -53,13 +53,12 @@ final class WalWalFeedCellView: UIView {
     text: "팔로우",
     style: .filled,
     selectedStyle: .outlined,
-    size: CGSize(width: 64, height: 28),
     font: FontKR.B2
   )
   
   private let missionImageView = UIImageView()
   
-  private let missionDateChip = WalWalChip(opacity: 0.5, style: .filled, size: CGSize(width: 121, height: 33))
+  private let missionDateChip = WalWalChip(opacity: 0.5, style: .filled)
   
   private let boostIconImageView = UIImageView().then {
     $0.image = ResourceKitAsset.Sample.fire.image
@@ -153,7 +152,6 @@ final class WalWalFeedCellView: UIView {
           .marginLeft(10)
           .width(180)
         $0.addItem(followButton)
-          .size(CGSize(width: 64, height: 28))
           .marginLeft(10)
       }
     

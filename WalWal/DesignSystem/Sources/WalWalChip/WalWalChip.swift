@@ -30,10 +30,6 @@ public class WalWalChip: UIView {
     $0.backgroundColor = .clear
   }
   
-  private let chipContainer = UIView().then {
-    $0.backgroundColor = .clear
-  }
-  
   fileprivate let label = UILabel().then {
     $0.textAlignment = .center
   }
@@ -46,12 +42,10 @@ public class WalWalChip: UIView {
   
   private var text: String?
   private var selectedText: String?
-  private let opacity: Float
+  private let opacity: CGFloat
   private let image: UIImage?
   private let style: ChipStyle
   private let selectedStyle: ChipStyle
-  private let cornerRadius: CGFloat
-  private let size: CGSize
   private let font: UIFont
   
   private let disposeBag = DisposeBag()
@@ -65,30 +59,25 @@ public class WalWalChip: UIView {
   ///   - selectedText: 선택되었을 때의 Chip의 타이틀 입니다.
   ///   - opacity: Chip의 투명도 입니다. (default: 1)
   ///   - image: Chip의 왼쪽에 들어갈 아이콘 입니다.
-  ///   - size: Chip의 사이즈 입니다. (default: 64x28)
   ///   - style: Chip의 스타일 입니다.
   ///   - selectedStyle: 선택되었을 때의 Chip의 스타일 입니다. (default: .none)
   ///   - fond: Chip의 폰트 입니다. (default: ResourceKitFontFamily.KR.B2)
   public init(
     text: String? = nil,
     selectedText: String? = nil,
-    opacity: Float = 1,
+    opacity: CGFloat = 1,
     image: UIImage? = nil,
     style: ChipStyle,
     selectedStyle: ChipStyle = .none,
-    size: CGSize = CGSize(width: 64, height: 28),
     font: UIFont = ResourceKitFontFamily.KR.B2
   ) {
     self.text = text
     self.selectedText = selectedText == nil ? text : selectedText
     self.opacity = opacity
     self.image = image
-    self.size = size
     self.style = style
     self.selectedStyle = selectedStyle == .none ? style : selectedStyle
     self.font = font
-    
-    self.cornerRadius = size.height / 2
     super.init(frame: .zero)
     configureLayout()
     configureStyle(style: style)
@@ -148,11 +137,9 @@ public class WalWalChip: UIView {
   }
   
   private func configureAttributes() {
-    layer.cornerRadius = cornerRadius
+    layer.cornerRadius = bounds.height / 2
     clipsToBounds = true
     
-    containerView.layer.opacity = opacity
-    chipContainer.layer.opacity = 1
     label.font = font
     leftIcon.image = image
   }
@@ -187,16 +174,16 @@ public class WalWalChip: UIView {
   fileprivate func configureStyle(style: ChipStyle) {
     switch style {
     case .filled:
-      containerView.backgroundColor = ResourceKitAsset.Colors.gray900.color
+      containerView.backgroundColor = ResourceKitAsset.Colors.gray900.color.withAlphaComponent(opacity)
       label.textColor = ResourceKitAsset.Colors.white.color
       layer.borderWidth = 0
     case .outlined:
-      containerView.backgroundColor = ResourceKitAsset.Colors.white.color
+      containerView.backgroundColor = ResourceKitAsset.Colors.white.color.withAlphaComponent(opacity)
       label.textColor = ResourceKitAsset.Colors.gray900.color
       layer.borderWidth = 1
       layer.borderColor = ResourceKitAsset.Colors.gray150.color.cgColor
     case .tonal:
-      containerView.backgroundColor = ResourceKitAsset.Colors.gray150.color
+      containerView.backgroundColor = ResourceKitAsset.Colors.gray150.color.withAlphaComponent(opacity)
       label.textColor = ResourceKitAsset.Colors.gray600.color
       layer.borderWidth = 0
     case .none:
