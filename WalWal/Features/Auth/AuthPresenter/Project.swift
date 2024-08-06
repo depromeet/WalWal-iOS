@@ -30,5 +30,17 @@ let project = Project.invertedPresenterWithDemoApp(
   ],
   demoAppDependencies: [
     .DependencyFactory.Auth.Implement
-  ]
+  ],
+  infoPlist: .extendingDefault(
+      with:
+        [
+          "CFBundleDevelopmentRegion": "ko_KR",
+          "CFBundleShortVersionString": "1.0",
+          "CFBundleVersion": "1.0.0",
+          "UILaunchStoryboardName": "LaunchScreen",
+          "NSAppTransportSecurity" : [
+            "NSAllowsArbitraryLoads": true
+          ]
+        ]
+    )
 )

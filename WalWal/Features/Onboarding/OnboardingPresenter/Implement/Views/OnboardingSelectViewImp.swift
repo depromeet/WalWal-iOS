@@ -34,7 +34,7 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   // MARK: - UI
   
   private let rootContainer = UIView()
-  private let navigationBar = WalWalNavigationBar(leftItems: [.back], title: nil, rightItems: [])
+  private let navigationBar = WalWalNavigationBar(leftItems: [.back], leftItemSize: 40, title: nil, rightItems: [])
   private let contentContainer = UIView()
   private let progressView = ProgressView(index: 1)
   private let titleLabel = UILabel().then {

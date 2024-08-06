@@ -32,7 +32,7 @@ public final class WalWalInputBox: UIView {
     var image: UIImage? {
       switch self {
       case .close:
-        return Images.closeL.image
+        return Images.closeL.image.withTintColor(Colors.gray500.color)
       case .show:
         return Images.settingL.image.withTintColor(.blue)
       case .none:

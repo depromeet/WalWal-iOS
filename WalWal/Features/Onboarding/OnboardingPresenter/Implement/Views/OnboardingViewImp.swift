@@ -9,8 +9,6 @@
 
 import UIKit
 import OnboardingPresenter
-import ResourceKit
-import Utility
 
 import Then
 import PinLayout
@@ -19,14 +17,15 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewController, OnboardingViewController, UIScrollViewDelegate {
-  private typealias Color = ResourceKitAsset.Colors
-  private typealias Font = ResourceKitFontFamily.KR
+public final class OnboardingViewControllerImp<R: OnboardingReactor>:
+  UIViewController,
+  OnboardingViewController,
+  UIScrollViewDelegate {
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
   
-  // MARK: - Initialize
+  // MARK: - UI
   
   private let rootContainer = UIView()
   private let descriptionView1 = DescriptionView(mainTitle: "반려동물과 함께하는\n데일리 미션", subText: "반려동물과 함께 미션을 수행해요", image: nil)
@@ -41,11 +40,13 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewCont
   private lazy var pageControl = UIPageControl().then {
     $0.numberOfPages = 3
     $0.currentPage = 0
-    $0.pageIndicatorTintColor = Color.gray300.color
-    $0.currentPageIndicatorTintColor = Color.gray600.color
+    $0.pageIndicatorTintColor = .lightGray
+    $0.currentPageIndicatorTintColor = .gray
     $0.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
   }
   private let nextButton = CompleteButton(isEnable: true)
+  
+  // MARK: - Initialize
   
   public init(reactor: R) {
     self.onboardingReactor = reactor
@@ -94,12 +95,12 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewCont
             $0.addItem(scrollView)
               .alignSelf(.center)
             $0.addItem(pageControl)
-              .marginTop(57.adjustedHeight)
+              .marginTop(57)
               .height(5)
           }
         $0.addItem(nextButton)
           .marginBottom(30)
-          .marginHorizontal(20.adjustedWidth)
+          .marginHorizontal(20)
           .height(56)
       }
     
@@ -125,7 +126,6 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewCont
     let pageIndex = round(scrollView.contentOffset.x / scrollView.frame.width)
     pageControl.currentPage = Int(pageIndex)
   }
-  
 }
 
 // MARK: - Binding

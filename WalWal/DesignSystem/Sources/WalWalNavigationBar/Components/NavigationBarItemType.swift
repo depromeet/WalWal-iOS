@@ -27,7 +27,7 @@ public enum NavigationBarItemType {
     case .close:
       return Images.closeL.image
     case .back:
-      return Images.backL.image
+      return Images.backL.image.withTintColor(Colors.black.color)
     case .setting:
       return Images.settingL.image
     }
