@@ -52,13 +52,12 @@ final class WalWalFeedCellView: UIView {
     text: "팔로우",
     style: .filled,
     selectedStyle: .outlined,
-    size: CGSize(width: 64, height: 28),
     font: Fonts.KR.B2
   )
   
   private let missionImageView = UIImageView()
   
-  private let missionDateChip = WalWalChip(style: .date, size: CGSize(width: 121, height: 33))
+  private let missionDateChip = WalWalChip(opacity: 0.5, style: .filled)
   
   private let boostIconImageView = UIImageView().then {
     $0.image = ResourceKitAsset.Sample.fire.image
@@ -101,8 +100,7 @@ final class WalWalFeedCellView: UIView {
   
   func configureFeed(feedData: WalWalFeedModel) {
     followButton.alpha = feedData.isFeedCell ? 1 : 0
-    missionDateChip.alpha = feedData.isFeedCell ? 0 : 1
-    missionDateChip.configureText(text: feedData.date)
+    missionDateChip.rx.text.onNext(feedData.date)
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = feedData.missionTitle
     profileImageView.image = feedData.profileImage
@@ -153,7 +151,6 @@ final class WalWalFeedCellView: UIView {
           .marginLeft(10)
           .width(180)
         $0.addItem(followButton)
-          .size(CGSize(width: 64, height: 28))
           .marginLeft(10)
       }
     

@@ -28,19 +28,33 @@ final class WalWalChipDemoViewController: UIViewController {
     $0.backgroundColor = Colors.white.color
   }
   
-  private let filledChip = WalWalChip(text: "Filled", style: .filled)
+  private let filledChip = WalWalChip(
+    text: "Filled",
+    selectedText: "😵😵😵😵😵😵",
+    opacity: 0.9,
+    style: .filled
+  )
   
-  private let outlinedChip = WalWalChip(text: "Outlined", style: .outlined)
+  private let outlinedChip = WalWalChip(
+    text: "Outlined",
+    selectedText: "😵😵😵😵😵😵",
+    style: .outlined
+  )
   
-  private let tonalChip = WalWalChip(text: "Tonal", style: .tonal)
+  private let tonalChip = WalWalChip(
+    text: "Tonal",
+    selectedText: "😵😵😵😵😵😵",
+    opacity: 0.5,
+    style: .tonal
+  )
   
   private let interactiveChip = WalWalChip(
-    text: "뾰로롱",
+    text: "너의 이름은 무엇이니",
     selectedText: "선택됨",
+    image: ResourceKitAsset.Assets._20x20ChevronLeft.image.withTintColor(.white),
     style: .filled,
     selectedStyle: .tonal,
-    size: CGSize(width: 120, height: 72),
-    font: Fonts.KR.H2
+    font: Fonts.KR.H7.B
   )
   
   private let statusLabel = UILabel().then {
@@ -112,7 +126,7 @@ final class WalWalChipDemoViewController: UIViewController {
   private func bind() {
     
     filledChip.rx.tapped
-      .map { "Filled Chip Tapped" }
+      .map { "Filled Chip Tapped && Opacity 0.9" }
       .bind(to: statusLabel.rx.text)
       .disposed(by: disposeBag)
     
@@ -122,7 +136,7 @@ final class WalWalChipDemoViewController: UIViewController {
       .disposed(by: disposeBag)
     
     tonalChip.rx.tapped
-      .map { "Tonal Chip Tapped" }
+      .map { "Tonal Chip Tapped && Opacity 0.5" }
       .bind(to: statusLabel.rx.text)
       .disposed(by: disposeBag)
     
