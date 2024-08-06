@@ -94,10 +94,10 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     let currentVersion = self.getCurrentAppVersion()
     let isRecent = currentVersion >= fetchedVersion
     
-    return Observable.just([
-      .setAppVersion(currentVersion),
-      .setIsRecentVersion(isRecent)
-    ]).flatMap { Observable.from($0) }
+    return Observable.concat([
+      .just(.setAppVersion(currentVersion)),
+      .just(.setIsRecentVersion(isRecent))
+    ])
   }
   
   private func getCurrentAppVersion() -> String {
