@@ -10,6 +10,7 @@ import UIKit
 import BaseCoordinator
 import AppCoordinator
 import AuthCoordinator
+import OnboardingCoordinator
 
 import SplashDependencyFactory
 import AuthDependencyFactory
@@ -17,6 +18,7 @@ import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
+import OnboardingDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -40,6 +42,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   public var missionDependencyFactory: MissionDependencyFactory
   public var myPageDependencyFactory: MyPageDependencyFactory
   public var fcmDependencyFactory: FCMDependencyFactory
+  public var onboardingDependencyFactory: OnboardingDependencyFactory
   
   /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
   /// 그리고 하위 Coordinator를 생성할 때 마다, 하위에 해당하는 인터페이스 모두 전달
@@ -50,7 +53,8 @@ public final class AppCoordinatorImp: AppCoordinator {
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    onboardingDependencyFactory: OnboardingDependencyFactory
   ) {
     self.navigationController = navigationController
     self.appDependencyFactory = appDependencyFactory
@@ -59,6 +63,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     self.missionDependencyFactory = missionDependencyFactory
     self.myPageDependencyFactory = myPageDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
+    self.onboardingDependencyFactory = onboardingDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -71,6 +76,8 @@ public final class AppCoordinatorImp: AppCoordinator {
           owner.startAuth()
         case .startHome:
           owner.startTabBar()
+        case .startOnboarding:
+          owner.startOnboarding()
         }
       })
       .disposed(by: disposeBag)
@@ -104,7 +111,7 @@ extension AppCoordinatorImp {
       switch action {
       case .startOnboarding:
         // TODO: - Onboarding 연결
-        print("온보딩 화면")
+        destination.accept(.startOnboarding)
       case .startMission:
         destination.accept(.startHome)
       }
@@ -137,6 +144,15 @@ extension AppCoordinatorImp {
     )
     childCoordinator = walwalTabBarCoordinator
     walwalTabBarCoordinator.start()
+  }
+  
+  private func startOnboarding() {
+    let onboardingCoordinator = onboardingDependencyFactory.makeOnboardingCoordinator(
+      navigationController: navigationController,
+      parentCoordinator: self
+    )
+    childCoordinator = onboardingCoordinator
+    onboardingCoordinator.start()
   }
 }
 
