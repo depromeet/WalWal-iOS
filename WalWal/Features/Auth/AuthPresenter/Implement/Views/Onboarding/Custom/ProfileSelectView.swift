@@ -9,6 +9,7 @@
 import UIKit
 import Utility
 import ResourceKit
+import DesignSystem
 
 import RxSwift
 import RxCocoa
@@ -35,6 +36,8 @@ final class ProfileSelectView: UIView {
   var focusProfileItem: ProfileCellModel {
     return profileItem[focusIndex]
   }
+  var curItems = PublishRelay<ProfileCellModel>()
+  
   /// 현재 포커스 셀 인덱스
   private var focusIndex: Int = 0
   private let changeSelectImage = PublishRelay<ProfileSelectCell>()
@@ -45,7 +48,7 @@ final class ProfileSelectView: UIView {
     ),
     ProfileCellModel(
       profileType: .selectImage,
-      curImage: UIImage(systemName: "star") // TODO: - 기본 이미지 설정
+      curImage: nil // TODO: - 기본 이미지 설정
     )
   ]
   private var disposeBag = DisposeBag()
@@ -122,7 +125,7 @@ final class ProfileSelectView: UIView {
               cell.changeProfileImage(.defaultImage)
             } else {
               owner.showPHPicker.accept(())
-              owner.changeSelectImage.accept((cell))
+              owner.changeSelectImage.accept(cell)
             }
             
           }
@@ -153,6 +156,14 @@ final class ProfileSelectView: UIView {
         let (cell, photo) = result
         cell.changeProfileImage(.selectImage, image: photo)
         owner.profileItem[1].curImage = photo
+        owner.curItems.accept(owner.profileItem[1])
+      }
+      .disposed(by: disposeBag)
+    
+    curItems
+      .distinctUntilChanged()
+      .bind(with: self) { owner, items in
+        dump(items)
       }
       .disposed(by: disposeBag)
   }
@@ -184,6 +195,7 @@ extension ProfileSelectView: UICollectionViewDelegateFlowLayout {
     let cellWidth = profileSize + marginItems
     let index = Int(round(scrolledOffset / cellWidth))
     focusIndex = index
+    curItems.accept(profileItem[index])
     let centerX = scrollView.center.x + scrollView.contentOffset.x
     
     for cell in collectionView.visibleCells {

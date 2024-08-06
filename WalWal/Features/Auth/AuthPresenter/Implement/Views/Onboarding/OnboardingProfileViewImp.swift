@@ -22,8 +22,8 @@ import RxCocoa
 public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReactor>:
   UIViewController,
   OnboardingProfileViewController {
-  typealias Color = ResourceKitAsset.Colors
-  typealias Font = ResourceKitFontFamily.KR
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Font = ResourceKitFontFamily.KR
   
   private let profileSize: CGFloat = 170.adjusted
   private let marginProfileItem: CGFloat = 17.adjusted
@@ -160,16 +160,25 @@ extension OnboardingProfileViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    nextButton.rx.tap
-      .withLatestFrom(nicknameTextField.rx.text.orEmpty) {
-        if $1.count > 14 {
-          return self.cutNickname(text: $1)
-        }
-        return $1
+    let nicknameObservable = nicknameTextField.rx.text.orEmpty
+      .throttle(.milliseconds(350), scheduler: MainScheduler.instance)
+    
+    let inputValue =  Observable.combineLatest(nicknameObservable, profileSelectView.curItems)
+    
+    inputValue
+      .map {
+        return Reactor.Action.checkCondition(nickname: $0, profile: $1)
       }
-      .map { Reactor.Action.checkNickname($0) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    nextButton.rx.tap
+      .withLatestFrom(inputValue) {
+        return Reactor.Action.register(nickname: $1.0, profile: $1.1)
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
   }
   
   public func bindState(reactor: R) {
@@ -181,6 +190,11 @@ extension OnboardingProfileViewControllerImp: View {
       .drive(with: self) { owner, message in
         owner.nicknameTextField.rx.errorMessage.onNext(message)
       }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.buttonEnable }
+      .bind(to: nextButton.rx.isEnabled)
       .disposed(by: disposeBag)
   }
   
@@ -212,7 +226,6 @@ extension OnboardingProfileViewControllerImp: View {
     
     nicknameTextField.rx.text.orEmpty
       .subscribe(with: self, onNext: { owner, text in
-        owner.nextButton.isEnabled = text.count > 1
         if text.count > 14 {
           let cutText = owner.cutNickname(text: text)
           owner.nicknameTextField.changeText(text: cutText)
@@ -220,8 +233,11 @@ extension OnboardingProfileViewControllerImp: View {
       })
       .disposed(by: disposeBag)
     
+    
   }
-  
+}
+
+extension OnboardingProfileViewControllerImp {
   /// 닉네임 14글자로 자르는 메서드
   private func cutNickname(text: String) -> String {
     let maxIndex = text.index(text.startIndex, offsetBy: 13)
@@ -229,5 +245,5 @@ extension OnboardingProfileViewControllerImp: View {
     let cutting = String(text[startIndex...maxIndex])
     return cutting
   }
+  
 }
-

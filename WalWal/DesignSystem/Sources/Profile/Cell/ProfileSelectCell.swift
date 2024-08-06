@@ -9,18 +9,19 @@
 import UIKit
 import ResourceKit
 import Utility
+import DesignSystem
 
 import RxSwift
 import FlexLayout
 import PinLayout
 import Then
 
-final class ProfileSelectCell: UICollectionViewCell, ReusableView {
+final public class ProfileSelectCell: UICollectionViewCell, ReusableView {
   typealias Color = ResourceKitAsset.Colors
   typealias Font = ResourceKitFontFamily.KR
   typealias Image = ResourceKitAsset.Assets
   
-  var disposeBag = DisposeBag()
+  public var disposeBag = DisposeBag()
   private let defaultImages: [UIColor] = [.brown, .systemYellow, .systemGreen] // TODO: - 이미지로 변경 필요
   private var defaultIndex: Int = 0
   // MARK: - UI
@@ -30,7 +31,7 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
     $0.layer.borderColor = Color.walwalOrange.color.cgColor
     $0.layer.borderWidth = 3.adjusted
   }
-  let changeButton = UIButton().then {
+  public let changeButton = UIButton().then {
     $0.setImage(UIImage(systemName: "repeat"), for: .normal)
     $0.tintColor = Color.white.color
     $0.backgroundColor = Color.walwalOrange.color
@@ -56,14 +57,14 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
     fatalError("init(coder:) has not been implemented")
   }
   
-  override func prepareForReuse() {
+  override public func prepareForReuse() {
     super.prepareForReuse()
     disposeBag = DisposeBag()
   }
   
   // MARK: - Layout
   
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     super.layoutSubviews()
     
     [profileImageView, inActiveimageView, borderView, changeButton].forEach {
@@ -112,7 +113,7 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   /// - Parameters:
   ///   - isActive: 현재 활성화 여부(가운데에 위치하는 셀인지)
   ///   - data: 셀 데이터
-  func configInitialCell(isActive: Bool, data: ProfileCellModel) {
+  public func configInitialCell(isActive: Bool, data: ProfileCellModel) {
     profileImageView.image = data.curImage
     if data.profileType == .defaultImage {
       changeButton.setImage(Image.changeDefaultImage.image, for: .normal)
@@ -130,7 +131,7 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   }
   
   /// 스와이프 시 비활성화 이미지 뷰와 프로필 뷰의 자연스러운 전환 위한 alpha값 조정 메서드
-  func setAlpha(alpha: CGFloat) {
+  public func setAlpha(alpha: CGFloat) {
     let hiddenImageLevel: CGFloat = 0.01
     let shownImageLevel: CGFloat = 0.99
     
@@ -159,12 +160,12 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   /// - Parameters:
   ///   - type: 프로필 이미지 타입(`.defaultImage` , `.selectImage)
   ///   - image: 앨범 선택 이미지
-  func changeProfileImage(_ type: ProfileType, image: UIImage? = nil) {
+  public func changeProfileImage(_ type: ProfileType, image: UIImage? = nil) {
     switch type {
     case .defaultImage:
       // TODO: - 기본 이미지 리스트로 변경
       defaultIndex = (defaultIndex+1) % defaultImages.count
-      print(defaultIndex, defaultImages.count)
+//      print(defaultIndex, defaultImages.count)
       profileImageView.backgroundColor = defaultImages[defaultIndex]
     case .selectImage:
       profileImageView.image = image
