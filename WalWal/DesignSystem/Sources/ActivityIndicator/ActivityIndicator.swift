@@ -45,7 +45,6 @@ public final class ActivityIndicator {
     return indicator
   }()
   
-  
   private func bind() {
     showIndicator
       .asDriver(onErrorJustReturn: false)
@@ -73,6 +72,7 @@ public final class ActivityIndicator {
     isIndicatorShow = true
     activityIndicator.startAnimating()
   }
+  
   private func stopAnimating() {
     if isIndicatorShow {
       isIndicatorShow = false

@@ -88,7 +88,6 @@ extension NetworkService {
     _ model: T.Type,
     _ endpoint: any APIEndpoint
   ) -> Result<T?, Error> {
-    print(data)
     let statusCode = response.statusCode
     if !(200...299).contains(statusCode) {
       let error = WalWalNetworkError.serverError(statusCode: statusCode)

@@ -32,7 +32,7 @@ final public class WalwalInterceptor: RequestInterceptor {
       print("🚨 재시도 횟수가 너무 많습니다")
       return completion(.doNotRetry)
     }
-    print(statusCode)
+    
     if request.retryCount < retryLimit {
       if statusCode == 401 {
         /// refresh 토큰이 존재하는 경우
