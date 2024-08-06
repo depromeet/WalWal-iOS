@@ -8,6 +8,9 @@
 
 import UIKit
 
+import RxSwift
+import RxCocoa
+
 public extension UITableView {
     /// UITableViewCell 등록
     /// - Parameters:
@@ -40,3 +43,32 @@ public extension UITableView {
     }
 }
 
+extension Reactive where Base: UITableView {
+  /// 데이터 스트림을 UITableView에 바인딩
+  ///
+  /// ReusableView를 준수하는 UITableViewCell에 데이터를 바인딩 할 때 사용하기 위한 메서드
+  ///
+  /// 사용 예시
+  /// ```swift
+  /// Observable.just([1, 2, 3])
+  /// .bind(to: tableView.rx.items(CustomCell.self)) { index, data, cell in
+  ///
+  /// }
+  /// .disposed(by: disposeBag)
+  public func items<Sequence: Swift.Sequence, Cell: UITableViewCell, Source: ObservableType>
+  (_ cellType: Cell.Type = Cell.self)
+  -> (_ source: Source)
+  -> (_ configureCell: @escaping (Int, Sequence.Element, Cell) -> Void)
+  -> Disposable where Source.Element == Sequence, Cell: ReusableView {
+    return { source in
+      return { configureCell in
+        return source.bind(to: self.base.rx.items(
+          cellIdentifier: cellType.reuseIdentifier,
+          cellType: cellType)
+        ) { index, data, cell in
+          configureCell(index, data, cell)
+        }
+      }
+    }
+  }
+}

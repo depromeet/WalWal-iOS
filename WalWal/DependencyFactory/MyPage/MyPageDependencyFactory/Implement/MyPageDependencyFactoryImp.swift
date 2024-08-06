@@ -43,5 +43,14 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     return MyPageViewControllerImp(reactor: reactor)
   }
   
+  public func makeProfileSettingReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileSettingReactor {
+    return ProfileSettingReactorImp(
+      coordinator: coordinator
+    )
+  }
+  
+  public func makeProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController {
+    return ProfileSettingViewControllerImp(reactor: reactor)
+  }
   
 }
