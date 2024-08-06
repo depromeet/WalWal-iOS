@@ -59,7 +59,7 @@ final class WalWalFeedCellView: UIView {
   
   private let missionImageView = UIImageView()
   
-  private let missionDateChip = WalWalChip(style: .date, size: CGSize(width: 121, height: 33))
+  private let missionDateChip = WalWalChip(opacity: 0.5, style: .filled, size: CGSize(width: 121, height: 33))
   
   private let boostIconImageView = UIImageView().then {
     $0.image = ResourceKitAsset.Sample.fire.image
