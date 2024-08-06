@@ -27,6 +27,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   private typealias AssetImage = ResourceKitAsset.Assets
   
   // MARK: - UI
+  
   private let containerView = UIView()
   private let navigationBar = WalWalNavigationBar(
     leftItems: [.back],
@@ -104,14 +105,14 @@ extension ProfileSettingViewControllerImp: View {
   
   public func bindAction(reactor: R) {
     Observable.just(())
-      .map { ProfileSettingReactorAction.viewDidLoad }
+      .map { Reactor.Action.viewDidLoad }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
     
     settingTableView.rx
       .itemSelected
-      .map { ProfileSettingReactorAction.didSelectItem(at: $0) }
+      .map { Reactor.Action.didSelectItem(at: $0) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
@@ -125,8 +126,7 @@ extension ProfileSettingViewControllerImp: View {
             iconImage: model.iconImage,
             title: model.title,
             subTitle: model.subTitle,
-            rightText: model.rightText,
-            isVersionCell: !model.rightText.isEmpty
+            rightText: model.rightText
           )
         }
         .disposed(by: disposeBag)

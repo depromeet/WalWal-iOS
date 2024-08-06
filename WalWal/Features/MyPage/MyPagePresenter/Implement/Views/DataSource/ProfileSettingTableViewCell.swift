@@ -22,6 +22,7 @@ final class ProfileSettingTableViewCell: UITableViewCell, ReusableView {
   private typealias AssetImage = ResourceKitAsset.Assets
   
   // MARK: - UI
+  
   private let containerView = UIView()
   private let iconImageView = UIImageView()
   private let titleLabel = UILabel().then {
@@ -38,8 +39,6 @@ final class ProfileSettingTableViewCell: UITableViewCell, ReusableView {
     $0.textAlignment = .right
   }
   
-  private var isVersionCell: Bool = false
-  
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setAttribute()
@@ -53,8 +52,10 @@ final class ProfileSettingTableViewCell: UITableViewCell, ReusableView {
   override func layoutSubviews() {
     super.layoutSubviews()
     
-    containerView.pin.all()
-    containerView.flex.layout()
+    containerView.pin
+      .all()
+    containerView.flex
+      .layout()
   }
   
   override func prepareForReuse() {
@@ -88,36 +89,34 @@ final class ProfileSettingTableViewCell: UITableViewCell, ReusableView {
             $0.addItem(titleLabel)
               .minWidth(58)
             $0.addItem(subTitleLabel)
-              .grow(1)
+              .minWidth(21)
               .marginLeft(20)
           }
         $0.addItem(rightLabel)
+          .minWidth(80)
           .marginRight(19)
           .alignSelf(.center)
-          .grow(1)
       }
   }
   
   private func resetCell() {
     iconImageView.image = nil
-    isVersionCell = false
+    titleLabel.text = nil
+    subTitleLabel.text = nil
+    rightLabel.text = nil
   }
   
   func configureCell(
     iconImage: UIImage,
     title: String,
-    subTitle: String = "",
-    rightText: String = "",
-    isVersionCell: Bool = false
+    subTitle: String,
+    rightText: String
   ) {
-    self.isVersionCell = isVersionCell
     iconImageView.image = iconImage
     titleLabel.text = title
-    subTitleLabel.text = subTitle
-    rightLabel.text = rightText
+    subTitleLabel.text = subTitle.isEmpty ? " " : subTitle
+    rightLabel.text = rightText.isEmpty ? " " : rightText
     
-    // Show or hide subTitleLabel and rightLabel based on the isSpecialCell flag
-    subTitleLabel.isHidden = !isVersionCell
-    rightLabel.isHidden = !isVersionCell
+    
   }
 }
