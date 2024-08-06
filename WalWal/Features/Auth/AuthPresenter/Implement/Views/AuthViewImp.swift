@@ -22,9 +22,9 @@ import RxSwift
 import RxCocoa
 
 public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, AuthViewController {
-  typealias Color = ResourceKitAsset.Colors
-  typealias Font = ResourceKitFontFamily.KR
-  typealias Image = ResourceKitAsset.Sample
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Font = ResourceKitFontFamily.KR
+  private typealias Image = ResourceKitAsset.Sample
   
   public var disposeBag = DisposeBag()
   public let authReactor: R

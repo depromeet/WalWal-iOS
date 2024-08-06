@@ -35,9 +35,9 @@ enum SocialLoginType {
 ///     - .kakao: 카카오 로그인
 ///     - .apple: 애플 로그인
 final class SocialLoginButton: UIButton {
-  typealias Color = ResourceKitAsset.Colors
-  typealias Font = ResourceKitFontFamily.KR
-  typealias Image = ResourceKitAsset.Assets
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Font = ResourceKitFontFamily.KR
+  private typealias Image = ResourceKitAsset.Assets
   
   private var socialType: SocialLoginType = .apple
   private let containerView = UIView().then {
