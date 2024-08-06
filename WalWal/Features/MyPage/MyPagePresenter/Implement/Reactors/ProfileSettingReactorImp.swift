@@ -34,6 +34,7 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       isLogoutSuccess: false,
       isRevokeSuccess: false,
       appVersionString: "",
+      isRecent: false,
       settings: []
     )
   }
@@ -43,8 +44,7 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     case .viewDidLoad:
       return Observable.concat([
         Observable.just(.setLoading(true)),
-        fetchAppVersion()
-          .map { Mutation.setAppVersion($0) },
+        fetchAppVersion(),
         Observable.just(.setLoading(false))
       ])
     case let .didSelectItem(at: indexPath):
@@ -54,31 +54,15 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
-    let currentVersion = getCurrentAppVersion()
-    var isRecent: Bool = true
     
     switch mutation {
     case let .setLoading(isLoading):
       newState.isLoading = isLoading
     case let .setAppVersion(fetchedVersion):
-      isRecent = currentVersion >= fetchedVersion
-      newState.appVersionString = currentVersion
+      newState.appVersionString = fetchedVersion
+      newState.isRecent = state.appVersionString <= fetchedVersion
       if state.settings.isEmpty {
-        // Only update settings if it's empty, or handle differently
-        newState.settings = [
-          .init(title: "로그아웃",
-                iconImage: AssetImage._16x16NextButton.image,
-              subTitle: "",
-              rightText: ""),
-          .init(title: "버전 정보",
-                iconImage: AssetImage._16x16NextButton.image,
-                subTitle: currentVersion,
-                rightText: isRecent ? "최신 버전입니다." : "업데이트 필요"),
-          .init(title: "회원 탈퇴",
-                iconImage: AssetImage._16x16NextButton.image,
-              subTitle: "",
-              rightText: "")
-        ]
+        newState.settings = createSettings(appVersion: fetchedVersion, isRecent: newState.isRecent)
       }
     case let .setSettingItemModel(setting):
       newState.settings = setting
@@ -86,6 +70,9 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       newState.isLogoutSuccess = success
     case let .setRevoke(success):
       newState.isRevokeSuccess = success
+      print(newState)
+    case let .setIsRecentVersion(isRecent):
+      newState.isRecent = isRecent
     }
     return newState
   }
@@ -103,12 +90,15 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     return Observable.empty()
   }
   
-  
-  private func fetchAppVersion() -> Observable<String> {
-    return Observable<String>.create { observer in
+  private func fetchAppVersion() -> Observable<Mutation> {
+    return Observable<Mutation>.create { observer in
       // 실제 마켓 버전 받아오는 로직 필요
       let fetchedVersion = "1.0"
-      observer.onNext(fetchedVersion)
+      let currentVersion = self.getCurrentAppVersion()
+      let isRecent = currentVersion >= fetchedVersion
+      
+      observer.onNext(.setAppVersion(fetchedVersion))
+      observer.onNext(.setIsRecentVersion(isRecent))
       observer.onCompleted()
       return Disposables.create()
     }
@@ -121,5 +111,21 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     }
     return version
   }
+  
+  private func createSettings(appVersion: String, isRecent: Bool) -> [ProfileSettingItemModel] {
+    return [
+      .init(title: "로그아웃",
+            iconImage: AssetImage._16x16NextButton.image,
+            subTitle: "",
+            rightText: ""),
+      .init(title: "버전 정보",
+            iconImage: AssetImage._16x16NextButton.image,
+            subTitle: appVersion,
+            rightText: isRecent ? "최신 버전입니다." : "업데이트 필요"),
+      .init(title: "회원 탈퇴",
+            iconImage: AssetImage._16x16NextButton.image,
+            subTitle: "",
+            rightText: "")
+    ]
+  }
 }
-
