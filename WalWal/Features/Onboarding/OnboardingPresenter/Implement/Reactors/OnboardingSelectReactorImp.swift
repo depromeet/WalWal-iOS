@@ -1,14 +1,14 @@
 //
 //  OnboardingSelectReactorImp.swift
-//  AuthPresenter
+//  OnboardingPresenter
 //
 //  Created by Jiyeon on 7/31/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import AuthPresenter
-import AuthDomain
-import AuthCoordinator
+import OnboardingPresenter
+import OnboardingDomain
+import OnboardingCoordinator
 
 import ReactorKit
 import RxSwift
@@ -19,9 +19,9 @@ public final class OnboardingSelectReactorImp: OnboardingSelectReactor {
   public typealias State = OnboardingSelectReactorState
   
   public let initialState: State
-  public let coordinator: any AuthCoordinator
+  public let coordinator: any OnboardingCoordinator
   
-  public init(coordinator: any AuthCoordinator) {
+  public init(coordinator: any OnboardingCoordinator) {
     self.coordinator = coordinator
     self.initialState = State()
   }

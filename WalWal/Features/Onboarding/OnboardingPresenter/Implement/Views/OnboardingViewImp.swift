@@ -1,14 +1,16 @@
 //
-//  OnboardingViewImp.swift
-//  AuthPresenter
+//  OnboardingViewControllerImp.swift
 //
-//  Created by Jiyeon on 7/31/24.
-//  Copyright © 2024 olderStoneBed.io. All rights reserved.
+//  Onboarding
+//
+//  Created by Jiyeon
 //
 
+
 import UIKit
-import AuthPresenter
+import OnboardingPresenter
 import ResourceKit
+import Utility
 
 import Then
 import PinLayout
@@ -18,8 +20,8 @@ import RxSwift
 import RxCocoa
 
 public final class OnboardingViewControllerImp<R: OnboardingReactor>: UIViewController, OnboardingViewController, UIScrollViewDelegate {
-  typealias Color = ResourceKitAsset.Colors
-  typealias Font = ResourceKitFontFamily.KR
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Font = ResourceKitFontFamily.KR
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R

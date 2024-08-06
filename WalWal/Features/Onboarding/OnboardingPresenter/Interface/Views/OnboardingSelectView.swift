@@ -1,6 +1,6 @@
 //
 //  OnboardingSelectView.swift
-//  AuthPresenter
+//  OnboardingPresenter
 //
 //  Created by Jiyeon on 7/31/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.

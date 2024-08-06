@@ -1,20 +1,20 @@
 //
 //  OnboardingSelectReactor.swift
-//  AuthPresenter
+//  OnboardingPresenter
 //
 //  Created by Jiyeon on 7/31/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import AuthDomain
-import AuthCoordinator
+import OnboardingDomain
+import OnboardingCoordinator
 
 import ReactorKit
 
 public enum OnboardingSelectReactorAction {
   case selectAnimal(dog: Bool, cat: Bool)
   case initSelectView
-  case nextButtonTapped(flow: AuthCoordinatorFlow)
+  case nextButtonTapped(flow: OnboardingCoordinatorFlow)
 }
 
 public enum OnboardingSelectReactorMutation {
@@ -32,7 +32,7 @@ public protocol OnboardingSelectReactor:
   Reactor where Action == OnboardingSelectReactorAction,
                 Mutation == OnboardingSelectReactorMutation,
                 State == OnboardingSelectReactorState {
-  var coordinator: any AuthCoordinator { get }
+  var coordinator: any OnboardingCoordinator { get }
   
-  init(coordinator: any AuthCoordinator)
+  init(coordinator: any OnboardingCoordinator)
 }

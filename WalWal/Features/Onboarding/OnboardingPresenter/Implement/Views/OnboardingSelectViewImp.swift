@@ -1,13 +1,13 @@
 //
 //  OnboardingSelectViewImp.swift
-//  AuthPresenter
+//  OnboardingPresenter
 //
 //  Created by Jiyeon on 7/19/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
 import UIKit
-import AuthPresenter
+import OnboardingPresenter
 import DesignSystem
 import ResourceKit
 

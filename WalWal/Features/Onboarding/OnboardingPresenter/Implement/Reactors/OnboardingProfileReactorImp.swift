@@ -1,20 +1,20 @@
 //
 //  OnboardingProfileReactor.swift
-//  AuthPresenterImp
+//  OnboardingPresenter
 //
 //  Created by Jiyeon on 7/31/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import AuthDomain
-import AuthCoordinator
-import AuthPresenter
+import Foundation
+import OnboardingDomain
+import OnboardingCoordinator
+import OnboardingPresenter
 import Utility
 import DesignSystem
 
 import ReactorKit
 import RxSwift
-import Foundation
 
 public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   public typealias Action = OnboardingProfileReactorAction
@@ -22,9 +22,9 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   public typealias State = OnboardingProfileReactorState
   
   public let initialState: State
-  public let coordinator: any AuthCoordinator
+  public let coordinator: any OnboardingCoordinator
   
-  public init(coordinator: any AuthCoordinator) {
+  public init(coordinator: any OnboardingCoordinator) {
     self.coordinator = coordinator
     self.initialState = State()
   }

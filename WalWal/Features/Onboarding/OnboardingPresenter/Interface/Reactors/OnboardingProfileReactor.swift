@@ -1,14 +1,13 @@
 //
 //  OnboardingProfileReactor.swift
-//  AuthPresenter
+//  OnboardingPresenter
 //
 //  Created by Jiyeon on 7/31/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import UIKit
-import AuthDomain
-import AuthCoordinator
+import OnboardingDomain
+import OnboardingCoordinator
 import DesignSystem
 
 import ReactorKit
@@ -34,8 +33,8 @@ public protocol OnboardingProfileReactor:
   Reactor where Action == OnboardingProfileReactorAction,
                 Mutation == OnboardingProfileReactorMutation,
                 State == OnboardingProfileReactorState {
-  var coordinator: any AuthCoordinator { get }
+  var coordinator: any OnboardingCoordinator { get }
   
-  init(coordinator: any AuthCoordinator)
+  init(coordinator: any OnboardingCoordinator)
 }
 

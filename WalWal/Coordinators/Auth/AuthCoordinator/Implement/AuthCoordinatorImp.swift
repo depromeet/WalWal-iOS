@@ -74,22 +74,7 @@ extension AuthCoordinatorImp {
 // MARK: - Create and Start(Show) with Flow(View)
 
 extension AuthCoordinatorImp {
-  public func startOnboarding() {
-    let reactor = authDependencyFactory.makeOnboardingReactor(coordinator: self)
-    let vc = authDependencyFactory.makeOnboardingViewController(reactor: reactor)
-    self.baseViewController = vc
-    self.pushViewController(viewController: vc, animated: false)
-  }
-  func showOnboardingSelect() {
-    let reactor = authDependencyFactory.makeOnboardingSelectReactor(coordinator: self)
-    let vc = authDependencyFactory.makeOnboardingSelectViewController(reactor: reactor)
-    self.pushViewController(viewController: vc, animated: true)
-  }
-  func showOnboardingProfile() {
-    let reactor = authDependencyFactory.makeOnboardingProfileReactor(coordinator: self)
-    let vc = authDependencyFactory.makeOnboardingProfileViewController(reactor: reactor)
-    self.pushViewController(viewController: vc, animated: true)
-  }
+  
 }
 
 // MARK: - Auth(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
