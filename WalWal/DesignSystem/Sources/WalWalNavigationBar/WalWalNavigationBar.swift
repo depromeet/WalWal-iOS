@@ -135,7 +135,7 @@ extension WalWalNavigationBar {
                 .marginRight(16)
             }
           }
-          .marginLeft(15)
+          .marginLeft(10)
         
         flex.addItem(self.titleLabel)
           .grow(1)

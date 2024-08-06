@@ -34,7 +34,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   // MARK: - UI
   
   private let rootContainer = UIView()
-  private let navigationBar = WalWalNavigationBar(leftItems: [.back], title: nil, rightItems: [])
+  private let navigationBar = WalWalNavigationBar(leftItems: [.back], leftItemSize: 40, title: nil, rightItems: [])
   private let contentContainer = UIView()
   private let progressView = ProgressView(index: 2)
   private let titleView = UIView()
