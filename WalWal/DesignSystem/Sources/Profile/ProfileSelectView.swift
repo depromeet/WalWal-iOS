@@ -7,9 +7,7 @@
 //
 
 import UIKit
-import Utility
 import ResourceKit
-import DesignSystem
 
 import RxSwift
 import RxCocoa
@@ -17,7 +15,8 @@ import PinLayout
 import FlexLayout
 
 /// 프로필 이미지 선택 뷰
-final class ProfileSelectView: UIView {
+public final class ProfileSelectView: UIView {
+  private typealias Image = ResourceKitAsset.Sample
   
   /// ViewController에게 PHPickerView presnest 요청하기 위한 이벤트
   ///
@@ -28,23 +27,21 @@ final class ProfileSelectView: UIView {
   ///    PHPickerManager.shared.presentPicker(vc: owner)
   ///   }
   ///   .disposed(by: disposeBag)
-  let showPHPicker = PublishRelay<Void>()
+  public let showPHPicker = PublishRelay<Void>()
   
   /// 현재 포커스되어있는 셀의 이미지 데이터
-  ///
-  /// 완료 버튼 터치 시 포커스되어있는 프로필 이미지 정보 가져옴
-  var focusProfileItem: ProfileCellModel {
-    return profileItem[focusIndex]
-  }
-  var curItems = PublishRelay<ProfileCellModel>()
+  public var curProfileItems = PublishRelay<ProfileCellModel>()
   
-  /// 현재 포커스 셀 인덱스
-  private var focusIndex: Int = 0
   private let changeSelectImage = PublishRelay<ProfileSelectCell>()
-  private var profileItem = [
+  
+  private let defaultImages = [Image.yelloImageSample.image, Image.pinkImageSample.image, Image.greenImageSample.image, Image.skyImageSample.image, Image.blueImageSample.image, Image.purpleImageSample.image]
+  private var defaultImageIndex: Int = 0
+  private var defaultImageCount = 6
+  
+  private lazy var profileItem = [
     ProfileCellModel(
       profileType: .defaultImage,
-      curImage: UIImage(systemName: "star") // TODO: - 기본 이미지 설정
+      curImage: Image.yelloImageSample.image // TODO: - 기본 이미지 설정
     ),
     ProfileCellModel(
       profileType: .selectImage,
@@ -52,11 +49,12 @@ final class ProfileSelectView: UIView {
     )
   ]
   private var disposeBag = DisposeBag()
+  
   // MARK: - UI
   
-  private let profileSize: CGFloat = 170.adjusted
+  private let profileSize: CGFloat = 170.adjustedWidth
   private let viewWidth: CGFloat = UIScreen.main.bounds.width
-  private let marginItems: CGFloat = 17.adjusted
+  private let marginItems: CGFloat = 17.adjustedWidth
   
   private let rootContainer = UIView()
   lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout()).then {
@@ -75,7 +73,9 @@ final class ProfileSelectView: UIView {
     $0.bounces = false
   }
   
-  init() {
+  // MARK: - Initialize
+  
+  public init() {
     super.init(frame: .zero)
     setLayout()
     bind()
@@ -88,7 +88,7 @@ final class ProfileSelectView: UIView {
   
   // MARK: - Layout
   
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     super.layoutSubviews()
     rootContainer.pin.all()
     rootContainer.flex.layout()
@@ -122,12 +122,15 @@ final class ProfileSelectView: UIView {
           .asDriver()
           .drive(with: self) { owner, _ in
             if data.profileType == .defaultImage {
-              cell.changeProfileImage(.defaultImage)
+              let nxtIndex = (owner.defaultImageIndex+1) % owner.defaultImages.count
+              owner.defaultImageIndex = nxtIndex
+              owner.profileItem[index].curImage = owner.defaultImages[nxtIndex]
+              cell.changeProfileImage(.defaultImage, image: owner.defaultImages[nxtIndex])
+              owner.curProfileItems.accept(owner.profileItem[index])
             } else {
               owner.showPHPicker.accept(())
               owner.changeSelectImage.accept(cell)
             }
-            
           }
           .disposed(by: cell.disposeBag)
       }
@@ -156,24 +159,17 @@ final class ProfileSelectView: UIView {
         let (cell, photo) = result
         cell.changeProfileImage(.selectImage, image: photo)
         owner.profileItem[1].curImage = photo
-        owner.curItems.accept(owner.profileItem[1])
+        owner.curProfileItems.accept(owner.profileItem[1])
       }
       .disposed(by: disposeBag)
     
-    curItems
-      .distinctUntilChanged()
-      .bind(with: self) { owner, items in
-        dump(items)
-      }
-      .disposed(by: disposeBag)
   }
-  
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension ProfileSelectView: UICollectionViewDelegateFlowLayout {
-  func scrollViewWillEndDragging(
+  public func scrollViewWillEndDragging(
     _ scrollView: UIScrollView,
     withVelocity velocity: CGPoint,
     targetContentOffset: UnsafeMutablePointer<CGPoint>
@@ -190,13 +186,13 @@ extension ProfileSelectView: UICollectionViewDelegateFlowLayout {
     targetContentOffset.pointee = offset
   }
   
-  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+  public func scrollViewDidScroll(_ scrollView: UIScrollView) {
     let scrolledOffset = scrollView.contentOffset.x + scrollView.contentInset.left
     let cellWidth = profileSize + marginItems
     let index = Int(round(scrolledOffset / cellWidth))
-    focusIndex = index
-    curItems.accept(profileItem[index])
     let centerX = scrollView.center.x + scrollView.contentOffset.x
+    
+    curProfileItems.accept(profileItem[index])
     
     for cell in collectionView.visibleCells {
       let cellCenterX = cell.center.x

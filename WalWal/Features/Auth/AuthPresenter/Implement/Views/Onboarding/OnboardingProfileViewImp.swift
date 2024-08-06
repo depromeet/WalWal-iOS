@@ -10,7 +10,7 @@ import UIKit
 import AuthPresenter
 import ResourceKit
 import DesignSystem
-import Utility
+//import Utility
 
 import Then
 import PinLayout
@@ -165,18 +165,18 @@ extension OnboardingProfileViewControllerImp: View {
     let nicknameObservable = nicknameTextField.rx.text.orEmpty
       .throttle(.milliseconds(350), scheduler: MainScheduler.instance)
     
-    let inputValue =  Observable.combineLatest(nicknameObservable, profileSelectView.curItems)
+    let inputValue =  Observable.combineLatest(nicknameObservable, profileSelectView.curProfileItems)
     
     inputValue
       .map {
-        return Reactor.Action.checkCondition(nickname: $0, profile: $1)
+        Reactor.Action.checkCondition(nickname: $0, profile: $1)
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
     nextButton.rx.tap
       .withLatestFrom(inputValue) {
-        return Reactor.Action.register(nickname: $1.0, profile: $1.1)
+        Reactor.Action.register(nickname: $1.0, profile: $1.1)
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
