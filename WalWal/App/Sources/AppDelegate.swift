@@ -54,20 +54,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 private extension AppDelegate {
-  func requestAuthorization() {
-      UNUserNotificationCenter.current().delegate = self
-      
-//      let authOptions: UNAuthorizationOptions = [
-//          .alert,
-//          .badge,
-//          .sound
-//      ]
-//      UNUserNotificationCenter.current().requestAuthorization(
-//          options: authOptions,
-//          completionHandler: { _, _ in }
-//      )
-  }
-
+  
   func getFCMToken() {
     Messaging.messaging().token { token, error in
       if let error = error {
@@ -80,21 +67,20 @@ private extension AppDelegate {
   }
   
   func configure(_ application: UIApplication) {
-    /// 알림 등록
-    requestAuthorization()
-    /// KakaoSDK 등록
-    KakaoSDK.initSDK(appKey: "29e3431e2dc66a607f511c0a05f0963b")
-    /// APNS에 Device Token 등록
-    application.registerForRemoteNotifications()
     /// Firebase설정
     FirebaseApp.configure()
     Messaging.messaging().delegate = self
+    UNUserNotificationCenter.current().delegate = self
+    /// APNS에 Device Token 등록
+    application.registerForRemoteNotifications()
+    /// KakaoSDK 등록
+    KakaoSDK.initSDK(appKey: "29e3431e2dc66a607f511c0a05f0963b")
   }
 }
 
 
 extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
-    
+  
   /// APNs 등록 및 토큰 콜백
   func application(
     application: UIApplication,
@@ -102,8 +88,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
   ) {
     /// APNs토큰 세팅
     Messaging.messaging().apnsToken = deviceToken
-    /// 토큰 값 콜백
-    getFCMToken()
+    print("didRegisterForRemoteNotificationsWithDeviceToken 호출")
   }
   
   /// 일반적으로 앱 시작 시 등록토큰을 통해, FCM Token 관찰
@@ -112,6 +97,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     didReceiveRegistrationToken fcmToken: String?
   ) {
     guard let fcmToken else { return }
+    print("didReceiveRegistrationToken 호출")
+    print("토큰 주세요 :: \(fcmToken)")
     // TODO: - 여기서 FCM토큰 Local에 저장 (UserDefault)
     self.fcmToken.accept(fcmToken)
   }
