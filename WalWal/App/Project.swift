@@ -37,6 +37,10 @@ let project = Project(
                 ]
               ]
             ],
+            "UIBackgroundModes": [
+                "fetch",
+                "remote-notification",
+            ],
             "LSApplicationQueriesSchemes": [
               "kakaokompassauth"
             ]
