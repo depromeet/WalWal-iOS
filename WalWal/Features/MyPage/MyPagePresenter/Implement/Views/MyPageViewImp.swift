@@ -54,12 +54,12 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   )
   
   public var disposeBag = DisposeBag()
-  public var __reactor: R
+  public var mypageReactor: R
   
   public init(
-      reactor: R
+    reactor: R
   ) {
-    self.__reactor = reactor
+    self.mypageReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -71,10 +71,10 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    self.reactor = mypageReactor
     setAttribute()
     setLayout()
     bind()
-    self.reactor = __reactor
   }
   
   public override func viewDidLayoutSubviews() {
@@ -86,7 +86,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
       .flex
       .layout()
   }
-   
+  
   // MARK: - Methods
   
   
@@ -111,11 +111,6 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   }
   
   func bind() {
-    calendar.selectedDayData
-      .subscribe {
-        print($0)
-      }
-      .disposed(by: disposeBag)
   }
 }
 
@@ -130,6 +125,11 @@ extension MyPageViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
+    calendar.selectedDayData
+      .map {
+        Reactor.Action.didSelectCalendarItem($0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
