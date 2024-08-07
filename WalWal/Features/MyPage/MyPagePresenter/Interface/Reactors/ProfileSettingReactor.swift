@@ -17,12 +17,12 @@ import RxSwift
 // Cell 구성 모델
 public struct ProfileSettingItemModel {
   public let title: String
-  public let iconImage: UIImage
+  public let iconImage: UIImage?
   public let subTitle: String
   public let rightText: String
   
   public init(title: String,
-              iconImage: UIImage,
+              iconImage: UIImage?,
               subTitle: String,
               rightText: String) {
     self.title = title
