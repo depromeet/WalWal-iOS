@@ -13,7 +13,7 @@ import DesignSystem
 import ReactorKit
 
 public enum OnboardingProfileReactorAction {
-  case register(nickname: String, profile: ProfileCellModel)
+  case register(nickname: String, profile: ProfileCellModel, petType: String)
   case checkCondition(nickname: String, profile: ProfileCellModel)
 }
 
@@ -35,6 +35,9 @@ public protocol OnboardingProfileReactor:
                 State == OnboardingProfileReactorState {
   var coordinator: any OnboardingCoordinator { get }
   
-  init(coordinator: any OnboardingCoordinator)
+  init(
+    coordinator: any OnboardingCoordinator,
+    registerUseCase: any RegisterUseCase
+  )
 }
 

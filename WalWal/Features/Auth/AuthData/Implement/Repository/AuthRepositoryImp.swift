@@ -28,4 +28,13 @@ public final class AuthRepositoryImp: AuthRepository {
       .asObservable()
       .asSingle()
   }
+  
+  public func register(nickname: String, pet: String) -> Single<AuthTokenDTO> {
+    let body = RegisterBody(nickname: nickname, raisePet: pet)
+    let endPoint = AuthEndpoint<AuthTokenDTO>.register(body: body)
+    return networkService.request(endpoint: endPoint)
+      .compactMap { $0 }
+      .asObservable()
+      .asSingle()
+  }
 }

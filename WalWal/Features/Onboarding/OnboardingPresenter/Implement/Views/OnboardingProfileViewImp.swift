@@ -27,6 +27,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   private let profileSize: CGFloat = 170.adjusted
   private let marginProfileItem: CGFloat = 17.adjusted
   private let maxNicknameLength: Int = 14
+  private let petType: String
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
@@ -61,6 +62,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   
   public init(reactor: R, petType: String = "") {
     self.onboardingReactor = reactor
+    self.petType = petType
     super.init(nibName: nil, bundle: nil)
     print(petType)
   }
@@ -176,7 +178,7 @@ extension OnboardingProfileViewControllerImp: View {
     
     nextButton.rx.tap
       .withLatestFrom(inputValue) {
-        Reactor.Action.register(nickname: $1.0, profile: $1.1)
+        Reactor.Action.register(nickname: $1.0, profile: $1.1, petType: self.petType)
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)

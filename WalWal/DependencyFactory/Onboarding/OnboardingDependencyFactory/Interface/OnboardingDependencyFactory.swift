@@ -24,6 +24,8 @@ public protocol OnboardingDependencyFactory {
   
   func makeAuthData() -> AuthRepository
   
+  func makeRegisterUseCase() -> RegisterUseCase
+  
   func makeOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor
   func makeOnboardingSelectReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingSelectReactor
   func makeOnboardingProfileReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingProfileReactor

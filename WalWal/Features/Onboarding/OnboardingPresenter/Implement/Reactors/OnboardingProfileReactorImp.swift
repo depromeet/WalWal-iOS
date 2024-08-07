@@ -23,16 +23,23 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   
   public let initialState: State
   public let coordinator: any OnboardingCoordinator
+  private let registerUseCase: any RegisterUseCase
   
-  public init(coordinator: any OnboardingCoordinator) {
+  public init(
+    coordinator: any OnboardingCoordinator,
+    registerUseCase: any RegisterUseCase
+  ) {
     self.coordinator = coordinator
+    self.registerUseCase = registerUseCase
     self.initialState = State()
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case let .register(nickname, profile):
-      print(nickname, profile)
+    case let .register(nickname, profile, petType):
+      // TODO: - 닉네임 유효성 체크
+      // TODO: - 사진 업로드
+      let _ = registerUseCase.excute(nickname: nickname, pet: petType) // TODO: - 토큰 저장
       return .never()
     case let .checkCondition(nickname, profile):
       return checkValidForm(nickname: nickname, profile: profile)
