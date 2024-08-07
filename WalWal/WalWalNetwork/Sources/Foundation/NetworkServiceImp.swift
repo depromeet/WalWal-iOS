@@ -25,13 +25,21 @@ public final class NetworkService: NetworkServiceProtocol {
   public func request<E: APIEndpoint>(endpoint: E, isNeedInterceptor: Bool = true) -> Single<E.ResponseType?> where E: APIEndpoint {
     requestLogging(endpoint)
     return RxAlamofire.requestJSON(endpoint, interceptor: WalwalInterceptor())
-      .do(onError: { error in
-        print("🔴 요청 에러: \(error)")
-      })
       .map { response, anyData -> (HTTPURLResponse, Data) in
         let convertedData = try JSONSerialization.data(withJSONObject: anyData)
         return (response, convertedData)
       }
+      .catch({ error in
+        guard let afError = error.asAFError, let responseCode = afError.responseCode else {
+          let walwalError = WalWalNetworkError.unknown(error)
+          self.responseError(endpoint, result: walwalError)
+          return .error(walwalError)
+        }
+        
+        let walwalError = WalWalNetworkError.networkError(responseCode)
+        self.responseError(endpoint, result: walwalError)
+        return .error(walwalError)
+      })
       .withUnretained(self)
       .flatMap { owner, result -> Single<E.ResponseType?> in
         let (response, data) = result
@@ -40,9 +48,6 @@ public final class NetworkService: NetworkServiceProtocol {
         case .success(let responseData):
           return .just(responseData)
         case .failure(let error):
-          if let error = error as? WalWalNetworkError {
-            owner.responseError(endpoint, result: error)
-          }
           return .error(error)
         }
       }
@@ -73,7 +78,6 @@ public final class NetworkService: NetworkServiceProtocol {
             single(.success(true))
           case .failure(let fail):
             let error = WalWalNetworkError.networkError(fail.responseCode ?? 0)
-            self.responseError(endpoint, result: error)
             single(.failure(error))
           }
         }
@@ -93,18 +97,25 @@ extension NetworkService {
   ) -> Result<T?, Error> {
     let statusCode = response.statusCode
     if !(200...299).contains(statusCode) {
-      let error = WalWalNetworkError.serverError(statusCode: statusCode)
+      var error = WalWalNetworkError.serverError(statusCode: statusCode)
+      switch statusCode {
+      case 400...499:
+        error = WalWalNetworkError.networkError(statusCode)
+      case 500...599:
+        error = WalWalNetworkError.serverError(statusCode: statusCode)
+      default:
+        error = WalWalNetworkError.networkError(statusCode)
+      }
       responseError(endpoint, result: error)
       return .failure(error)
     }
-    
     do {
       let responseModel = try JSONDecoder().decode(BaseResponse<T>.self, from: data)
       if responseModel.success {
         responseSuccess(endpoint, result: responseModel)
         return .success(responseModel.data)
       } else {
-        let error = WalWalNetworkError.serverError(statusCode: statusCode)
+        let error = WalWalNetworkError.networkError(statusCode)
         responseError(endpoint, result: error)
         return .failure(error)
       }

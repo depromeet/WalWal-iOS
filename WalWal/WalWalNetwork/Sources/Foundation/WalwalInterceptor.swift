@@ -58,9 +58,12 @@ final public class WalwalInterceptor: RequestInterceptor {
           completion(.doNotRetryWithError(WalWalNetworkError.tokenReissueFailed))
         }
       }
-    } else if statusCode == 404 {
-      /// 유저를 찾을 수 없는 상태
-      completion(.doNotRetry)
+      else if statusCode == 404 {
+        /// 유저를 찾을 수 없는 상태
+        completion(.retry)
+      } else {
+        completion(.doNotRetry)
+      }
     }
   }
 }
