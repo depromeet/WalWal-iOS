@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyANzbbkpVo9vLTlCDh2VmB3xynFZpavM-k</string>
+	<key>GCM_SENDER_ID</key>
+	<string>79412313592</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>olderStoneBed.io.walwal.dev</string>
+	<key>PROJECT_ID</key>
+	<string>walwal-dev-fad47</string>
+	<key>STORAGE_BUCKET</key>
+	<string>walwal-dev-fad47.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:79412313592:ios:9f868a8bef6f2ff3f12a0d</string>
+</dict>
+</plist>

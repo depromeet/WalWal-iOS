@@ -11,6 +11,10 @@ import DependencyPlugin
 
 let project = Project(
   name: "WalWal",
+  packages: [
+    .remote(url: "https://github.com/firebase/firebase-ios-sdk.git",
+            requirement: .upToNextMajor(from: "10.25.0"))
+  ],
   targets: [
     Target(
       name: "WalWal",
@@ -33,17 +37,28 @@ let project = Project(
                 ]
               ]
             ],
+            "UIBackgroundModes": [
+                "fetch",
+                "remote-notification",
+            ],
             "LSApplicationQueriesSchemes": [
               "kakaokompassauth"
             ]
           ]
       ),
       sources: ["Sources/**"],
-      resources: ["Resources/**"],
+      resources: [
+        /// 우선 dev만 처리
+        .glob(
+          pattern: "Resources/**",
+          excluding: ["Resources/Release/**"]
+        )
+      ],
       entitlements: "../WalWal.entitlements",
       dependencies: [
         .ThirdParty.KakaoSDKCommon,
         .ThirdParty.KakaoSDKAuth,
+        .ThirdParty.FirebaseMessaging,
         
         .DependencyFactory.Auth.Implement,
         .DependencyFactory.Sample.Implement,

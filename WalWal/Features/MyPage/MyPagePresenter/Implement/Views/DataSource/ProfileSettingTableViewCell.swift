@@ -107,7 +107,7 @@ final class ProfileSettingTableViewCell: UITableViewCell, ReusableView {
   }
   
   func configureCell(
-    iconImage: UIImage,
+    iconImage: UIImage?,
     title: String,
     subTitle: String,
     rightText: String

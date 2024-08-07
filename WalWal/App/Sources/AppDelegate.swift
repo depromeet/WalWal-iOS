@@ -6,46 +6,38 @@
 //
 
 import UIKit
-
-import SplashDependencyFactoryImp
-import AuthDependencyFactoryImp
-import WalWalTabBarDependencyFactoryImp
-import MissionDependencyFactoryImp
-import MyPageDependencyFactoryImp
 import AppCoordinator
+import LocalStorage
 
+import RxSwift
+import RxCocoa
 import KakaoSDKCommon
 import KakaoSDKAuth
+import FirebaseCore
+import FirebaseMessaging
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
-  var window: UIWindow?
-  /// 메모리에 계속 남아있을 수 있도록, 전역 변수로 만들어야함.... (여기서 시간 많이 날려써요 ㅠㅠㅠㅠ)
-  var appCoordinator: (any AppCoordinator)?
   
-  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    KakaoSDK.initSDK(appKey: "29e3431e2dc66a607f511c0a05f0963b")
+  var window: UIWindow?
+  var appCoordinator: (any AppCoordinator)?
+  private let fcmToken = PublishRelay<String>()
+  private let callBackDeepLink = PublishRelay<String>()
+  
+  func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
+    
+    
+    configure(application)
     
     let window = UIWindow(frame: UIScreen.main.bounds)
     self.window = window
     
-    /// 전체 의존성 구현체를 이곳에서 한번에 정의
-    let splashDependencyFactory = SplashDependencyFactoryImp()
-    let authDependencyFactory = AuthDependencyFactoryImp()
-    let walwalTabBarDependencyFactory = WalWalTabBarDependencyFactoryImp()
-    let missionDependencyFactory = MissionDependencyFactoryImp()
-    let myPageDependencyFactory = MyPageDependencyFactoryImp()
-    
     let navigationController = UINavigationController()
     
-    /// 최상단 코디네이터인 AppCoordinator에 모든 의존성의 인터페이스 주입
-    self.appCoordinator = splashDependencyFactory.makeAppCoordinator(
-      navigationController: navigationController,
-      authDependencyFactory: authDependencyFactory,
-      walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
-      missionDependencyFactory: missionDependencyFactory,
-      myPageDependencyFactory: myPageDependencyFactory
-    )
+    self.appCoordinator = self.injectWalWalImplement(navigation: navigationController)
     window.rootViewController = navigationController
     window.makeKeyAndVisible()
     
@@ -60,5 +52,76 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     return false
   }
+}
+
+private extension AppDelegate {
+  
+  func getFCMToken() {
+    Messaging.messaging().token { token, error in
+      if let error = error {
+        print("🤖 Error fetching FCM registration token: \(error)")
+      } else if let token = token {
+        print("🤖 FCM registration token: \(token)")
+        UserDefaults.setValue(value: token, forUserDefaultKey: .notification)
+      }
+    }
+  }
+  
+  func configure(_ application: UIApplication) {
+    /// Firebase설정
+    FirebaseApp.configure()
+    Messaging.messaging().delegate = self
+    UNUserNotificationCenter.current().delegate = self
+    /// APNS에 Device Token 등록
+    application.registerForRemoteNotifications()
+    /// KakaoSDK 등록
+    KakaoSDK.initSDK(appKey: "29e3431e2dc66a607f511c0a05f0963b")
+  }
+}
+
+
+extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
+  
+  /// APNs 등록 및 토큰 콜백
+  func application(
+    application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+  ) {
+    /// APNs토큰 세팅
+    Messaging.messaging().apnsToken = deviceToken
+    print("didRegisterForRemoteNotificationsWithDeviceToken 호출")
+  }
+  
+  /// 일반적으로 앱 시작 시 등록토큰을 통해, FCM Token 관찰
+  func messaging(
+    _ messaging: Messaging,
+    didReceiveRegistrationToken fcmToken: String?
+  ) {
+    guard let fcmToken else { return }
+    print("didReceiveRegistrationToken 호출")
+    print("토큰 주세요 :: \(fcmToken)")
+    UserDefaults.setValue(value: fcmToken, forUserDefaultKey: .notification)
+    self.fcmToken.accept(fcmToken)
+  }
+  
+  /// 앱이 inActive 상태일 때, 어떤 형식으로 notification을 보여줄지 설정 (인액티브 상태에서 보이기 싫으면 세팅 안해도 됨)
+  /// 현재 상태는, [배너에 뱃지 타입으로 소리와 함께 노티를 보낸다] 라는 의미임
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    willPresent notification: UNNotification
+  ) async -> UNNotificationPresentationOptions {
+    return [.banner, .sound, .badge]
+  }
+  
+  /// 앱이 suspend 상태일 때, 배너를 눌렀을 때의 처리 (네비게이션 루트 세팅 해야함 -> urlScheme)
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse
+  ) async {
+    /// let userInfo = response.notification.request.content.userInfo
+    /// let urlScheme = userInfo["urlScheme"]
+    /// callBackDeepLink.accept(urlScheme)
+  }
+  
 }
 
