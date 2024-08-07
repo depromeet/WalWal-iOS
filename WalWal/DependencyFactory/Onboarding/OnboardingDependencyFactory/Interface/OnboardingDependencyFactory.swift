@@ -23,8 +23,10 @@ public protocol OnboardingDependencyFactory {
   ) -> any OnboardingCoordinator
   
   func makeAuthData() -> AuthRepository
+  func makeOnboardingData() -> OnboardingRepository
   
   func makeRegisterUseCase() -> RegisterUseCase
+  func makeNicknameValidUseCase() -> NicknameValidUseCase
   
   func makeOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor
   func makeOnboardingSelectReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingSelectReactor

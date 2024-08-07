@@ -24,23 +24,23 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   public let initialState: State
   public let coordinator: any OnboardingCoordinator
   private let registerUseCase: any RegisterUseCase
+  private let nicknameValidUseCase: any NicknameValidUseCase
   
   public init(
     coordinator: any OnboardingCoordinator,
-    registerUseCase: any RegisterUseCase
+    registerUseCase: any RegisterUseCase,
+    nicknameValidUseCase: any NicknameValidUseCase
   ) {
     self.coordinator = coordinator
     self.registerUseCase = registerUseCase
+    self.nicknameValidUseCase = nicknameValidUseCase
     self.initialState = State()
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .register(nickname, profile, petType):
-      // TODO: - 닉네임 유효성 체크
-      // TODO: - 사진 업로드
-      let _ = registerUseCase.excute(nickname: nickname, pet: petType) // TODO: - 토큰 저장
-      return .never()
+      return checkNickname(nickname: nickname, profile: profile, petType: petType)
     case let .checkCondition(nickname, profile):
       return checkValidForm(nickname: nickname, profile: profile)
     }
@@ -53,6 +53,8 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
       newState.buttonEnable = isEnable
     case let .invalidNickname(message):
       newState.invalidMessage = message
+    case let .registerError(message):
+      newState.errorMessage = message
     }
     return newState
   }
@@ -60,6 +62,37 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
 
 
 extension OnboardingProfileReactorImp {
+  
+  /// 닉네임 중복 여부 체크 메서드
+  private func checkNickname(nickname: String, profile: ProfileCellModel, petType: String) -> Observable<Mutation> {
+    return nicknameValidUseCase.excute(nickname: nickname)
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, result -> Observable<Mutation> in
+        // TODO: - 프로필 사진 업로드 요청
+        return owner.register(nickname: nickname, petType: petType)
+      }
+      .catch { error -> Observable<Mutation> in
+        return .just(.invalidNickname(message: "이미 누군가 사용하고 있는 닉네임이에요"))
+      }
+      
+  }
+  
+  // TODO: - 프로필 업로드 요청 메서드
+  
+  /// 최종 회원가입 요청 메서드
+  private func register(nickname: String, petType: String) -> Observable<Mutation> {
+    return registerUseCase.excute(nickname: nickname, pet: petType)
+      .asObservable()
+      .flatMap { result -> Observable<Mutation> in
+        return .never()
+      }
+      .catch { error -> Observable<Mutation> in
+        return .just(.registerError(message: "회원가입을 완료하지 못했어요"))
+      }
+  }
+  
+  
   private func checkValidForm(nickname: String, profile: ProfileCellModel) -> Observable<Mutation> {
     if nickname.count < 2 {
       return .just(.buttonEnable(isEnable: false))

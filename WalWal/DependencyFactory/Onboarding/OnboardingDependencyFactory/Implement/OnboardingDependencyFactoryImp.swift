@@ -45,8 +45,17 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     return AuthRepositoryImp(networkService: networkService)
   }
   
+  public func makeOnboardingData() -> OnboardingRepository {
+    let networkService = NetworkService()
+    return OnboardingRepositoryImp(networkService: networkService)
+  }
+  
   public func makeRegisterUseCase() -> RegisterUseCase {
     return RegisterUseCaseImp(authRepository: makeAuthData())
+  }
+  
+  public func makeNicknameValidUseCase() -> NicknameValidUseCase {
+    return NicknameValidUseCaseImp(repository: makeOnboardingData())
   }
   
   public func makeOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor {
@@ -60,7 +69,8 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
   public func makeOnboardingProfileReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingProfileReactor {
     return OnboardingProfileReactorImp(
       coordinator: coordinator,
-      registerUseCase: makeRegisterUseCase()
+      registerUseCase: makeRegisterUseCase(),
+      nicknameValidUseCase: makeNicknameValidUseCase()
     )
   }
   

@@ -21,12 +21,14 @@ public enum OnboardingProfileReactorMutation {
 //  case invalidCondition(button: Bool, msg: String?)
   case buttonEnable(isEnable: Bool)
   case invalidNickname(message: String)
+  case registerError(message: String)
 }
 
 public struct OnboardingProfileReactorState {
   public init() { }
   @Pulse public var invalidMessage: String = ""
   public var buttonEnable: Bool = false
+  @Pulse public var errorMessage: String = ""
 }
 
 public protocol OnboardingProfileReactor:
@@ -37,7 +39,8 @@ public protocol OnboardingProfileReactor:
   
   init(
     coordinator: any OnboardingCoordinator,
-    registerUseCase: any RegisterUseCase
+    registerUseCase: any RegisterUseCase,
+    nicknameValidUseCase: any NicknameValidUseCase
   )
 }
 
