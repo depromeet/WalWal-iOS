@@ -41,7 +41,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     $0.backgroundColor = Colors.gray150.color
   }
   
-  private let calendar = WalWalCalendar(initialModels: [])
+  private let calendar = WalWalCalendar(initialModels: SampleDataGenerator.createRandomSampleCalendarModels())
   
   private let profileCardView = WalWalProfileCardView(
     profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
@@ -73,6 +73,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     super.viewDidLoad()
     setAttribute()
     setLayout()
+    bind()
     self.reactor = __reactor
   }
   
@@ -108,6 +109,14 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
         flex.addItem(profileCardView)
       }
   }
+  
+  func bind() {
+    calendar.selectedDayData
+      .subscribe {
+        print($0)
+      }
+      .disposed(by: disposeBag)
+  }
 }
 
 extension MyPageViewControllerImp: View {
@@ -121,7 +130,6 @@ extension MyPageViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    
   }
   
   public func bindState(reactor: R) {
@@ -130,5 +138,26 @@ extension MyPageViewControllerImp: View {
   
   public func bindEvent() {
     
+  }
+}
+
+private enum SampleDataGenerator {
+  static func createRandomSampleCalendarModels(count: Int = 50) -> [WalWalCalendarModel] {
+    let sampleImageData = ResourceKitAsset.Sample.calendarCellSample.image.pngData() ?? Data()
+    let calendar = Calendar.current
+    let today = Date()
+    let oneYearAgo = calendar.date(byAdding: .year, value: -1, to: today)!
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    
+    let sampleModels = (1...count).map { _ -> WalWalCalendarModel in
+      let randomDate = Date(timeIntervalSince1970: .random(in: oneYearAgo.timeIntervalSince1970...today.timeIntervalSince1970))
+      let dateString = dateFormatter.string(from: randomDate)
+      let id = "\(dateString)의 이미지 입니당 🐶"
+      return WalWalCalendarModel(imageId: id, date: dateString, imageData: sampleImageData)
+    }
+    
+    return sampleModels.sorted { $0.date < $1.date }
   }
 }
