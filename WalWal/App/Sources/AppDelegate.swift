@@ -7,6 +7,7 @@
 
 import UIKit
 import AppCoordinator
+import LocalStorage
 
 import RxSwift
 import RxCocoa
@@ -61,7 +62,7 @@ private extension AppDelegate {
         print("🤖 Error fetching FCM registration token: \(error)")
       } else if let token = token {
         print("🤖 FCM registration token: \(token)")
-        // TODO: - 여기서 FCM토큰 Local에 저장 (UserDefault)
+        UserDefaults.setValue(value: token, forUserDefaultKey: .notification)
       }
     }
   }
@@ -99,7 +100,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     guard let fcmToken else { return }
     print("didReceiveRegistrationToken 호출")
     print("토큰 주세요 :: \(fcmToken)")
-    // TODO: - 여기서 FCM토큰 Local에 저장 (UserDefault)
+    UserDefaults.setValue(value: fcmToken, forUserDefaultKey: .notification)
     self.fcmToken.accept(fcmToken)
   }
   
