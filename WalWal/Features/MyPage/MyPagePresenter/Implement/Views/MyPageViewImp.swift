@@ -127,7 +127,8 @@ extension MyPageViewControllerImp: View {
   public func bindAction(reactor: R) {
     calendar.selectedDayData
       .map {
-        Reactor.Action.didSelectCalendarItem($0) }
+        Reactor.Action.didSelectCalendarItem($0)
+      }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
