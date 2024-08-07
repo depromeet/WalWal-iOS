@@ -11,6 +11,10 @@ import DependencyPlugin
 
 let project = Project(
   name: "WalWal",
+  packages: [
+    .remote(url: "https://github.com/firebase/firebase-ios-sdk.git",
+            requirement: .upToNextMajor(from: "10.25.0"))
+  ],
   targets: [
     Target(
       name: "WalWal",
