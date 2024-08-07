@@ -60,9 +60,12 @@ public final class NetworkService: NetworkServiceProtocol {
   /// ```
   public func upload<E: APIEndpoint> (endpoint: E, imageData: Data) -> Single<Bool> where E: APIEndpoint{
     requestLogging(endpoint)
-    
+    let headers: HTTPHeaders = HTTPHeaders(endpoint.headers)
     return Single.create { single -> Disposable in
-      AF.upload(imageData, with: endpoint)
+      AF.upload(imageData,
+                to: endpoint.baseURL,
+                method: .put,
+                headers: headers)
         .validate(statusCode: 200...299)
         .responseData(emptyResponseCodes: [200]) { response in
           switch response.result {
