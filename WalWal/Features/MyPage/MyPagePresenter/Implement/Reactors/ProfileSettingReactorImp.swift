@@ -111,15 +111,15 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   private func createSettings(appVersion: String, isRecent: Bool) -> [ProfileSettingItemModel] {
     return [
       .init(title: "로그아웃",
-            iconImage: Images.backS.image.rotate(radians: .pi),
+            iconImage: Sample.logout.image,
             subTitle: "",
             rightText: ""),
       .init(title: "버전 정보",
-            iconImage: Images.backS.image.rotate(radians: .pi),
+            iconImage: Sample.swap.image,
             subTitle: appVersion,
             rightText: isRecent ? "최신 버전입니다." : "업데이트 필요"),
       .init(title: "회원 탈퇴",
-            iconImage: Images.backS.image.rotate(radians: .pi),
+            iconImage: Sample.xSquare.image,
             subTitle: "",
             rightText: "")
     ]

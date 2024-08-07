@@ -73,13 +73,13 @@ final class WalWalFeedCellView: UIView {
   }
   
   private let seperatorCircle = UIView().then {
-    $0.backgroundColor = AssetColor.gray500.color
+    $0.backgroundColor = Colors.gray500.color
     $0.layer.cornerRadius = 1
   }
   
   private let missionDateLabel = UILabel().then {
-    $0.font = FontKR.B2
-    $0.textColor = AssetColor.gray500.color
+    $0.font = Fonts.KR.B2
+    $0.textColor = Colors.gray500.color
   }
   
   // MARK: - Initializers
@@ -108,7 +108,6 @@ final class WalWalFeedCellView: UIView {
   
   func configureFeed(feedData: WalWalFeedModel) {
     followButton.alpha = feedData.isFeedCell ? 1 : 0
-    missionDateChip.rx.text.onNext(feedData.date)
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = feedData.missionTitle
     profileImageView.image = feedData.profileImage
@@ -118,8 +117,8 @@ final class WalWalFeedCellView: UIView {
     let missionDate = feedData.date
     let attributedString = NSMutableAttributedString(string: missionDate)
     
-    let numberFont = FontEN.Caption // 숫자에 적용할 폰트
-    let defaultFont = FontKR.B2 // 기본 폰트
+    let numberFont = Fonts.EN.Caption // 숫자에 적용할 폰트
+    let defaultFont = Fonts.KR.B2 // 기본 폰트
     
     attributedString.addAttribute(.font, value: defaultFont, range: NSRange(location: 0, length: missionDate.count))
     

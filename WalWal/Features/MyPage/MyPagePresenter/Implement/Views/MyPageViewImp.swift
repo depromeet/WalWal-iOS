@@ -21,7 +21,7 @@ import RxCocoa
 
 public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, MyPageViewController {
   
-  private typealias Images = ResourceKitAsset.Images
+  private typealias Images = ResourceKitAsset.Assets
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
