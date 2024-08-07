@@ -39,11 +39,18 @@ let project = Project(
           ]
       ),
       sources: ["Sources/**"],
-      resources: ["Resources/**"],
+      resources: [
+        /// 우선 dev만 처리
+        .glob(
+          pattern: "Resources/**",
+          excluding: ["Resources/Release/**"]
+        )
+      ],
       entitlements: "../WalWal.entitlements",
       dependencies: [
         .ThirdParty.KakaoSDKCommon,
         .ThirdParty.KakaoSDKAuth,
+        .ThirdParty.FirebaseMessaging,
         
         .DependencyFactory.Auth.Implement,
         .DependencyFactory.Sample.Implement,
