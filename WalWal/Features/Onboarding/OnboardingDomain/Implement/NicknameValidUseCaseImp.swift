@@ -8,6 +8,7 @@
 
 import Foundation
 import OnboardingData
+import OnboardingDomain
 
 import RxSwift
 
@@ -22,4 +23,5 @@ public final class NicknameValidUseCaseImp: NicknameValidUseCase {
   public func excute(nickname: String) -> Single<Void> {
     return onboardingRepository.checkValidNickname(nickname: nickname)
   }
+  
 }

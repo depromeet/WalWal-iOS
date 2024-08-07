@@ -58,6 +58,10 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     return NicknameValidUseCaseImp(repository: makeOnboardingData())
   }
   
+  public func makeUploadImageUseCase() -> UploadImageUseCase {
+    return UploadImageUseCaseImp(onboardingRepository: makeOnboardingData())
+  }
+  
   public func makeOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor {
     return OnboardingReactorImp(coordinator: coordinator)
   }
@@ -70,7 +74,8 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     return OnboardingProfileReactorImp(
       coordinator: coordinator,
       registerUseCase: makeRegisterUseCase(),
-      nicknameValidUseCase: makeNicknameValidUseCase()
+      nicknameValidUseCase: makeNicknameValidUseCase(),
+      uploadImageUseCase: makeUploadImageUseCase()
     )
   }
   

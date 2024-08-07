@@ -8,6 +8,7 @@
 
 import Foundation
 import AuthData
+import OnboardingDomain
 
 import RxSwift
 

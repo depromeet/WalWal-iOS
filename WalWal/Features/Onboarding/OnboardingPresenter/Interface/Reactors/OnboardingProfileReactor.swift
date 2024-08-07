@@ -40,7 +40,8 @@ public protocol OnboardingProfileReactor:
   init(
     coordinator: any OnboardingCoordinator,
     registerUseCase: any RegisterUseCase,
-    nicknameValidUseCase: any NicknameValidUseCase
+    nicknameValidUseCase: any NicknameValidUseCase,
+    uploadImageUseCase: any UploadImageUseCase
   )
 }
 

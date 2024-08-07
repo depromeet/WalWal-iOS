@@ -27,6 +27,7 @@ public protocol OnboardingDependencyFactory {
   
   func makeRegisterUseCase() -> RegisterUseCase
   func makeNicknameValidUseCase() -> NicknameValidUseCase
+  func makeUploadImageUseCase() -> UploadImageUseCase
   
   func makeOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor
   func makeOnboardingSelectReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingSelectReactor

@@ -25,15 +25,18 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   public let coordinator: any OnboardingCoordinator
   private let registerUseCase: any RegisterUseCase
   private let nicknameValidUseCase: any NicknameValidUseCase
+  private let uploadImageUseCase: any UploadImageUseCase
   
   public init(
     coordinator: any OnboardingCoordinator,
     registerUseCase: any RegisterUseCase,
-    nicknameValidUseCase: any NicknameValidUseCase
+    nicknameValidUseCase: any NicknameValidUseCase,
+    uploadImageUseCase: any UploadImageUseCase
   ) {
     self.coordinator = coordinator
     self.registerUseCase = registerUseCase
     self.nicknameValidUseCase = nicknameValidUseCase
+    self.uploadImageUseCase = uploadImageUseCase
     self.initialState = State()
   }
   
