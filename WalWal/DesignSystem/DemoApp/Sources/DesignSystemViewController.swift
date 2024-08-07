@@ -16,6 +16,7 @@ fileprivate enum DesignSystemType: String, CaseIterable {
   case WalWalProfileCardView
   case WalWalInputBox
   case WalWalFeed
+  case WalWalButton
 }
 
 final class DesignSystemViewController: UITableViewController {
@@ -67,6 +68,8 @@ final class DesignSystemViewController: UITableViewController {
       self.navigationController?.pushViewController(WalWalInputBoxDemoViewController(), animated: true)
     case .WalWalFeed:
       self.navigationController?.pushViewController(WalWalFeedViewController(), animated: true)
+    case .WalWalButton:
+      self.navigationController?.pushViewController(WalWalButtonDemoViewController(), animated: true)
     default: return
     }
   }
