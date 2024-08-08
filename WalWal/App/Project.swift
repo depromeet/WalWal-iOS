@@ -68,7 +68,14 @@ let project = Project(
         .DependencyFactory.WalWalTabBar.Implement,
         .DependencyFactory.Mission.Implement,
         .DependencyFactory.MyPage.Implement
-      ]
+      ],
+      settings: .settings(
+        base: [
+          "CODE_SIGN_STYLE": "Manual",
+          "DEVELOPMENT_TEAM": "6NXQDZ68FD",
+          "CODE_SIGN_IDENTITY": "Apple Distribution: yongin cho (6NXQDZ68FD)"
+        ]
+      )
     )
   ]
 )

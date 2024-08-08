@@ -55,6 +55,13 @@ def build_and_upload_app(app_identifier:, scheme:, configuration:)
     in_house: false
   )
 
+  update_code_signing_settings(
+    use_automatic_signing: false,
+    path: project_path,
+    team_id: "6NXQDZ68FD",
+    profile_name: provisioning_profile_name
+  )
+
   match(
     type: "appstore", 
     app_identifier: app_identifier,
@@ -72,28 +79,21 @@ def build_and_upload_app(app_identifier:, scheme:, configuration:)
     build_number: updeted_build_number
   )
 
-  update_code_signing_settings(
-    use_automatic_signing: false,
-    path: project_path,
-    team_id: "6NXQDZ68FD",
-    profile_name: provisioning_profile_name
-  )
-
   build_app(
     workspace: workspace_path,
     scheme: scheme,
     configuration: configuration,
     xcconfig: xcconfig_path,
     export_method: "app-store",
-    export_team_id: "6NXQDZ68FD",
     export_options: {
 	  method: "app-store",
 	  provisioningProfiles: { 
 		app_identifier => provisioning_profile_name
-	  }
+	  },
+	  team_id: "6NXQDZ68FD"
     },
     codesigning_identity: "Apple Distribution: yongin cho (6NXQDZ68FD)",
-    skip_codesigning: true,
+    xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=6NXQDZ68FD"
   )
 
   upload_to_testflight
