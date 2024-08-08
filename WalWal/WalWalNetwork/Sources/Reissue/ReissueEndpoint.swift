@@ -34,7 +34,7 @@ extension ReissueEndpoint {
   var method: HTTPMethod {
     switch self {
     case .reissue:
-      return .get
+      return .post
     }
   }
   
@@ -48,7 +48,7 @@ extension ReissueEndpoint {
   var headerType: HTTPHeaderType {
     switch self {
     case .reissue:
-      return .authorization("")
+      return .plain
     }
   }
 }

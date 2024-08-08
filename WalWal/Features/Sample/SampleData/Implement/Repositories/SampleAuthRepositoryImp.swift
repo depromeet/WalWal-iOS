@@ -32,12 +32,12 @@ public final class SampleAuthRepositoryImp: SampleAuthRepository {
   public func signUp(nickname: String, profile: Data) -> Single<SampleSignUpDTO> {
     let body = SampleSignUpBody(nickname: nickname, profile: profile)
     let endpoint = AuthEndpoint<SampleSignUpDTO>.signUp(body: body)
-    return networkService.request(endpoint: endpoint).compactMap{ $0 }.asObservable().asSingle()
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: false).compactMap{ $0 }.asObservable().asSingle()
   }
   
   public func signIn(id: String, password: String) -> Single<SampleSignInDTO> {
     let body = SampleSignInBody(id: id, password: password)
     let endpoint = AuthEndpoint<SampleSignInDTO>.signIn(body: body)
-    return networkService.request(endpoint: endpoint).compactMap{ $0 }.asObservable().asSingle()
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: false).compactMap{ $0 }.asObservable().asSingle()
   }
 }

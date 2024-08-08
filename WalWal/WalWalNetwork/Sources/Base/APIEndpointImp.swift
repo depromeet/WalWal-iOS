@@ -31,6 +31,10 @@ public extension APIEndpoint {
         HTTPHeaderFieldKey.contentType.rawValue: HTTPHeaderFieldValue.json.rawValue,
         HTTPHeaderFieldKey.authentication.rawValue: "Bearer \(token)"
       ]
+    case .uploadJPEG:
+      return [
+        HTTPHeaderFieldKey.contentType.rawValue: HTTPHeaderFieldValue.jpeg.rawValue
+      ]
     }
   }
   
