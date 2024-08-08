@@ -74,7 +74,6 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     self.reactor = mypageReactor
     setAttribute()
     setLayout()
-    bind()
   }
   
   public override func viewDidLayoutSubviews() {
@@ -108,9 +107,6 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
           .grow(1)
         flex.addItem(profileCardView)
       }
-  }
-  
-  func bind() {
   }
 }
 
