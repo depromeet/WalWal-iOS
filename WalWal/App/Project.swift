@@ -24,6 +24,7 @@ let project = Project(
       infoPlist: InfoPlist.extendingDefault(
         with:
           [
+            "CFBundleIconName": "AppIcon",
             "CFBundleDevelopmentRegion": "ko_KR",
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
