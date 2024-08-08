@@ -15,13 +15,21 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
-### ios custom_lane
+### ios dev
 
 ```sh
-[bundle exec] fastlane ios custom_lane
+[bundle exec] fastlane ios dev
 ```
 
+개발용 앱을 TestFlight에 업로드
 
+### ios release
+
+```sh
+[bundle exec] fastlane ios release
+```
+
+배포용 앱을 TestFlight에 업로드
 
 ### ios certificates
 
