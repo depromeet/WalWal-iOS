@@ -43,7 +43,7 @@ public final class BubbleView: UIView {
   ) {
     super.init(frame: .zero)
     self.backgroundColor = color
-    self.iconImageView.image = image ?? UIImage()
+    self.iconImageView.image = image
     self.titleLabel.text = text
     configureAttribute()
     configureLayout()
@@ -78,8 +78,10 @@ public final class BubbleView: UIView {
       .justifyContent(.center)
       .padding(9.5, 20)
       .define {
-        $0.addItem(iconImageView)
-          .marginRight(4)
+        if iconImageView.image != nil {
+          $0.addItem(iconImageView)
+            .marginRight(4)
+        }
         $0.addItem(titleLabel)
           .height(19)
       }
