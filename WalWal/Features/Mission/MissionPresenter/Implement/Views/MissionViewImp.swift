@@ -47,7 +47,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     $0.image = ResourceKitAsset.Sample.missionSample.image
     $0.contentMode = .scaleAspectFit
   }
-  private lazy var missionCountBubbleView = BubbleView(viewColor: Colors.gray150.color,
+  private lazy var missionCountBubbleView = BubbleView(color: Colors.gray150.color,
                                                        image: Images.missionStartIcon.image,
                                                        text: "\(missionCount)번째 미션을 수행해볼까요?")
   private let missionStartButton = UIButton().then {
