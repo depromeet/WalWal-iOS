@@ -29,6 +29,7 @@ let project = Project(
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
             "UILaunchStoryboardName": "LaunchScreen",
+            "ITSAppUsesNonExemptEncryption": false,
             "CFBundleURLTypes": [
               [
                 "CFBundleTypeRole": "Editor",
