@@ -14,9 +14,11 @@ public enum MyPageCoordinatorAction: ParentAction {
 }
 
 public enum MyPageCoordinatorFlow: CoordinatorFlow {
-  
+  case showRecordDetail
 }
 
-public protocol MyPageCoordinator: BaseCoordinator {
-
+public protocol MyPageCoordinator: BaseCoordinator
+where Flow == MyPageCoordinatorFlow,
+      Action == MyPageCoordinatorAction{
+  
 }
