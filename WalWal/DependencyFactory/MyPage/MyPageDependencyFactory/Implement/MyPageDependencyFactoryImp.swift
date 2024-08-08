@@ -59,7 +59,7 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     )
   }
   
-  public func makeRecordDetailReactorViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController {
+  public func makeRecordDetailViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController {
     return RecordDetailViewControllerImp(reactor: reactor)
   }
   

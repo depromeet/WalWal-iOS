@@ -103,7 +103,7 @@ extension MyPageCoordinatorImp {
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   fileprivate func showRecordDetailVC() {
     let reactor = myPageDependencyFactory.makeRecordDetailReactor(coordinator: self)
-     let RecordDetailVC = myPageDependencyFactory.makeRecordDetailReactorViewController(reactor: reactor)
+     let RecordDetailVC = myPageDependencyFactory.makeRecordDetailViewController(reactor: reactor)
      self.pushViewController(viewController: RecordDetailVC, animated: false)
   }
 }
