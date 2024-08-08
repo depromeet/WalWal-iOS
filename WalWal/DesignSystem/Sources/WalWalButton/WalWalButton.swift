@@ -24,7 +24,7 @@ public final class WalWalButton: UIView {
   
   // MARK: - UI
   
-  private let rootView = UIView().then {
+  fileprivate let rootView = UIView().then {
     $0.backgroundColor = .clear
   }
   
@@ -39,13 +39,17 @@ public final class WalWalButton: UIView {
   
   // MARK: - Properties
   
-  private let type: WalWalButtonType
+  fileprivate let type: WalWalButtonType
   private var title: String
   private let titleColor: UIColor
-  private var image: UIImage?
   private let _backgroundColor: UIColor
-  
+  private let selectedTitle: String
+  private let selectedTitleColor: UIColor
+  private let selectedBackgroundColor: UIColor
+  private var image: UIImage?
   private let disposeBag = DisposeBag()
+  
+  private let isSelected = BehaviorRelay<Bool>(value: false)
   
   // MARK: - Initializers
   
@@ -53,25 +57,35 @@ public final class WalWalButton: UIView {
   /// - Parameters:
   ///  - type: 버튼 타입
   ///  - title: 버튼 타이틀
+  ///  - selectedTitle: 선택된 버튼 타이틀
   ///  - titleColor: 버튼 타이틀 색상
-  ///  - image: 버튼 이미지
+  ///  - selectedTitleColor: 선택된 버튼 타이틀 색상
   ///  - backgroundColor: 버튼 배경 색상
+  ///  - selectedBackgroundColor: 선택된 버튼 배경 색상
+  ///  - image: 버튼 이미지
   public init(
     type: WalWalButtonType,
     title: String,
     titleColor: UIColor = ResourceKitAsset.Colors.black.color,
-    image: UIImage? = nil,
-    backgroundColor: UIColor
+    backgroundColor: UIColor,
+    selectedTitle: String,
+    selectedTitleColor: UIColor = ResourceKitAsset.Colors.black.color,
+    selectedBackgroundColor: UIColor,
+    image: UIImage? = nil
   ) {
     self.type = type
     self.title = title
     self.titleColor = titleColor
-    self.image = image
     self._backgroundColor = backgroundColor
+    self.selectedTitle = selectedTitle
+    self.selectedTitleColor = selectedTitleColor
+    self.selectedBackgroundColor = selectedBackgroundColor
+    self.image = image
     
     super.init(frame: .zero)
     configureAttribute()
     configureLayouts()
+    bind()
   }
   
   required init?(coder: NSCoder) {
@@ -114,5 +128,16 @@ public final class WalWalButton: UIView {
           .alignSelf(.center)
           .marginVertical(self.type.marginVertical)
       }
+  }
+  
+  private func bind() {
+    self.isSelected
+      .subscribe(onNext: { [weak self] isSelected in
+        guard let self = self else { return }
+        self.titleLabel.text = isSelected ? self.selectedTitle : self.title
+        self.titleLabel.textColor = isSelected ? self.selectedTitleColor : self.titleColor
+        self.rootView.backgroundColor = isSelected ? self.selectedBackgroundColor : self._backgroundColor
+      })
+      .disposed(by: disposeBag)
   }
 }
