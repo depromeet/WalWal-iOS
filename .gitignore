@@ -106,7 +106,7 @@ Dependencies/
 *.mobileprovision
 *.ipa
 *.app.dSYM.zip
-.env.default
+.env
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
