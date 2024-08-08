@@ -23,7 +23,7 @@ public final class AuthRepositoryImp: AuthRepository {
   public func socialLogin(provider: String, token: String) -> Single<AuthTokenDTO> {
     let body = SocialLoginBody(token: token)
     let endPoint = AuthEndpoint<AuthTokenDTO>.socialLogin(provider: provider, body: body)
-    return networkService.request(endpoint: endPoint)
+    return networkService.request(endpoint: endPoint, isNeedInterceptor: false)
       .compactMap{ $0 }
       .asObservable()
       .asSingle()
