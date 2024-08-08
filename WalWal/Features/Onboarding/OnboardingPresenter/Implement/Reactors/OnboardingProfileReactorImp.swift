@@ -72,8 +72,7 @@ extension OnboardingProfileReactorImp {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
-        // TODO: - 프로필 사진 업로드 요청
-        return owner.register(nickname: nickname, petType: petType)
+        return owner.uploadImage(profile: profile, nickname: nickname)
       }
       .catch { error -> Observable<Mutation> in
         return .just(.invalidNickname(message: "이미 누군가 사용하고 있는 닉네임이에요"))
@@ -82,12 +81,25 @@ extension OnboardingProfileReactorImp {
   }
   
   // TODO: - 프로필 업로드 요청 메서드
+  private func uploadImage(profile: ProfileCellModel, nickname: String) -> Observable<Mutation> {
+    guard let imagedata = profile.curImage?.jpegData(compressionQuality: 0.8) else { return .never() }
+    return uploadImageUseCase.excute(nickname: nickname, type: "JPEG", image: imagedata)
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, result -> Observable<Mutation> in
+        return owner.register(nickname: nickname, petType: "DOG")
+      }
+      .catch { error -> Observable<Mutation> in
+        return .never()
+      }
+  }
   
   /// 최종 회원가입 요청 메서드
   private func register(nickname: String, petType: String) -> Observable<Mutation> {
     return registerUseCase.excute(nickname: nickname, pet: petType)
       .asObservable()
       .flatMap { result -> Observable<Mutation> in
+        // TODO: - 미션 뷰 이동
         return .never()
       }
       .catch { error -> Observable<Mutation> in

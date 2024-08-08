@@ -32,7 +32,7 @@ public final class AuthRepositoryImp: AuthRepository {
   public func register(nickname: String, pet: String) -> Single<AuthTokenDTO> {
     let body = RegisterBody(nickname: nickname, raisePet: pet)
     let endPoint = AuthEndpoint<AuthTokenDTO>.register(body: body)
-    return networkService.request(endpoint: endPoint)
+    return networkService.request(endpoint: endPoint, isNeedInterceptor: false)
       .compactMap { $0 }
       .asObservable()
       .asSingle()

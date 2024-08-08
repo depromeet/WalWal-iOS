@@ -32,7 +32,7 @@ extension OnboardingEndPoint {
   var path: String {
     switch self {
     case .checkNickname:
-      return "/memebers/check-nickname"
+      return "/members/check-nickname"
     case .requestPresignedUrl:
       return "/images/members/me/upload-url"
     case .uploadImage:
@@ -71,7 +71,7 @@ extension OnboardingEndPoint {
         UserDefaults.string(forUserDefaultsKey: .temporaryToken)
       )
     case .uploadImage:
-      return .plain
+      return .uploadJPEG
     }
   }
 }

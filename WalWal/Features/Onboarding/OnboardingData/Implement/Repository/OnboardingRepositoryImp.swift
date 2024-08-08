@@ -22,7 +22,7 @@ public final class OnboardingRepositoryImp: OnboardingRepository {
   public func checkValidNickname(nickname: String) -> Single<Void> {
     let body = NicknameCheckBody(nickname: nickname)
     let endpoint = OnboardingEndPoint<EmptyResponse>.checkNickname(body: body)
-    return networkService.request(endpoint: endpoint)
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: false)
       .map { _ in return () }
   }
   
@@ -33,7 +33,7 @@ public final class OnboardingRepositoryImp: OnboardingRepository {
     return requestUploadImage(type: type, image: image)
       .flatMap { [weak self] result -> Single<Void> in
         guard let self = self else { return .never() }
-        return self.networkService.request(endpoint: endpoint)
+        return self.networkService.request(endpoint: endpoint, isNeedInterceptor: false)
           .map { _ in Void() }
       }
   }
@@ -41,13 +41,13 @@ public final class OnboardingRepositoryImp: OnboardingRepository {
   private func requestUploadImage(type: String, image: Data) -> Single<Bool> {
     let body = PresignedURLBody(imageFileExtension: type)
     let endpoint = OnboardingEndPoint<PresignedURLDTO>.requestPresignedUrl(body: body)
-    return networkService.request(endpoint: endpoint)
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: false)
       .compactMap { $0 }
       .asObservable()
       .asSingle()
-      .flatMap { [weak self] url in
+      .flatMap { [weak self] result in
         guard let self = self else { return .never() }
-        let endpoint = OnboardingEndPoint<EmptyResponse>.uploadImage(url: url.presignedUrl)
+        let endpoint = OnboardingEndPoint<EmptyResponse>.uploadImage(url: result.presignedUrl)
         return self.networkService.upload(endpoint: endpoint, imageData: image)
       }
   }
