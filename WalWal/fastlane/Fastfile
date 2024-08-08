@@ -1,3 +1,8 @@
+PROJECT_ROOT = File.expand_path('..', Dir.pwd)
+puts "Project root directory: #{PROJECT_ROOT}"
+
+
+
 default_platform(:ios)
 
 platform :ios do
@@ -6,9 +11,7 @@ platform :ios do
     build_and_upload_app(
       app_identifier: "olderStoneBed.io.walwal.dev",
       scheme: "WalWal",
-      configuration: "Debug",
-      version: options[:version],
-      build: options[:build]
+      configuration: "Debug"
     )
   end
 
@@ -17,9 +20,7 @@ platform :ios do
     build_and_upload_app(
       app_identifier: "olderStoneBed.io.walwal",
       scheme: "WalWal",
-      configuration: "Release",
-      version: options[:version],
-      build: options[:build]
+      configuration: "Release"
     )
   end
 
@@ -30,60 +31,71 @@ platform :ios do
   end
 end
 
-# 빌드를 간편하게 하기 위한 커스텀 함수들...
 
-def build_and_upload_app(app_identifier, scheme, configuration, version, build)
+# 빌드를 간편하게 하기 위한 커스텀 함수들...
+def build_and_upload_app(app_identifier:, scheme:, configuration:)
+  
+
+  project_path = File.join(PROJECT_ROOT, "App", "WalWal.xcodeproj")
+  xcconfig_path = File.join(PROJECT_ROOT, "Config", "#{configuration}.xcconfig")
+  workspace_path = File.join(PROJECT_ROOT, "WalWal.xcworkspace")
+  provisioning_profile_name = "match AppStore #{app_identifier}"
+
   update_app_identifier(
-    xcodeproj: "./WalWal.xcodeproj",
-    plist_path: "Info.plist",
+    xcodeproj: project_path,
+    plist_path: File.join(PROJECT_ROOT, "App", "Derived", "InfoPlists", "WalWal-Info.plist"),
     app_identifier: app_identifier
   )
-  
-  set_build_info(version, build)
-  
-  match(type: "appstore", app_identifier: app_identifier)
-  
+
+  api_key = app_store_connect_api_key(
+    key_id: ENV["APPSTORE_KEY_ID"],
+    issuer_id: ENV["APPSTORE_ISSUER_ID"],
+    key_content: ENV["API_KEY"],
+    duration: 500,
+    in_house: false
+  )
+
+  match(
+    type: "appstore", 
+    app_identifier: app_identifier,
+    team_id: "6NXQDZ68FD"
+  )
+
+  updeted_build_number = latest_testflight_build_number(
+                            username: "cocoa9805@naver.com",
+                            app_identifier: app_identifier, 
+                            team_id: "126120741"
+                          ) + 1
+
+  increment_build_number(
+    xcodeproj: project_path,
+    build_number: updeted_build_number
+  )
+
+  update_code_signing_settings(
+    use_automatic_signing: false,
+    path: project_path,
+    team_id: "6NXQDZ68FD",
+    profile_name: provisioning_profile_name
+  )
+
   build_app(
+    workspace: workspace_path,
     scheme: scheme,
     configuration: configuration,
-    xcconfig: "./WalWal/Config/#{configuration}.xcconfig",
-    output_directory: "./output/archives/#{configuration.downcase}",
-    export_method: "appstore"
+    xcconfig: xcconfig_path,
+    export_method: "app-store",
+    export_team_id: "6NXQDZ68FD",
+    export_options: {
+	  method: "app-store",
+	  provisioningProfiles: { 
+		app_identifier => provisioning_profile_name
+	  }
+    },
+    codesigning_identity: "Apple Distribution: yongin cho (6NXQDZ68FD)",
+    skip_codesigning: true,
   )
-  
-  upload_to_testflight(skip_waiting_for_build_processing: true)
-  
-  download_dsyms(
-    app_identifier: app_identifier,
-    output_directory: "./output/archives/#{configuration.downcase}"
-  )
-  
-  create_tag(version, build)
-end
 
-def set_build_info(new_version_number, new_build_number)
-  set_xcconfig_value("MARKETING_VERSION", new_version_number)
-  increment_build_number(
-    xcodeproj: './WalWal.xcodeproj',
-    build_number: new_build_number
-  )
-end
+  upload_to_testflight
 
-def set_xcconfig_value(targetKey, targetValue, xcconfigs_file_path = './WalWal/Config/WalWal.xcconfig')
-  configs = {}
-  File.open(xcconfigs_file_path, "r").each_line do |line|
-    value = line.split("=")
-    configs[value[0]] = value[1].strip
-  end
-  configs[targetKey] = targetValue if targetKey == "MARKETING_VERSION"
-  File.open(xcconfigs_file_path, 'w') do |out_file|
-    configs.each do |key, value|
-      out_file.puts "#{key}=#{value}"
-    end
-  end
-end
-
-def create_tag(new_version_number, new_build_number)
-  tag_name = "#{new_version_number}-#{new_build_number}"
-  system( `git tag #{tag_name} && git push -u origin "#{tag_name}"` )
 end
