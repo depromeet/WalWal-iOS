@@ -62,7 +62,7 @@ final public class WalwalInterceptor: RequestInterceptor {
         /// 유저를 찾을 수 없는 상태
         completion(.retry)
       } else {
-        completion(.doNotRetry)
+        completion(.doNotRetryWithError(error))
       }
     }
   }
