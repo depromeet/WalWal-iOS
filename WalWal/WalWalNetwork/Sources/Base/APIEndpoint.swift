@@ -47,8 +47,9 @@ enum HTTPHeaderFieldKey : String {
 }
 
 enum HTTPHeaderFieldValue: String {
-    case json = "Application/json"
-    case accessToken
+  case json = "Application/json"
+  case accessToken
+  case jpeg = "image/jpeg"
 }
 
 /// HTTP Header 설정 enum입니다.
@@ -64,6 +65,7 @@ enum HTTPHeaderFieldValue: String {
 public enum HTTPHeaderType {
   case plain
   case authorization(String)
+  case uploadJPEG
 }
 
 extension Encodable {
