@@ -45,8 +45,8 @@ public final class BubbleView: UIView {
     self.backgroundColor = color
     self.iconImageView.image = image ?? UIImage()
     self.titleLabel.text = text
-    setAttribute()
-    setLayout()
+    configureAttribute()
+    configureLayout()
   }
   
   required init?(coder: NSCoder) {
@@ -57,20 +57,21 @@ public final class BubbleView: UIView {
   
   override public func layoutSubviews() {
     super.layoutSubviews()
-    setAttribute()
+    configureAttribute()
     setTipShape(viewColor: self.backgroundColor ?? .clear, tipWidth: tipWidth, tipHeight: tipHeight)
   }
   
   // MARK: - Method
   
-  private func setAttribute() {
+  private func configureAttribute() {
     self.addSubview(containerView)
-    containerView.pin.all()
+    containerView.pin
+      .all()
     
     layer.cornerRadius = containerView.bounds.height / 2
   }
   
-  private func setLayout() {
+  private func configureLayout() {
     containerView.flex
       .direction(.row)
       .alignItems(.center)

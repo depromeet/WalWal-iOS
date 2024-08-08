@@ -47,9 +47,11 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     $0.image = ResourceKitAsset.Sample.missionSample.image
     $0.contentMode = .scaleAspectFit
   }
-  private lazy var missionCountBubbleView = BubbleView(color: Colors.gray150.color,
-                                                       image: Images.missionStartIcon.image,
-                                                       text: "\(missionCount)번째 미션을 수행해볼까요?")
+  private lazy var missionCountBubbleView = BubbleView(
+    color: Colors.gray150.color,
+    image: Images.missionStartIcon.image,
+    text: "\(missionCount)번째 미션을 수행해볼까요?"
+  )
   private let missionStartButton = UIButton().then {
     $0.backgroundColor = Colors.walwalOrange.color
     $0.setTitle("미션 시작하기", for: .normal)
@@ -77,8 +79,8 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    setAttribute()
-    setLayout()
+    configureAttribute()
+    configureLayout()
     self.reactor = missionReactor
   }
   
@@ -90,12 +92,12 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     rootContainer.flex.layout()
   }
   
-  public func setAttribute() {
+  public func configureAttribute() {
     view.backgroundColor = Colors.white.color
     view.addSubview(rootContainer)
   }
   
-  public func setLayout() {
+  public func configureLayout() {
     rootContainer.flex
       .paddingTop(80.adjusted)
       .define {
