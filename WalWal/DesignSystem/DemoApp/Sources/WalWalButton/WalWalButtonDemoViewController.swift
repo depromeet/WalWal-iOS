@@ -23,53 +23,63 @@ public final class WalWalButtonDemoViewController: UIViewController {
   private typealias Fonts = ResourceKitFontFamily
   
   private let containerView = UIView()
+  
+  let firstButton = WalWalButton(
+    type: .icon,
+    title: "다음",
+    titleColor: Colors.white.color,
+    backgroundColor: Colors.walwalOrange.color,
+    image: Images.watchS.image
+  )
+  
+  let secondButton = WalWalButton(
+    type: .normal,
+    title: "이미지 없음",
+    titleColor: Colors.white.color,
+    backgroundColor: Colors.gray500.color
+  )
+  
+  let thirdButton = WalWalButton(
+    type: .icon,
+    title: "😵",
+    titleColor: Colors.black.color,
+    backgroundColor: Colors.white.color,
+    image: Images.cameraS.image.withTintColor(Colors.blue.color)
+  )
+  
+  let forthButton = WalWalButton(
+    type: .normal,
+    title: "다음",
+    backgroundColor: Colors.blue.color,
+    disabledTitle: "완료",
+    disabledTitleColor: Colors.white.color,
+    disabledBackgroundColor: Colors.gray500.color
+  )
+  
   private let disposeBag = DisposeBag()
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    setupView()
+    configureView()
+    bind()
   }
   
-  private func setupView() {
+  private func configureView() {
     view.addSubview(containerView)
     
-    let firstButton = WalWalButton(
-      type: .icon,
-      title: "다음",
-      titleColor: Colors.white.color,
-      image: Images.watchS.image,
-      backgroundColor: Colors.walwalOrange.color
-    )
-    
-    let secondButton = WalWalButton(
-      type: .normal,
-      title: "이미지 없음",
-      titleColor: Colors.white.color,
-      backgroundColor: Colors.gray500.color
-    )
-    
-    let thirdButton = WalWalButton(
-      type: .icon,
-      title: "😵",
-      titleColor: Colors.black.color,
-      image: Images.cameraS.image.withTintColor(Colors.blue.color),
-      backgroundColor: Colors.white.color
-    )
-    
     containerView.flex.define { flex in
-      flex.addItem().direction(.column).padding(20).define { flex in
-        flex.addItem(firstButton).marginBottom(20)
-        flex.addItem(secondButton).marginBottom(20)
-        flex.addItem(thirdButton)
-      }
-    }
-    
-    [firstButton, secondButton, thirdButton].forEach { button in
-      button.rx.tapped
-        .subscribe(with: self, onNext: { owner, _ in
-          owner.handleButtonTap(button: button)
-        })
-        .disposed(by: disposeBag)
+      flex.addItem()
+        .direction(.column)
+        .padding(20)
+        .define { flex in
+          flex.addItem(firstButton)
+            .marginBottom(20)
+          flex.addItem(secondButton)
+            .marginBottom(20)
+          flex.addItem(thirdButton)
+            .marginBottom(20)
+          flex.addItem(forthButton)
+        }
     }
   }
   
@@ -79,6 +89,21 @@ public final class WalWalButtonDemoViewController: UIViewController {
       .all(view.pin.safeArea)
     containerView.flex
       .layout()
+  }
+  
+  private func bind() {
+    [firstButton, secondButton, thirdButton].forEach { button in
+      button.rx.tapped
+        .subscribe(with: self, onNext: { owner, _ in
+          owner.handleButtonTap(button: button)
+        })
+        .disposed(by: disposeBag)
+    }
+    
+    forthButton.rx.tapped
+      .map{ false }
+      .bind(to: forthButton.isEnabled )
+      .disposed(by: disposeBag)
   }
   
   private func handleButtonTap(button: WalWalButton) {
