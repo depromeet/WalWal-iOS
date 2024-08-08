@@ -21,6 +21,7 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   public typealias State = ProfileSettingReactorState
   
   private typealias Images = ResourceKitAsset.Images
+  private typealias Sample = ResourceKitAsset.Sample
   
   public let initialState: State
   public let coordinator: any MyPageCoordinator
