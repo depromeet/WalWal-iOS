@@ -22,6 +22,7 @@ let project = Project.invertedDualTargetProject(
   implementDependencies: [
     .Coordinator.Onboarding.Implement,
     
+    .Feature.Auth.Data.Implement,
     .Feature.Onboarding.Data.Implement,
     .Feature.Onboarding.Domain.Implement,
     .Feature.Onboarding.Presenter.Implement

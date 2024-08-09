@@ -35,8 +35,10 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   // MARK: - UI
   
   private let rootContainer = UIView()
-  private let navigationBar = WalWalNavigationBar(leftItems: [.back], leftItemSize: 40, title: nil, rightItems: [])
+  private let scrollView = UIScrollView()
   private let contentContainer = UIView()
+  private let navigationBar = WalWalNavigationBar(leftItems: [.back], leftItemSize: 40, title: nil, rightItems: [])
+  private let profileContainer = UIView()
   private let progressView = ProgressView(index: 2)
   private let titleView = UIView()
   private let titleLabel = UILabel().then {
@@ -64,7 +66,6 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     self.onboardingReactor = reactor
     self.petType = petType
     super.init(nibName: nil, bundle: nil)
-    print(petType)
   }
   
   @available(*, unavailable)
@@ -87,6 +88,11 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     super.viewDidLayoutSubviews()
     let _ = view.pin.keyboardArea.height
     rootContainer.pin.all(view.pin.safeArea)
+    scrollView.pin.horizontally().bottom().below(of: progressView)//above(of: progressView)
+    contentContainer.pin.top().horizontally()
+    contentContainer.flex.layout(mode: .adjustHeight)
+    scrollView.contentSize = contentContainer.frame.size
+    
     rootContainer.flex.layout()
     hideKeyboardLayout()
   }
@@ -95,8 +101,15 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     navigationController?.navigationBar.isHidden = true
     view.backgroundColor = .white
     view.addSubview(rootContainer)
-    [navigationBar, progressView, titleView, contentContainer, nextButton].forEach {
-      rootContainer.addSubview($0)
+    
+    rootContainer.addSubview(navigationBar)
+    rootContainer.addSubview(progressView)
+    rootContainer.addSubview(scrollView)
+    rootContainer.addSubview(nextButton)
+    scrollView.addSubview(contentContainer)
+    
+    [titleView, profileContainer].forEach {
+      contentContainer.addSubview($0)
     }
     [titleLabel, subTitleLabel].forEach {
       titleView.addSubview($0)
@@ -104,8 +117,6 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   }
   
   public func setLayout() {
-    rootContainer.flex
-      .justifyContent(.center)
     
     navigationBar.flex
       .width(100%)
@@ -113,6 +124,11 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     progressView.flex
       .marginTop(24.adjusted)
       .marginHorizontal(20)
+//    
+    contentContainer.flex
+      .justifyContent(.center)
+    
+
     
     titleView.flex
       .marginHorizontal(20.adjustedWidth)
@@ -122,7 +138,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
         $0.addItem(subTitleLabel)
           .marginTop(4)
       }
-    contentContainer.flex
+    profileContainer.flex
       .justifyContent(.start)
       .grow(1)
       .define {
@@ -141,16 +157,25 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   }
   
   private func updateKeyboardLayout() {
+    
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
     nextButton.pin
       .bottom(keyboardTop + 20)
+    print(scrollView.contentOffset.y)
+    scrollView.contentOffset.y += (40.adjustedHeight + 58 + 4 + 17.adjustedHeight + 20.adjustedHeight)
+    nicknameTextField.pin.marginTop(10)
     view.layoutIfNeeded()
   }
   
   private func hideKeyboardLayout() {
+//    if scrollView.contentOffset.y > 0 {
+//      scrollView.contentOffset.y = 0
+//    }
+    nicknameTextField.pin.marginTop(82.adjusted)
     nextButton.pin
       .bottom(30)
       .height(56)
+    
   }
 }
 
@@ -211,6 +236,7 @@ extension OnboardingProfileViewControllerImp: View {
     
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
       .bind(with: self) { owner, noti in
+        owner.scrollView.contentOffset.y = 0
         owner.hideKeyboardLayout()
       }
       .disposed(by: disposeBag)
