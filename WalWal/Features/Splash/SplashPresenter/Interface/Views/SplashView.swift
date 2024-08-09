@@ -16,8 +16,8 @@ public protocol SplashViewController: UIViewController {
   associatedtype SplashReactorType: SplashReactor
   var disposeBag: DisposeBag { get set }
   
-  func setLayout()
-  func setAttribute()
+  func configureLayout()
+  func configureAttribute()
   func bindAction(reactor: SplashReactorType)
   func bindState(reactor: SplashReactorType)
   func bindEvent()

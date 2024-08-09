@@ -13,7 +13,7 @@ import ReactorKit
 import RxSwift
 
 public enum SplashReactorAction {
-  case checkToken(flow: AppCoordinatorFlow)
+  case checkToken
 }
 
 public enum SplashReactorMutation {
