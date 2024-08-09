@@ -40,7 +40,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   private let navigationBar = WalWalNavigationBar(leftItems: [.back], leftItemSize: 40, title: nil, rightItems: [])
   private let profileContainer = UIView()
   private let progressView = ProgressView(index: 2)
-  private let titleView = UIView()
+  private let titleView = UIView().then { $0.backgroundColor = .orange }
   private let titleLabel = UILabel().then {
     $0.text = "왈왈에서 사용할\n프로필을 만들어주세요"
     $0.numberOfLines = 2
@@ -86,6 +86,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    
     let _ = view.pin.keyboardArea.height
     rootContainer.pin.all(view.pin.safeArea)
     scrollView.pin.horizontally().bottom().below(of: progressView)//above(of: progressView)
@@ -111,6 +112,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     [titleView, profileContainer].forEach {
       contentContainer.addSubview($0)
     }
+    
     [titleLabel, subTitleLabel].forEach {
       titleView.addSubview($0)
     }
@@ -124,7 +126,6 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     progressView.flex
       .marginTop(24.adjusted)
       .marginHorizontal(20)
-//    
     contentContainer.flex
       .justifyContent(.center)
     
@@ -138,6 +139,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
         $0.addItem(subTitleLabel)
           .marginTop(4)
       }
+      
     profileContainer.flex
       .justifyContent(.start)
       .grow(1)
@@ -159,23 +161,35 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   private func updateKeyboardLayout() {
     
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
+    let scrollOffset = titleView.frame.height + 40.adjustedHeight + 70.adjustedHeight/2
     nextButton.pin
       .bottom(keyboardTop + 20)
-    print(scrollView.contentOffset.y)
-    scrollView.contentOffset.y += (40.adjustedHeight + 58 + 4 + 17.adjustedHeight + 20.adjustedHeight)
-    nicknameTextField.pin.marginTop(10)
+    
+    scrollView.contentOffset.y += scrollOffset
+    
+    profileContainer.pin
+      .above(of: nextButton)
+      .bottom(10)
+    profileSelectView.pin
+      .above(of: nicknameTextField)
+      .bottom(32.adjustedHeight)
+      .below(of: progressView)
+      .top(54.adjustedHeight)
+    
     view.layoutIfNeeded()
   }
   
   private func hideKeyboardLayout() {
-//    if scrollView.contentOffset.y > 0 {
-//      scrollView.contentOffset.y = 0
-//    }
-    nicknameTextField.pin.marginTop(82.adjusted)
+    
+    if scrollView.contentOffset.y > 0 {
+      scrollView.contentOffset.y = 0
+      contentContainer.flex.markDirty()
+      contentContainer.flex.layout()
+    }
     nextButton.pin
       .bottom(30)
       .height(56)
-    
+    view.layoutIfNeeded()
   }
 }
 
@@ -236,7 +250,6 @@ extension OnboardingProfileViewControllerImp: View {
     
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
       .bind(with: self) { owner, noti in
-        owner.scrollView.contentOffset.y = 0
         owner.hideKeyboardLayout()
       }
       .disposed(by: disposeBag)
