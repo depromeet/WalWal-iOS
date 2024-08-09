@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Img.png",
+      "filename" : "missionStartIcon.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Img@2x.png",
+      "filename" : "missionStartIcon@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Img@3x.png",
+      "filename" : "missionStartIcon@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
