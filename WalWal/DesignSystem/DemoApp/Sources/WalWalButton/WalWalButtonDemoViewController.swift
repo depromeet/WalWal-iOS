@@ -15,46 +15,27 @@ import RxCocoa
 import PinLayout
 import FlexLayout
 
-
 public final class WalWalButtonDemoViewController: UIViewController {
   
   private typealias Images = ResourceKitAsset.Images
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
-  private let containerView = UIView()
+  private let containerView = UIView().then {
+    $0.backgroundColor = Colors.gray600.color
+  }
   
-  let firstButton = WalWalButton(
-    type: .icon,
-    title: "다음",
-    titleColor: Colors.white.color,
-    backgroundColor: Colors.walwalOrange.color,
-    image: Images.watchS.image
-  )
+  let firstButton = WalWalButton(type: .inactive, title: "기본 버튼")
   
-  let secondButton = WalWalButton(
-    type: .normal,
-    title: "이미지 없음",
-    titleColor: Colors.white.color,
-    backgroundColor: Colors.gray500.color
-  )
+  let secondButton = WalWalButton(type: .inactive, title: "비활성화 버튼")
   
-  let thirdButton = WalWalButton(
-    type: .icon,
-    title: "😵",
-    titleColor: Colors.black.color,
-    backgroundColor: Colors.white.color,
-    image: Images.cameraS.image.withTintColor(Colors.blue.color)
-  )
+  let thirdButton = WalWalButton(type: .inactive, title: "어두운 버튼")
   
-  let forthButton = WalWalButton(
-    type: .normal,
-    title: "다음",
-    backgroundColor: Colors.blue.color,
-    disabledTitle: "완료",
-    disabledTitleColor: Colors.white.color,
-    disabledBackgroundColor: Colors.gray500.color
-  )
+  let buttonLabel = UILabel().then {
+    $0.text = "버튼을 눌러보세요!"
+    $0.font = Fonts.KR.H4
+    $0.sizeToFit()
+  }
   
   private let disposeBag = DisposeBag()
   
@@ -78,7 +59,7 @@ public final class WalWalButtonDemoViewController: UIViewController {
             .marginBottom(20)
           flex.addItem(thirdButton)
             .marginBottom(20)
-          flex.addItem(forthButton)
+          flex.addItem(buttonLabel)
         }
     }
   }
@@ -88,25 +69,34 @@ public final class WalWalButtonDemoViewController: UIViewController {
     containerView.pin
       .all(view.pin.safeArea)
     containerView.flex
-      .layout()
+      .layout(mode: .adjustHeight)
+    
+    [firstButton, secondButton, thirdButton].forEach { button in
+      button.flex.width(containerView.bounds.width - 40)
+    }
   }
   
   private func bind() {
-    [firstButton, secondButton, thirdButton].forEach { button in
-      button.rx.tapped
-        .subscribe(with: self, onNext: { owner, _ in
-          owner.handleButtonTap(button: button)
-        })
-        .disposed(by: disposeBag)
-    }
     
-    forthButton.rx.tapped
-      .map{ false }
-      .bind(to: forthButton.isEnabled )
+    firstButton.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.firstButton.rx.buttonType.onNext(.disabled)
+        owner.firstButton.rx.title.onNext("으아ㅏㅏㅏㅏㅏㅏ")
+      })
       .disposed(by: disposeBag)
-  }
-  
-  private func handleButtonTap(button: WalWalButton) {
-    print("Button tapped: \(button)")
+    
+    secondButton.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.secondButton.rx.buttonType.onNext(.disabled)
+        owner.secondButton.rx.title.onNext("🔥")
+      })
+      .disposed(by: disposeBag)
+    
+    thirdButton.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.thirdButton.rx.buttonType.onNext(.disabled)
+        owner.thirdButton.rx.title.onNext("3번째 입니다")
+      })
+      .disposed(by: disposeBag)
   }
 }
