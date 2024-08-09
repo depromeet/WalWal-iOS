@@ -13,24 +13,27 @@ import ReactorKit
 import RxSwift
 
 public enum SplashReactorAction {
-  
+  case checkToken
 }
 
 public enum SplashReactorMutation {
-
+  case startAuth
+  case startMain
 }
 
 public struct SplashReactorState {
-  public init() {
-  
-  }
+  public init() {}
 }
 
-public protocol SplashReactor: Reactor where Action == SplashReactorAction, Mutation == SplashReactorMutation, State == SplashReactorState {
+public protocol SplashReactor:
+  Reactor where Action == SplashReactorAction,
+                Mutation == SplashReactorMutation,
+                  State == SplashReactorState {
   
   var coordinator: any AppCoordinator { get }
   
   init(
-    coordinator: any AppCoordinator
+    coordinator: any AppCoordinator,
+    checkTokenUseCase: CheckTokenUsecase
   )
 }

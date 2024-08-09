@@ -14,6 +14,8 @@ import MissionDependencyFactory
 import MyPageDependencyFactory
 
 import AppCoordinator
+import SplashDomain
+import SplashPresenter
 
 public protocol SplashDependencyFactory {
   func makeAppCoordinator(
@@ -23,4 +25,7 @@ public protocol SplashDependencyFactory {
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory
   ) -> any AppCoordinator
+  func makeCheckTokenUseCase() -> CheckTokenUsecase
+  func makeSplashReactor<T: AppCoordinator>(coordinator: T) -> any SplashReactor
+  func makeSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController
 }

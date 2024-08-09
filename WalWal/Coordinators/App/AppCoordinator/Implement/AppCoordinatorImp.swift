@@ -65,7 +65,7 @@ public final class AppCoordinatorImp: AppCoordinator {
         switch flow {
         case .startAuth:
           owner.startAuth()
-        case .startTab:
+        case .startHome:
           owner.startTabBar()
         }
       })
@@ -81,7 +81,10 @@ public final class AppCoordinatorImp: AppCoordinator {
   }
   
   public func start() {
-    destination.accept(.startAuth)
+    let reactor = appDependencyFactory.makeSplashReactor(coordinator: self)
+    let splashVC = appDependencyFactory.makeSplashViewController(reactor: reactor)
+    self.baseViewController = splashVC
+    self.pushViewController(viewController: splashVC, animated: false)
   }
 }
 
@@ -99,7 +102,7 @@ extension AppCoordinatorImp {
         // TODO: - Onboarding 연결
         print("온보딩 화면")
       case .startMission:
-        destination.accept(.startTab)
+        destination.accept(.startHome)
       }
     }
   }

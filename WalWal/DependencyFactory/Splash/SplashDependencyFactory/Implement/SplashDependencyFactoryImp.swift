@@ -23,6 +23,8 @@ import SplashData
 import SplashDataImp
 import SplashDomain
 import SplashDomainImp
+import SplashPresenter
+import SplashPresenterImp
 
 public class SplashDependencyFactoryImp: SplashDependencyFactory {
   
@@ -45,5 +47,20 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       missionDependencyFactory: missionDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory
     )
+  }
+  
+  public func makeCheckTokenUseCase() -> CheckTokenUsecase {
+    return CheckTokenUsecaseImp()
+  }
+  
+  public func makeSplashReactor<T: AppCoordinator>(coordinator: T) -> any SplashReactor {
+    return SplashReactorImp(
+      coordinator: coordinator,
+      checkTokenUseCase: makeCheckTokenUseCase()
+    )
+  }
+  
+  public func makeSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController {
+    return SplashViewControllerImp(reactor: reactor)
   }
 }
