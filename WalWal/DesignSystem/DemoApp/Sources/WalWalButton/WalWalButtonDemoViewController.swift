@@ -31,6 +31,8 @@ public final class WalWalButtonDemoViewController: UIViewController {
   
   let thirdButton = WalWalButton(type: .inactive, title: "어두운 버튼")
   
+  let fourthButton = WalWalButton_Icon(type: .inactive, title: "내 미션 기록 보기", icon: Images.calendarS.image)
+  
   let buttonLabel = UILabel().then {
     $0.text = "버튼을 눌러보세요!"
     $0.font = Fonts.KR.H4
@@ -60,6 +62,8 @@ public final class WalWalButtonDemoViewController: UIViewController {
           flex.addItem(thirdButton)
             .marginBottom(20)
           flex.addItem(buttonLabel)
+            .marginBottom(20)
+          flex.addItem(fourthButton)
         }
     }
   }
@@ -71,7 +75,7 @@ public final class WalWalButtonDemoViewController: UIViewController {
     containerView.flex
       .layout(mode: .adjustHeight)
     
-    [firstButton, secondButton, thirdButton].forEach { button in
+    [firstButton, secondButton, thirdButton, fourthButton].forEach { button in
       button.flex.width(containerView.bounds.width - 40)
     }
   }
@@ -96,6 +100,13 @@ public final class WalWalButtonDemoViewController: UIViewController {
       .subscribe(with: self, onNext: { owner, _ in
         owner.thirdButton.rx.buttonType.onNext(.disabled)
         owner.thirdButton.rx.title.onNext("3번째 입니다")
+      })
+      .disposed(by: disposeBag)
+    
+    fourthButton.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.fourthButton.rx.buttonType.onNext(.disabled)
+        owner.fourthButton.rx.icon.onNext(Images.galleryS.image)
       })
       .disposed(by: disposeBag)
   }
