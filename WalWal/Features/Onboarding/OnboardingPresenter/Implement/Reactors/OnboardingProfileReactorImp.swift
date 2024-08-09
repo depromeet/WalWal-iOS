@@ -12,6 +12,7 @@ import OnboardingCoordinator
 import OnboardingPresenter
 import Utility
 import DesignSystem
+import LocalStorage
 
 import ReactorKit
 import RxSwift
@@ -43,7 +44,10 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .register(nickname, profile, petType):
-      return checkNickname(nickname: nickname, profile: profile, petType: petType)
+      return .concat([
+        .just(.showIndicator(show: true)),
+        checkNickname(nickname: nickname, profile: profile, petType: petType)
+      ])
     case let .checkCondition(nickname, profile):
       return checkValidForm(nickname: nickname, profile: profile)
     }
@@ -58,6 +62,8 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
       newState.invalidMessage = message
     case let .registerError(message):
       newState.errorMessage = message
+    case let .showIndicator(show):
+      newState.showIndicator = show
     }
     return newState
   }
@@ -72,25 +78,32 @@ extension OnboardingProfileReactorImp {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
-        return owner.uploadImage(profile: profile, nickname: nickname)
+        return owner.uploadImage(profile: profile, nickname: nickname, petType: petType)
       }
       .catch { error -> Observable<Mutation> in
-        return .just(.invalidNickname(message: "이미 누군가 사용하고 있는 닉네임이에요"))
+        return .concat([
+          .just(.showIndicator(show: false)),
+          .just(.buttonEnable(isEnable: false)),
+          .just(.invalidNickname(message: OnboardingError.duplicateNickname.message))
+        ])
       }
       
   }
   
-  // TODO: - 프로필 업로드 요청 메서드
-  private func uploadImage(profile: ProfileCellModel, nickname: String) -> Observable<Mutation> {
+  /// 프로필 이미지 업로드
+  private func uploadImage(profile: ProfileCellModel, nickname: String, petType: String) -> Observable<Mutation> {
     guard let imagedata = profile.curImage?.jpegData(compressionQuality: 0.8) else { return .never() }
     return uploadImageUseCase.excute(nickname: nickname, type: "JPEG", image: imagedata)
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
-        return owner.register(nickname: nickname, petType: "DOG")
+        return owner.register(nickname: nickname, petType: petType)
       }
       .catch { error -> Observable<Mutation> in
-        return .never()
+        return .concat([
+          .just(.showIndicator(show: false)),
+          .just(.registerError(message: OnboardingError.imageUploadError.message))
+        ])
       }
   }
   
@@ -98,12 +111,18 @@ extension OnboardingProfileReactorImp {
   private func register(nickname: String, petType: String) -> Observable<Mutation> {
     return registerUseCase.excute(nickname: nickname, pet: petType)
       .asObservable()
-      .flatMap { result -> Observable<Mutation> in
-        // TODO: - 미션 뷰 이동
-        return .never()
+      .withUnretained(self)
+      .flatMap { owner, result -> Observable<Mutation> in
+        UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
+        let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
+        owner.coordinator.startMission()
+        return .just(.showIndicator(show: false))
       }
       .catch { error -> Observable<Mutation> in
-        return .just(.registerError(message: "회원가입을 완료하지 못했어요"))
+        return .concat([
+          .just(.showIndicator(show: false)),
+          .just(.registerError(message: OnboardingError.registerError.message))
+        ])
       }
   }
   
@@ -115,12 +134,12 @@ extension OnboardingProfileReactorImp {
     else if nickname.count > 14 {
       return .concat([
         .just(.buttonEnable(isEnable: false)),
-        .just(.invalidNickname(message: "14글자 이내로 입력해주세요"))
+        .just(.invalidNickname(message: OnboardingError.maxLengthNickname.message))
       ])
     } else if !nickname.isValidNickName() {
       return .concat([
         .just(.buttonEnable(isEnable: false)),
-        .just(.invalidNickname(message: "영문, 한글만 입력할 수 있어요"))
+        .just(.invalidNickname(message: OnboardingError.nicknameInvalid.message))
       ])
     } else if profile.profileType == .selectImage && profile.curImage == nil {
       return .just(.buttonEnable(isEnable: false))
@@ -129,4 +148,27 @@ extension OnboardingProfileReactorImp {
     }
   }
   
+}
+
+fileprivate enum OnboardingError {
+  case nicknameInvalid
+  case maxLengthNickname
+  case registerError
+  case imageUploadError
+  case duplicateNickname
+  
+  var message: String {
+    switch self {
+    case .nicknameInvalid:
+      return "영문, 한글만 입력할 수 있어요"
+    case .maxLengthNickname:
+      return "14글자 이내로 입력해주세요"
+    case .registerError:
+      return "회원가입을 완료하지 못했어요"
+    case .imageUploadError:
+      return "프로필 사진을 업로드하지 못했어요"
+    case .duplicateNickname:
+      return "이미 누군가 사용하고 있는 닉네임이에요"
+    }
+  }
 }

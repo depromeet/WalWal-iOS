@@ -88,6 +88,8 @@ public final class AppCoordinatorImp: AppCoordinator {
   public func handleChildEvent<T: ParentAction>(_ event: T) {
     if let authEvent = event as? AuthCoordinatorAction {
       handleAuthEvent(.requireParentAction(authEvent))
+    } else if let onboardingEvent = event as? OnboardingCoordinatorAction {
+      handleOnboardingEvent(.requireParentAction(onboardingEvent))
     }
   }
   
@@ -112,6 +114,18 @@ extension AppCoordinatorImp {
       case .startOnboarding:
         // TODO: - Onboarding 연결
         destination.accept(.startOnboarding)
+      case .startMission:
+        destination.accept(.startHome)
+      }
+    }
+  }
+  
+  private func handleOnboardingEvent(_ event: CoordinatorEvent<OnboardingCoordinatorAction>) {
+    switch event {
+    case .finished:
+      childCoordinator = nil
+    case .requireParentAction(let action):
+      switch action {
       case .startMission:
         destination.accept(.startHome)
       }

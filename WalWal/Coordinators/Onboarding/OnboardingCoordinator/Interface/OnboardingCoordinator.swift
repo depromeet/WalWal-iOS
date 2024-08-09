@@ -10,7 +10,7 @@ import UIKit
 import BaseCoordinator
 
 public enum OnboardingCoordinatorAction: ParentAction {
-  
+  case startMission
 }
 
 public enum OnboardingCoordinatorFlow: CoordinatorFlow {
@@ -22,5 +22,5 @@ public protocol OnboardingCoordinator: BaseCoordinator
 where Flow == OnboardingCoordinatorFlow,
       Action == OnboardingCoordinatorAction
 {
-
+  func startMission()
 }
