@@ -20,7 +20,12 @@ public final class WalWalProfileViewDemoViewController: UIViewController {
   
   private let rootContainer = UIView()
   private let profileSelectView = WalWalProfile(type: .dog)
-  private let completeButton = WalWalButton(type: .inactive, title: "완료")
+  private let profileInfoLabel = UILabel().then {
+    $0.numberOfLines = 0
+    $0.textColor = .black
+    $0.font = ResourceKitFontFamily.KR.H5.M
+  }
+  private let completeButton = WalWalButton(type: .active, title: "완료")
   private let disposeBag = DisposeBag()
   
   override public func viewDidLoad() {
@@ -40,7 +45,7 @@ public final class WalWalProfileViewDemoViewController: UIViewController {
   
   private func configureLayout() {
     view.addSubview(rootContainer)
-    view.addSubview(completeButton)
+    
     rootContainer.flex
       .justifyContent(.start)
       .define {
@@ -50,6 +55,10 @@ public final class WalWalProfileViewDemoViewController: UIViewController {
           .define {
             $0.addItem(profileSelectView)
               .width(100%)
+            $0.addItem(profileInfoLabel)
+              .alignSelf(.center)
+              .width(100%)
+              .height(150)
           }
         
         $0.addItem(completeButton)
@@ -65,13 +74,29 @@ public final class WalWalProfileViewDemoViewController: UIViewController {
         PHPickerManager.shared.presentPicker(vc: owner)
       }
       .disposed(by: disposeBag)
-    
+    profileSelectView.curProfileItems
+      .bind(with: self) { owner, info in
+        if info.profileType == .selectImage {
+          if info.selectImage == nil {
+            owner.completeButton.rx.buttonType.onNext(.disabled)
+          } else {
+            owner.completeButton.rx.buttonType.onNext(.active)
+          }
+        }
+      }
+      .disposed(by: disposeBag)
     completeButton.rx.tapped
       .withLatestFrom(profileSelectView.curProfileItems) {
         return $1
       }
       .bind(with: self) { owner, info in
         dump(info)
+        owner.profileInfoLabel.text = """
+        profile Type: \(info.profileType)
+        selectImage: \(String(describing: info.selectImage ?? nil))
+        defaultImage: \(String(describing: info.defaultImage?.rawValue ?? nil))
+        """
+        owner.view.layoutIfNeeded()
       }
       .disposed(by: disposeBag)
   }
