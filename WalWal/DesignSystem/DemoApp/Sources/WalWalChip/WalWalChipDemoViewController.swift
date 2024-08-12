@@ -51,7 +51,7 @@ final class WalWalChipDemoViewController: UIViewController {
   private let interactiveChip = WalWalChip(
     text: "너의 이름은 무엇이니",
     selectedText: "선택됨",
-    image: ResourceKitAsset.Assets._20x20ChevronLeft.image.withTintColor(.white),
+    image: ResourceKitAsset.Images.calendarL.image.withTintColor(.white),
     style: .filled,
     selectedStyle: .tonal,
     font: Fonts.KR.H7.B

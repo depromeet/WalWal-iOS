@@ -18,6 +18,11 @@ extension Reactive where Base: UIView {
   public var tapped: ControlEvent<Void> {
     let event: Observable<Void> = base.rx.tapGesture()
       .when(.recognized)
+      .throttle(
+        .milliseconds(400),
+        latest: false,
+        scheduler: MainScheduler.instance
+      )
       .map{ _ in }
     return ControlEvent(events: event)
   }
