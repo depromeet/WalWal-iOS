@@ -1,0 +1,37 @@
+//
+//  FeedAppDelegate.swift
+//
+//  Feed
+//
+//  Created by 이지희 on .
+//
+
+import UIKit
+
+import DependencyFactory
+import DependencyFactoryImp
+import FeedData
+import FeedDomain
+import FeedCoordinator
+import FeedPresenter
+
+@main
+final class FeedAppDelegate: UIResponder, UIApplicationDelegate {
+  var window: UIWindow?
+  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    let window = UIWindow(frame: UIScreen.main.bounds)
+    
+    let dependencyFactory = DependencyFactoryImp()
+    let navigationController = UINavigationController()
+    let coordinator = dependencyFactory.make__Coordinator(navigationController: navigationController)
+    let reactor = dependencyFactory.makeFeedReactor(coordinator: coordinator)
+    let viewController = dependencyFactory.makeFeedViewController(reactor: reactor)
+    
+    window.rootViewController = viewController
+    window.makeKeyAndVisible()
+    self.window = window
+    return true
+  }
+}
+
+

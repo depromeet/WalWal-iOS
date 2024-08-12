@@ -23,6 +23,7 @@ enum DependencyFactoryStr: String {
   case walwalTabBar = "WalWalTabBar"
   case mission = "Mission"
   case myPage = "MyPage"
+  case feed = "Feed"
   case sample = "Sample"
   case fcm = "FCM"
 }
@@ -36,6 +37,7 @@ enum CoordinatorStr: String {
   case sampleHome = "SampleHome"
   case auth = "Auth"
   case mission = "Mission"
+  case feed = "Feed"
   case myPage = "MyPage"
 }
 
@@ -46,6 +48,7 @@ enum FeatureStr: String {
   case mission = "Mission"
   case myPage = "MyPage"
   case fcm = "FCM"
+  case feed = "Feed"
 }
 
 protocol WalWalDependency {
@@ -101,6 +104,7 @@ extension TargetDependency {
     public struct WalWalTabBar: WalWalDependency { }
     public struct Mission: WalWalDependency { }
     public struct FCM: WalWalDependency { }
+    public struct Feed: WalWalDependency { }
   }
   
   public struct Coordinator {
@@ -110,6 +114,7 @@ extension TargetDependency {
     public struct Auth: WalWalDependency { }
     public struct Mission: WalWalDependency { }
     public struct MyPage: WalWalDependency { }
+    public struct Feed: WalWalDependency { }
     public struct SampleAuth: WalWalDependency { }
     public struct SampleApp: WalWalDependency { }
     public struct SampleHome: WalWalDependency { }
@@ -150,6 +155,12 @@ extension TargetDependency {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
     }
+    
+    public struct Feed: WalWalDependency {
+      public struct Data: WalWalDependency {}
+      public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
+    }
   }
 }
 
@@ -188,6 +199,11 @@ public extension TargetDependency.DependencyFactory.MyPage {
 public extension TargetDependency.DependencyFactory.FCM {
   static let Interface = Self.project(dependencyName: .fcm, isInterface: true)
   static let Implement = Self.project(dependencyName: .fcm, isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.Feed {
+  static let Interface = Self.project(dependencyName: .feed, isInterface: true)
+  static let Implement = Self.project(dependencyName: .feed, isInterface: false)
 }
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
@@ -277,6 +293,21 @@ public extension TargetDependency.Feature.FCM.Data {
   static let Implement = Self.project(name: .fcm, layer: .data, isInterface: false)
 }
 
+public extension TargetDependency.Feature.Feed.Presenter {
+  static let Interface = Self.project(name: .feed, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .feed, layer: .presenter, isInterface: false)
+}
+
+public extension TargetDependency.Feature.Feed.Domain {
+  static let Interface = Self.project(name: .feed, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .feed, layer: .domain, isInterface: false)
+}
+
+public extension TargetDependency.Feature.Feed.Data {
+  static let Interface = Self.project(name: .feed, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .feed, layer: .data, isInterface: false)
+}
+
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
 
 public extension TargetDependency.Coordinator.SampleApp {
@@ -321,6 +352,11 @@ public extension TargetDependency.Coordinator.Mission {
 public extension TargetDependency.Coordinator.MyPage {
   static let Interface = Self.project(name: .myPage, isInterface: true)
   static let Implement = Self.project(name: .myPage, isInterface: false)
+}
+
+public extension TargetDependency.Coordinator.Feed {
+  static let Interface = Self.project(name: .feed, isInterface: true)
+  static let Implement = Self.project(name: .feed, isInterface: false)
 }
 
 public extension TargetDependency.ThirdParty {
