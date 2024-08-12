@@ -86,15 +86,15 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
   private func setLayout() {
     inActiveimageView.pin
       .center()
-      .size(140)
+      .size(140.adjusted)
     borderView.pin
       .center()
-      .size(170)
+      .size(170.adjusted)
     profileImageView.pin
       .center()
-      .size(158)
+      .size(158.adjusted)
     changeButton.pin
-      .size(40)
+      .size(40.adjusted)
   }
   
   private func changeButtonLayout() {

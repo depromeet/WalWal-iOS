@@ -58,9 +58,10 @@ public final class WalWalProfile: UIView {
   
   // MARK: - UI
   
-  private let profileSize: CGFloat = 170
+  private let profileSize: CGFloat = 170.adjusted
   private let viewWidth: CGFloat = UIScreen.main.bounds.width
-  private let marginItems: CGFloat = 17
+  private let marginItems: CGFloat = 17.adjusted
+  private let inActiveProfileSize: CGFloat = 140.adjusted
   
   private let rootContainer = UIView()
   lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout()).then {
@@ -208,11 +209,20 @@ extension WalWalProfile: UICollectionViewDelegateFlowLayout {
     for cell in collectionView.visibleCells {
       let cellCenterX = cell.center.x
       let distanceFromCenter = abs(centerX - cellCenterX)
-      let maxDistance = collectionView.bounds.width / 2
+      let maxDistance = (inActiveProfileSize + profileSize)/2 + marginItems
+      
       let alpha = max(1 - distanceFromCenter / maxDistance, 0)
       if let cell = cell as? WalWalProfileCell {
         cell.setAlpha(alpha: alpha)
       }
     }
+  }
+}
+
+extension Int {
+  var adjusted: CGFloat {
+    let ratio: CGFloat = UIScreen.main.bounds.width / 375
+    let ratioH: CGFloat = UIScreen.main.bounds.height / 812
+    return ratio <= ratioH ? CGFloat(self) * ratio : CGFloat(self) * ratioH
   }
 }
