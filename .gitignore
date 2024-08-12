@@ -140,5 +140,6 @@ xcuserdata
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 *.appiconset
+*.p8
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,xcode,swift,swiftpackagemanager
