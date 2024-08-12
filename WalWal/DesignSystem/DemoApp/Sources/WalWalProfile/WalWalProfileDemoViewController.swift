@@ -68,11 +68,19 @@ final class WalWalProfileDemoViewController: UIViewController {
   }
   
   private func bind() {
-    profileSelectView.showPHPicker
-      .bind(with: self) { owner, _ in
-        PHPickerManager.shared.presentPicker(vc: owner)
-      }
-      .disposed(by: disposeBag)
+//    profileSelectView.showPHPicker
+//      .bind(with: self) { owner, _ in
+//        PHPickerManager.shared.presentPicker(vc: owner)
+//      }
+//      .disposed(by: disposeBag)
+    
+//    PHPickerManager.shared.selectedPhoto
+//      .asDriver(onErrorJustReturn: nil)
+//      .compactMap { $0 }
+//      .drive(with: self) { owner, image in
+//        owner.profileSelectView.selectedImageData.accept(image)
+//      }
+//      .disposed(by: disposeBag)
     
     profileSelectView.curProfileItems
       .bind(with: self) { owner, info in

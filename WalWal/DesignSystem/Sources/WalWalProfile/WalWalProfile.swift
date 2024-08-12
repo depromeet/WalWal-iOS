@@ -38,6 +38,8 @@ public final class WalWalProfile: UIView {
   
   /// 현재 포커스되어있는 셀의 이미지 데이터
   public var curProfileItems = PublishRelay<WalWalProfileModel>()
+  /// PHPickerView에서 선택한 이미지를 전달받기 위한 이벤트
+  public var selectedImageData = PublishRelay<UIImage>()
   
   private let changeSelectImage = PublishRelay<WalWalProfileCell>()
   private var defaultImages: [DefaultProfile]
@@ -162,7 +164,7 @@ public final class WalWalProfile: UIView {
       .disposed(by: disposeBag)
     
     /// 유저 앨범 이미지
-    Observable.combineLatest(changeSelectImage, PHPickerManager.shared.selectedPhoto)
+    Observable.combineLatest(changeSelectImage, selectedImageData)
       .map {
         return ($0, $1)
       }
