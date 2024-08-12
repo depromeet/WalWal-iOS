@@ -28,14 +28,14 @@ final class WalWalProfileDemoViewController: UIViewController {
   private let completeButton = WalWalButton(type: .active, title: "완료")
   private let disposeBag = DisposeBag()
   
-  override public func viewDidLoad() {
+  override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .white
     configureLayout()
     bind()
   }
   
-  override public func viewDidLayoutSubviews() {
+  override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     rootContainer.pin
       .all(view.pin.safeArea)
