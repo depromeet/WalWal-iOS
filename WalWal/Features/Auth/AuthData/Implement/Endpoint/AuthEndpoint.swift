@@ -8,18 +8,20 @@
 
 import Foundation
 import WalWalNetwork
+import LocalStorage
 
 import Alamofire
 
 enum AuthEndpoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
   case socialLogin(provider: String, body: SocialLoginBody)
+  case saveToken(body: FCMTokenBody)
 }
 
 extension AuthEndpoint {
   var baseURLType: URLType {
      switch self {
-     case .socialLogin:
+     case .socialLogin, .saveToken:
        return .walWalBaseURL
      }
    }
@@ -28,12 +30,14 @@ extension AuthEndpoint {
     switch self {
     case let .socialLogin(provider, _):
       return "/auth/social-login/\(provider)"
+    case .saveToken:
+      return "/alarm/token"
     }
   }
   
   var method: HTTPMethod {
     switch self {
-    case .socialLogin:
+    case .socialLogin, .saveToken:
       return .post
     }
   }
@@ -42,6 +46,8 @@ extension AuthEndpoint {
     switch self {
     case let .socialLogin(_, body):
       return .requestWithbody(body)
+    case let .saveToken(body):
+      return .requestWithbody(body)
     }
   }
   
@@ -49,6 +55,13 @@ extension AuthEndpoint {
     switch self {
     case .socialLogin:
       return .plain
+    case .saveToken:
+      if let accessToken = KeychainWrapper.shared.accessToken {
+        return .authorization(accessToken)
+      } else{
+        return .plain
+      }
+      
     }
   }
 }

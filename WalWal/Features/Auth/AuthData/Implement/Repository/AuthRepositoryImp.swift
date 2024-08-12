@@ -28,4 +28,11 @@ public final class AuthRepositoryImp: AuthRepository {
       .asObservable()
       .asSingle()
   }
+  
+  public func fcmTokenSave(token: String) -> Single<Void> {
+    let body = FCMTokenBody(token: token)
+    let endPoint = AuthEndpoint<EmptyResponse>.saveToken(body: body)
+    return networkService.request(endpoint: endPoint, isNeedInterceptor: true)
+      .map { _ in Void() }
+  }
 }

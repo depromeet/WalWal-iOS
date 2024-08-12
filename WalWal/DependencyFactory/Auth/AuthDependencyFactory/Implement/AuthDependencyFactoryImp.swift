@@ -48,10 +48,15 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     return SocialLoginUseCaseImp(authDataRepository: makeAuthData())
   }
   
+  public func makeFCMTokenSaveUseCase() -> FCMTokenUseCase {
+    return FCMTokenUseCaseImp(authDataRepository: makeAuthData())
+  }
+  
   public func makeAuthReactor<T: AuthCoordinator>(coordinator: T) -> any AuthReactor {
     return AuthReactorImp(
       coordinator: coordinator,
-      socialLoginUseCase: makeSocialLoginUseCase()
+      socialLoginUseCase: makeSocialLoginUseCase(),
+      fcmTokenUseCase: makeFCMTokenSaveUseCase()
     )
   }
   

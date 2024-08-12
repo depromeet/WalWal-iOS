@@ -23,14 +23,17 @@ public final class AuthReactorImp: AuthReactor {
   public let initialState: State
   public let coordinator: any AuthCoordinator
   private let socialLoginUseCase: SocialLoginUseCase
+  private let fcmTokenUseCase: FCMTokenUseCase
   
   public init(
     coordinator: any AuthCoordinator,
-    socialLoginUseCase: SocialLoginUseCase
+    socialLoginUseCase: SocialLoginUseCase,
+    fcmTokenUseCase: FCMTokenUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
     self.socialLoginUseCase = socialLoginUseCase
+    self.fcmTokenUseCase = fcmTokenUseCase
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -68,12 +71,12 @@ extension AuthReactorImp {
         if result.isTemporaryToken {
           UserDefaults.setValue(value: result.accessToken, forUserDefaultKey: .temporaryToken)
           self.coordinator.startOnboarding()
+          return .just(.showIndicator(show: false))
         } else {
           UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
           let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
-          self.coordinator.startMission()
+          return self.fcmTokenSave()
         }
-        return .just(.showIndicator(show: false))
       }
       .catch { error -> Observable<Mutation> in
         return .concat([
@@ -81,5 +84,20 @@ extension AuthReactorImp {
           .just(.loginErrorMsg(msg: "로그인에 실패하였습니다"))
         ])
       }
+  }
+  
+  private func fcmTokenSave() -> Observable<Mutation> {
+    return fcmTokenUseCase.excute()
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        self.coordinator.startMission()
+        return .just(.showIndicator(show: false))
+      }
+      .catch { _ -> Observable<Mutation> in
+        print("FCM 저장 오류")
+        self.coordinator.startMission()
+        return .just(.showIndicator(show: false))
+      }
+    
   }
 }
