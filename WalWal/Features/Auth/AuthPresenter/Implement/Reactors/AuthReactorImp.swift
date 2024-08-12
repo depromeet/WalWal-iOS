@@ -94,10 +94,9 @@ extension AuthReactorImp {
         return .just(.showIndicator(show: false))
       }
       .catch { _ -> Observable<Mutation> in
-        print("FCM 저장 오류")
+        print("FCM 토큰 저장 오류")
         self.coordinator.startMission()
         return .just(.showIndicator(show: false))
       }
-    
   }
 }

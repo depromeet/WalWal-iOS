@@ -45,7 +45,7 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     $0.textAlignment = .center
   }
   private let subTitleLabel = UILabel().then {
-    $0.text = "세상 모든 반려동물을 한자리에서!"
+    $0.text = "하루 한 번, 반려동물과의 특별한 순간을 담다"
     $0.textColor = Color.gray900.color
     $0.font = Font.H7.M
     $0.textAlignment = .center
@@ -118,7 +118,7 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     imageView.flex
       .marginHorizontal(40.adjusted)
     titleLabel.flex
-      .marginTop(16)
+      .marginTop(1)
       .width(100%)
     subTitleLabel.flex
       .marginTop(6)
