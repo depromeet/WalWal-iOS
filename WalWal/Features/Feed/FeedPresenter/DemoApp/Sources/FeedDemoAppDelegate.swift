@@ -8,8 +8,8 @@
 
 import UIKit
 
-import DependencyFactory
-import DependencyFactoryImp
+import FeedDependencyFactory
+import FeedDependencyFactoryImp
 import FeedData
 import FeedDomain
 import FeedCoordinator
@@ -21,9 +21,9 @@ final class FeedAppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     let window = UIWindow(frame: UIScreen.main.bounds)
     
-    let dependencyFactory = DependencyFactoryImp()
+    let dependencyFactory = FeedDependencyFactoryImp()
     let navigationController = UINavigationController()
-    let coordinator = dependencyFactory.make__Coordinator(navigationController: navigationController)
+    let coordinator = dependencyFactory.makeFeedCoordinator(navigationController: navigationController, parentCoordinator: nil)
     let reactor = dependencyFactory.makeFeedReactor(coordinator: coordinator)
     let viewController = dependencyFactory.makeFeedViewController(reactor: reactor)
     

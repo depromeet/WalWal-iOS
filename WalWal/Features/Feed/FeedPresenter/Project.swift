@@ -17,10 +17,12 @@ let project = Project.invertedPresenterWithDemoApp(
   interfaceDependencies: [
     .ThirdParty.ReactorKit,
     
-      .Feature.Feed.Domain.Interface,
+    .Feature.Feed.Domain.Interface,
   ],
   implementDependencies: [
     .DesignSystem,
+    
+    .DependencyFactory.Feed.Interface,
   ],
   demoAppDependencies: [
     .DependencyFactory.Feed.Implement

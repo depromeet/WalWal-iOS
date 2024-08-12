@@ -28,9 +28,9 @@ public struct FeedReactorState {
 
 public protocol FeedReactor: Reactor where Action == FeedReactorAction, Mutation == FeedReactorMutation, State == FeedReactorState {
   
-  var coordinator: any __Coordinator { get }
+  var coordinator: any FeedCoordinator { get }
   
   init(
-    coordinator: any __Coordinator
+    coordinator: any FeedCoordinator
   )
 }

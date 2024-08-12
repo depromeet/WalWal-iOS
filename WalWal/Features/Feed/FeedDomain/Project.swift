@@ -18,7 +18,9 @@ let project = Project.invertedDualTargetProject(
   interfaceDependencies: [
     .Feature.Feed.Data.Interface
   ],
-  implementDependencies: []
+  implementDependencies: [
+    .DependencyFactory.Feed.Interface
+  ]
 )
 
 

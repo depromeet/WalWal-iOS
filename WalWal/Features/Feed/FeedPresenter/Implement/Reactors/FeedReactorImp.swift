@@ -13,16 +13,16 @@ import FeedCoordinator
 import ReactorKit
 import RxSwift
 
-public final class FeedReactorImp: SplashReactor {
+public final class FeedReactorImp: FeedReactor {
   public typealias Action = FeedReactorAction
   public typealias Mutation = FeedReactorMutation
   public typealias State = FeedReactorState
   
   public let initialState: State
-  public let coordinator: any __Coordinator
+  public let coordinator: any FeedCoordinator
   
   public init(
-    coordinator: any __Coordinator
+    coordinator: any FeedCoordinator
   ) {
     self.coordinator = coordinator
     self.initialState = State()
