@@ -117,7 +117,7 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
     
     if data.profileType == .defaultImage {
       if let defaultImage = data.defaultImage {
-        profileImageView.image = DefaultProfile(rawValue: defaultImage)?.image
+        profileImageView.image = defaultImage.image
       }
       changeButton.setImage(Image.swapS.image, for: .normal)
     } else {

@@ -47,7 +47,7 @@ public final class WalWalProfile: UIView {
     WalWalProfileModel(
       profileType: .defaultImage,
       curImage: nil,
-      defaultImage: defaultImages[defaultImageIndex].rawValue
+      defaultImage: defaultImages[defaultImageIndex]
     ),
     WalWalProfileModel(
       profileType: .selectImage,
