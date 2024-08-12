@@ -8,7 +8,7 @@
 
 import UIKit
 import ResourceKit
-import Utility
+
 
 import RxSwift
 import FlexLayout
@@ -88,15 +88,15 @@ final class ProfileSelectCell: UICollectionViewCell, ReusableView {
   private func setLayout() {
     inActiveimageView.pin
       .center()
-      .size(140.adjusted)
+      .size(140)
     borderView.pin
       .center()
-      .size(170.adjusted)
+      .size(170)
     profileImageView.pin
       .center()
-      .size(158.adjusted)
+      .size(158)
     changeButton.pin
-      .size(40.adjusted)
+      .size(40)
   }
   
   private func changeButtonLayout() {

@@ -40,7 +40,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   private let navigationBar = WalWalNavigationBar(leftItems: [.back], leftItemSize: 40, title: nil, rightItems: [])
   private let profileContainer = UIView()
   private let progressView = ProgressView(index: 2)
-  private let titleView = UIView().then { $0.backgroundColor = .orange }
+  private let titleView = UIView()
   private let titleLabel = UILabel().then {
     $0.text = "왈왈에서 사용할\n프로필을 만들어주세요"
     $0.numberOfLines = 2
@@ -166,7 +166,8 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
       .bottom(keyboardTop + 20)
     
     scrollView.contentOffset.y += scrollOffset
-    
+    nicknameTextField.pin
+      .bottom(20.adjustedHeight)
     profileContainer.pin
       .above(of: nextButton)
       .bottom(10)

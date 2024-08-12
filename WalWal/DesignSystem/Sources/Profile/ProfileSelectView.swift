@@ -52,9 +52,9 @@ public final class ProfileSelectView: UIView {
   
   // MARK: - UI
   
-  private let profileSize: CGFloat = 170.adjustedWidth
+  private let profileSize: CGFloat = 170
   private let viewWidth: CGFloat = UIScreen.main.bounds.width
-  private let marginItems: CGFloat = 17.adjustedWidth
+  private let marginItems: CGFloat = 17
   
   private let rootContainer = UIView()
   lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout()).then {

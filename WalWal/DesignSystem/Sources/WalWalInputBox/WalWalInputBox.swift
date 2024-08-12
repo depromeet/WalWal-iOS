@@ -67,6 +67,8 @@ public final class WalWalInputBox: UIView {
     $0.textAlignment = .center
     $0.font = Fonts.KR.H6.M
     $0.textColor = Colors.black.color
+    $0.autocorrectionType = .no
+    $0.spellCheckingType = .no
   }
   
   fileprivate let placeholderLabel = UILabel().then {
