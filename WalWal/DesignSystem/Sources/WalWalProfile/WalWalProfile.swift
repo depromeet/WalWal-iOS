@@ -19,6 +19,9 @@ public enum PetType {
 }
 
 /// 프로필 이미지 선택 뷰
+///
+/// - Parameters:
+///   - type: 동물 타입 (.dog or .cat)
 public final class WalWalProfile: UIView {
   private typealias Image = ResourceKitAsset.Sample
   
@@ -52,7 +55,6 @@ public final class WalWalProfile: UIView {
     )
   ]
   private var disposeBag = DisposeBag()
-  
   
   // MARK: - UI
   

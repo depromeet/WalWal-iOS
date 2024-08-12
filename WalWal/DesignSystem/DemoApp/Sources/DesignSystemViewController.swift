@@ -72,7 +72,7 @@ final class DesignSystemViewController: UITableViewController {
     case .WalWalButton:
       self.navigationController?.pushViewController(WalWalButtonDemoViewController(), animated: true)
     case .WalWalProfile:
-      self.navigationController?.pushViewController(WalWalProfileViewDemoViewController(), animated: true)
+      self.navigationController?.pushViewController(WalWalProfileDemoViewController(), animated: true)
     default: return
     }
   }

@@ -32,7 +32,6 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
     $0.layer.borderWidth = 3
   }
   let changeButton = UIButton().then {
-    $0.setImage(UIImage(systemName: "repeat"), for: .normal)
     $0.tintColor = Color.white.color
     $0.backgroundColor = Color.walwalOrange.color
   }
@@ -72,15 +71,16 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
       $0.clipsToBounds = true
     }
     changeButtonLayout()
-    contentView.flex.layout(mode: .fitContainer)
+    contentView.flex
+      .layout(mode: .fitContainer)
   }
   
   
   private func setAttribute() {
-    contentView.addSubview(inActiveimageView)
-    contentView.addSubview(borderView)
+    [inActiveimageView, borderView, changeButton].forEach {
+      contentView.addSubview($0)
+    }
     borderView.addSubview(profileImageView)
-    contentView.addSubview(changeButton)
   }
   
   private func setLayout() {

@@ -1,5 +1,5 @@
 //
-//  WalWalProfileViewDemoViewController.swift
+//  WalWalProfileDemoViewController.swift
 //  DesignSystem
 //
 //  Created by Jiyeon on 8/12/24.
@@ -16,7 +16,7 @@ import Then
 import RxSwift
 import RxCocoa
 
-public final class WalWalProfileViewDemoViewController: UIViewController {
+final class WalWalProfileDemoViewController: UIViewController {
   
   private let rootContainer = UIView()
   private let profileSelectView = WalWalProfile(type: .dog)
