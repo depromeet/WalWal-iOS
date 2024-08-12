@@ -132,7 +132,7 @@ public final class WalWalProfile: UIView {
               let nxtIndex = (owner.defaultImageIndex+1) % owner.defaultImages.count
               owner.defaultImageIndex = nxtIndex
               owner.profileItem[index].defaultImage = owner.defaultImages[nxtIndex]
-              cell.changeProfileImage(.defaultImage, image: owner.defaultImages[nxtIndex].image)
+              cell.changeProfileImage(owner.defaultImages[nxtIndex].image)
               owner.curProfileItems.accept(owner.profileItem[index])
             } else {
               owner.showPHPicker.accept(())
@@ -164,7 +164,7 @@ public final class WalWalProfile: UIView {
       .observe(on: MainScheduler.instance)
       .bind(with: self) { owner, result in
         let (cell, photo) = result
-        cell.changeProfileImage(.selectImage, image: photo)
+        cell.changeProfileImage(photo)
         owner.profileItem[1].selectImage = photo
         owner.curProfileItems.accept(owner.profileItem[1])
       }

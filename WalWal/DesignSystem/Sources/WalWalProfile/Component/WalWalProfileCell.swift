@@ -155,13 +155,11 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
   /// 프로필 이미지 변경 위한 메서드
   ///
   /// 사용 예시
-  /// - `cell.changeProfileImage(.defaultImage, image: profileImage)`
+  /// - `cell.changeProfileImage(profileImage)`
   ///
   /// - Parameters:
-  ///   - type: 프로필 이미지 타입(`.defaultImage` , `.selectImage)
   ///   - image: 프로필 이미지
-  func changeProfileImage(_ type: ProfileType, image: UIImage?) {
+  func changeProfileImage(_ image: UIImage?) {
     profileImageView.image = image
-    
   }
 }
