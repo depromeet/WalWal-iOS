@@ -98,8 +98,10 @@ public final class WalWalProfile: UIView {
   
   override public func layoutSubviews() {
     super.layoutSubviews()
-    rootContainer.pin.all()
-    rootContainer.flex.layout()
+    rootContainer.pin
+      .all()
+    rootContainer.flex
+      .layout()
   }
   
   private func setLayout() {
