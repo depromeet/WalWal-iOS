@@ -58,7 +58,7 @@ final class WalWalFeedCellView: UIView {
   private let missionImageView = UIImageView()
   
   private let boostIconImageView = UIImageView().then {
-    $0.image = ResourceKitAsset.Sample.fireDef.image
+    $0.image = Images.fire.image
   }
   
   private let boostCountLabel = UILabel().then {
