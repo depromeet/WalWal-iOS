@@ -58,7 +58,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     placeholder: "닉네임을 입력해주세요",
     rightIcon: .close
   )
-  private let nextButton = CompleteButton(isEnable: true)
+  private let nextButton = WalWalButton(type: .disabled, title: "다음")
   
   // MARK: - Initialize
   
@@ -88,13 +88,21 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     super.viewDidLayoutSubviews()
     
     let _ = view.pin.keyboardArea.height
-    rootContainer.pin.all(view.pin.safeArea)
-    scrollView.pin.horizontally().bottom().below(of: progressView)//above(of: progressView)
-    contentContainer.pin.top().horizontally()
-    contentContainer.flex.layout(mode: .adjustHeight)
+    rootContainer.pin
+      .all(view.pin.safeArea)
+    scrollView.pin
+      .horizontally()
+      .bottom()
+      .below(of: progressView)
+    contentContainer.pin
+      .top()
+      .horizontally()
+    contentContainer.flex
+      .layout(mode: .adjustHeight)
     scrollView.contentSize = contentContainer.frame.size
     
-    rootContainer.flex.layout()
+    rootContainer.flex
+      .layout()
     hideKeyboardLayout()
   }
   
@@ -129,7 +137,6 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     contentContainer.flex
       .justifyContent(.center)
     
-
     
     titleView.flex
       .marginHorizontal(20.adjustedWidth)
@@ -184,8 +191,10 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     
     if scrollView.contentOffset.y > 0 {
       scrollView.contentOffset.y = 0
-      contentContainer.flex.markDirty()
-      contentContainer.flex.layout()
+      contentContainer.flex
+        .markDirty()
+      contentContainer.flex
+        .layout()
     }
     nextButton.pin
       .bottom(30)
@@ -204,10 +213,8 @@ extension OnboardingProfileViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    let nicknameObservable = nicknameTextField.rx.text.orEmpty
-      .throttle(.milliseconds(350), scheduler: MainScheduler.instance)
     
-    let inputValue =  Observable.combineLatest(nicknameObservable, profileSelectView.curProfileItems)
+    let inputValue =  Observable.combineLatest(nicknameTextField.rx.text.orEmpty, profileSelectView.curProfileItems)
     
     inputValue
       .map {
@@ -216,7 +223,7 @@ extension OnboardingProfileViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    nextButton.rx.tap
+    nextButton.rx.tapped
       .withLatestFrom(inputValue) {
         Reactor.Action.register(nickname: $1.0, profile: $1.1, petType: self.petType)
       }
@@ -237,8 +244,8 @@ extension OnboardingProfileViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map { $0.buttonEnable }
-      .bind(to: nextButton.rx.isEnabled)
+      .map { return $0.buttonEnable ? .active : .disabled }
+      .bind(to: nextButton.rx.buttonType)
       .disposed(by: disposeBag)
   }
   

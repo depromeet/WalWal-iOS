@@ -27,10 +27,10 @@ final class OnboardingAppDelegate: UIResponder, UIApplicationDelegate {
       navigationController: navigationController,
       parentCoordinator: nil
     )
-    let reactor = dependencyFactory.makeOnboardingProfileReactor(coordinator: coordinator)//makeOnboardingReactor(coordinator: coordinator)
-    let viewController = dependencyFactory.makeOnboardingProfileViewController(reactor: reactor, petType: "DOG")//makeOnboardingViewController(reactor: reactor)
-//    coordinator.start()
-    window.rootViewController = viewController//coordinator.navigationController//viewController
+    let reactor = dependencyFactory.makeOnboardingReactor(coordinator: coordinator)
+    let viewController = dependencyFactory.makeOnboardingViewController(reactor: reactor)
+    coordinator.start()
+    window.rootViewController = coordinator.navigationController//viewController
     window.makeKeyAndVisible()
     self.window = window
     return true

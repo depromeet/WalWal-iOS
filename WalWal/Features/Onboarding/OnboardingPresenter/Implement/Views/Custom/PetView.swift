@@ -35,8 +35,9 @@ final class PetView: UIView {
   
   // MARK: - Properties
   
-  typealias Color = ResourceKitAsset.Colors
-  typealias Font = ResourceKitFontFamily.KR
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Font = ResourceKitFontFamily.KR
+  private typealias Images = ResourceKitAsset.Sample
   
   /// 반려동물 타입 선택 여부에 따라 스타일 변경하기 위한 프로퍼티
   var isSelected: Bool = false {
@@ -49,12 +50,18 @@ final class PetView: UIView {
   // MARK: - UI
   
   private let containerView = UIView()
-  private let petImage = UIImageView().then {
+  private let petView = UIView().then {
     $0.backgroundColor = Color.white.color
-    $0.image = UIImage(systemName: "teddybear")
+    $0.clipsToBounds = true
+  }
+  private let inActiveView = UIView().then {
+    $0.backgroundColor = Color.gray200.color
+    
+  }
+  private let petImage = UIImageView().then {
+    $0.image = Images.initialProfile.image
     $0.clipsToBounds = true
     $0.contentMode = .scaleAspectFill
-    $0.tintColor = Color.black.color
   }
   private let typeLabel = UILabel().then {
     $0.textColor = Color.gray900.color
@@ -68,6 +75,7 @@ final class PetView: UIView {
     self.petType = petType
     typeLabel.text = petType.rawValue
     addSubview(containerView)
+    petView.addSubview(petImage)
     setLayout()
   }
   
@@ -81,7 +89,7 @@ final class PetView: UIView {
     containerView.flex
       .alignItems(.center)
       .define { flex in
-        flex.addItem(petImage)
+        flex.addItem(petView)
           .size(158)
         flex.addItem(typeLabel)
           .marginTop(20)
@@ -90,12 +98,17 @@ final class PetView: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    containerView.pin.all()
-    containerView.flex.layout(mode: .adjustHeight)
+    containerView.pin
+      .all()
+    petImage.pin
+      .center()
+      .size(80%)
+    containerView.flex
+      .layout(mode: .adjustHeight)
     
-    petImage.layer.cornerRadius = petImage.frame.width/2
-    petImage.layer.borderColor = Color.gray200.color.cgColor
-    petImage.layer.borderWidth = 1
+    petView.layer.cornerRadius = petView.frame.width/2
+    petView.layer.borderColor = Color.gray200.color.cgColor
+    petView.layer.borderWidth = 1
   }
   
   // TODO: 디자인 확정시 변경 스타일 변경 필요
@@ -105,12 +118,13 @@ final class PetView: UIView {
   ///   - isSelected: 선택 여부
   private func petSelectedStyle(isSelected: Bool) {
     if isSelected {
-      petImage.backgroundColor = Color.walwalBeige.color
-      petImage.tintColor = Color.black.color
+      petView.backgroundColor = Color.yellow.color
+      petView.tintColor = Color.black.color
       typeLabel.textColor = Color.gray900.color
     } else {
-      petImage.backgroundColor = Color.white.color
-      petImage.tintColor = Color.gray300.color
+      petView.backgroundColor = Color.white.color
+//      petView.tintColor = Color.gray300.color
+      petImage.image?.withTintColor(Color.gray300.color)
       typeLabel.textColor = Color.gray300.color
     }
   }

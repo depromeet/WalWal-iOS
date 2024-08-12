@@ -23,8 +23,8 @@ import RxCocoa
 public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>:
   UIViewController,
   OnboardingSelectViewController {
-  typealias Color = ResourceKitAsset.Colors
-  typealias Font = ResourceKitFontFamily.KR
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Font = ResourceKitFontFamily.KR
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
@@ -46,7 +46,7 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   }
   private let dogView = PetView(petType: .dog)
   private let catView = PetView(petType: .cat)
-  private let nextButton = CompleteButton(isEnable: false)
+  private let nextButton = WalWalButton(type: .disabled, title: "다음")
   private let permissionView = PermissionView()
   
   // MARK: - Initialize
@@ -145,14 +145,11 @@ extension OnboardingSelectViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    /// 강아지 선택 액션
     let dogViewTapped = dogView.rx.tapped
       .map { _ in return PetType.dog }
-    /// 고양이 선택 액션
     let catViewTapped = catView.rx.tapped
       .map { _ in return PetType.cat }
     
-    /// 반려동물 선택 뷰 둘 중 하나 탭 시 Action
     Observable.merge(dogViewTapped, catViewTapped)
       .withUnretained(self)
       .map { owner, petType in
@@ -165,13 +162,12 @@ extension OnboardingSelectViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    /// pop이 되었을 때 선택을 초기화 시키기 위한 Action
     initState
       .map { Reactor.Action.initSelectView }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    nextButton.rx.tap
+    nextButton.rx.tapped
       .withLatestFrom(selectPetType)
       .map { Reactor.Action.nextButtonTapped(flow: .showProfile(petType: $0))}
       .bind(to: reactor.action)
@@ -195,7 +191,8 @@ extension OnboardingSelectViewControllerImp: View {
       .distinctUntilChanged()
       .asDriver(onErrorJustReturn: false)
       .drive(with: self) { owner, isEnable in
-        owner.nextButton.isEnabled = isEnable
+        let isEnable: WalWalButtonType = isEnable ? .active : .disabled
+        owner.nextButton.rx.buttonType.onNext(isEnable)
       }
       .disposed(by: disposeBag)
   }

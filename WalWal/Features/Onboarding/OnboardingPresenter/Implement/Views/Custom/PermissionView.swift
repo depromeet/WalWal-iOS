@@ -9,6 +9,7 @@
 import UIKit
 import Utility
 import ResourceKit
+import DesignSystem
 
 import FlexLayout
 import PinLayout
@@ -17,8 +18,9 @@ import RxCocoa
 
 /// 권한 확인을 받기 위한 얼럿 뷰
 final class PermissionView {
-  typealias Color = ResourceKitAsset.Colors
-  typealias Font = ResourceKitFontFamily.KR
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Font = ResourceKitFontFamily.KR
   
   private let disposeBag = DisposeBag()
   private var window: UIWindow?
@@ -45,7 +47,7 @@ final class PermissionView {
     $0.font = Font.B1
     $0.textColor = Color.gray600.color
   }
-  private let confirmButton = CompleteButton(title: "확인했어요", isEnable: true)
+  private let confirmButton = WalWalButton(type: .active, title: "확인했어요")
   
   private let notiPermissionView = PermissionListView(
     icon: UIImage(systemName: "bell.badge"),
@@ -122,7 +124,7 @@ final class PermissionView {
   
   private func bind() {
     let requestPermission = PublishSubject<Void>()
-    confirmButton.rx.tap
+    confirmButton.rx.tapped
       .asDriver()
       .drive(with: self) { owner, _ in
         owner.alertContainer.removeFromSuperview()
@@ -152,8 +154,8 @@ final class PermissionView {
 
 /// 동의를 받아야하는 권한 리스트 뷰를 재사용하기 위한 View
 fileprivate final class PermissionListView: UIView {
-  typealias Color = ResourceKitAsset.Colors
-  typealias Font = ResourceKitFontFamily.KR
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Font = ResourceKitFontFamily.KR
   
   private let iconImageView = UIImageView().then {
     $0.tintColor = Color.black.color
@@ -196,6 +198,7 @@ fileprivate final class PermissionListView: UIView {
           .marginHorizontal(12)
         $0.addItem(contentLabel)
       }
-    self.flex.layout(mode: .adjustWidth)
+    self.flex
+      .layout(mode: .adjustWidth)
   }
 }

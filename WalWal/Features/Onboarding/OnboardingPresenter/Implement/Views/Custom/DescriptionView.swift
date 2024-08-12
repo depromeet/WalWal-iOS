@@ -14,8 +14,8 @@ import PinLayout
 
 /// 온보딩 첫 화면 스크롤뷰에서 사용하기위한 뷰
 final class DescriptionView: UIView {
-  typealias Color = ResourceKitAsset.Colors
-  typealias Font = ResourceKitFontFamily.KR
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Font = ResourceKitFontFamily.KR
   
   // MARK: - UI
   
@@ -57,8 +57,10 @@ final class DescriptionView: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    containerView.pin.all()
-    containerView.flex.layout()
+    containerView.pin
+      .all()
+    containerView.flex
+      .layout()
   }
   
   private func setAttributes() {
@@ -71,11 +73,11 @@ final class DescriptionView: UIView {
       .define { flex in
         flex.addItem(mainTitleLabel)
         flex.addItem(subTextLabel)
-          .marginTop(10)
+          .marginTop(4)
         flex.addItem(imageView)
           .alignSelf(.center)
-          .marginTop(50)
-          .size(220.adjustedWidth)
+          .marginTop(8)
+          .size(280.adjustedWidth)
       }
   }
 }

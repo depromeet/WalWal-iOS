@@ -9,6 +9,7 @@
 
 import UIKit
 import OnboardingPresenter
+import DesignSystem
 
 import Then
 import PinLayout
@@ -44,7 +45,7 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
     $0.currentPageIndicatorTintColor = .gray
     $0.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
   }
-  private let nextButton = CompleteButton(isEnable: true)
+  private let nextButton = WalWalButton(type: .active, title: "다음")
   
   // MARK: - Initialize
   
@@ -70,14 +71,17 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    rootContainer.pin.all(view.pin.safeArea)
-    rootContainer.flex.layout()
+    rootContainer.pin
+      .all(view.pin.safeArea)
+    rootContainer.flex
+      .layout()
     
     scrollView.contentSize = CGSize(
       width: scrollView.frame.width * 3,
       height: scrollView.frame.height
     )
-    scrollView.flex.layout(mode: .adjustHeight)
+    scrollView.flex
+      .layout(mode: .adjustHeight)
   }
   
   public func setAttribute() {
@@ -95,7 +99,7 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
             $0.addItem(scrollView)
               .alignSelf(.center)
             $0.addItem(pageControl)
-              .marginTop(57)
+              .marginTop(23)
               .height(5)
           }
         $0.addItem(nextButton)
@@ -138,7 +142,7 @@ extension OnboardingViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    nextButton.rx.tap
+    nextButton.rx.tapped
       .map { Reactor.Action.nextButtonTapped(flow: .showSelect) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
