@@ -37,11 +37,9 @@ public final class WalWalProfile: UIView {
   public var curProfileItems = PublishRelay<WalWalProfileModel>()
   
   private let changeSelectImage = PublishRelay<WalWalProfileCell>()
-  
   private var defaultImages: [DefaultProfile]
   private var defaultImageIndex: Int = 0
-  private var defaultImageCount = 6
-  
+  private var defaultImageCount: Int
   
   private lazy var profileItem: [WalWalProfileModel] = [
     WalWalProfileModel(
@@ -83,7 +81,7 @@ public final class WalWalProfile: UIView {
   
   public init(type: PetType) {
     defaultImages = type == .dog ? DefaultProfile.defaultDogs : DefaultProfile.defaultCats
-    
+    defaultImageCount = defaultImages.count
     super.init(frame: .zero)
     setLayout()
     bind()
