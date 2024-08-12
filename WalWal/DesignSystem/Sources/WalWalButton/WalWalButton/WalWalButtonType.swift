@@ -14,13 +14,13 @@ public enum WalWalButtonType {
   
   private typealias Colors = ResourceKitAsset.Colors
   
-  case inactive
+  case active
   case disabled
   case dark
   
   var configuration: WalWalButton.Configuration {
     switch self {
-    case .inactive:
+    case .active:
       return .init(
         backgroundColor: Colors.walwalOrange.color,
         isEnabled: true

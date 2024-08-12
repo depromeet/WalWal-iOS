@@ -48,7 +48,7 @@ public class WalWalButton: UIControl {
     }
   }
   
-  fileprivate let buttonType = BehaviorRelay<WalWalButtonType>(value: .inactive)
+  fileprivate let buttonType = BehaviorRelay<WalWalButtonType>(value: .active)
   
   fileprivate let disposeBag = DisposeBag()
   
