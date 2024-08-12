@@ -46,12 +46,11 @@ public final class WalWalProfile: UIView {
   private lazy var profileItem: [WalWalProfileModel] = [
     WalWalProfileModel(
       profileType: .defaultImage,
-      curImage: nil,
       defaultImage: defaultImages[defaultImageIndex]
     ),
     WalWalProfileModel(
       profileType: .selectImage,
-      curImage: nil // TODO: - 기본 이미지 설정
+      selectImage: nil // TODO: - 기본 이미지 설정
     )
   ]
   private var disposeBag = DisposeBag()
@@ -83,7 +82,7 @@ public final class WalWalProfile: UIView {
   // MARK: - Initialize
   
   public init(type: PetType) {
-    defaultImages = type == .dog ? DefaultProfile.defaultDogs : DefaultProfile.defaultCat
+    defaultImages = type == .dog ? DefaultProfile.defaultDogs : DefaultProfile.defaultCats
     
     super.init(frame: .zero)
     setLayout()
@@ -168,7 +167,7 @@ public final class WalWalProfile: UIView {
       .bind(with: self) { owner, result in
         let (cell, photo) = result
         cell.changeProfileImage(.selectImage, image: photo)
-        owner.profileItem[1].curImage = photo
+        owner.profileItem[1].selectImage = photo
         owner.curProfileItems.accept(owner.profileItem[1])
       }
       .disposed(by: disposeBag)

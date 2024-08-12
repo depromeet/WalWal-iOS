@@ -105,7 +105,6 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
     changeButton.pin
       .vCenter(xOffset)
       .hCenter(yOffset)
-      
   }
   
   /// 셀 초기 설정 메서드
@@ -122,7 +121,7 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
       let changeImage = Image.swapL.image
       changeButton.setImage(changeImage, for: .normal)
     } else {
-      profileImageView.image = data.curImage
+      profileImageView.image = data.selectImage
       changeButton.setImage(Sample.pencil.image, for: .normal) // TODO: - 이미지 에셋 확정 후 수정 필요
     }
     if isActive {
@@ -156,13 +155,11 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
   /// 프로필 이미지 변경 위한 메서드
   ///
   /// 사용 예시
-  /// - `cell.changeProfileImage(.selectImage, image: profileImage)`
-  ///
-  /// - `cell.changeProfileImage(.defaultImage)`
+  /// - `cell.changeProfileImage(.defaultImage, image: profileImage)`
   ///
   /// - Parameters:
   ///   - type: 프로필 이미지 타입(`.defaultImage` , `.selectImage)
-  ///   - image: 앨범 선택 이미지
+  ///   - image: 프로필 이미지
   func changeProfileImage(_ type: ProfileType, image: UIImage?) {
     profileImageView.image = image
     

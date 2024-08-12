@@ -47,7 +47,6 @@ public final class WalWalProfileViewDemoViewController: UIViewController {
     view.addSubview(rootContainer)
     
     rootContainer.flex
-      .justifyContent(.start)
       .define {
         $0.addItem()
           .justifyContent(.center)
@@ -74,6 +73,7 @@ public final class WalWalProfileViewDemoViewController: UIViewController {
         PHPickerManager.shared.presentPicker(vc: owner)
       }
       .disposed(by: disposeBag)
+    
     profileSelectView.curProfileItems
       .bind(with: self) { owner, info in
         if info.profileType == .selectImage {
@@ -85,12 +85,12 @@ public final class WalWalProfileViewDemoViewController: UIViewController {
         }
       }
       .disposed(by: disposeBag)
+    
     completeButton.rx.tapped
       .withLatestFrom(profileSelectView.curProfileItems) {
         return $1
       }
       .bind(with: self) { owner, info in
-        dump(info)
         owner.profileInfoLabel.text = """
         profile Type: \(info.profileType)
         selectImage: \(String(describing: info.selectImage ?? nil))
@@ -100,5 +100,4 @@ public final class WalWalProfileViewDemoViewController: UIViewController {
       }
       .disposed(by: disposeBag)
   }
-  
 }
