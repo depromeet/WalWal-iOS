@@ -8,7 +8,7 @@
 
 import UIKit
 
-public enum DefaultProfile: String {
+public enum DefaultProfile: String, Equatable {
   case yellowDog = "YELLOW_DOG"
   case pinkDog = "PINK_DOG"
   case greenDog = "GREEN_DOG"

@@ -134,7 +134,7 @@ public final class WalWalProfile: UIView {
             if data.profileType == .defaultImage {
               let nxtIndex = (owner.defaultImageIndex+1) % owner.defaultImages.count
               owner.defaultImageIndex = nxtIndex
-              owner.profileItem[index].curImage = owner.defaultImages[nxtIndex].image
+              owner.profileItem[index].defaultImage = owner.defaultImages[nxtIndex]
               cell.changeProfileImage(.defaultImage, image: owner.defaultImages[nxtIndex].image)
               owner.curProfileItems.accept(owner.profileItem[index])
             } else {

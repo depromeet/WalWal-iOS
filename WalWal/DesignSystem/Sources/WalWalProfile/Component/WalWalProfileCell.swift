@@ -99,7 +99,7 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
   
   private func changeButtonLayout() {
     let radius = borderView.frame.size.width / 2
-    let angle = CGFloat.pi / 4 // 45도 각도, 원하는 각도로 설정
+    let angle = CGFloat.pi / 4 // 45도 각도
     let xOffset = radius * cos(angle)
     let yOffset = radius * sin(angle)
     changeButton.pin
@@ -119,7 +119,8 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
       if let defaultImage = data.defaultImage {
         profileImageView.image = defaultImage.image
       }
-      changeButton.setImage(Image.swapS.image, for: .normal)
+      let changeImage = Image.swapL.image
+      changeButton.setImage(changeImage, for: .normal)
     } else {
       profileImageView.image = data.curImage
       changeButton.setImage(Sample.pencil.image, for: .normal) // TODO: - 이미지 에셋 확정 후 수정 필요

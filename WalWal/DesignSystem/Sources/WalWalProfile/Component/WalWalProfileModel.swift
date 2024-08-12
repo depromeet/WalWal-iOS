@@ -7,16 +7,17 @@
 //
 
 import UIKit
+import ResourceKit
 
 public struct WalWalProfileModel: Equatable {
-  public init(profileType: ProfileType, curImage: UIImage? = nil, defaultImage: String? = nil) {
+  public init(profileType: ProfileType, curImage: UIImage? = nil, defaultImage: DefaultProfile? = nil) {
     self.profileType = profileType
     self.curImage = curImage
     self.defaultImage = defaultImage
   }
   public var profileType: ProfileType
   public var curImage: UIImage?
-  public var defaultImage: String?
+  public var defaultImage: DefaultProfile?
 }
 
 /// 프로필 사진 타입 열거형
