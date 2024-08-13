@@ -28,28 +28,13 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   // MARK: - UI
   
   private let rootContainer = UIView()
-  
-  private let guideLabel = UILabel().then {
-    $0.font = Fonts.KR.H6.B
-    $0.textColor = .black
-    $0.text = "☀️ 다른 반려동물은 어떤 미션을 했을까요?"
-  }
-  
-  private let arrowIconImageView = UIImageView().then {
-    $0.image = Images.arrow.image
-  }
-  
   private lazy var feed = WalWalFeed(feedData: dummyData, isFeed: true)
   
   // MARK: - Properties
   
   public var disposeBag = DisposeBag()
   public var feedReactor: R
-  private let dummyData: [WalWalFeedModel] = [
-    .init(isFeedCell: true,
-          date: "", nickname: "멍", missionTitle: "산책미션을 완료했어요", profileImage: ResourceKitAsset.Sample.initialProfile.image,
-          missionImage: ResourceKitAsset.Sample.feedSample.image, boostCount: 123)
-  ]
+  private let dummyData: [WalWalFeedModel] = []
   
   // MARK: - Initialize
   
@@ -90,15 +75,7 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   
   public func configureLayout() {
     rootContainer.flex
-      .paddingTop(31)
       .define {
-        $0.addItem(guideLabel)
-          .alignSelf(.center)
-        $0.addItem(arrowIconImageView)
-        
-          .alignSelf(.center)
-          .marginTop(14)
-          .size(24)
         $0.addItem(feed)
           .grow(1)
       }
