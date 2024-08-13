@@ -78,9 +78,9 @@ public final class WalWalFeed: UIView {
   
   public init(
     feedData: [WalWalFeedModel],
-    isBoost: Bool = true
+    isFeed: Bool = true
   ) {
-      self.gestureHandler = isBoost ? WalWalBoostGestureHandler() : nil
+      self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
       
       super.init(frame: .zero)
       configureView()
