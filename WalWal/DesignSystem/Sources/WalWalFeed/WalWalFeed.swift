@@ -127,6 +127,19 @@ public final class WalWalFeed: UIView {
         cell.configureCell(feedData: model)
       }
       .disposed(by: disposeBag)
+    
+      walwalBoostGenerater.boostFinished
+      .withLatestFrom(feedData) { (boostResult, currentFeedData) -> [WalWalFeedModel] in
+        var updatedFeedData = currentFeedData
+        if let feedModel = updatedFeedData[safe: boostResult.indexPath.item] {
+          var updatedModel = feedModel
+          updatedModel.boostCount += boostResult.count
+          updatedFeedData[boostResult.indexPath.item] = updatedModel
+        }
+        return updatedFeedData
+      }
+      .bind(to: feedData)
+      .disposed(by: disposeBag)
   }
   
   private func setLayouts() {
