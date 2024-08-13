@@ -34,6 +34,8 @@ public final class MyPageReactorImp: MyPageReactor {
       return Observable.just(.setSelectedCalendarItem(model))
     case .didTapSettingButton:
       return Observable.just(.moveToSettingView)
+    case .didTapEditButton:
+      return Observable.just(.moveToEditView)
     }
   }
   
@@ -45,6 +47,8 @@ public final class MyPageReactorImp: MyPageReactor {
       coordinator.destination.accept(.showRecordDetail)
     case .moveToSettingView:
       coordinator.destination.accept(.showProfileSetting)
+    case .moveToEditView:
+      coordinator.destination.accept(.showProfileEdit)
     }
     return newState
   }
