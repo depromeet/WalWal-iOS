@@ -25,7 +25,7 @@ import FeedPresenterImp
 public class FeedDependencyFactoryImp: FeedDependencyFactory {
   public init() { }
   
-  public func makeFeedCoordinator(navigationController: UINavigationController, parentCoordinator: (any BaseCoordinator)?) -> any FeedCoordinator {
+  public func makeFeedCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any FeedCoordinator {
     return FeedCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
