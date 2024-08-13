@@ -18,10 +18,12 @@ import RxGesture
 
 final class WalWalFeedViewController: UIViewController {
   
+  private typealias Colors = ResourceKitAsset.Colors
+  
   // MARK: - UI
   
   private let rootView = UIView().then {
-    $0.backgroundColor = UIColor(hex: 0xF7F8FA)
+    $0.backgroundColor = Colors.white.color
   }
   
   private let feed: WalWalFeed
@@ -29,21 +31,24 @@ final class WalWalFeedViewController: UIViewController {
   // MARK: - Properties
   
   private let dummyData: [WalWalFeedModel] = [
-    .init(isFeedCell: false,
+    .init(id: 1,
+          isFeedCell: false,
           date: "2024년 8월 10일",
           nickname: "찐찐도그",
           missionTitle: "산책 미션을 수행했어요!",
           profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
           missionImage: ResourceKitAsset.Sample.feedSample.image,
           boostCount: 324),
-    .init(isFeedCell: true,
+    .init(id: 2,
+          isFeedCell: true,
           date: "2024년 8월 10일",
           nickname: "찐찐도그",
           missionTitle: "산책 미션을 수행했어요!",
           profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
           missionImage: ResourceKitAsset.Sample.feedSample.image,
           boostCount: 324),
-    .init(isFeedCell: false,
+    .init(id: 3,
+          isFeedCell: false,
           date: "2024년 8월 10일",
           nickname: "찐찐도그",
           missionTitle: "산책 미션을 수행했어요!",
@@ -58,7 +63,7 @@ final class WalWalFeedViewController: UIViewController {
   /// WalWalCalenderDemoViewController를 초기화합니다.
   /// - Parameter walwalCalendarModels: 초기 캘린더 데이터 모델
   public init() {
-    self.feed = WalWalFeed(feedData: dummyData)
+    self.feed = WalWalFeed(feedData: dummyData, isFeed: true) /// isFeed에 false를 넣으면, WalWalFeed에 존재하는 CollectionView 자체의 Boost기능을 끄게 됩니다.
     super.init(nibName: nil, bundle: nil)
   }
   

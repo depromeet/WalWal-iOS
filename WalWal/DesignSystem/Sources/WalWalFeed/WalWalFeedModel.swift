@@ -9,6 +9,7 @@
 import UIKit
 
 public struct WalWalFeedModel {
+  let id: Int
   var isFeedCell: Bool
   var date: String
   var nickname: String
@@ -18,6 +19,7 @@ public struct WalWalFeedModel {
   var boostCount: Int
   
   public init(
+    id: Int,
     isFeedCell: Bool,
     date: String,
     nickname: String,
@@ -26,6 +28,7 @@ public struct WalWalFeedModel {
     missionImage: UIImage,
     boostCount: Int
   ) {
+    self.id = id
     self.isFeedCell = isFeedCell
     self.date = date
     self.nickname = nickname

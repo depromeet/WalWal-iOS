@@ -66,7 +66,26 @@ extension ResourceKitFontFamily {
 extension ResourceKitFontFamily.LotteriaChab {
   /// 사용 방법
   /// $0.font = ResourceKitFontFamily.LotteriaChab.H1
+  public static let Buster_Cute = Self.regular.font(size: 80)
+  public static let Buster_Cool = Self.regular.font(size: 90)
+  public static let Buster_Lovely = Self.regular.font(size: 64)
   public static let H1 = Self.regular.font(size: 48)
   public static let H2 = Self.regular.font(size: 34)
   public static let H3 = Self.regular.font(size: 24)
+  
 }
+
+/// 일단 롯데리아 챱챱만,,,,
+extension ResourceKitFontFamily {
+  public static func lineHeight(of font: ResourceKitFontConvertible.Font) -> CGFloat {
+    if font == Self.LotteriaChab.Buster_Cute { return 95 }
+    else if font == Self.LotteriaChab.Buster_Cool { return 50 }
+    else if font == Self.LotteriaChab.Buster_Lovely { return 50 }
+    else if font == Self.LotteriaChab.H1 { return 50 }
+    else if font == Self.LotteriaChab.H2 { return 50 }
+    else if font == Self.LotteriaChab.H3 { return 50 }
+    else { return 0 }
+  }
+}
+
+
