@@ -25,6 +25,7 @@ final class WalWalBoostGenerator {
   private let walwalBoostBorder: WalWalBoostBorder
   private let walwalBoostCenterLabel: WalWalBoostCenterLabel
   private let walwalBoostCounter: WalWalBoostCounter
+  private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
   
   init(
     feed: WalWalFeed,
@@ -38,6 +39,7 @@ final class WalWalBoostGenerator {
     self.walwalBoostBorder = walwalBoostBorder
     self.walwalBoostCenterLabel = walwalBoostCenterLabel
     self.walwalBoostCounter = walwalBoostCounter
+    self.feedbackGenerator.prepare()
   }
   
   func startBoostAnimation(
@@ -98,6 +100,8 @@ final class WalWalBoostGenerator {
     currentBlackOverlayView = nil
     walwalBoostBorder.stopBorderAnimation()
     walwalEmitter.stopEmitting()
+    
+    feedbackGenerator.prepare()
   }
   
   func getCurrentCount() -> Int {
@@ -212,6 +216,8 @@ final class WalWalBoostGenerator {
     window: UIWindow,
     burstCase: WalWalBurstString
   ) {
+    feedbackGenerator.impactOccurred()
+    
     if count >= 10 {
       walwalEmitter.configureEmitter(
         in: detailView,

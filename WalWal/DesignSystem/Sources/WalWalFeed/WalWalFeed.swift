@@ -72,8 +72,6 @@ public final class WalWalFeed: UIView {
   
   private let gestureHandler = WalWalBoostGestureHandler()
   
-  private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
-  
   private let disposeBag = DisposeBag()
   
   // MARK: - Initializers
@@ -144,7 +142,6 @@ public final class WalWalFeed: UIView {
 
 extension WalWalFeed: GestureHandlerDelegate {
   func gestureHandlerDidBeginLongPress(_ gesture: UILongPressGestureRecognizer) {
-    feedbackGenerator.prepare()
     walwalBoostGenerater.startBoostAnimation(for: gesture, in: collectionView)
   }
   
