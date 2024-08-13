@@ -16,6 +16,9 @@ import RxCocoa
 public final class WalWalFeed: UIView {
   
   private typealias Colors = ResourceKitAsset.Colors
+  public var feedData = PublishRelay<[WalWalFeedModel]>()
+  private var currentFeedData: [WalWalFeedModel] = []
+  public var isFeed: Bool
   
   // MARK: - UI
   
@@ -26,8 +29,12 @@ public final class WalWalFeed: UIView {
     
     $0.collectionViewLayout = flowLayout
     $0.backgroundColor = .clear
-    $0.register(WalWalFeedCell.self, forCellWithReuseIdentifier: "WalWalFeedCell")
-    $0.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 24, right: 0)
+    $0.register(WalWalFeedCell.self,
+                forCellWithReuseIdentifier: "WalWalFeedCell")
+    $0.register(FeedHeaderView.self,
+                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                withReuseIdentifier: FeedHeaderView.identifier)
+    $0.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 24, right: 0)
   }
   
   public var feedData = BehaviorRelay<[WalWalFeedModel]>(value: [])
@@ -85,7 +92,12 @@ public final class WalWalFeed: UIView {
       super.init(frame: .zero)
       configureView()
       self.feedData.accept(feedData)
-    }
+    bindFeedData()
+    configureCollectionView()
+    setAttributes()
+    setLayouts()
+  }
+    self.isFeed = isFeed
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -112,20 +124,19 @@ public final class WalWalFeed: UIView {
     gestureHandler?.setupLongPressGesture(for: collectionView)
   }
   
-  private func setupCollectionView() {
+  private func configureCollectionView() {
+    collectionView.dataSource = self
+    collectionView.delegate = self
     addSubview(collectionView)
   }
   
   private func setupBindings() {
     feedData
-      .bind(
-        to: collectionView.rx.items(
-          cellIdentifier: "WalWalFeedCell",
-          cellType: WalWalFeedCell.self
-        )
-      ) { index, model, cell in
-        cell.configureCell(feedData: model)
-      }
+      .asDriver(onErrorJustReturn: [])
+      .drive(onNext: { [weak self] data in
+        self?.currentFeedData = data // 현재 데이터를 업데이트
+        self?.collectionView.reloadData()
+      })
       .disposed(by: disposeBag)
     
       walwalBoostGenerater.boostFinished
@@ -179,5 +190,39 @@ extension WalWalFeed: GestureHandlerDelegate {
 extension Array {
   subscript(safe index: Index) -> Element? {
     return indices.contains(index) ? self[index] : nil
+  }
+}
+
+// MARK: - UICollectionViewDataSource
+extension WalWalFeed: UICollectionViewDataSource {
+  public func numberOfSections(in collectionView: UICollectionView) -> Int {
+    return 1
+  }
+  
+  public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return currentFeedData.count
+  }
+  
+  public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WalWalFeedCell", for: indexPath) as! WalWalFeedCell
+    let model = currentFeedData[indexPath.row]
+    cell.configureCell(feedData: model)
+    return cell
+  }
+  
+  public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    if kind == UICollectionView.elementKindSectionHeader {
+      let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: FeedHeaderView.identifier, for: indexPath) as! FeedHeaderView
+      return header
+    }
+    return UICollectionReusableView()
+  }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension WalWalFeed: UICollectionViewDelegateFlowLayout {
+  public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    return self.isFeed ?  CGSize(width: collectionView.bounds.width, height: 71) : CGSize(width: 0, height: 0)
   }
 }
