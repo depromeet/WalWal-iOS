@@ -107,7 +107,6 @@ extension AppCoordinatorImp {
     case let .requireParentAction(action):
       switch action {
       case .startOnboarding:
-        destination.accept(.startHome)
         // TODO: - Onboarding 연결
         print("온보딩 화면")
       case .startMission:
