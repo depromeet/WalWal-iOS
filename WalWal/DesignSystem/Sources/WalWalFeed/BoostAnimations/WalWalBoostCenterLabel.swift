@@ -114,8 +114,8 @@ final class WalWalBoostCenterLabel {
     let shadowAttrString = NSAttributedString(
       string: String(char),
       attributes: [
-        .strokeColor: UIColor.black,
-        .foregroundColor: UIColor.black,
+        .strokeColor: Colors.black.color,
+        .foregroundColor: Colors.black.color,
         .strokeWidth: -4,
         .font: font
       ]
@@ -132,9 +132,9 @@ final class WalWalBoostCenterLabel {
     let attrString = NSAttributedString(
       string: String(char),
       attributes: [
-        .strokeColor: ResourceKitAsset.Colors.black.color,
+        .strokeColor: Colors.black.color,
         .font: font,
-        .foregroundColor: ResourceKitAsset.Colors.white.color,
+        .foregroundColor: Colors.white.color,
         .strokeWidth: -4
       ]
     )
