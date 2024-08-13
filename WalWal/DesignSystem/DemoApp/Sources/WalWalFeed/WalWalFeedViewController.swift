@@ -63,7 +63,7 @@ final class WalWalFeedViewController: UIViewController {
   /// WalWalCalenderDemoViewController를 초기화합니다.
   /// - Parameter walwalCalendarModels: 초기 캘린더 데이터 모델
   public init() {
-    self.feed = WalWalFeed(feedData: dummyData)
+    self.feed = WalWalFeed(feedData: dummyData, isBoost: true) /// isBoost에 false를 넣으면, WalWalFeed에 존재하는 CollectionView 자체의 Boost기능을 끄게 됩니다.
     super.init(nibName: nil, bundle: nil)
   }
   

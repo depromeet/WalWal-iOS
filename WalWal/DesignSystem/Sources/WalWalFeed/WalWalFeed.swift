@@ -70,17 +70,22 @@ public final class WalWalFeed: UIView {
   
   // MARK: - Properties
   
-  private let gestureHandler = WalWalBoostGestureHandler()
+  private let gestureHandler: WalWalBoostGestureHandler?
   
   private let disposeBag = DisposeBag()
   
   // MARK: - Initializers
   
-  public init(feedData: [WalWalFeedModel]) {
-    super.init(frame: .zero)
-    configureView()
-    self.feedData.accept(feedData)
-  }
+  public init(
+    feedData: [WalWalFeedModel],
+    isBoost: Bool = true
+  ) {
+      self.gestureHandler = isBoost ? WalWalBoostGestureHandler() : nil
+      
+      super.init(frame: .zero)
+      configureView()
+      self.feedData.accept(feedData)
+    }
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -103,8 +108,8 @@ public final class WalWalFeed: UIView {
   }
   
   private func setupGestureHandler() {
-    gestureHandler.delegate = self
-    gestureHandler.setupLongPressGesture(for: collectionView)
+    gestureHandler?.delegate = self
+    gestureHandler?.setupLongPressGesture(for: collectionView)
   }
   
   private func setupCollectionView() {
@@ -113,7 +118,12 @@ public final class WalWalFeed: UIView {
   
   private func setupBindings() {
     feedData
-      .bind(to: collectionView.rx.items(cellIdentifier: "WalWalFeedCell", cellType: WalWalFeedCell.self)) { index, model, cell in
+      .bind(
+        to: collectionView.rx.items(
+          cellIdentifier: "WalWalFeedCell",
+          cellType: WalWalFeedCell.self
+        )
+      ) { index, model, cell in
         cell.configureCell(feedData: model)
       }
       .disposed(by: disposeBag)
