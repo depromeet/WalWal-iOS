@@ -50,6 +50,7 @@ final class WalWalFeedCellView: UIView {
   
   private let followButton = WalWalChip(
     text: "팔로우",
+    selectedText: "팔로잉",
     style: .filled,
     selectedStyle: .outlined,
     font: Fonts.KR.B2
@@ -202,6 +203,7 @@ final class WalWalFeedCellView: UIView {
           .marginTop(15)
           .marginLeft(20)
           .marginBottom(16)
+          .grow(1)
       }
     
     boostLabelView.flex
