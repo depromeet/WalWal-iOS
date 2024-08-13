@@ -9,6 +9,13 @@
 import UIKit
 import ResourceKit
 
+import RxSwift
+
+struct BoostResult {
+    let indexPath: IndexPath
+    let count: Int
+}
+
 final class WalWalBoostGenerator {
   
   private typealias Images = ResourceKitAsset.Images
@@ -20,12 +27,15 @@ final class WalWalBoostGenerator {
   private var currentDetailView: UIView?
   private var currentBackgroundView: UIView?
   private var currentBlackOverlayView: UIView?
+  private var currentIndexPath: IndexPath?
   
   private let walwalEmitter: WalWalEmitterLayer
   private let walwalBoostBorder: WalWalBoostBorder
   private let walwalBoostCenterLabel: WalWalBoostCenterLabel
   private let walwalBoostCounter: WalWalBoostCounter
   private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+  
+  let boostFinished = PublishSubject<BoostResult>()
   
   init(
     feed: WalWalFeed,
@@ -42,6 +52,7 @@ final class WalWalBoostGenerator {
     self.feedbackGenerator.prepare()
   }
   
+  /// 부스트 애니메이션 시작
   func startBoostAnimation(
     for gesture: UILongPressGestureRecognizer,
     in collectionView: UICollectionView
@@ -51,6 +62,8 @@ final class WalWalBoostGenerator {
           let cell = collectionView.cellForItem(at: indexPath) as? WalWalFeedCell,
           let feedModel = feed?.feedData.value[safe: indexPath.item],
           let window = UIWindow.key else { return }
+    
+    currentIndexPath = indexPath
     
     let detailView = createAndConfigureDetailView(from: cell, with: feedModel)
     let backgroundView = createBackgroundView(frame: window.bounds)
@@ -77,10 +90,12 @@ final class WalWalBoostGenerator {
     setupBoostAnimationComponents(in: detailView, window: window)
   }
   
+  /// 부스트 애니메이션 종료
   func stopBoostAnimation() {
     guard let detailView = currentDetailView,
           let backgroundView = currentBackgroundView,
-          let overlayView = currentBlackOverlayView else { return }
+          let overlayView = currentBlackOverlayView,
+          let indexPath = currentIndexPath else { return }
     
     UIView.animate(withDuration: 0.3, animations: {
       backgroundView.alpha = 0
@@ -94,12 +109,18 @@ final class WalWalBoostGenerator {
     
     walwalBoostCenterLabel.clearExistingLabels()
     walwalBoostCounter.stopCountTimer()
-    currentDetailView?.layer.removeAnimation(forKey: "tilt")
+    walwalBoostBorder.stopBorderAnimation()
     currentDetailView = nil
     currentBackgroundView = nil
     currentBlackOverlayView = nil
-    walwalBoostBorder.stopBorderAnimation()
     walwalEmitter.stopEmitting()
+    
+    boostFinished.onNext(
+      BoostResult(
+        indexPath: indexPath,
+        count: walwalBoostCounter.currentCount
+      )
+    )
     
     feedbackGenerator.prepare()
   }
@@ -107,7 +128,11 @@ final class WalWalBoostGenerator {
   func getCurrentCount() -> Int {
     return walwalBoostCounter.currentCount
   }
-  
+}
+
+// MARK: - Private Methods
+
+extension WalWalBoostGenerator {
   private func createAndConfigureDetailView(
     from cell: WalWalFeedCell,
     with feedModel: WalWalFeedModel
