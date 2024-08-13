@@ -12,5 +12,5 @@ import RxSwift
 
 public protocol AuthRepository {
   func socialLogin(provider: String, token: String) -> Single<AuthTokenDTO>
-  func register(nickname: String, pet: String) -> Single<AuthTokenDTO>
+  func register(nickname: String, petType: String, defaultProfile: String?) -> Single<AuthTokenDTO>
 }

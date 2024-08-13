@@ -14,8 +14,9 @@ import RxCocoa
 import PinLayout
 import FlexLayout
 
-public enum PetType {
-  case dog, cat
+public enum PetType: String {
+  case dog = "DOG"
+  case cat = "CAT"
 }
 
 /// 프로필 이미지 선택 뷰

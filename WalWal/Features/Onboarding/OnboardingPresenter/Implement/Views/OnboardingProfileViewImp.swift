@@ -10,6 +10,7 @@ import UIKit
 import OnboardingPresenter
 import ResourceKit
 import DesignSystem
+import Utility
 
 import Then
 import PinLayout
@@ -52,7 +53,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     $0.font = Font.B1
     $0.textColor = Color.gray600.color
   }
-  private let profileSelectView = ProfileSelectView()
+  private lazy var profileSelectView = WalWalProfile(type: PetType(rawValue: petType) ?? .dog) //ProfileSelectView()
   private let nicknameTextField = WalWalInputBox(
     defaultState: .active,
     placeholder: "닉네임을 입력해주세요",
@@ -272,6 +273,14 @@ extension OnboardingProfileViewControllerImp: View {
     profileSelectView.showPHPicker
       .bind(with: self) { owner, _ in
         PHPickerManager.shared.presentPicker(vc: owner)
+      }
+      .disposed(by: disposeBag)
+    
+    PHPickerManager.shared.selectedPhoto
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, image in
+        owner.profileSelectView.selectedImageData.accept(image)
       }
       .disposed(by: disposeBag)
     

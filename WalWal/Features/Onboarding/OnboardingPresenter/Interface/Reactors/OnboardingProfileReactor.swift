@@ -13,8 +13,8 @@ import DesignSystem
 import ReactorKit
 
 public enum OnboardingProfileReactorAction {
-  case register(nickname: String, profile: ProfileCellModel, petType: String)
-  case checkCondition(nickname: String, profile: ProfileCellModel)
+  case register(nickname: String, profile: WalWalProfileModel, petType: String)
+  case checkCondition(nickname: String, profile: WalWalProfileModel)
 }
 
 public enum OnboardingProfileReactorMutation {

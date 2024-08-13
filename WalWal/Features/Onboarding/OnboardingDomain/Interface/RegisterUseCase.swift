@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol RegisterUseCase {
-  func excute(nickname: String, pet: String) -> Single<RegisterAuthToken>
+  func excute(nickname: String, petType: String, defaultProfile: String?) -> Single<RegisterAuthToken>
 }

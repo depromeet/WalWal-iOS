@@ -8,24 +8,34 @@
 
 import UIKit
 import ResourceKit
+import DesignSystem
 
 import FlexLayout
 import PinLayout
 
 /// 반려동물 타입을 구분하기 위한 enum
-enum PetType: String {
-  case dog = "강아지"
-  case cat = "고양이"
-  
-  /// 회원가입 시 사용할 반려동물 종류 프로퍼티
-  var type: String {
+extension PetType {
+  var title: String {
     switch self {
     case .dog:
-      return "DOG"
+      return "강아지"
     case .cat:
-      return "CAT"
+      return "고양이"
     }
   }
+//enum PetType: String {
+//  case dog = "강아지"
+//  case cat = "고양이"
+//  
+//  /// 회원가입 시 사용할 반려동물 종류 프로퍼티
+//  var type: String {
+//    switch self {
+//    case .dog:
+//      return "DOG"
+//    case .cat:
+//      return "CAT"
+//    }
+//  }
 }
 
 /// 반려동물 타입을 보여주기 위한 뷰
@@ -73,7 +83,7 @@ final class PetView: UIView {
   init(petType: PetType) {
     super.init(frame: .zero)
     self.petType = petType
-    typeLabel.text = petType.rawValue
+    typeLabel.text = petType.title
     addSubview(containerView)
     petView.addSubview(petImage)
     setLayout()

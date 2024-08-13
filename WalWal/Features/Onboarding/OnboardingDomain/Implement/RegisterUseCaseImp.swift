@@ -20,8 +20,8 @@ public final class RegisterUseCaseImp: RegisterUseCase {
     self.authRepository = authRepository
   }
   
-  public func excute(nickname: String, pet: String) -> Single<RegisterAuthToken> {
-    return authRepository.register(nickname: nickname, pet: pet)
+  public func excute(nickname: String, petType: String, defaultProfile: String?) -> Single<RegisterAuthToken> {
+    return authRepository.register(nickname: nickname, petType: petType, defaultProfile: defaultProfile)
       .map { RegisterAuthToken(dto: $0) }
       .asObservable()
       .asSingle()

@@ -153,7 +153,7 @@ extension OnboardingSelectViewControllerImp: View {
     Observable.merge(dogViewTapped, catViewTapped)
       .withUnretained(self)
       .map { owner, petType in
-        owner.selectPetType.accept(petType.type)
+        owner.selectPetType.accept(petType.rawValue)
         return Reactor.Action.selectAnimal(
           dog: petType == .dog,
           cat: petType == .cat

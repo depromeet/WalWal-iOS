@@ -73,12 +73,17 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
 extension OnboardingProfileReactorImp {
   
   /// 닉네임 중복 여부 체크 메서드
-  private func checkNickname(nickname: String, profile: ProfileCellModel, petType: String) -> Observable<Mutation> {
+  private func checkNickname(nickname: String, profile: WalWalProfileModel, petType: String) -> Observable<Mutation> {
     return nicknameValidUseCase.excute(nickname: nickname)
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
-        return owner.uploadImage(profile: profile, nickname: nickname, petType: petType)
+        
+        if profile.profileType == .selectImage { // 프로필 사진 선택
+          return owner.uploadImage(profile: profile, nickname: nickname, petType: petType)
+        } else { // 기본사진
+          return owner.register(nickname: nickname, petType: petType, defaultProfile: profile.defaultImage?.rawValue)
+        }
       }
       .catch { error -> Observable<Mutation> in
         return .concat([
@@ -91,8 +96,8 @@ extension OnboardingProfileReactorImp {
   }
   
   /// 프로필 이미지 업로드
-  private func uploadImage(profile: ProfileCellModel, nickname: String, petType: String) -> Observable<Mutation> {
-    guard let imagedata = profile.curImage?.jpegData(compressionQuality: 0.8) else { return .never() }
+  private func uploadImage(profile: WalWalProfileModel, nickname: String, petType: String) -> Observable<Mutation> {
+    guard let imagedata = profile.selectImage?.jpegData(compressionQuality: 0.8) else { return .never() }
     return uploadImageUseCase.excute(nickname: nickname, type: "JPEG", image: imagedata)
       .asObservable()
       .withUnretained(self)
@@ -108,8 +113,8 @@ extension OnboardingProfileReactorImp {
   }
   
   /// 최종 회원가입 요청 메서드
-  private func register(nickname: String, petType: String) -> Observable<Mutation> {
-    return registerUseCase.excute(nickname: nickname, pet: petType)
+  private func register(nickname: String, petType: String, defaultProfile: String? = nil) -> Observable<Mutation> {
+    return registerUseCase.excute(nickname: nickname, petType: petType, defaultProfile: defaultProfile)
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
@@ -127,7 +132,7 @@ extension OnboardingProfileReactorImp {
   }
   
   
-  private func checkValidForm(nickname: String, profile: ProfileCellModel) -> Observable<Mutation> {
+  private func checkValidForm(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
     if nickname.count < 2 {
       return .just(.buttonEnable(isEnable: false))
     }
@@ -141,7 +146,7 @@ extension OnboardingProfileReactorImp {
         .just(.buttonEnable(isEnable: false)),
         .just(.invalidNickname(message: OnboardingError.nicknameInvalid.message))
       ])
-    } else if profile.profileType == .selectImage && profile.curImage == nil {
+    } else if profile.profileType == .selectImage && profile.selectImage == nil {
       return .just(.buttonEnable(isEnable: false))
     } else {
       return .just(.buttonEnable(isEnable: true))
