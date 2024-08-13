@@ -10,6 +10,7 @@
 import UIKit
 import OnboardingPresenter
 import DesignSystem
+import ResourceKit
 
 import Then
 import PinLayout
@@ -23,15 +24,30 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
   OnboardingViewController,
   UIScrollViewDelegate {
   
+  private typealias Images = ResourceKitAsset.Assets
+  private typealias Colors = ResourceKitAsset.Colors
+  
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
   
   // MARK: - UI
   
   private let rootContainer = UIView()
-  private let descriptionView1 = DescriptionView(mainTitle: "반려동물과 함께하는\n데일리 미션", subText: "반려동물과 함께 미션을 수행해요", image: nil)
-  private let descriptionView2 = DescriptionView(mainTitle: "귀여운 반려동물\n피드에서 모아보세요!", subText: "다양한 반려동물을 한 눈에 발견해요", image: nil)
-  private let descriptionView3 = DescriptionView(mainTitle: "매일 수행한 미션\n언제든지 꺼내봐요!", subText: "반려동물과의 함께한 추억을 기억해요", image: nil)
+  private let descriptionView1 = DescriptionView(
+    mainTitle: "반려동물과 함께하는\n데일리 미션",
+    subText: "반려동물과 함께 미션을 수행해요",
+    image: Images.onboarding1.image
+  )
+  private let descriptionView2 = DescriptionView(
+    mainTitle: "귀여운 반려동물\n피드에서 모아보세요!",
+    subText: "다양한 반려동물을 한 눈에 발견해요",
+    image: Images.onboarding2.image
+  )
+  private let descriptionView3 = DescriptionView(
+    mainTitle: "매일 수행한 미션\n언제든지 꺼내봐요!",
+    subText: "반려동물과의 함께한 추억을 기억해요",
+    image: Images.onboarding3.image
+  )
   private lazy var scrollView = UIScrollView().then {
     $0.isPagingEnabled = true
     $0.showsHorizontalScrollIndicator = false
@@ -41,8 +57,8 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
   private lazy var pageControl = UIPageControl().then {
     $0.numberOfPages = 3
     $0.currentPage = 0
-    $0.pageIndicatorTintColor = .lightGray
-    $0.currentPageIndicatorTintColor = .gray
+    $0.pageIndicatorTintColor = Colors.gray300.color
+    $0.currentPageIndicatorTintColor = Colors.gray600.color
     $0.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
   }
   private let nextButton = WalWalButton(type: .active, title: "다음")
@@ -93,17 +109,18 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
     rootContainer.flex
       .define {
         $0.addItem()
-          .justifyContent(.center)
+          .justifyContent(.end)
+          .marginBottom(99.adjustedHeight)
           .grow(1)
           .define {
             $0.addItem(scrollView)
               .alignSelf(.center)
             $0.addItem(pageControl)
-              .marginTop(23)
+              .marginTop(22.adjustedHeight)
               .height(5)
           }
         $0.addItem(nextButton)
-          .marginBottom(30)
+          .marginBottom(30.adjustedHeight)
           .marginHorizontal(20)
           .height(56)
       }

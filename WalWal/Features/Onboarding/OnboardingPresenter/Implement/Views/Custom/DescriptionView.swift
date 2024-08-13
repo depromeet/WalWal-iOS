@@ -32,7 +32,7 @@ final class DescriptionView: UIView {
     $0.textAlignment = .center
   }
   private let imageView = UIImageView().then {
-    $0.backgroundColor = Color.walwalBeige.color
+    $0.contentMode = .scaleAspectFit
   }
   
   // MARK: - Initialize
@@ -77,7 +77,8 @@ final class DescriptionView: UIView {
         flex.addItem(imageView)
           .alignSelf(.center)
           .marginTop(8)
-          .size(280.adjustedWidth)
+          .marginHorizontal(8)
+          .aspectRatio(332/249)
       }
   }
 }

@@ -23,19 +23,15 @@ extension PetType {
       return "고양이"
     }
   }
-//enum PetType: String {
-//  case dog = "강아지"
-//  case cat = "고양이"
-//  
-//  /// 회원가입 시 사용할 반려동물 종류 프로퍼티
-//  var type: String {
-//    switch self {
-//    case .dog:
-//      return "DOG"
-//    case .cat:
-//      return "CAT"
-//    }
-//  }
+  
+  var image: UIImage {
+    switch self {
+    case .dog:
+      return ResourceKitAsset.Assets.dogIcon.image
+    case .cat:
+      return ResourceKitAsset.Assets.catIcon.image
+    }
+  }
 }
 
 /// 반려동물 타입을 보여주기 위한 뷰
@@ -64,17 +60,12 @@ final class PetView: UIView {
     $0.backgroundColor = Color.white.color
     $0.clipsToBounds = true
   }
-  private let inActiveView = UIView().then {
-    $0.backgroundColor = Color.gray200.color
-    
-  }
   private let petImage = UIImageView().then {
-    $0.image = Images.initialProfile.image
     $0.clipsToBounds = true
     $0.contentMode = .scaleAspectFill
   }
   private let typeLabel = UILabel().then {
-    $0.textColor = Color.gray900.color
+    $0.textColor = Color.gray700.color
     $0.font = Font.H6.M
   }
   
@@ -84,6 +75,7 @@ final class PetView: UIView {
     super.init(frame: .zero)
     self.petType = petType
     typeLabel.text = petType.title
+    petImage.image = petType.image
     addSubview(containerView)
     petView.addSubview(petImage)
     setLayout()
@@ -100,7 +92,7 @@ final class PetView: UIView {
       .alignItems(.center)
       .define { flex in
         flex.addItem(petView)
-          .size(158)
+          .size(160.adjustedWidth)
         flex.addItem(typeLabel)
           .marginTop(20)
       }
@@ -129,13 +121,10 @@ final class PetView: UIView {
   private func petSelectedStyle(isSelected: Bool) {
     if isSelected {
       petView.backgroundColor = Color.yellow.color
-      petView.tintColor = Color.black.color
-      typeLabel.textColor = Color.gray900.color
+      typeLabel.textColor = Color.gray700.color
     } else {
       petView.backgroundColor = Color.white.color
-//      petView.tintColor = Color.gray300.color
-      petImage.image?.withTintColor(Color.gray300.color)
-      typeLabel.textColor = Color.gray300.color
+      typeLabel.textColor = Color.gray400.color
     }
   }
 }

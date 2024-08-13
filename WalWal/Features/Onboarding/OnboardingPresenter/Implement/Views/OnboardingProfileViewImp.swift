@@ -171,7 +171,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
     let scrollOffset = titleView.frame.height + 40.adjustedHeight + 70.adjustedHeight/2
     nextButton.pin
-      .bottom(keyboardTop + 20)
+      .bottom(keyboardTop + 20.adjustedHeight)
     
     scrollView.contentOffset.y += scrollOffset
     nicknameTextField.pin
@@ -198,7 +198,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
         .layout()
     }
     nextButton.pin
-      .bottom(30)
+      .bottom(30.adjustedHeight)
       .height(56)
     view.layoutIfNeeded()
   }
