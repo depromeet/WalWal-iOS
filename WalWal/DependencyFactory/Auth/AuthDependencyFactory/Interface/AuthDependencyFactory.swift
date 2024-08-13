@@ -14,6 +14,9 @@ import AuthData
 import AuthDomain
 import AuthPresenter
 
+import FCMData
+import FCMDomain
+
 public protocol AuthDependencyFactory {
   
   func makeAuthCoordinator(
@@ -23,7 +26,11 @@ public protocol AuthDependencyFactory {
   
   func makeAuthData() -> AuthRepository
   func makeSocialLoginUseCase() -> SocialLoginUseCase
-  func makeFCMTokenSaveUseCase() -> FCMTokenUseCase
   func makeAuthReactor<T: AuthCoordinator>(coordinator: T) -> any AuthReactor
   func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
+  
+  // MARK: - FCM
+  
+  func makeFCMData() -> FCMRepository
+  func makeFCMSaveUseCase() -> FCMSaveUseCase
 }

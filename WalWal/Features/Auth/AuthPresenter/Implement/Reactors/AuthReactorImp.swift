@@ -10,6 +10,9 @@ import Foundation
 import AuthDomain
 import AuthPresenter
 import AuthCoordinator
+
+import FCMDomain
+
 import LocalStorage
 
 import ReactorKit
@@ -23,17 +26,17 @@ public final class AuthReactorImp: AuthReactor {
   public let initialState: State
   public let coordinator: any AuthCoordinator
   private let socialLoginUseCase: SocialLoginUseCase
-  private let fcmTokenUseCase: FCMTokenUseCase
+  private let fcmSaveUseCase: FCMSaveUseCase
   
   public init(
     coordinator: any AuthCoordinator,
     socialLoginUseCase: SocialLoginUseCase,
-    fcmTokenUseCase: FCMTokenUseCase
+    fcmSaveUseCase: FCMSaveUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
     self.socialLoginUseCase = socialLoginUseCase
-    self.fcmTokenUseCase = fcmTokenUseCase
+    self.fcmSaveUseCase = fcmSaveUseCase
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -87,7 +90,7 @@ extension AuthReactorImp {
   }
   
   private func fcmTokenSave() -> Observable<Mutation> {
-    return fcmTokenUseCase.excute()
+    return fcmSaveUseCase.excute()
       .asObservable()
       .flatMap { _ -> Observable<Mutation> in
         self.coordinator.startMission()

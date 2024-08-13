@@ -12,5 +12,4 @@ import RxSwift
 
 public protocol AuthRepository {
   func socialLogin(provider: String, token: String) -> Single<AuthTokenDTO>
-  func fcmTokenSave(token: String) -> Single<Void>
 }

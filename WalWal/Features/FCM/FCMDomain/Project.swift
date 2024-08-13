@@ -1,8 +1,8 @@
 
 //
-//  AuthDomainProject.swift
+//  FCMDomainProject.swift
 //
-//  Auth
+//  FCM
 //
 //  Created by Jiyeon
 //
@@ -12,14 +12,14 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.invertedDualTargetProject(
-  name: "AuthDomain",
+  name: "FCMDomain",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .Feature.Auth.Data.Interface
+    .Feature.FCM.Data.Interface
   ],
   implementDependencies: [
-    .DependencyFactory.Auth.Interface
+    .DependencyFactory.FCM.Interface
   ]
 )
 

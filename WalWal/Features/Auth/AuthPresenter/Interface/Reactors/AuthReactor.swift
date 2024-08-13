@@ -8,6 +8,7 @@
 
 import AuthDomain
 import AuthCoordinator
+import FCMDomain
 
 import ReactorKit
 import RxSwift
@@ -38,6 +39,6 @@ public protocol AuthReactor:
   init(
     coordinator: any AuthCoordinator,
     socialLoginUseCase: SocialLoginUseCase,
-    fcmTokenUseCase: FCMTokenUseCase
+    fcmSaveUseCase: FCMSaveUseCase
   )
 }
