@@ -32,8 +32,29 @@ public final class WalWalFeed: UIView {
   private var countLabel: UILabel?
   private var countTimer: Timer?
   private var count: Int = 0
-  private let walwalEmitter = CAEmitterLayer()
-  private let walwalCell = CAEmitterCell()
+  
+  private lazy var walwalCell = WalWalEmitterCell(
+    image: ResourceKitAsset.Sample.walwalEmitterDog.image,
+    scale: 0.8,
+    scaleRange: 0.5,
+    lifetime: 2.0,
+    lifetimeRange: 0.5,
+    birthRate: 0,
+    velocity: 800,
+    velocityRange: 50,
+    emissionRange: .pi * 2,
+    spin: 3.14,
+    spinRange: 6.28,
+    alphaSpeed: -0.5
+  )
+  
+  private lazy var walwalEmitter = WalWalEmitterLayer(
+    cell: walwalCell,
+    emitterShape: .sphere,
+    emitterMode: .outline,
+    renderMode: .additive
+  )
+  
   private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
   private let disposeBag = DisposeBag()
   
@@ -70,7 +91,6 @@ public final class WalWalFeed: UIView {
   public override func layoutSubviews() {
     super.layoutSubviews()
     flex.layout()
-    setupHeartEmitter()
   }
   
   // MARK: - Setup Methods
@@ -536,43 +556,21 @@ public final class WalWalFeed: UIView {
   
   // MARK: - Heart Emitter
   
-  private func setupHeartEmitter() {
-    walwalEmitter.emitterShape = .sphere
-    walwalEmitter.emitterMode = .outline
-    walwalEmitter.renderMode = .additive
-    
-    walwalCell.contents = ResourceKitAsset.Sample.walwalEmitterDog.image.cgImage
-    walwalCell.scale = 0.8 /// 이미지의 크기 80
-    walwalCell.scaleRange = 0.5 /// 80 ~ 130까지의 범위
-    walwalCell.lifetime = 2.0 /// 2초 동안 존재
-    walwalCell.lifetimeRange = 0.5 /// 2.0 ~ 2.5초 사이 랜덤 시간 생존
-    walwalCell.birthRate = 0 /// 초기 파티클 0개
-    walwalCell.velocity = 800 /// 속도 800
-    walwalCell.velocityRange = 50 /// 속도의 범위 800 ~ 850
-    walwalCell.emissionRange = .pi * 2 /// 360도
-    walwalCell.spin = 3.14 /// 180도
-    walwalCell.spinRange = 6.28 /// 360도
-    walwalCell.alphaSpeed = -0.5 /// 50%의 투명도
-    
-    walwalEmitter.emitterCells = [walwalCell]
-  }
-  
   private func startWalWalAnimation() {
     guard let detailView = currentDetailView else { return }
     
-    /// 에미터 위치 설정
-    walwalEmitter.emitterPosition = CGPoint(x: detailView.bounds.width / 2, y: detailView.bounds.height / 2)
-    
-    /// 에미터 범위 설정
-    walwalEmitter.emitterSize = CGSize(width: detailView.bounds.width / 2, height: detailView.bounds.width / 2)
-    
-    walwalCell.birthRate = 30
+    walwalEmitter.configureEmitter(
+      in: detailView,
+      positionRatio: CGPoint(x: 0.5, y: 0.5),
+      sizeRatio: CGSize(width: 0.5, height: 0.5)
+    )
+    walwalEmitter.startEmitting(rate: 30)
     
     detailView.layer.addSublayer(walwalEmitter)
   }
   
   private func stopHeartAnimation() {
-    walwalCell.birthRate = 0
+    walwalEmitter.stopEmitting()
     walwalEmitter.removeFromSuperlayer()
   }
 }
