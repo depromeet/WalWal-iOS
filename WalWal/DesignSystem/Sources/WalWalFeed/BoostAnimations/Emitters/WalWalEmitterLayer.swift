@@ -10,7 +10,7 @@ import UIKit
 
 final class WalWalEmitterLayer: CAEmitterLayer {
   
-  private let walwalCell: WalWalEmitterCell
+  private var walwalCell: WalWalEmitterCell
   
   /// 방출기 (Emitter)의 모양을 만드는 initialization
   /// - Parameters:
@@ -35,6 +35,20 @@ final class WalWalEmitterLayer: CAEmitterLayer {
   
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+  
+  /// 레이어 복사를 위한 초기화 메서드
+  override init(layer: Any) {
+    guard let layer = layer as? WalWalEmitterLayer else {
+      fatalError("Unable to copy layer")
+    }
+    self.walwalCell = layer.walwalCell
+    super.init(layer: layer)
+    
+    self.emitterShape = layer.emitterShape
+    self.emitterMode = layer.emitterMode
+    self.renderMode = layer.renderMode
+    self.emitterCells = [walwalCell]
   }
   
   func configureEmitter(

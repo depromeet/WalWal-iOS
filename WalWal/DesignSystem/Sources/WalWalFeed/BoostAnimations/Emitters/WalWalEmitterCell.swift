@@ -26,7 +26,6 @@ final class WalWalEmitterCell: CAEmitterCell {
   ///   - spinRange: 파티클 회전 속도의 변화 범위 (라디안/초)
   ///   - alphaSpeed: 파티클 투명도의 변화 속도 (초당)
   init(
-    /// 파티클의 이미지
     image: UIImage = ResourceKitAsset.Sample.walwalEmitterDog.image,
     scale: CGFloat = 0.8,
     scaleRange: CGFloat = 0.5,
