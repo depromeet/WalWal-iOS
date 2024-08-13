@@ -18,10 +18,12 @@ import RxGesture
 
 final class WalWalFeedViewController: UIViewController {
   
+  private typealias Colors = ResourceKitAsset.Colors
+  
   // MARK: - UI
   
   private let rootView = UIView().then {
-    $0.backgroundColor = UIColor(hex: 0xF7F8FA)
+    $0.backgroundColor = Colors.white.color
   }
   
   private let feed: WalWalFeed

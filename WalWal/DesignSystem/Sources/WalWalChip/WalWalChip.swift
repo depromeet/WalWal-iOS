@@ -15,7 +15,7 @@ import FlexLayout
 import PinLayout
 import Then
 
-public class WalWalChip: UIView {
+public final class WalWalChip: UIView {
   
   private typealias Images = ResourceKitAsset.Images
   private typealias Colors = ResourceKitAsset.Colors
@@ -185,6 +185,7 @@ public class WalWalChip: UIView {
       layer.borderWidth = 0
     case .none:
       break
+    }
   }
 }
 

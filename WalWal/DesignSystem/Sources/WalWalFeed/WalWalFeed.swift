@@ -15,6 +15,8 @@ import RxCocoa
 
 public final class WalWalFeed: UIView {
   
+  private typealias Colors = ResourceKitAsset.Colors
+  
   // MARK: - Enums
   
   /// Boost효과 케이스에 따른 변수들을 정리
@@ -194,8 +196,8 @@ public final class WalWalFeed: UIView {
     /// 선택된 Cell의 위치에 등장하는 암막
     let overlayView = createOverlayView(frame: cellFrameInWindow)
     
-    window.addSubview(backgroundView)
     window.addSubview(overlayView)
+    window.addSubview(backgroundView)
     window.addSubview(detailView)
     
     /// Boost 케이스 랜덤 픽
@@ -237,7 +239,7 @@ public final class WalWalFeed: UIView {
   
   private func createOverlayView(frame: CGRect) -> UIView {
     let overlayView = UIView(frame: frame)
-    overlayView.backgroundColor = ResourceKitAsset.Colors.black.color
+    overlayView.backgroundColor = Colors.white.color
     return overlayView
   }
   
