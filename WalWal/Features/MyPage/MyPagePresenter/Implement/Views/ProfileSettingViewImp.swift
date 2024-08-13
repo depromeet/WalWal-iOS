@@ -30,7 +30,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   
   private let containerView = UIView()
   private let navigationBar = WalWalNavigationBar(
-    leftItems: [.back],
+    leftItems: [.darkBack],
     title: "설정",
     rightItems: []
   )
@@ -113,6 +113,11 @@ extension ProfileSettingViewControllerImp: View {
     settingTableView.rx
       .itemSelected
       .map { Reactor.Action.didSelectItem(at: $0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    navigationBar.leftItems?[0].rx.tapped
+      .map { Reactor.Action.tapBackButton }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
