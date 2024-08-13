@@ -79,6 +79,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    missionCountBubbleView.startFloatingAnimation()
     configureAttribute()
     configureLayout()
     self.reactor = missionReactor
