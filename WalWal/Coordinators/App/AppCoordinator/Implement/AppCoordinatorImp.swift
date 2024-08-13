@@ -17,6 +17,7 @@ import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
+import FeedDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -40,6 +41,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   public var missionDependencyFactory: MissionDependencyFactory
   public var myPageDependencyFactory: MyPageDependencyFactory
   public var fcmDependencyFactory: FCMDependencyFactory
+  public var feedDependencyFactory: FeedDependencyFactory
   
   /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
   /// 그리고 하위 Coordinator를 생성할 때 마다, 하위에 해당하는 인터페이스 모두 전달
@@ -50,6 +52,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
+    feedDependencyFactory: FeedDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory
   ) {
     self.navigationController = navigationController
@@ -59,6 +62,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     self.missionDependencyFactory = missionDependencyFactory
     self.myPageDependencyFactory = myPageDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
+    self.feedDependencyFactory = feedDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -103,6 +107,7 @@ extension AppCoordinatorImp {
     case let .requireParentAction(action):
       switch action {
       case .startOnboarding:
+        destination.accept(.startHome)
         // TODO: - Onboarding 연결
         print("온보딩 화면")
       case .startMission:
@@ -133,7 +138,8 @@ extension AppCoordinatorImp {
       navigationController: navigationController,
       parentCoordinator: self,
       missionDependencyFactory: missionDependencyFactory,
-      myPageDependencyFactory: myPageDependencyFactory
+      myPageDependencyFactory: myPageDependencyFactory,
+      feedDependencyFactory: feedDependencyFactory
     )
     childCoordinator = walwalTabBarCoordinator
     walwalTabBarCoordinator.start()

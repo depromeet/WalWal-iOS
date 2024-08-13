@@ -9,6 +9,7 @@
 import UIKit
 import MissionDependencyFactory
 import MyPageDependencyFactory
+import FeedDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -18,6 +19,7 @@ public protocol WalWalTabBarDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     missionDependencyFactory: MissionDependencyFactory,
-    myPageDependencyFactory: MyPageDependencyFactory
+    myPageDependencyFactory: MyPageDependencyFactory,
+    feedDependencyFactory: FeedDependencyFactory
   ) -> any WalWalTabBarCoordinator
 }
