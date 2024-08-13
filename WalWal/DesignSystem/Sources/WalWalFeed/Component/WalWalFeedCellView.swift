@@ -58,7 +58,7 @@ final class WalWalFeedCellView: UIView {
   private let missionImageView = UIImageView()
   
   private let boostIconImageView = UIImageView().then {
-    $0.image = ResourceKitAsset.Sample.fire.image
+    $0.image = ResourceKitAsset.Sample.fireDef.image
   }
   
   private let boostCountLabel = UILabel().then {
@@ -106,13 +106,18 @@ final class WalWalFeedCellView: UIView {
   
   // MARK: - Methods
   
-  func configureFeed(feedData: WalWalFeedModel) {
+  func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false) {
     followButton.alpha = feedData.isFeedCell ? 1 : 0
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = feedData.missionTitle
     profileImageView.image = feedData.profileImage
     missionImageView.image = feedData.missionImage
     boostCountLabel.text = "\(feedData.boostCount)"
+    let isBoostImage = isBoost ? ResourceKitAsset.Sample.fireActive.image : ResourceKitAsset.Sample.fireDef.image
+    let isBoostColor = isBoost ? Colors.walwalOrange.color : Colors.gray500.color
+    boostIconImageView.image = isBoostImage
+    boostCountLabel.textColor = isBoostColor
+    boostLabel.textColor = isBoostColor
     
     let missionDate = feedData.date
     let attributedString = NSMutableAttributedString(string: missionDate)

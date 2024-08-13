@@ -138,7 +138,7 @@ extension WalWalBoostGenerator {
     with feedModel: WalWalFeedModel
   ) -> WalWalFeedCellView {
     let detailView = WalWalFeedCellView(frame: cell.frame)
-    detailView.configureFeed(feedData: feedModel)
+    detailView.configureFeed(feedData: feedModel, isBoost: true)
     let cellFrameInWindow = cell.convert(cell.bounds, to: nil)
     detailView.frame = cellFrameInWindow
     return detailView
