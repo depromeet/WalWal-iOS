@@ -127,6 +127,15 @@ extension MyPageViewControllerImp: View {
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    navigationBar.rightItems?[0].rx
+      .tapped
+      .map {
+        Reactor.Action.didTapSettingButton
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
   }
   
   public func bindState(reactor: R) {

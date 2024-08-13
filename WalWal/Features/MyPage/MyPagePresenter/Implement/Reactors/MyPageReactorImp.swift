@@ -32,6 +32,8 @@ public final class MyPageReactorImp: MyPageReactor {
     switch action {
     case let .didSelectCalendarItem(model):
       return Observable.just(.setSelectedCalendarItem(model))
+    case .didTapSettingButton:
+      return Observable.just(.moveToSettingView)
     }
   }
   
@@ -41,6 +43,8 @@ public final class MyPageReactorImp: MyPageReactor {
     case let .setSelectedCalendarItem(date):
       newState.selectedDate = date
       coordinator.destination.accept(.showRecordDetail)
+    case .moveToSettingView:
+      coordinator.destination.accept(.showProfileSetting)
     }
     return newState
   }
