@@ -205,6 +205,7 @@ final class WalWalFeedCellView: UIView {
       .define {
         $0.addItem(boostIconImageView)
         $0.addItem(boostCountLabel)
+          .width(24)
         $0.addItem(boostLabel)
           .marginRight(4)
         $0.addItem(seperatorCircle)
