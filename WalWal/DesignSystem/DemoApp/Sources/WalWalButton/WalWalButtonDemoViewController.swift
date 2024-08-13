@@ -25,13 +25,13 @@ public final class WalWalButtonDemoViewController: UIViewController {
     $0.backgroundColor = Colors.gray600.color
   }
   
-  let firstButton = WalWalButton(type: .inactive, title: "기본 버튼")
+  let firstButton = WalWalButton(type: .active, title: "기본 버튼")
   
-  let secondButton = WalWalButton(type: .inactive, title: "비활성화 버튼")
+  let secondButton = WalWalButton(type: .active, title: "비활성화 버튼")
   
-  let thirdButton = WalWalButton(type: .inactive, title: "어두운 버튼")
+  let thirdButton = WalWalButton(type: .active, title: "어두운 버튼")
   
-  let fourthButton = WalWalButton_Icon(type: .inactive, title: "내 미션 기록 보기", icon: Images.calendarS.image)
+  let fourthButton = WalWalButton_Icon(type: .active, title: "내 미션 기록 보기", icon: Images.calendarS.image)
   
   let buttonLabel = UILabel().then {
     $0.text = "버튼을 눌러보세요!"
