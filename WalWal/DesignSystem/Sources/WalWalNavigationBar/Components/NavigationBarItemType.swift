@@ -19,6 +19,8 @@ public enum NavigationBarItemType {
   case close
   case back
   case setting
+  case darkClose
+  case darkBack
   
   var icon: UIImage? {
     switch self {
@@ -29,7 +31,11 @@ public enum NavigationBarItemType {
     case .back:
       return Images.backL.image
     case .setting:
-      return Images.settingL.image
+      return Images.settingL.image.withTintColor(Colors.black.color, renderingMode: .alwaysOriginal)
+    case .darkClose:
+      return Images.closeL.image.withTintColor(Colors.black.color, renderingMode: .alwaysOriginal)
+    case .darkBack:
+      return Images.backL.image.withTintColor(Colors.black.color, renderingMode: .alwaysOriginal)
     }
   }
 }
