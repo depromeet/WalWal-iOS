@@ -17,47 +17,6 @@ public final class WalWalFeed: UIView {
   
   private typealias Colors = ResourceKitAsset.Colors
   
-  // MARK: - Enums
-  
-  /// Boost효과 케이스에 따른 변수들을 정리
-  public enum WalWalBurstString {
-    case cute
-    case cool
-    case lovely
-    
-    var font: UIFont {
-      switch self {
-      case .cute: return ResourceKitFontFamily.LotteriaChab.Buster_Cute
-      case .cool: return ResourceKitFontFamily.LotteriaChab.Buster_Cool
-      case .lovely: return ResourceKitFontFamily.LotteriaChab.Buster_Lovely
-      }
-    }
-    
-    var normalText: String {
-      switch self {
-      case .cute: return "귀여워!"
-      case .cool: return "멋져!"
-      case .lovely: return "사랑스러워!"
-      }
-    }
-    
-    var goodText: String {
-      switch self {
-      case .cute: return "너무 귀여워!"
-      case .cool: return "너무 멋져!"
-      case .lovely: return "너무 사랑스러워!"
-      }
-    }
-    
-    var greatText: String {
-      switch self {
-      case .cute: return "너무너무 귀여워!"
-      case .cool: return "너무너무 멋져!"
-      case .lovely: return "너무너무 사랑스러워!"
-      }
-    }
-  }
-  
   // MARK: - Properties
   
   /// WalWalFeedModel의 데이터를 갖는 스트림
@@ -75,7 +34,6 @@ public final class WalWalFeed: UIView {
   private var count: Int = 0
   private let walwalEmitter = CAEmitterLayer()
   private let walwalCell = CAEmitterCell()
-  private var isBorderFilled: Bool = false
   private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
   private let disposeBag = DisposeBag()
   
@@ -481,8 +439,6 @@ public final class WalWalFeed: UIView {
     animation.isRemovedOnCompletion = false
     animation.fillMode = .forwards
     
-    animation.delegate = self
-    
     borderLayer?.strokeColor = borderColor.cgColor
     borderLayer?.add(animation, forKey: "borderAnimation")
   }
@@ -626,15 +582,5 @@ public final class WalWalFeed: UIView {
 extension Array {
   subscript(safe index: Index) -> Element? {
     return indices.contains(index) ? self[index] : nil
-  }
-}
-
-// MARK: - Animation Delegate
-
-extension WalWalFeed: CAAnimationDelegate {
-  public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-    if flag {
-      isBorderFilled = true
-    }
   }
 }
