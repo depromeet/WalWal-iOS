@@ -52,10 +52,9 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     image: Images.missionStartIcon.image,
     text: "\(missionCount)번째 미션을 수행해볼까요?"
   )
-  private let missionStartButton = UIButton().then {
-    $0.backgroundColor = Colors.walwalOrange.color
-    $0.setTitle("미션 시작하기", for: .normal)
-  }
+  private let missionStartButton = WalWalButton_Icon(type: .active,
+                                                     title: "미션 시작하기",
+                                                     icon:Images.flagS.image)
   
   // MARK: - Properties
   
@@ -117,9 +116,8 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
           .define {
             $0.addItem(missionStartButton)
               .marginHorizontal(20.adjusted)
-              .height(50.adjusted)
             $0.addItem(missionCountBubbleView)
-              .marginBottom(-2.adjusted)
+              .marginBottom(-20.adjusted)
               .alignSelf(.center)
           }
       }
