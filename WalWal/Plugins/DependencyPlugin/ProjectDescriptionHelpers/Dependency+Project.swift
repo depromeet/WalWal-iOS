@@ -26,7 +26,6 @@ enum DependencyFactoryStr: String {
   case myPage = "MyPage"
   case sample = "Sample"
   case fcm = "FCM"
-  case onboarding = "Onboarding"
 }
 
 enum CoordinatorStr: String {
@@ -49,14 +48,7 @@ enum FeatureStr: String {
   case sample = "Sample"
   case mission = "Mission"
   case myPage = "MyPage"
-<<<<<<< HEAD
-<<<<<<< HEAD
   case fcm = "FCM"
-=======
-  case onboarding = "Onboarding"
->>>>>>> 0c0bb72 (chore: #17 온보딩 모듈 생성 및 수정)
-=======
->>>>>>> 6d42958 (chore: #17 온보딩 모듈 삭제)
 }
 
 protocol WalWalDependency {
@@ -112,14 +104,7 @@ extension TargetDependency {
     public struct Onboarding: WalWalDependency { }
     public struct WalWalTabBar: WalWalDependency { }
     public struct Mission: WalWalDependency { }
-<<<<<<< HEAD
-<<<<<<< HEAD
     public struct FCM: WalWalDependency { }
-=======
-    public struct Onboarding: WalWalDependency { }
->>>>>>> 0c0bb72 (chore: #17 온보딩 모듈 생성 및 수정)
-=======
->>>>>>> 6d42958 (chore: #17 온보딩 모듈 삭제)
   }
   
   public struct Coordinator {
@@ -171,21 +156,11 @@ extension TargetDependency {
       public struct Domain: WalWalDependency {}
       public struct Presenter: WalWalDependency {}
     }
-<<<<<<< HEAD
     
-<<<<<<< HEAD
     public struct FCM: WalWalDependency {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
-=======
-    public struct Onboarding: WalWalDependency {
-      public struct Data {}
-      public struct Domain {}
-      public struct Presenter {}
->>>>>>> 0c0bb72 (chore: #17 온보딩 모듈 생성 및 수정)
     }
-=======
->>>>>>> 6d42958 (chore: #17 온보딩 모듈 삭제)
   }
 }
 
@@ -226,26 +201,11 @@ public extension TargetDependency.DependencyFactory.MyPage {
   static let Implement = Self.project(dependencyName: .myPage, isInterface: false)
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 public extension TargetDependency.DependencyFactory.FCM {
   static let Interface = Self.project(dependencyName: .fcm, isInterface: true)
   static let Implement = Self.project(dependencyName: .fcm, isInterface: false)
 }
 
-=======
-public extension TargetDependency.DependencyFactory.Onboarding {
-  static let Interface = TargetDependency.DependencyFactory.Onboarding.project(dependencyName: .onboarding,
-                                                                           isInterface: true)
-  
-  static let Implement = TargetDependency.DependencyFactory.Onboarding.project(dependencyName: .onboarding,
-                                                                           isInterface: false)
-}
-
-=======
->>>>>>> 6d42958 (chore: #17 온보딩 모듈 삭제)
-
->>>>>>> 0c0bb72 (chore: #17 온보딩 모듈 생성 및 수정)
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
 
 public extension TargetDependency.Feature.Splash.Presenter {
@@ -337,8 +297,6 @@ public extension TargetDependency.Feature.MyPage.Data {
   static let Interface = Self.project(name: .myPage, layer: .data, isInterface: true)
   static let Implement = Self.project(name: .myPage, layer: .data, isInterface: false)
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 public extension TargetDependency.Feature.FCM.Domain {
   static let Interface = Self.project(name: .fcm, layer: .domain, isInterface: true)
@@ -348,39 +306,7 @@ public extension TargetDependency.Feature.FCM.Domain {
 public extension TargetDependency.Feature.FCM.Data {
   static let Interface = Self.project(name: .fcm, layer: .data, isInterface: true)
   static let Implement = Self.project(name: .fcm, layer: .data, isInterface: false)
-=======
-public extension TargetDependency.Feature.Onboarding.Presenter {
-  static let Interface = TargetDependency.Feature.Onboarding.project(name: .onboarding,
-                                                               layer: .presenter,
-                                                               isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Onboarding.project(name: .onboarding,
-                                                              layer: .presenter,
-                                                              isInterface: false)
 }
-
-public extension TargetDependency.Feature.Onboarding.Domain {
-  static let Interface = TargetDependency.Feature.Onboarding.project(name: .onboarding,
-                                                                 layer: .domain,
-                                                                 isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Onboarding.project(name: .onboarding,
-                                                                 layer: .domain,
-                                                                 isInterface: false)
-}
-
-public extension TargetDependency.Feature.Onboarding.Data {
-  static let Interface = TargetDependency.Feature.Onboarding.project(name: .onboarding,
-                                                                 layer: .data,
-                                                                 isInterface: true)
-  
-  static let Implement = TargetDependency.Feature.Onboarding.project(name: .onboarding,
-                                                                 layer: .data,
-                                                                 isInterface: false)
->>>>>>> 0c0bb72 (chore: #17 온보딩 모듈 생성 및 수정)
-}
-=======
->>>>>>> 6d42958 (chore: #17 온보딩 모듈 삭제)
 
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
 

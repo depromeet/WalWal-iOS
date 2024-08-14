@@ -50,7 +50,7 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
       missionDependencyFactory: missionDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
-      fcmDependencyFactory: fcmDependencyFactory
+      fcmDependencyFactory: fcmDependencyFactory,
       onboardingDependencyFactory: onboardingDependencyFactory
     )
   }
