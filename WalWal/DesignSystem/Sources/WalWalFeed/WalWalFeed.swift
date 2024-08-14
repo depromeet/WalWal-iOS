@@ -135,9 +135,10 @@ public final class WalWalFeed: UIView {
   private func setupBindings() {
     feedData
       .asDriver(onErrorJustReturn: [])
-      .drive(onNext: { [weak self] data in
-        self?.currentFeedData = data 
-        self?.collectionView.reloadData()
+      .drive(with: self, onNext: { owner, feedData in
+        owner.currentFeedData = feedData
+        owner.collectionView.layoutSubviews()
+        owner.collectionView.reloadData()
       })
       .disposed(by: disposeBag)
     
@@ -156,8 +157,9 @@ public final class WalWalFeed: UIView {
   }
   
   private func setLayouts() {
-    flex.define { flex in
-      flex.addItem(collectionView).grow(1)
+    flex.define {
+      $0.addItem(collectionView)
+        .grow(1)
     }
   }
   
