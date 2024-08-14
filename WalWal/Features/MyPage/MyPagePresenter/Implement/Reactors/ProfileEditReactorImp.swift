@@ -30,9 +30,34 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
     self.coordinator = coordinator
   }
   
+  // TODO: 유효성 체크로 변경 필요
+  
   public func mutate(action: Action) -> Observable<Mutation> {
+    switch action {
+    case let .checkCondition(nickname):
+      return .just(.showIndicator(show: true))
+    case let .editProfile(nickname, profileURL):
+      return .concat([
+        .just(.showIndicator(show: true)),
+      ])
+    }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
+    var newState = state
+    switch mutation {
+    case let .buttonEnable(isEnable):
+      newState.buttonEnable = isEnable
+    case let .invaildNickname(message):
+      newState.invaildMessage = message
+    case let .showIndicator(show):
+      newState.showIndicator = show
+    }
+    return newState
+  }
+  
+  
+  private func checkNickname(nickname: String) {
+    
   }
 }

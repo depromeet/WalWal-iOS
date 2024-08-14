@@ -13,15 +13,21 @@ import ReactorKit
 import RxSwift
 
 public enum ProfileEditReactorAction {
+  case editProfile(nickname: String, profileURL: String)
+  case checkCondition(nickname: String)
 }
 
 public enum ProfileEditReactorMutation {
+  case invaildNickname(message: String)
+  case buttonEnable(isEnable: Bool)
+  case showIndicator(show: Bool)
 }
 
 public struct ProfileEditReactorState {
-  public init() {
-  
-  }
+  public init() { }
+  public var buttonEnable: Bool = false
+  public var showIndicator: Bool = false
+  @Pulse public var invaildMessage: String = ""
 }
 
 
