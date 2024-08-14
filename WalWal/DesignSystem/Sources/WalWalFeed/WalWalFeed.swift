@@ -16,9 +16,6 @@ import RxCocoa
 public final class WalWalFeed: UIView {
   
   private typealias Colors = ResourceKitAsset.Colors
-  public var feedData = PublishRelay<[WalWalFeedModel]>()
-  private var currentFeedData: [WalWalFeedModel] = []
-  public var isFeed: Bool
   
   // MARK: - UI
   
@@ -37,7 +34,13 @@ public final class WalWalFeed: UIView {
     $0.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 24, right: 0)
   }
   
+  // MARK: - Property
+  
   public var feedData = BehaviorRelay<[WalWalFeedModel]>(value: [])
+  
+  private var headerHeight: CGFloat = 0
+  
+  private var currentFeedData: [WalWalFeedModel] = []
   
   private let walwalBoostBorder = WalWalBoostBorder()
   
@@ -87,17 +90,12 @@ public final class WalWalFeed: UIView {
     feedData: [WalWalFeedModel],
     isFeed: Bool = true
   ) {
-      self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
-      
-      super.init(frame: .zero)
-      configureView()
-      self.feedData.accept(feedData)
-    bindFeedData()
-    configureCollectionView()
-    setAttributes()
-    setLayouts()
+    self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
+    self.headerHeight = isFeed ? 71 : 0
+    super.init(frame: .zero)
+    configureView()
+    self.feedData.accept(feedData)
   }
-    self.isFeed = isFeed
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -124,7 +122,7 @@ public final class WalWalFeed: UIView {
     gestureHandler?.setupLongPressGesture(for: collectionView)
   }
   
-  private func configureCollectionView() {
+  private func setupCollectionView() {
     collectionView.dataSource = self
     collectionView.delegate = self
     addSubview(collectionView)
@@ -139,7 +137,7 @@ public final class WalWalFeed: UIView {
       })
       .disposed(by: disposeBag)
     
-      walwalBoostGenerater.boostFinished
+    walwalBoostGenerater.boostFinished
       .withLatestFrom(feedData) { (boostResult, currentFeedData) -> [WalWalFeedModel] in
         var updatedFeedData = currentFeedData
         if let feedModel = updatedFeedData[safe: boostResult.indexPath.item] {
@@ -223,6 +221,6 @@ extension WalWalFeed: UICollectionViewDataSource {
 
 extension WalWalFeed: UICollectionViewDelegateFlowLayout {
   public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-    return self.isFeed ?  CGSize(width: collectionView.bounds.width, height: 71) : CGSize(width: 0, height: 0)
+    return CGSize(width: collectionView.bounds.width, height: headerHeight)
   }
 }
