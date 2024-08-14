@@ -23,13 +23,13 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   
   private typealias FontKR = ResourceKitFontFamily.KR
   private typealias FontEN = ResourceKitFontFamily.EN
-  private typealias AssetColor = ResourceKitAsset.Colors
-  private typealias AssetImage = ResourceKitAsset.Assets
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Images = ResourceKitAsset.Assets
   
   // MARK: - UI
   
   private let containerView = UIView().then {
-    $0.backgroundColor = AssetColor.gray150.color
+    $0.backgroundColor = Colors.gray150.color
   }
   private let navigationBarView = WalWalNavigationBar(
     leftItems: [],
@@ -37,7 +37,7 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
     rightItems: [.darkClose],
     rightItemSize: 40
   ).then {
-    $0.backgroundColor = AssetColor.white.color
+    $0.backgroundColor = Colors.white.color
   }
   private let profileEditView = WalWalProfile(type: .dog)
   private let nicknameTextfield = WalWalInputBox(
@@ -74,7 +74,7 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   }
   
   public override func viewDidLayoutSubviews() {
-    view.backgroundColor = AssetColor.white.color
+    view.backgroundColor = Colors.white.color
     super.viewDidLayoutSubviews()
     containerView.pin
       .all(view.pin.safeArea)
@@ -84,7 +84,7 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   
   
   public func configureAttribute() {
-    view.backgroundColor = AssetColor.white.color
+    view.backgroundColor = Colors.white.color
   }
   
   public func configureLayout() {
