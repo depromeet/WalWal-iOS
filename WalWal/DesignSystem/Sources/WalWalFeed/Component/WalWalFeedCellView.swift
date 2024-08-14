@@ -48,14 +48,6 @@ final class WalWalFeedCellView: UIView {
     $0.textColor = Colors.gray700.color
   }
   
-  private let followButton = WalWalChip(
-    text: "팔로우",
-    selectedText: "팔로잉",
-    style: .filled,
-    selectedStyle: .outlined,
-    font: Fonts.KR.B2
-  )
-  
   private let missionImageView = UIImageView()
   
   private let boostIconImageView = UIImageView().then {
@@ -108,7 +100,6 @@ final class WalWalFeedCellView: UIView {
   // MARK: - Methods
   
   func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false) {
-    followButton.alpha = feedData.isFeedCell ? 1 : 0
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = feedData.missionTitle
     profileImageView.image = feedData.profileImage
@@ -146,7 +137,7 @@ final class WalWalFeedCellView: UIView {
       containerView.addSubview($0)
     }
     
-    [profileImageView, profileInfoView, followButton].forEach {
+    [profileImageView, profileInfoView].forEach {
       profileHeaderView.addSubview($0)
     }
     
@@ -181,8 +172,6 @@ final class WalWalFeedCellView: UIView {
         $0.addItem(profileInfoView)
           .marginLeft(10)
           .width(180)
-        $0.addItem(followButton)
-          .marginLeft(10)
       }
     
     profileInfoView.flex
