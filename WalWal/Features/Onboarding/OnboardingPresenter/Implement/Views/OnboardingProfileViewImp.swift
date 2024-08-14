@@ -158,7 +158,6 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
         
         $0.addItem(nicknameTextField)
           .justifyContent(.center)
-          .height(72.adjustedHeight)
           .marginTop(32.adjustedHeight)
           .marginHorizontal(20.adjustedWidth)
       }
@@ -177,6 +176,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     scrollView.contentOffset.y += scrollOffset
     nicknameTextField.pin
       .bottom(20.adjustedHeight)
+      .height(72)
     profileContainer.pin
       .above(of: nextButton)
       .bottom(10)
@@ -219,6 +219,7 @@ extension OnboardingProfileViewControllerImp: View {
     let inputValue =  Observable.combineLatest(nicknameTextField.rx.text.orEmpty, profileSelectView.curProfileItems)
     
     inputValue
+      .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
       .map {
         Reactor.Action.checkCondition(nickname: $0, profile: $1)
       }
@@ -267,6 +268,7 @@ extension OnboardingProfileViewControllerImp: View {
     navigationBar.leftItems?.first?.rx.tapped
       .asDriver()
       .drive(with: self) { owner, _ in
+        owner.view.endEditing(true)
         owner.navigationController?.popViewController(animated: true)
       }
       .disposed(by: disposeBag)
