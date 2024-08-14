@@ -137,8 +137,8 @@ public final class WalWalInputBox: UIView {
     errorLabel.pin
       .left()
       .right()
-      .top(to: containerView.edge.bottom)
-      .marginTop(6)
+      .below(of: containerView)
+      .top(6)
       .height(20)
     errorLabel.flex
       .layout()
