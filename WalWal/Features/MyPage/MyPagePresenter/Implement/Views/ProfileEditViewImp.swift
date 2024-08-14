@@ -65,12 +65,16 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   
   // MARK: - Lifecycle
   
+  public override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    nicknameTextfield.focusOnTextField()
+  }
+  
   public override func viewDidLoad() {
     self.reactor = profileEditReactor
     super.viewDidLoad()
     configureAttribute()
     configureLayout()
-    nicknameTextfield.becomeFirstResponder()
   }
   
   public override func viewDidLayoutSubviews() {
