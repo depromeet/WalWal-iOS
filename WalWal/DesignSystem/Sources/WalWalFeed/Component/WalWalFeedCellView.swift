@@ -16,7 +16,7 @@ import RxSwift
 
 final class WalWalFeedCellView: UIView {
   
-  private typealias Images = ResourceKitAsset.Images
+  private typealias Images = ResourceKitAsset.Sample
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
@@ -59,7 +59,7 @@ final class WalWalFeedCellView: UIView {
   private let missionImageView = UIImageView()
   
   private let boostIconImageView = UIImageView().then {
-    $0.image = Images.fire.image
+    $0.image = Images.fireDef.image
   }
   
   private let boostCountLabel = UILabel().then {
