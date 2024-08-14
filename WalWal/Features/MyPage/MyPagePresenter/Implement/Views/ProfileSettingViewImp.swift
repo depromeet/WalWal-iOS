@@ -43,14 +43,14 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   }
   
   public var disposeBag = DisposeBag()
-  public var __reactor: R
+  public var profileSetting: R
   
   // MARK: - Initializer
   
   public init(
     reactor: R
   ) {
-    self.__reactor = reactor
+    self.profileSetting = reactor
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -61,7 +61,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   // MARK: - Lifecycle
   
   public override func viewDidLoad() {
-    self.reactor = __reactor
+    self.reactor = profileSetting
     super.viewDidLoad()
     setAttribute()
     setLayout()
