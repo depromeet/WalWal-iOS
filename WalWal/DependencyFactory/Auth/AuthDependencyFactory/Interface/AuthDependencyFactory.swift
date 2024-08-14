@@ -9,28 +9,29 @@
 import UIKit
 import BaseCoordinator
 import AuthCoordinator
+import FCMDependencyFactory
 
 import AuthData
 import AuthDomain
 import AuthPresenter
 
-import FCMData
 import FCMDomain
 
 public protocol AuthDependencyFactory {
   
   func makeAuthCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: any BaseCoordinator
+    parentCoordinator: any BaseCoordinator,
+    fcmDependencyFactory: FCMDependencyFactory
   ) -> any AuthCoordinator
   
-  func makeAuthData() -> AuthRepository
+  func makeAuthRepository() -> AuthRepository
   func makeSocialLoginUseCase() -> SocialLoginUseCase
-  func makeAuthReactor<T: AuthCoordinator>(coordinator: T) -> any AuthReactor
+  func makeAuthReactor<T: AuthCoordinator>(
+    coordinator: T,
+    socialLoginUseCase: SocialLoginUseCase,
+    fcmSaveUseCase: FCMSaveUseCase
+  ) -> any AuthReactor
   func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
   
-  // MARK: - FCM
-  
-  func makeFCMData() -> FCMRepository
-  func makeFCMSaveUseCase() -> FCMSaveUseCase
 }

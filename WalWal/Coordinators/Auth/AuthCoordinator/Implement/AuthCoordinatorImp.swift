@@ -8,6 +8,7 @@
 
 import UIKit
 import AuthDependencyFactory
+import FCMDependencyFactory
 import BaseCoordinator
 import AuthCoordinator
 
@@ -28,15 +29,18 @@ public final class AuthCoordinatorImp: AuthCoordinator {
   public var baseViewController: UIViewController?
   
   public var authDependencyFactory: AuthDependencyFactory
+  private var fcmDependencyFactory: FCMDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    authDependencyFactory: AuthDependencyFactory
+    authDependencyFactory: AuthDependencyFactory,
+    fcmDependencyFactory: FCMDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.authDependencyFactory = authDependencyFactory
+    self.fcmDependencyFactory = fcmDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -56,7 +60,11 @@ public final class AuthCoordinatorImp: AuthCoordinator {
   }
   
   public func start() {
-    let reactor = authDependencyFactory.makeAuthReactor(coordinator: self)
+    let reactor = authDependencyFactory.makeAuthReactor(
+      coordinator: self,
+      socialLoginUseCase: authDependencyFactory.makeSocialLoginUseCase(),
+      fcmSaveUseCase: fcmDependencyFactory.makeFCMSaveUseCase()
+    )
     let authVC = authDependencyFactory.makeAuthViewController(reactor: reactor)
     self.baseViewController = authVC
     self.pushViewController(viewController: authVC, animated: false)

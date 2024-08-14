@@ -120,7 +120,8 @@ extension AppCoordinatorImp {
   fileprivate func startAuth() {
     let authCoordinator = authDependencyFactory.makeAuthCoordinator(
       navigationController: navigationController,
-      parentCoordinator: self
+      parentCoordinator: self,
+      fcmDependencyFactory: fcmDependencyFactory
     )
     childCoordinator = authCoordinator
     authCoordinator.start()

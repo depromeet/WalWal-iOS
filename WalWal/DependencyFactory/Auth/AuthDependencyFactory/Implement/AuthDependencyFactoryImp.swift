@@ -8,6 +8,7 @@
 
 import UIKit
 import AuthDependencyFactory
+import FCMDependencyFactory
 
 import WalWalNetwork
 
@@ -22,10 +23,7 @@ import AuthDomainImp
 import AuthPresenter
 import AuthPresenterImp
 
-import FCMData
-import FCMDataImp
 import FCMDomain
-import FCMDomainImp
 
 public class AuthDependencyFactoryImp: AuthDependencyFactory {
   
@@ -33,29 +31,35 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
   
   public func makeAuthCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: any BaseCoordinator
+    parentCoordinator: any BaseCoordinator,
+    fcmDependencyFactory: FCMDependencyFactory
   ) -> any AuthCoordinator {
     return AuthCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
-      authDependencyFactory: self
+      authDependencyFactory: self,
+      fcmDependencyFactory: fcmDependencyFactory
     )
   }
   
-  public func makeAuthData() -> AuthRepository {
+  public func makeAuthRepository() -> AuthRepository {
     let networkService = NetworkService()
     return AuthRepositoryImp(networkService: networkService)
   }
   
   public func makeSocialLoginUseCase() -> SocialLoginUseCase {
-    return SocialLoginUseCaseImp(authDataRepository: makeAuthData())
+    return SocialLoginUseCaseImp(authDataRepository: makeAuthRepository())
   }
   
-  public func makeAuthReactor<T: AuthCoordinator>(coordinator: T) -> any AuthReactor {
+  public func makeAuthReactor<T: AuthCoordinator>(
+    coordinator: T,
+    socialLoginUseCase: SocialLoginUseCase,
+    fcmSaveUseCase: FCMSaveUseCase
+  ) -> any AuthReactor {
     return AuthReactorImp(
       coordinator: coordinator,
-      socialLoginUseCase: makeSocialLoginUseCase(),
-      fcmSaveUseCase: makeFCMSaveUseCase()
+      socialLoginUseCase: socialLoginUseCase,
+      fcmSaveUseCase: fcmSaveUseCase
     )
   }
   
@@ -63,14 +67,4 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     return AuthViewControllerImp(reactor: reactor)
   }
   
-  // MARK: - FCM
-  
-  public func makeFCMData() -> FCMRepository {
-    let networkService = NetworkService()
-    return FCMRepositoryImp(networkService: networkService)
-  }
-  
-  public func makeFCMSaveUseCase() -> FCMSaveUseCase {
-    return FCMSaveUseCaseImp(fcmRepository: makeFCMData())
-  }
 }

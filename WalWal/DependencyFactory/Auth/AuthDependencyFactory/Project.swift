@@ -18,6 +18,7 @@ let project = Project.invertedDualTargetProject(
     .Coordinator.Auth.Interface,
     
     .Feature.Auth.Presenter.Interface,
+    .Feature.FCM.Domain.Interface
   ],
   implementDependencies: [
     .Coordinator.Auth.Implement,
@@ -25,9 +26,6 @@ let project = Project.invertedDualTargetProject(
     .Feature.Auth.Data.Implement,
     .Feature.Auth.Domain.Implement,
     .Feature.Auth.Presenter.Implement,
-    
-    .Feature.FCM.Data.Implement,
-    .Feature.FCM.Domain.Implement
     
   ]
 )
