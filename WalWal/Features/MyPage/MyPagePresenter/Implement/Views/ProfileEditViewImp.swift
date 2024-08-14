@@ -43,7 +43,8 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   private let nicknameTextfield = WalWalInputBox(
     defaultState: .active,
     placeholder: "",
-    rightIcon: .close
+    rightIcon: .close,
+    isAlwaysKeyboard: true
   )
   private let completeButton = WalWalButton(type: .active, title: "완료")
   
@@ -121,7 +122,14 @@ extension ProfileEditViewControllerImp: View {
     bindEvent()
   }
   
-  public func bindAction(reactor: R) {  }
+  public func bindAction(reactor: R) {
+    let nicknameObservable = nicknameTextfield.rx.text.orEmpty
+      .throttle(.milliseconds(350), scheduler: MainScheduler.instance)
+    
+    let input = Observable.combineLatest(nicknameObservable, profileEditView.curProfileItems)
+    
+    
+  }
   
   public func bindState(reactor: R) {  }
   
