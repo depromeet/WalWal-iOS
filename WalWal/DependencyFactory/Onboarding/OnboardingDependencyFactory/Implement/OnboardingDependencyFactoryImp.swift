@@ -9,15 +9,13 @@
 import UIKit
 import OnboardingDependencyFactory
 import FCMDependencyFactory
+import AuthDependencyFactory
 
 import WalWalNetwork
 
 import BaseCoordinator
 import OnboardingCoordinator
 import OnboardingCoordinatorImp
-
-import AuthData
-import AuthDataImp
 
 import OnboardingData
 import OnboardingDataImp
@@ -26,6 +24,7 @@ import OnboardingDomainImp
 import OnboardingPresenter
 import OnboardingPresenterImp
 
+import AuthDomain
 import FCMDomain
 
 public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
@@ -35,30 +34,32 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
   public func makeOnboardingCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    authDependencyFactory: AuthDependencyFactory
   )
   -> any OnboardingCoordinator {
     return OnboardingCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       onboardingDependencyFactory: self,
-      fcmDependencyFactory: fcmDependencyFactory
+      fcmDependencyFactory: fcmDependencyFactory,
+      authDependencyFactory: authDependencyFactory
     )
   }
   
-  public func makeAuthData() -> AuthRepository {
-    let networkService = NetworkService()
-    return AuthRepositoryImp(networkService: networkService)
-  }
+//  public func makeAuthData() -> AuthRepository {
+//    let networkService = NetworkService()
+//    return AuthRepositoryImp(networkService: networkService)
+//  }
   
   public func makeOnboardingData() -> OnboardingRepository {
     let networkService = NetworkService()
     return OnboardingRepositoryImp(networkService: networkService)
   }
   
-  public func makeRegisterUseCase() -> RegisterUseCase {
-    return RegisterUseCaseImp(authRepository: makeAuthData())
-  }
+//  public func makeRegisterUseCase() -> RegisterUseCase {
+//    return RegisterUseCaseImp(authRepository: makeAuthData())
+//  }
   
   public func makeNicknameValidUseCase() -> NicknameValidUseCase {
     return NicknameValidUseCaseImp(repository: makeOnboardingData())
@@ -78,11 +79,12 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
   
   public func makeOnboardingProfileReactor<T: OnboardingCoordinator>(
     coordinator: T,
-    fcmSaveUseCase: FCMSaveUseCase
+    fcmSaveUseCase: FCMSaveUseCase,
+    registerUseCase: RegisterUseCase
   ) -> any OnboardingProfileReactor {
     return OnboardingProfileReactorImp(
       coordinator: coordinator,
-      registerUseCase: makeRegisterUseCase(),
+      registerUseCase: registerUseCase,
       nicknameValidUseCase: makeNicknameValidUseCase(),
       uploadImageUseCase: makeUploadImageUseCase(),
       fcmSaveUseCase: fcmSaveUseCase

@@ -1,16 +1,17 @@
 //
 //  RegisterUseCaseImp.swift
-//  OnboardingDomain
+//  AuthDomainImp
 //
-//  Created by Jiyeon on 8/7/24.
+//  Created by Jiyeon on 8/15/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
 import Foundation
 import AuthData
-import OnboardingDomain
+import AuthDomain
 
 import RxSwift
+
 
 public final class RegisterUseCaseImp: RegisterUseCase {
   
@@ -20,9 +21,9 @@ public final class RegisterUseCaseImp: RegisterUseCase {
     self.authRepository = authRepository
   }
   
-  public func excute(nickname: String, petType: String, defaultProfile: String?) -> Single<RegisterAuthToken> {
+  public func excute(nickname: String, petType: String, defaultProfile: String?) -> Single<AuthToken> {
     return authRepository.register(nickname: nickname, petType: petType, defaultProfile: defaultProfile)
-      .map { RegisterAuthToken(dto: $0) }
+      .map { AuthToken(dto: $0) }
       .asObservable()
       .asSingle()
   }

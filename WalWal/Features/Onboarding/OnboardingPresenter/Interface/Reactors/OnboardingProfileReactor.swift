@@ -10,6 +10,7 @@ import OnboardingDomain
 import OnboardingCoordinator
 import DesignSystem
 import FCMDomain
+import AuthDomain
 
 import ReactorKit
 

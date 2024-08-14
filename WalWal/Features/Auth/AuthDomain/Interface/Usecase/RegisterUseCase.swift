@@ -1,8 +1,8 @@
 //
 //  RegisterUseCase.swift
-//  OnboardingDomain
+//  AuthDomain
 //
-//  Created by Jiyeon on 8/7/24.
+//  Created by Jiyeon on 8/15/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol RegisterUseCase {
-  func excute(nickname: String, petType: String, defaultProfile: String?) -> Single<RegisterAuthToken>
+  func excute(nickname: String, petType: String, defaultProfile: String?) -> Single<AuthToken>
 }

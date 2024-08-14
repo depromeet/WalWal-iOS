@@ -10,10 +10,13 @@ import Foundation
 import OnboardingDomain
 import OnboardingCoordinator
 import OnboardingPresenter
+
+import FCMDomain
+import AuthDomain
+
 import Utility
 import DesignSystem
 import LocalStorage
-import FCMDomain
 
 import ReactorKit
 import RxSwift
