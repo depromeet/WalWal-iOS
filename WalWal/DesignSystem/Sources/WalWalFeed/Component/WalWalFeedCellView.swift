@@ -189,10 +189,10 @@ final class WalWalFeedCellView: UIView {
           .size(343)
           .position(.relative)
         $0.addItem(boostLabelView)
+          .grow(1)
           .marginTop(15)
           .marginLeft(20)
           .marginBottom(16)
-          .grow(1)
       }
     
     boostLabelView.flex
@@ -201,7 +201,6 @@ final class WalWalFeedCellView: UIView {
       .define {
         $0.addItem(boostIconImageView)
         $0.addItem(boostCountLabel)
-          .width(24)
         $0.addItem(boostLabel)
           .marginRight(4)
         $0.addItem(seperatorCircle)
