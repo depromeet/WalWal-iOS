@@ -18,7 +18,7 @@ enum MissionEndpoint<T>: APIEndpoint where T: Decodable {
 }
 
 extension MissionEndpoint {
-  var baseURLType: WalWalNetwork.URLType {
+  var baseURLType: URLType {
     return .walWalBaseURL
   }
   
@@ -43,7 +43,7 @@ extension MissionEndpoint {
     }
   }
   
-  var headers: WalWalNetwork.WalWalHTTPHeader {
+  var headerType: HTTPHeaderType {
     switch self {
     case .loadMissionInfo:
       return.plain
