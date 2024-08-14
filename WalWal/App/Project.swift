@@ -68,7 +68,8 @@ let project = Project(
         .DependencyFactory.WalWalTabBar.Implement,
         .DependencyFactory.Mission.Implement,
         .DependencyFactory.MyPage.Implement,
-        .DependencyFactory.FCM.Implement
+        .DependencyFactory.FCM.Implement,
+        .DependencyFactory.Feed.Implement
       ],
       settings: .settings(
         base: [
