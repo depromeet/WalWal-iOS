@@ -29,7 +29,7 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
   
   public init() { }
   
-  public func makeAuthCoordinator(
+  public func injectAuthCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     fcmDependencyFactory: FCMDependencyFactory
@@ -42,16 +42,16 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     )
   }
   
-  public func makeAuthRepository() -> AuthRepository {
+  public func injectAuthRepository() -> AuthRepository {
     let networkService = NetworkService()
     return AuthRepositoryImp(networkService: networkService)
   }
   
-  public func makeSocialLoginUseCase() -> SocialLoginUseCase {
-    return SocialLoginUseCaseImp(authDataRepository: makeAuthRepository())
+  public func injectSocialLoginUseCase() -> SocialLoginUseCase {
+    return SocialLoginUseCaseImp(authDataRepository: injectAuthRepository())
   }
   
-  public func makeAuthReactor<T: AuthCoordinator>(
+  public func injectAuthReactor<T: AuthCoordinator>(
     coordinator: T,
     socialLoginUseCase: SocialLoginUseCase,
     fcmSaveUseCase: FCMSaveUseCase
@@ -63,7 +63,7 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     )
   }
   
-  public func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController {
+  public func injectAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController {
     return AuthViewControllerImp(reactor: reactor)
   }
   

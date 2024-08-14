@@ -118,7 +118,7 @@ extension AppCoordinatorImp {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func startAuth() {
-    let authCoordinator = authDependencyFactory.makeAuthCoordinator(
+    let authCoordinator = authDependencyFactory.injectAuthCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
       fcmDependencyFactory: fcmDependencyFactory

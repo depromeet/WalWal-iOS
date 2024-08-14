@@ -19,19 +19,19 @@ import FCMDomain
 
 public protocol AuthDependencyFactory {
   
-  func makeAuthCoordinator(
+  func injectAuthCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     fcmDependencyFactory: FCMDependencyFactory
   ) -> any AuthCoordinator
   
-  func makeAuthRepository() -> AuthRepository
-  func makeSocialLoginUseCase() -> SocialLoginUseCase
-  func makeAuthReactor<T: AuthCoordinator>(
+  func injectAuthRepository() -> AuthRepository
+  func injectSocialLoginUseCase() -> SocialLoginUseCase
+  func injectAuthReactor<T: AuthCoordinator>(
     coordinator: T,
     socialLoginUseCase: SocialLoginUseCase,
     fcmSaveUseCase: FCMSaveUseCase
   ) -> any AuthReactor
-  func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
+  func injectAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
   
 }

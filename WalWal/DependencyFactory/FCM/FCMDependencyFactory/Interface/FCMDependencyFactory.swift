@@ -13,7 +13,7 @@ import FCMData
 
 public protocol FCMDependencyFactory {
   
-  func makeFCMData() -> FCMRepository
-  func makeFCMSaveUseCase() -> FCMSaveUseCase
+  func injectFCMRepository() -> FCMRepository
+  func injectFCMSaveUseCase() -> FCMSaveUseCase
   
 }
