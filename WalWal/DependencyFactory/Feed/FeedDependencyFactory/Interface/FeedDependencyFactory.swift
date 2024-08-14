@@ -14,8 +14,6 @@ import FeedDomain
 import FeedPresenter
 
 public protocol FeedDependencyFactory {
-//  func makeFeedRepository() -> FeedRepository
-//  func makeFeedUseCase() -> FeedUseCase
   func makeFeedCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator
