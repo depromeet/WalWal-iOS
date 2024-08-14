@@ -71,8 +71,6 @@ extension AuthReactorImp {
     return socialLoginUseCase.excute(provider: provider, token: token)
       .asObservable()
       .flatMap { result -> Observable<Mutation> in
-        dump(result)
-        print(result.accessToken)
         if result.isTemporaryToken {
           UserDefaults.setValue(value: result.accessToken, forUserDefaultKey: .temporaryToken)
           self.coordinator.startOnboarding()

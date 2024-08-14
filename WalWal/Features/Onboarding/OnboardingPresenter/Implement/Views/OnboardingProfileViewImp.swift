@@ -159,6 +159,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
         
         $0.addItem(nicknameTextField)
           .justifyContent(.center)
+          .height(72.adjustedHeight)
           .marginTop(32.adjustedHeight)
           .marginHorizontal(20.adjustedWidth)
       }

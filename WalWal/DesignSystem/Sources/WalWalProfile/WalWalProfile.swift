@@ -63,7 +63,7 @@ public final class WalWalProfile: UIView {
   
   private let profileSize: CGFloat = 170.adjusted
   private let viewWidth: CGFloat = UIScreen.main.bounds.width
-  private let marginItems: CGFloat = 17.adjusted
+  private let marginItems: CGFloat
   private let inActiveProfileSize: CGFloat = 140.adjusted
   
   private let rootContainer = UIView()
@@ -88,6 +88,7 @@ public final class WalWalProfile: UIView {
   public init(type: PetType) {
     defaultImages = type == .dog ? DefaultProfile.defaultDogs : DefaultProfile.defaultCats
     defaultImageCount = defaultImages.count
+    marginItems = (viewWidth - profileSize*2)/2
     super.init(frame: .zero)
     setLayout()
     bind()
