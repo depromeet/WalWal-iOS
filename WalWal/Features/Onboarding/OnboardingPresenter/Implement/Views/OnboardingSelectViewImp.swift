@@ -64,8 +64,8 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    setAttribute()
-    setLayout()
+    configureAttribute()
+    configureLayout()
     self.reactor = onboardingReactor
   }
   
@@ -89,11 +89,13 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    rootContainer.pin.all(view.pin.safeArea)
-    rootContainer.flex.layout()
+    rootContainer.pin
+      .all(view.pin.safeArea)
+    rootContainer.flex
+      .layout()
   }
   
-  public func setAttribute() {
+  public func configureAttribute() {
     view.backgroundColor = .white
     view.addSubview(rootContainer)
     [navigationBar, progressView, contentContainer, nextButton].forEach {
@@ -101,7 +103,7 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
     }
   }
   
-  public func setLayout() {
+  public func configureLayout() {
     rootContainer.flex
       .justifyContent(.center)
       

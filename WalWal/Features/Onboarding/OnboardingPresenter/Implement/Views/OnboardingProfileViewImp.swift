@@ -78,8 +78,8 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    setAttribute()
-    setLayout()
+    configureAttribute()
+    configureLayout()
     self.reactor = onboardingReactor
   }
   
@@ -107,7 +107,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     hideKeyboardLayout()
   }
   
-  public func setAttribute() {
+  public func configureAttribute() {
     navigationController?.navigationBar.isHidden = true
     view.backgroundColor = .white
     view.addSubview(rootContainer)
@@ -127,7 +127,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     }
   }
   
-  public func setLayout() {
+  public func configureLayout() {
     
     navigationBar.flex
       .width(100%)
@@ -137,7 +137,6 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
       .marginHorizontal(20)
     contentContainer.flex
       .justifyContent(.center)
-    
     
     titleView.flex
       .marginHorizontal(20.adjustedWidth)
@@ -171,6 +170,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
     let scrollOffset = titleView.frame.height + 40.adjustedHeight + 70.adjustedHeight/2
+    
     nextButton.pin
       .bottom(keyboardTop + 20.adjustedHeight)
     

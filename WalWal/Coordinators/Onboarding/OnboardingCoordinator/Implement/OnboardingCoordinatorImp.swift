@@ -74,8 +74,8 @@ public final class OnboardingCoordinatorImp: OnboardingCoordinator {
   }
   
   public func start() {
-    let reactor = onboardingDependencyFactory.makeOnboardingReactor(coordinator: self)
-    let vc = onboardingDependencyFactory.makeOnboardingViewController(reactor: reactor)
+    let reactor = onboardingDependencyFactory.injectOnboardingReactor(coordinator: self)
+    let vc = onboardingDependencyFactory.injectOnboardingViewController(reactor: reactor)
     self.baseViewController = vc
     self.pushViewController(viewController: vc, animated: false)
   }
@@ -91,18 +91,18 @@ extension OnboardingCoordinatorImp {
 
 extension OnboardingCoordinatorImp {
   func showOnboardingSelect() {
-    let reactor = onboardingDependencyFactory.makeOnboardingSelectReactor(coordinator: self)
-    let vc = onboardingDependencyFactory.makeOnboardingSelectViewController(reactor: reactor)
+    let reactor = onboardingDependencyFactory.injectOnboardingSelectReactor(coordinator: self)
+    let vc = onboardingDependencyFactory.injectOnboardingSelectViewController(reactor: reactor)
     self.pushViewController(viewController: vc, animated: true)
   }
   
   func showOnboardingProfile(_ petType: String) {
-    let reactor = onboardingDependencyFactory.makeOnboardingProfileReactor(
+    let reactor = onboardingDependencyFactory.injectOnboardingProfileReactor(
       coordinator: self,
       fcmSaveUseCase: fcmDependencyFactory.injectFCMSaveUseCase(),
       registerUseCase: authDependencyFactory.injectRegisterUseCase()
     )
-    let vc = onboardingDependencyFactory.makeOnboardingProfileViewController(reactor: reactor, petType: petType)
+    let vc = onboardingDependencyFactory.injectOnboardingProfileViewController(reactor: reactor, petType: petType)
     self.pushViewController(viewController: vc, animated: true)
   }
 }

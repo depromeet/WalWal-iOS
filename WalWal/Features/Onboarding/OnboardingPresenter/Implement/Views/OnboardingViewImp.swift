@@ -78,8 +78,8 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    setAttribute()
-    setLayout()
+    configureAttribute()
+    configureLayout()
     self.reactor = onboardingReactor
   }
   
@@ -100,12 +100,12 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
       .layout(mode: .adjustHeight)
   }
   
-  public func setAttribute() {
+  public func configureAttribute() {
     view.backgroundColor = .white
     view.addSubview(rootContainer)
   }
   
-  public func setLayout() {
+  public func configureLayout() {
     rootContainer.flex
       .define {
         $0.addItem()

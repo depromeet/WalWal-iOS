@@ -68,7 +68,7 @@ final class PermissionView {
   
   // MARK: - Layout
   
-  private func setLayout() {
+  private func configureLayout() {
     alertContainer.addSubview(containerView)
     alertContainer.flex
       .justifyContent(.center)
@@ -121,7 +121,7 @@ final class PermissionView {
     guard let window = UIWindow.key else { return }
     self.window = window
     window.addSubview(alertContainer)
-    self.setLayout()
+    self.configureLayout()
     bind()
   }
   

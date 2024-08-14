@@ -16,8 +16,8 @@ import PinLayout
 /// - parameters:
 ///   -  index: 현재 진행도(페이지)
 final class ProgressView: UIView {
-  typealias Color = ResourceKitAsset.Colors
-  typealias Font = ResourceKitFontFamily.KR
+  private typealias Color = ResourceKitAsset.Colors
+  private typealias Font = ResourceKitFontFamily.KR
   
   // MARK: - UI
   
@@ -40,7 +40,7 @@ final class ProgressView: UIView {
       barList[i].backgroundColor = Color.walwalOrange.color
     }
     addSubview(containerView)
-    setLayout()
+    configureLayout()
   }
   
   required init?(coder: NSCoder) {
@@ -51,10 +51,12 @@ final class ProgressView: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    containerView.pin.all()
-    containerView.flex.layout()
+    containerView.pin
+      .all()
+    containerView.flex
+      .layout()
   }
-  private func setLayout() {
+  private func configureLayout() {
     containerView.flex
       .direction(.row)
       .define {

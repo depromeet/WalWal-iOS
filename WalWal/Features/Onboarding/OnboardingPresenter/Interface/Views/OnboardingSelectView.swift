@@ -15,8 +15,8 @@ public protocol OnboardingSelectViewController: UIViewController {
   associatedtype OnboardingSelectReactorType: OnboardingSelectReactor
   var disposeBag: DisposeBag { get set }
   
-  func setLayout()
-  func setAttribute()
+  func configureLayout()
+  func configureAttribute()
   func bindAction(reactor: OnboardingSelectReactorType)
   func bindState(reactor: OnboardingSelectReactorType)
   func bindEvent()

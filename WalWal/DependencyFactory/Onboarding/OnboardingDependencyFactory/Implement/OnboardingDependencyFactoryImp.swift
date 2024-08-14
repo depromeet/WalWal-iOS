@@ -52,7 +52,7 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
 //    return AuthRepositoryImp(networkService: networkService)
 //  }
   
-  public func makeOnboardingData() -> OnboardingRepository {
+  public func injectOnboardingRepository() -> OnboardingRepository {
     let networkService = NetworkService()
     return OnboardingRepositoryImp(networkService: networkService)
   }
@@ -61,23 +61,23 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
 //    return RegisterUseCaseImp(authRepository: makeAuthData())
 //  }
   
-  public func makeNicknameValidUseCase() -> NicknameValidUseCase {
-    return NicknameValidUseCaseImp(repository: makeOnboardingData())
+  public func injectNicknameValidUseCase() -> NicknameValidUseCase {
+    return NicknameValidUseCaseImp(repository: injectOnboardingRepository())
   }
   
-  public func makeUploadImageUseCase() -> UploadImageUseCase {
-    return UploadImageUseCaseImp(onboardingRepository: makeOnboardingData())
+  public func injectUploadImageUseCase() -> UploadImageUseCase {
+    return UploadImageUseCaseImp(onboardingRepository: injectOnboardingRepository())
   }
   
-  public func makeOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor {
+  public func injectOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor {
     return OnboardingReactorImp(coordinator: coordinator)
   }
   
-  public func makeOnboardingSelectReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingSelectReactor {
+  public func injectOnboardingSelectReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingSelectReactor {
     return OnboardingSelectReactorImp(coordinator: coordinator)
   }
   
-  public func makeOnboardingProfileReactor<T: OnboardingCoordinator>(
+  public func injectOnboardingProfileReactor<T: OnboardingCoordinator>(
     coordinator: T,
     fcmSaveUseCase: FCMSaveUseCase,
     registerUseCase: RegisterUseCase
@@ -85,21 +85,21 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     return OnboardingProfileReactorImp(
       coordinator: coordinator,
       registerUseCase: registerUseCase,
-      nicknameValidUseCase: makeNicknameValidUseCase(),
-      uploadImageUseCase: makeUploadImageUseCase(),
+      nicknameValidUseCase: injectNicknameValidUseCase(),
+      uploadImageUseCase: injectUploadImageUseCase(),
       fcmSaveUseCase: fcmSaveUseCase
     )
   }
   
-  public func makeOnboardingViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController {
+  public func injectOnboardingViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController {
     return OnboardingViewControllerImp(reactor: reactor)
   }
   
-  public func makeOnboardingSelectViewController<T: OnboardingSelectReactor>(reactor: T) -> any OnboardingSelectViewController {
+  public func injectOnboardingSelectViewController<T: OnboardingSelectReactor>(reactor: T) -> any OnboardingSelectViewController {
     return OnboardingSelectViewControllerImp(reactor: reactor)
   }
   
-  public func makeOnboardingProfileViewController<T: OnboardingProfileReactor>(reactor: T, petType: String) -> any OnboardingProfileViewController {
+  public func injectOnboardingProfileViewController<T: OnboardingProfileReactor>(reactor: T, petType: String) -> any OnboardingProfileViewController {
     return OnboardingProfileViewControllerImp(reactor: reactor, petType: petType)
   }
 }

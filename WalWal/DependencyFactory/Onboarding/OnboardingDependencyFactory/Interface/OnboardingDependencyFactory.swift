@@ -29,22 +29,21 @@ public protocol OnboardingDependencyFactory {
     authDependencyFactory: AuthDependencyFactory
   ) -> any OnboardingCoordinator
   
-  func makeOnboardingData() -> OnboardingRepository
+  func injectOnboardingRepository() -> OnboardingRepository
   
-//  func makeRegisterUseCase() -> RegisterUseCase
-  func makeNicknameValidUseCase() -> NicknameValidUseCase
-  func makeUploadImageUseCase() -> UploadImageUseCase
+  func injectNicknameValidUseCase() -> NicknameValidUseCase
+  func injectUploadImageUseCase() -> UploadImageUseCase
   
-  func makeOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor
-  func makeOnboardingSelectReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingSelectReactor
-  func makeOnboardingProfileReactor<T: OnboardingCoordinator>(
+  func injectOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor
+  func injectOnboardingSelectReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingSelectReactor
+  func injectOnboardingProfileReactor<T: OnboardingCoordinator>(
     coordinator: T,
     fcmSaveUseCase: FCMSaveUseCase,
     registerUseCase: RegisterUseCase
   ) -> any OnboardingProfileReactor
   
-  func makeOnboardingViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController
-  func makeOnboardingSelectViewController<T: OnboardingSelectReactor>(reactor: T) -> any OnboardingSelectViewController
-  func makeOnboardingProfileViewController<T: OnboardingProfileReactor>(reactor: T, petType: String) -> any OnboardingProfileViewController
+  func injectOnboardingViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController
+  func injectOnboardingSelectViewController<T: OnboardingSelectReactor>(reactor: T) -> any OnboardingSelectViewController
+  func injectOnboardingProfileViewController<T: OnboardingProfileReactor>(reactor: T, petType: String) -> any OnboardingProfileViewController
   
 }

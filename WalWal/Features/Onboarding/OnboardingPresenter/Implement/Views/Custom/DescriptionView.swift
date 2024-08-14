@@ -44,8 +44,8 @@ final class DescriptionView: UIView {
     if let image = image {
       imageView.image = image
     }
-    setAttributes()
-    setLayout()
+    configureAttributes()
+    configureLayout()
   }
   
   @available(*, unavailable)
@@ -63,11 +63,11 @@ final class DescriptionView: UIView {
       .layout()
   }
   
-  private func setAttributes() {
+  private func configureAttributes() {
     addSubview(containerView)
   }
   
-  private func setLayout() {
+  private func configureLayout() {
     containerView.flex
       .justifyContent(.center)
       .define { flex in
