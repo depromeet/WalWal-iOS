@@ -47,19 +47,11 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     )
   }
   
-//  public func makeAuthData() -> AuthRepository {
-//    let networkService = NetworkService()
-//    return AuthRepositoryImp(networkService: networkService)
-//  }
-  
   public func injectOnboardingRepository() -> OnboardingRepository {
     let networkService = NetworkService()
     return OnboardingRepositoryImp(networkService: networkService)
   }
   
-//  public func makeRegisterUseCase() -> RegisterUseCase {
-//    return RegisterUseCaseImp(authRepository: makeAuthData())
-//  }
   
   public func injectNicknameValidUseCase() -> NicknameValidUseCase {
     return NicknameValidUseCaseImp(repository: injectOnboardingRepository())
