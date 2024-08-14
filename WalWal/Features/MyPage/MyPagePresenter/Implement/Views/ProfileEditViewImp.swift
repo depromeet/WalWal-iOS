@@ -122,6 +122,17 @@ extension ProfileEditViewControllerImp: View {
   public func bindState(reactor: R) {  }
   
   public func bindEvent() {
+    navigationBarView.rightItems?.first?.rx.tapped
+      .asDriver()
+      .drive(with: self) { owner, _ in
+        owner.navigationController?.popViewController(animated: true)
+      }
+      .disposed(by: disposeBag)
     
+    profileEditView.showPHPicker
+      .bind(with: self) { owner, _ in
+        PHPickerManager.shared.presentPicker(vc: owner)
+      }
+      .disposed(by: disposeBag)
   }
 }
