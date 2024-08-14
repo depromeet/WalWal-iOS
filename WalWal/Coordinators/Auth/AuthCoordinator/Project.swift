@@ -18,6 +18,7 @@ let project = Project.invertedDualTargetProject(
     .Coordinator.Base.Interface
   ],
   implementDependencies: [
-    .DependencyFactory.Auth.Interface
+    .DependencyFactory.Auth.Interface,
+    .DependencyFactory.FCM.Interface
   ]
 )

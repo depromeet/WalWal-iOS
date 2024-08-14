@@ -16,6 +16,7 @@ let project = Project.invertedDualTargetProject(
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
     .Coordinator.Auth.Interface,
+    .DependencyFactory.FCM.Interface,
     
     .Feature.Auth.Presenter.Interface,
     .Feature.FCM.Domain.Interface
