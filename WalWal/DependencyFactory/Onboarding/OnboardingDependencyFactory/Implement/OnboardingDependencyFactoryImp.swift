@@ -8,6 +8,7 @@
 
 import UIKit
 import OnboardingDependencyFactory
+import FCMDependencyFactory
 
 import WalWalNetwork
 
@@ -25,18 +26,23 @@ import OnboardingDomainImp
 import OnboardingPresenter
 import OnboardingPresenterImp
 
+import FCMDomain
+
 public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
   
   public init() { }
   
   public func makeOnboardingCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: (any BaseCoordinator)?) 
+    parentCoordinator: (any BaseCoordinator)?,
+    fcmDependencyFactory: FCMDependencyFactory
+  )
   -> any OnboardingCoordinator {
     return OnboardingCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
-      onboardingDependencyFactory: self
+      onboardingDependencyFactory: self,
+      fcmDependencyFactory: fcmDependencyFactory
     )
   }
   
@@ -70,12 +76,16 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     return OnboardingSelectReactorImp(coordinator: coordinator)
   }
   
-  public func makeOnboardingProfileReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingProfileReactor {
+  public func makeOnboardingProfileReactor<T: OnboardingCoordinator>(
+    coordinator: T,
+    fcmSaveUseCase: FCMSaveUseCase
+  ) -> any OnboardingProfileReactor {
     return OnboardingProfileReactorImp(
       coordinator: coordinator,
       registerUseCase: makeRegisterUseCase(),
       nicknameValidUseCase: makeNicknameValidUseCase(),
-      uploadImageUseCase: makeUploadImageUseCase()
+      uploadImageUseCase: makeUploadImageUseCase(),
+      fcmSaveUseCase: fcmSaveUseCase
     )
   }
   

@@ -74,6 +74,12 @@ public final class AuthViewControllerImp<R: AuthReactor>: UIViewController, Auth
     self.reactor = authReactor
   }
   
+  public override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+//    KakaoLoginManager().kakaoUnlink()
+//    print(KeychainWrapper.shared.accessToken ?? "")
+  }
+  
   // MARK: - Layout
   
   override public func viewDidLayoutSubviews() {
@@ -159,6 +165,14 @@ extension AuthViewControllerImp: View {
       .map { Reactor.Action.kakaoLoginTapped(accessToken: $0) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+//    kakaoLoginButton.rx.tap
+//      .flatMap {
+//        KakaoLoginManager().kakaoUnlink()
+//      }
+//      .bind(onNext: { _ in
+//        print("dd")
+//      })
+//      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {

@@ -9,17 +9,21 @@
 import UIKit
 import BaseCoordinator
 import OnboardingCoordinator
+import FCMDependencyFactory
 
 import AuthData
 import OnboardingData
 import OnboardingDomain
 import OnboardingPresenter
 
+import FCMDomain
+
 public protocol OnboardingDependencyFactory {
   
   func makeOnboardingCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator:( any BaseCoordinator)?
+    parentCoordinator:( any BaseCoordinator)?,
+    fcmDependencyFactory: FCMDependencyFactory
   ) -> any OnboardingCoordinator
   
   func makeAuthData() -> AuthRepository
@@ -31,7 +35,10 @@ public protocol OnboardingDependencyFactory {
   
   func makeOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor
   func makeOnboardingSelectReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingSelectReactor
-  func makeOnboardingProfileReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingProfileReactor
+  func makeOnboardingProfileReactor<T: OnboardingCoordinator>(
+    coordinator: T,
+    fcmSaveUseCase: FCMSaveUseCase
+  ) -> any OnboardingProfileReactor
   
   func makeOnboardingViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController
   func makeOnboardingSelectViewController<T: OnboardingSelectReactor>(reactor: T) -> any OnboardingSelectViewController

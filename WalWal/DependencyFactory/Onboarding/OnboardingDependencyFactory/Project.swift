@@ -16,6 +16,7 @@ let project = Project.invertedDualTargetProject(
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
     .Coordinator.Onboarding.Interface,
+    .DependencyFactory.FCM.Interface,
     
     .Feature.Onboarding.Presenter.Interface
   ],

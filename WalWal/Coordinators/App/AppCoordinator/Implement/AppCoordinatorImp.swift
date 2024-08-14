@@ -163,7 +163,8 @@ extension AppCoordinatorImp {
   private func startOnboarding() {
     let onboardingCoordinator = onboardingDependencyFactory.makeOnboardingCoordinator(
       navigationController: navigationController,
-      parentCoordinator: self
+      parentCoordinator: self,
+      fcmDependencyFactory: fcmDependencyFactory
     )
     childCoordinator = onboardingCoordinator
     onboardingCoordinator.start()

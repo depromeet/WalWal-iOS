@@ -8,6 +8,8 @@
 
 import UIKit
 import OnboardingDependencyFactory
+import FCMDependencyFactory
+
 import BaseCoordinator
 import OnboardingCoordinator
 
@@ -28,15 +30,18 @@ public final class OnboardingCoordinatorImp: OnboardingCoordinator {
   public var baseViewController: UIViewController?
   
   public var onboardingDependencyFactory: OnboardingDependencyFactory
+  private var fcmDependencyFactory: FCMDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    onboardingDependencyFactory: OnboardingDependencyFactory
+    onboardingDependencyFactory: OnboardingDependencyFactory,
+    fcmDependencyFactory: FCMDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.onboardingDependencyFactory = onboardingDependencyFactory
+    self.fcmDependencyFactory = fcmDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -88,7 +93,10 @@ extension OnboardingCoordinatorImp {
   }
   
   func showOnboardingProfile(_ petType: String) {
-    let reactor = onboardingDependencyFactory.makeOnboardingProfileReactor(coordinator: self)
+    let reactor = onboardingDependencyFactory.makeOnboardingProfileReactor(
+      coordinator: self,
+      fcmSaveUseCase: fcmDependencyFactory.injectFCMSaveUseCase()
+    )
     let vc = onboardingDependencyFactory.makeOnboardingProfileViewController(reactor: reactor, petType: petType)
     self.pushViewController(viewController: vc, animated: true)
   }

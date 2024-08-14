@@ -13,6 +13,7 @@ import OnboardingPresenter
 import Utility
 import DesignSystem
 import LocalStorage
+import FCMDomain
 
 import ReactorKit
 import RxSwift
@@ -27,17 +28,20 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   private let registerUseCase: any RegisterUseCase
   private let nicknameValidUseCase: any NicknameValidUseCase
   private let uploadImageUseCase: any UploadImageUseCase
+  private let fcmSaveUseCase: FCMSaveUseCase
   
   public init(
     coordinator: any OnboardingCoordinator,
     registerUseCase: any RegisterUseCase,
     nicknameValidUseCase: any NicknameValidUseCase,
-    uploadImageUseCase: any UploadImageUseCase
+    uploadImageUseCase: any UploadImageUseCase,
+    fcmSaveUseCase: FCMSaveUseCase
   ) {
     self.coordinator = coordinator
     self.registerUseCase = registerUseCase
     self.nicknameValidUseCase = nicknameValidUseCase
     self.uploadImageUseCase = uploadImageUseCase
+    self.fcmSaveUseCase = fcmSaveUseCase
     self.initialState = State()
   }
   
@@ -118,12 +122,29 @@ extension OnboardingProfileReactorImp {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
+        print("== 회원가입 완료 ==")
         UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
         let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
+        return owner.saveFCMToken() 
+      }
+      .catch { error -> Observable<Mutation> in
+        return .concat([
+          .just(.showIndicator(show: false)),
+          .just(.registerError(message: OnboardingError.registerError.message))
+        ])
+      }
+  }
+  
+  private func saveFCMToken() -> Observable<Mutation> {
+    return fcmSaveUseCase.excute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
         owner.coordinator.startMission()
         return .just(.showIndicator(show: false))
       }
-      .catch { error -> Observable<Mutation> in
+      .catch { _ -> Observable<Mutation> in
+        print("FCM 토큰 저장 오류")
         return .concat([
           .just(.showIndicator(show: false)),
           .just(.registerError(message: OnboardingError.registerError.message))
