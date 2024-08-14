@@ -26,11 +26,15 @@ public final class WalWalFeed: UIView {
     
     $0.collectionViewLayout = flowLayout
     $0.backgroundColor = .clear
-    $0.register(WalWalFeedCell.self,
-                forCellWithReuseIdentifier: "WalWalFeedCell")
-    $0.register(FeedHeaderView.self,
-                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                withReuseIdentifier: FeedHeaderView.identifier)
+    $0.register(
+      WalWalFeedCell.self,
+      forCellWithReuseIdentifier: WalWalFeedCell.identifier
+    )
+    $0.register(
+      FeedHeaderView.self,
+      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+      withReuseIdentifier: FeedHeaderView.identifier
+    )
     $0.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 24, right: 0)
   }
   
@@ -132,7 +136,7 @@ public final class WalWalFeed: UIView {
     feedData
       .asDriver(onErrorJustReturn: [])
       .drive(onNext: { [weak self] data in
-        self?.currentFeedData = data // 현재 데이터를 업데이트
+        self?.currentFeedData = data 
         self?.collectionView.reloadData()
       })
       .disposed(by: disposeBag)
@@ -202,7 +206,7 @@ extension WalWalFeed: UICollectionViewDataSource {
   }
   
   public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WalWalFeedCell", for: indexPath) as! WalWalFeedCell
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WalWalFeedCell.identifier, for: indexPath) as! WalWalFeedCell
     let model = currentFeedData[indexPath.row]
     cell.configureCell(feedData: model)
     return cell

@@ -21,6 +21,7 @@ final class WalWalFeedCell: UICollectionViewCell {
   
   // MARK: - Components
   private let feedView = WalWalFeedCellView()
+  static let identifier = "WalWalFeedCell"
   
   // MARK: - Initializers
   
