@@ -8,6 +8,7 @@
 
 import UIKit
 import AuthDependencyFactory
+import FCMDependencyFactory
 import BaseCoordinator
 import AuthCoordinator
 
@@ -28,36 +29,37 @@ public final class AuthCoordinatorImp: AuthCoordinator {
   public var baseViewController: UIViewController?
   
   public var authDependencyFactory: AuthDependencyFactory
+  private var fcmDependencyFactory: FCMDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    authDependencyFactory: AuthDependencyFactory
+    authDependencyFactory: AuthDependencyFactory,
+    fcmDependencyFactory: FCMDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.authDependencyFactory = authDependencyFactory
+    self.fcmDependencyFactory = fcmDependencyFactory
     bindChildToParentAction()
     bindState()
   }
   
   public func bindState() {
-//    destination
-//      .subscribe(with: self, onNext: { owner, flow in
-//        switch flow { }
-//      })
-//      .disposed(by: disposeBag)
+    
   }
   
-  /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
-  /// 여기도, Auth이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   public func handleChildEvent<T: ParentAction>(_ event: T) {
     
   }
   
   public func start() {
-    let reactor = authDependencyFactory.makeAuthReactor(coordinator: self)
-    let authVC = authDependencyFactory.makeAuthViewController(reactor: reactor)
+    let reactor = authDependencyFactory.injectAuthReactor(
+      coordinator: self,
+      socialLoginUseCase: authDependencyFactory.injectSocialLoginUseCase(),
+      fcmSaveUseCase: fcmDependencyFactory.injectFCMSaveUseCase()
+    )
+    let authVC = authDependencyFactory.injectAuthViewController(reactor: reactor)
     self.baseViewController = authVC
     self.pushViewController(viewController: authVC, animated: false)
   }

@@ -16,6 +16,7 @@ import AuthDependencyFactory
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
 import MyPageDependencyFactory
+import FCMDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -38,6 +39,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var missionDependencyFactory: MissionDependencyFactory
   public var myPageDependencyFactory: MyPageDependencyFactory
+  public var fcmDependencyFactory: FCMDependencyFactory
   
   /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
   /// 그리고 하위 Coordinator를 생성할 때 마다, 하위에 해당하는 인터페이스 모두 전달
@@ -47,7 +49,8 @@ public final class AppCoordinatorImp: AppCoordinator {
     authDependencyFactory: AuthDependencyFactory,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
     missionDependencyFactory: MissionDependencyFactory,
-    myPageDependencyFactory: MyPageDependencyFactory
+    myPageDependencyFactory: MyPageDependencyFactory,
+    fcmDependencyFactory: FCMDependencyFactory
   ) {
     self.navigationController = navigationController
     self.appDependencyFactory = appDependencyFactory
@@ -55,6 +58,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     self.walwalTabBarDependencyFactory = walwalTabBarDependencyFactory
     self.missionDependencyFactory = missionDependencyFactory
     self.myPageDependencyFactory = myPageDependencyFactory
+    self.fcmDependencyFactory = fcmDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -114,9 +118,10 @@ extension AppCoordinatorImp {
   
   /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   fileprivate func startAuth() {
-    let authCoordinator = authDependencyFactory.makeAuthCoordinator(
+    let authCoordinator = authDependencyFactory.injectAuthCoordinator(
       navigationController: navigationController,
-      parentCoordinator: self
+      parentCoordinator: self,
+      fcmDependencyFactory: fcmDependencyFactory
     )
     childCoordinator = authCoordinator
     authCoordinator.start()

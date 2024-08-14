@@ -17,13 +17,15 @@ let project = Project.invertedDualTargetProject(
   interfaceDependencies: [
     .Coordinator.Auth.Interface,
     
-    .Feature.Auth.Presenter.Interface
+    .Feature.Auth.Presenter.Interface,
+    .Feature.FCM.Domain.Interface
   ],
   implementDependencies: [
     .Coordinator.Auth.Implement,
     
     .Feature.Auth.Data.Implement,
     .Feature.Auth.Domain.Implement,
-    .Feature.Auth.Presenter.Implement
+    .Feature.Auth.Presenter.Implement,
+    
   ]
 )

@@ -67,7 +67,8 @@ let project = Project(
         .DependencyFactory.Splash.Implement,
         .DependencyFactory.WalWalTabBar.Implement,
         .DependencyFactory.Mission.Implement,
-        .DependencyFactory.MyPage.Implement
+        .DependencyFactory.MyPage.Implement,
+        .DependencyFactory.FCM.Implement
       ],
       settings: .settings(
         base: [

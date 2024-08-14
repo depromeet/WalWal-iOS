@@ -1,8 +1,8 @@
 //
-//  AuthEndpoint.swift
-//  AuthData
+//  FCMEndPoint.swift
+//  FCMData
 //
-//  Created by Jiyeon on 7/17/24.
+//  Created by Jiyeon on 8/13/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
@@ -12,41 +12,46 @@ import LocalStorage
 
 import Alamofire
 
-enum AuthEndpoint<T>: APIEndpoint where T: Decodable {
+enum FCMEndPoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
-  case socialLogin(provider: String, body: SocialLoginBody)
+  case saveToken(body: FCMTokenBody)
 }
 
-extension AuthEndpoint {
+extension FCMEndPoint {
   var baseURLType: URLType {
     return .walWalBaseURL
-   }
+  }
   
-  var path: String {
+  var path: String{
     switch self {
-    case let .socialLogin(provider, _):
-      return "/auth/social-login/\(provider)"
+    case .saveToken:
+      return "/alarm/token"
     }
   }
   
   var method: HTTPMethod {
     switch self {
-    case .socialLogin:
+    case .saveToken:
       return .post
     }
   }
   
   var parameters: RequestParams {
     switch self {
-    case let .socialLogin(_, body):
+    case let .saveToken(body):
       return .requestWithbody(body)
     }
   }
   
   var headerType: HTTPHeaderType {
     switch self {
-    case .socialLogin:
-      return .plain
+    case .saveToken:
+      if let accessToken = KeychainWrapper.shared.accessToken {
+        return .authorization(accessToken)
+      } else{
+        return .plain
+      }
     }
   }
+  
 }

@@ -8,6 +8,7 @@
 
 import UIKit
 import AuthDependencyFactory
+import FCMDependencyFactory
 
 import WalWalNetwork
 
@@ -22,40 +23,48 @@ import AuthDomainImp
 import AuthPresenter
 import AuthPresenterImp
 
+import FCMDomain
+
 public class AuthDependencyFactoryImp: AuthDependencyFactory {
   
-  public init() {
-    
-  }
+  public init() { }
   
-  public func makeAuthCoordinator(
+  public func injectAuthCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: any BaseCoordinator
+    parentCoordinator: any BaseCoordinator,
+    fcmDependencyFactory: FCMDependencyFactory
   ) -> any AuthCoordinator {
     return AuthCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
-      authDependencyFactory: self
+      authDependencyFactory: self,
+      fcmDependencyFactory: fcmDependencyFactory
     )
   }
   
-  public func makeAuthData() -> AuthRepository {
+  public func injectAuthRepository() -> AuthRepository {
     let networkService = NetworkService()
     return AuthRepositoryImp(networkService: networkService)
   }
   
-  public func makeSocialLoginUseCase() -> SocialLoginUseCase {
-    return SocialLoginUseCaseImp(authDataRepository: makeAuthData())
+  public func injectSocialLoginUseCase() -> SocialLoginUseCase {
+    return SocialLoginUseCaseImp(authDataRepository: injectAuthRepository())
   }
   
-  public func makeAuthReactor<T: AuthCoordinator>(coordinator: T) -> any AuthReactor {
+  public func injectAuthReactor<T: AuthCoordinator>(
+    coordinator: T,
+    socialLoginUseCase: SocialLoginUseCase,
+    fcmSaveUseCase: FCMSaveUseCase
+  ) -> any AuthReactor {
     return AuthReactorImp(
       coordinator: coordinator,
-      socialLoginUseCase: makeSocialLoginUseCase()
+      socialLoginUseCase: socialLoginUseCase,
+      fcmSaveUseCase: fcmSaveUseCase
     )
   }
   
-  public func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController {
+  public func injectAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController {
     return AuthViewControllerImp(reactor: reactor)
   }
+  
 }

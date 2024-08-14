@@ -12,6 +12,7 @@ import WalWalTabBarDependencyFactoryImp
 import MissionDependencyFactoryImp
 import MyPageDependencyFactoryImp
 import AppCoordinator
+import FCMDependencyFactoryImp
 
 extension AppDelegate {
   func injectWalWalImplement(navigation: UINavigationController) -> any AppCoordinator {
@@ -21,13 +22,15 @@ extension AppDelegate {
     let walwalTabBarDependencyFactory = WalWalTabBarDependencyFactoryImp()
     let missionDependencyFactory = MissionDependencyFactoryImp()
     let myPageDependencyFactory = MyPageDependencyFactoryImp()
+    let fcmDependencyFactory = FCMDependencyFactoryImp()
     
     return splashDependencyFactory.makeAppCoordinator(
       navigationController: navigation,
       authDependencyFactory: authDependencyFactory,
       walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
       missionDependencyFactory: missionDependencyFactory,
-      myPageDependencyFactory: myPageDependencyFactory
+      myPageDependencyFactory: myPageDependencyFactory,
+      fcmDependencyFactory: fcmDependencyFactory
     )
   }
 }

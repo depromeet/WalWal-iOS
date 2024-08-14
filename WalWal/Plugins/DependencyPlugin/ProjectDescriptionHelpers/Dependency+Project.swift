@@ -24,6 +24,7 @@ enum DependencyFactoryStr: String {
   case mission = "Mission"
   case myPage = "MyPage"
   case sample = "Sample"
+  case fcm = "FCM"
 }
 
 enum CoordinatorStr: String {
@@ -44,6 +45,7 @@ enum FeatureStr: String {
   case sample = "Sample"
   case mission = "Mission"
   case myPage = "MyPage"
+  case fcm = "FCM"
 }
 
 protocol WalWalDependency {
@@ -98,6 +100,7 @@ extension TargetDependency {
     public struct Auth: WalWalDependency { }
     public struct WalWalTabBar: WalWalDependency { }
     public struct Mission: WalWalDependency { }
+    public struct FCM: WalWalDependency { }
   }
   
   public struct Coordinator {
@@ -142,6 +145,11 @@ extension TargetDependency {
       public struct Domain: WalWalDependency {}
       public struct Presenter: WalWalDependency {}
     }
+    
+    public struct FCM: WalWalDependency {
+      public struct Data: WalWalDependency {}
+      public struct Domain: WalWalDependency {}
+    }
   }
 }
 
@@ -175,6 +183,11 @@ public extension TargetDependency.DependencyFactory.Mission {
 public extension TargetDependency.DependencyFactory.MyPage {
   static let Interface = Self.project(dependencyName: .myPage, isInterface: true)
   static let Implement = Self.project(dependencyName: .myPage, isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.FCM {
+  static let Interface = Self.project(dependencyName: .fcm, isInterface: true)
+  static let Implement = Self.project(dependencyName: .fcm, isInterface: false)
 }
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
@@ -253,7 +266,19 @@ public extension TargetDependency.Feature.MyPage.Data {
   static let Interface = Self.project(name: .myPage, layer: .data, isInterface: true)
   static let Implement = Self.project(name: .myPage, layer: .data, isInterface: false)
 }
+
+public extension TargetDependency.Feature.FCM.Domain {
+  static let Interface = Self.project(name: .fcm, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .fcm, layer: .domain, isInterface: false)
+}
+
+public extension TargetDependency.Feature.FCM.Data {
+  static let Interface = Self.project(name: .fcm, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .fcm, layer: .data, isInterface: false)
+}
+
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
+
 public extension TargetDependency.Coordinator.SampleApp {
   static let Interface = Self.project(name: .sampleApp, isInterface: true)
   static let Implement = Self.project(name: .sampleApp, isInterface: false)

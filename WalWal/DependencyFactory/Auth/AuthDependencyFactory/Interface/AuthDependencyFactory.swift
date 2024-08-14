@@ -9,18 +9,29 @@
 import UIKit
 import BaseCoordinator
 import AuthCoordinator
+import FCMDependencyFactory
 
 import AuthData
 import AuthDomain
 import AuthPresenter
 
+import FCMDomain
+
 public protocol AuthDependencyFactory {
-  func makeAuthData() -> AuthRepository
-  func makeSocialLoginUseCase() -> SocialLoginUseCase
-  func makeAuthCoordinator(
+  
+  func injectAuthCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: any BaseCoordinator
+    parentCoordinator: any BaseCoordinator,
+    fcmDependencyFactory: FCMDependencyFactory
   ) -> any AuthCoordinator
-  func makeAuthReactor<T: AuthCoordinator>(coordinator: T) -> any AuthReactor
-  func makeAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
+  
+  func injectAuthRepository() -> AuthRepository
+  func injectSocialLoginUseCase() -> SocialLoginUseCase
+  func injectAuthReactor<T: AuthCoordinator>(
+    coordinator: T,
+    socialLoginUseCase: SocialLoginUseCase,
+    fcmSaveUseCase: FCMSaveUseCase
+  ) -> any AuthReactor
+  func injectAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
+  
 }
