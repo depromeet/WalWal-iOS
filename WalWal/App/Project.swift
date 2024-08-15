@@ -69,7 +69,8 @@ let project = Project(
         .DependencyFactory.Mission.Implement,
         .DependencyFactory.MyPage.Implement,
         .DependencyFactory.FCM.Implement,
-        .DependencyFactory.Records.Implement
+        .DependencyFactory.Records.Implement,
+        .DependencyFactory.Feed.Implement
       ],
       settings: .settings(
         base: [

@@ -17,7 +17,8 @@ let project = Project.invertedPresenterWithDemoApp(
   interfaceDependencies: [
     .ThirdParty.ReactorKit,
     
-    .Feature.Splash.Domain.Interface
+    .Feature.Splash.Domain.Interface,
+    .Coordinator.App.Interface
   ],
   implementDependencies: [
     .DependencyFactory.Splash.Interface,

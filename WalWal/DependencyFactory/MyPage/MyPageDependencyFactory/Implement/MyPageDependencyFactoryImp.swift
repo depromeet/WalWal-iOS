@@ -34,33 +34,34 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   }
   
   public func makeMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor {
-    return MyPageReactorImp(
-      coordinator: coordinator
-    )
+    return MyPageReactorImp(coordinator: coordinator)
   }
   
   public func makeMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController {
     return MyPageViewControllerImp(reactor: reactor)
   }
   
-  public func makeProfileSettingReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileSettingReactor {
-    return ProfileSettingReactorImp(
-      coordinator: coordinator
-    )
-  }
-  
-  public func makeProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController {
-    return ProfileSettingViewControllerImp(reactor: reactor)
-  }
-  
   public func makeRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor {
-    return RecordDetailReactorImp(
-      coordinator: coordinator
-    )
+    return RecordDetailReactorImp(coordinator: coordinator)
   }
   
   public func makeRecordDetailViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController {
     return RecordDetailViewControllerImp(reactor: reactor)
   }
   
+  public func makeProfileSettingReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileSettingReactor {
+    return ProfileSettingReactorImp(coordinator: coordinator)
+  }
+  
+  public func makeProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController {
+    return ProfileSettingViewControllerImp(reactor: reactor)
+  }
+  
+  public func makeProfileEditReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileEditReactor {
+    return ProfileEditReactorImp(coordinator: coordinator)
+  }
+  
+  public func makeProfileEditViewController<T: ProfileEditReactor>(reactor: T) -> any ProfileEditViewController {
+    return ProfileEditViewControllerImp(reactor: reactor)
+  }
 }

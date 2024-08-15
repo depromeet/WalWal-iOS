@@ -53,7 +53,7 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
     reactor: R
   ) {
     self.recordDetailReactor = reactor
-    self.feed = WalWalFeed(feedData: dummyData)
+    self.feed = WalWalFeed(feedData: dummyData, isFeed: false)
 
     super.init(nibName: nil, bundle: nil)
   }

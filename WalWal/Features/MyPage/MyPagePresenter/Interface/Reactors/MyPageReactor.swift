@@ -15,10 +15,14 @@ import RxSwift
 
 public enum MyPageReactorAction {
   case didSelectCalendarItem(WalWalCalendarModel)
+  case didTapSettingButton
+  case didTapEditButton
 }
 
 public enum MyPageReactorMutation {
   case setSelectedCalendarItem(WalWalCalendarModel)
+  case moveToSettingView
+  case moveToEditView
 }
 
 public struct MyPageReactorState {

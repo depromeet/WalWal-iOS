@@ -16,7 +16,7 @@ import RxSwift
 
 final class WalWalFeedCellView: UIView {
   
-  private typealias Images = ResourceKitAsset.Images
+  private typealias Images = ResourceKitAsset.Sample
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
@@ -48,17 +48,10 @@ final class WalWalFeedCellView: UIView {
     $0.textColor = Colors.gray700.color
   }
   
-  private let followButton = WalWalChip(
-    text: "팔로우",
-    style: .filled,
-    selectedStyle: .outlined,
-    font: Fonts.KR.B2
-  )
-  
   private let missionImageView = UIImageView()
   
   private let boostIconImageView = UIImageView().then {
-    $0.image = ResourceKitAsset.Sample.fireDef.image
+    $0.image = Images.fireDef.image
   }
   
   private let boostCountLabel = UILabel().then {
@@ -107,7 +100,6 @@ final class WalWalFeedCellView: UIView {
   // MARK: - Methods
   
   func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false) {
-    followButton.alpha = feedData.isFeedCell ? 1 : 0
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = feedData.missionTitle
     profileImageView.image = feedData.profileImage
@@ -145,7 +137,7 @@ final class WalWalFeedCellView: UIView {
       containerView.addSubview($0)
     }
     
-    [profileImageView, profileInfoView, followButton].forEach {
+    [profileImageView, profileInfoView].forEach {
       profileHeaderView.addSubview($0)
     }
     
@@ -180,8 +172,6 @@ final class WalWalFeedCellView: UIView {
         $0.addItem(profileInfoView)
           .marginLeft(10)
           .width(180)
-        $0.addItem(followButton)
-          .marginLeft(10)
       }
     
     profileInfoView.flex
@@ -199,6 +189,7 @@ final class WalWalFeedCellView: UIView {
           .size(343)
           .position(.relative)
         $0.addItem(boostLabelView)
+          .grow(1)
           .marginTop(15)
           .marginLeft(20)
           .marginBottom(16)
@@ -210,7 +201,6 @@ final class WalWalFeedCellView: UIView {
       .define {
         $0.addItem(boostIconImageView)
         $0.addItem(boostCountLabel)
-          .width(24)
         $0.addItem(boostLabel)
           .marginRight(4)
         $0.addItem(seperatorCircle)

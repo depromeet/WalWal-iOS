@@ -34,7 +34,8 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   private let navigationBar = WalWalNavigationBar(
     leftItems: [],
     title: "내 정보",
-    rightItems: [.setting]
+    rightItems: [.setting],
+    rightItemSize: 40
   ).then { $0.backgroundColor = Colors.white.color }
   
   private let seperator = UIView().then {
@@ -48,9 +49,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     name: "조용인",
     subDescription: "안녕하세요 반가워요 👍🏻",
     chipStyle: .tonal,
-    chipTitle: "눌러봐",
-    selectedChipStyle: .filled,
-    selectedChipTitle: "🔥"
+    chipTitle: "수정"
   )
   
   public var disposeBag = DisposeBag()
@@ -124,6 +123,20 @@ extension MyPageViewControllerImp: View {
     calendar.selectedDayData
       .map {
         Reactor.Action.didSelectCalendarItem($0)
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    navigationBar.rightItems?[0].rx.tapped
+      .map {
+        Reactor.Action.didTapSettingButton
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    profileCardView.rx.chipTapped
+      .map {
+        Reactor.Action.didTapEditButton
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)

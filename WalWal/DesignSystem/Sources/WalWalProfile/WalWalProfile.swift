@@ -67,7 +67,7 @@ public final class WalWalProfile: UIView {
   
   private let rootContainer = UIView()
   lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout()).then {
-    $0.backgroundColor = ResourceKitAsset.Colors.white.color
+    $0.backgroundColor = .clear
     $0.register(WalWalProfileCell.self)
     $0.showsHorizontalScrollIndicator = false
     $0.decelerationRate = .fast

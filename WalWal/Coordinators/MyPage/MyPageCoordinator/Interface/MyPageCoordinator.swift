@@ -15,6 +15,8 @@ public enum MyPageCoordinatorAction: ParentAction {
 
 public enum MyPageCoordinatorFlow: CoordinatorFlow {
   case showRecordDetail
+  case showProfileEdit
+  case showProfileSetting
 }
 
 public protocol MyPageCoordinator: BaseCoordinator
