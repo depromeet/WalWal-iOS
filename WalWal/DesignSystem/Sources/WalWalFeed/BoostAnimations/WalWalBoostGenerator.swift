@@ -80,14 +80,15 @@ final class WalWalBoostGenerator {
       detailView,
       backgroundView: backgroundView,
       overlayView: overlayView
-    )
+    ){ [weak self] in
+      guard let self = self else { return }
+      self.addTiltAnimation(to: detailView)
+      self.setupBoostAnimationComponents(in: detailView, window: window)
+    }
     
     currentDetailView = detailView
     currentBackgroundView = backgroundView
     currentBlackOverlayView = overlayView
-    
-    addTiltAnimation(to: detailView)
-    setupBoostAnimationComponents(in: detailView, window: window)
   }
   
   /// 부스트 애니메이션 종료
@@ -171,13 +172,30 @@ extension WalWalBoostGenerator {
   private func animateDetailViewAppearance(
     _ detailView: UIView,
     backgroundView: UIView,
-    overlayView: UIView
+    overlayView: UIView,
+    completion: @escaping () -> Void
   ) {
-    detailView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-    UIView.animate(withDuration: 0.3) {
-      backgroundView.alpha = 1
-      overlayView.alpha = 1
-      detailView.transform = .identity
+    detailView.transform = .identity
+    UIView.animateKeyframes(
+      withDuration: 0.5,
+      delay: 0,
+      options: [],
+      animations: {
+        UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1) {
+          backgroundView.alpha = 1
+          overlayView.alpha = 1
+        }
+        
+        UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
+          detailView.transform = CGAffineTransform(scaleX: 0.98, y: 0.98).translatedBy(x: 0, y: 2)
+        }
+        
+        UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
+          detailView.transform = .identity
+        }
+      }
+    ){ _ in
+      completion()
     }
   }
   
