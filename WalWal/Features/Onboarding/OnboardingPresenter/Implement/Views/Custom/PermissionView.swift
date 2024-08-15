@@ -105,9 +105,12 @@ final class PermissionView {
           .height(56)
       }
     
-    containerView.flex.layout(mode: .adjustHeight)
-    alertContainer.pin.all()
-    alertContainer.flex.layout()
+    containerView.flex
+      .layout(mode: .adjustHeight)
+    alertContainer.pin
+      .all()
+    alertContainer.flex
+      .layout()
   }
   
   /// window 위에 얼럿을 띄우기 위한 메서드

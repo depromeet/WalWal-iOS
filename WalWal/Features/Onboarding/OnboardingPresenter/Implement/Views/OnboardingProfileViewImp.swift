@@ -38,7 +38,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   private let rootContainer = UIView()
   private let scrollView = UIScrollView()
   private let contentContainer = UIView()
-  private let navigationBar = WalWalNavigationBar(leftItems: [.back], leftItemSize: 40, title: nil, rightItems: [])
+  private let navigationBar = WalWalNavigationBar(leftItems: [.darkBack], leftItemSize: 40, title: nil, rightItems: [])
   private let profileContainer = UIView()
   private let progressView = ProgressView(index: 2)
   private let titleView = UIView()
@@ -53,7 +53,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     $0.font = Font.B1
     $0.textColor = Color.gray600.color
   }
-  private lazy var profileSelectView = WalWalProfile(type: PetType(rawValue: petType) ?? .dog) //ProfileSelectView()
+  private lazy var profileSelectView = WalWalProfile(type: PetType(rawValue: petType) ?? .dog)
   private let nicknameTextField = WalWalInputBox(
     defaultState: .active,
     placeholder: "닉네임을 입력해주세요",

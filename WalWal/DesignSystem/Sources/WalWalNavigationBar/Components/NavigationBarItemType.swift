@@ -29,7 +29,7 @@ public enum NavigationBarItemType {
     case .close:
       return Images.closeL.image
     case .back:
-      return Images.backL.image.withTintColor(Colors.black.color)
+      return Images.backL.image
     case .setting:
       return Images.settingL.image.withTintColor(Colors.black.color, renderingMode: .alwaysOriginal)
     case .darkClose:
