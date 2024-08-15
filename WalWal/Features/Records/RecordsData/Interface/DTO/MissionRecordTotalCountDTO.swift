@@ -9,5 +9,5 @@
 import Foundation
 
 public struct MissionRecordTotalCountDTO: Codable {
-    let totalCount: Int
+    public let totalCount: Int
 }

@@ -9,7 +9,7 @@
 import Foundation
 
 public struct MissionRecordStatusDTO: Codable {
-  let recordId: Int
-  let missionUrl: String
-  let status: String
+  public let recordId: Int
+  public let imageUrl: String
+  public let status: String
 }

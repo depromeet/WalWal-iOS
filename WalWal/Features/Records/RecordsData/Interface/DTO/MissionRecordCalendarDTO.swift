@@ -10,12 +10,12 @@
 import Foundation
 
 public struct MissionRecordCalendarDTO: Codable {
-    let list: [RecordList]
-    let nextCursor: String
-  
-  public struct RecordList: Codable {
-      let imageId: Int
-      let imageUrl: String
-      let missionDate: String
-  }
+  public let list: [MissionRecordListDTO]
+  public let nextCursor: String?
+}
+
+public struct MissionRecordListDTO: Codable {
+  public let imageId: Int
+  public let imageUrl: String
+  public let missionDate: String
 }
