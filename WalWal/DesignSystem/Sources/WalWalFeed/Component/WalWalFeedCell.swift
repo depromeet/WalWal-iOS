@@ -21,6 +21,7 @@ final class WalWalFeedCell: UICollectionViewCell {
   
   // MARK: - Components
   private let feedView = WalWalFeedCellView()
+  static let identifier = "WalWalFeedCell"
   
   // MARK: - Initializers
   
@@ -38,15 +39,12 @@ final class WalWalFeedCell: UICollectionViewCell {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    feedView.pin
-      .all()
-    feedView.flex
-      .layout()
+    layoutCell()
   }
   
   override func prepareForReuse() {
     super.prepareForReuse()
-    // Reset the cell’s state before it is reused.
+    layoutCell()
   }
   
   // MARK: - Methods
@@ -65,5 +63,12 @@ final class WalWalFeedCell: UICollectionViewCell {
       .define {
         $0.addItem(feedView)
       }
+  }
+  
+  private func layoutCell() {
+    feedView.pin
+      .all()
+    feedView.flex
+      .layout()
   }
 }

@@ -11,6 +11,7 @@ import AuthDependencyFactoryImp
 import WalWalTabBarDependencyFactoryImp
 import MissionDependencyFactoryImp
 import MyPageDependencyFactoryImp
+import FeedDependencyFactoryImp
 import AppCoordinator
 import FCMDependencyFactoryImp
 
@@ -23,6 +24,7 @@ extension AppDelegate {
     let missionDependencyFactory = MissionDependencyFactoryImp()
     let myPageDependencyFactory = MyPageDependencyFactoryImp()
     let fcmDependencyFactory = FCMDependencyFactoryImp()
+    let feedDependencyFactory = FeedDependencyFactoryImp()
     
     return splashDependencyFactory.makeAppCoordinator(
       navigationController: navigation,
@@ -30,6 +32,7 @@ extension AppDelegate {
       walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
       missionDependencyFactory: missionDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
+      feedDependencyFactory: feedDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory
     )
   }

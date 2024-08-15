@@ -21,7 +21,6 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   public typealias State = ProfileSettingReactorState
   
   private typealias Images = ResourceKitAsset.Images
-  private typealias Sample = ResourceKitAsset.Sample
   
   public let initialState: State
   public let coordinator: any MyPageCoordinator
@@ -116,15 +115,15 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   private func createSettings(appVersion: String, isRecent: Bool) -> [ProfileSettingItemModel] {
     return [
       .init(title: "로그아웃",
-            iconImage: Sample.logout.image,
+            iconImage: Images.logout.image,
             subTitle: "",
             rightText: ""),
       .init(title: "버전 정보",
-            iconImage: Sample.swap.image,
+            iconImage: Images.swap.image,
             subTitle: appVersion,
             rightText: isRecent ? "최신 버전입니다." : "업데이트 필요"),
       .init(title: "회원 탈퇴",
-            iconImage: Sample.xSquare.image,
+            iconImage: Images.xSquare.image,
             subTitle: "",
             rightText: "")
     ]
