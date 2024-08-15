@@ -9,7 +9,6 @@
 import Foundation
 import RecordsData
 import RecordsDomain
-import LocalStorage
 
 import RxSwift
 
