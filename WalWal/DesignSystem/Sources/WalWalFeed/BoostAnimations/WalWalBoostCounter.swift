@@ -54,7 +54,7 @@ final class WalWalBoostCounter {
       attributes: [
         .strokeColor: Colors.black.color,
         .foregroundColor: Colors.white.color,
-        .strokeWidth: -6.73,
+        .strokeWidth: -8,
         .font: Fonts.LotteriaChab.H1
       ]
     )

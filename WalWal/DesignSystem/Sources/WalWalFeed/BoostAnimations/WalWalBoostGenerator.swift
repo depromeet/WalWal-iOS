@@ -234,20 +234,20 @@ extension WalWalBoostGenerator {
   
   private func addTiltAnimation(to view: UIView) {
     let tiltAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
-    let frames = 144 /// 틱당 생기는 부자연스러움을 없애기 위해 144fps로 애니메이션 설정
+    let frames = 60 /// 틱당 생기는 부자연스러움을 없애기 위해 144fps로 애니메이션 설정
     var values = [Double]()
     var keyTimes = [NSNumber]()
     
     for i in 0...frames {
       let progress = Double(i) / Double(frames)
-      let angle = sin(progress * 2 * .pi) * (Double.pi / 24) /// 15도 각도를 1frame 만큼 각도 변환
+      let angle = sin(progress * 2 * .pi) * (Double.pi / 180) /// 15도 각도를 1frame 만큼 각도 변환
       values.append(angle)
       keyTimes.append(NSNumber(value: progress))
     }
     
     tiltAnimation.values = values
     tiltAnimation.keyTimes = keyTimes
-    tiltAnimation.duration = 0.3 /// 144프레임의 애니메이션을 0.3초 동안
+    tiltAnimation.duration = 0.1 /// 144프레임의 애니메이션을 0.3초 동안
     tiltAnimation.repeatCount = .infinity /// 무한 반복
     
     view.layer.add(tiltAnimation, forKey: "tilt")
