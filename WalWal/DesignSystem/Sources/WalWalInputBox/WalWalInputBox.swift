@@ -32,7 +32,7 @@ public final class WalWalInputBox: UIView {
     var image: UIImage? {
       switch self {
       case .close:
-        return Images.closeL.image
+        return Images.closeL.image.withTintColor(Colors.gray500.color)
       case .show:
         return Images.settingL.image.withTintColor(.blue)
       case .none:
@@ -106,12 +106,14 @@ public final class WalWalInputBox: UIView {
   public init(
     defaultState: InputBoxActiveState,
     placeholder: String,
-    rightIcon: WlaWalInputBoxIcon = .none
+    rightIcon: WlaWalInputBoxIcon = .none,
+    isAlwaysKeyboard: Bool = false
   ) {
     self.rightButton = WalWalTouchArea(image: rightIcon.image)
     self.rightIcon = rightIcon
     self.stateRelay.accept(defaultState)
     super.init(frame: .zero)
+    self.textField.delegate = isAlwaysKeyboard ? self : nil
     
     configureAttributes(placeholder: placeholder)
     configureLayouts()
@@ -245,6 +247,10 @@ public final class WalWalInputBox: UIView {
   
   // MARK: - Methods
   
+  public func focusOnTextField(){
+    textField.becomeFirstResponder()
+  }
+  
   private func updateAppearance(activeState: InputBoxActiveState) {
     switch activeState {
     case .active:
@@ -254,6 +260,14 @@ public final class WalWalInputBox: UIView {
       textField.textColor = Colors.gray500.color
       isUserInteractionEnabled = false
     }
+  }
+}
+
+// MARK: - UITextFieldDelegate
+
+extension WalWalInputBox: UITextFieldDelegate {
+  public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    return false
   }
 }
 

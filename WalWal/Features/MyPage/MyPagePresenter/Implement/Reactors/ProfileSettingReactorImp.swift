@@ -50,6 +50,8 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       ])
     case let .didSelectItem(at: indexPath):
       return handleSelection(at: indexPath)
+    case .tapBackButton:
+      return Observable.just(.moveToBack)
     }
   }
   
@@ -73,6 +75,8 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       newState.isRevokeSuccess = success
     case let .setIsRecentVersion(isRecent):
       newState.isRecent = isRecent
+    case .moveToBack:
+      coordinator.popViewController(animated: true)
     }
     return newState
   }
