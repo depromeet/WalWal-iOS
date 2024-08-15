@@ -11,6 +11,7 @@ import DesignSystem
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
 import MyPageDependencyFactory
+import FeedDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -38,19 +39,22 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var missionDependencyFactory: MissionDependencyFactory
   public var myPageDependencyFactory: MyPageDependencyFactory
+  public var feedDependencyFactory: FeedDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
     missionDependencyFactory: MissionDependencyFactory,
-    myPageDependencyFactory: MyPageDependencyFactory
+    myPageDependencyFactory: MyPageDependencyFactory,
+    feedDependencyFactory: FeedDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.walwalTabBarDependencyFactory = walwalTabBarDependencyFactory
     self.missionDependencyFactory = missionDependencyFactory
     self.myPageDependencyFactory = myPageDependencyFactory
+    self.feedDependencyFactory = feedDependencyFactory
     
     self.tabBarController = WalWalTabBarViewController()
     
@@ -149,15 +153,16 @@ extension WalWalTabBarCoordinatorImp {
     return missionCoordinator
   }
   
-  /// fileprivate func startFeed() -> any BaseCoordinator {
-    /// print("피드 탭 선택")
-    /// let feedCoordinator = feedDependencyFactory.makefeedCoordinator(
-    ///   navigationController: navigationController,
-    ///   parentCoordinator: self
-    /// )
-    /// childCoordinator = feedCoordinator
-    /// feedCoordinator.start()
-  /// }
+  fileprivate func startFeed(navigationController: UINavigationController) -> any BaseCoordinator {
+     print("피드 탭 선택")
+    let feedCoordinator = feedDependencyFactory.makeFeedCoordinator(
+       navigationController: navigationController,
+       parentCoordinator: self
+     )
+     childCoordinator = feedCoordinator
+     feedCoordinator.start()
+     return feedCoordinator
+   }
   
   /// fileprivate func startNotification() {
     /// print("알림 탭 선택")
@@ -215,7 +220,7 @@ private extension WalWalTabBarCoordinatorImp {
     case .startMission:
       return startMission(navigationController: navigationController)
     case .startFeed:
-      return startMission(navigationController: navigationController)
+      return startFeed(navigationController: navigationController)
     case .startNotification:
       return startMission(navigationController: navigationController)
     case .startMyPage:

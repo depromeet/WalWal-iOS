@@ -11,7 +11,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
-public protocol ProfileSettingViewController {
+public protocol ProfileSettingViewController: UIViewController {
   
   associatedtype ProfileSettingReactorType: ProfileSettingReactor
   var disposeBag: DisposeBag { get set }

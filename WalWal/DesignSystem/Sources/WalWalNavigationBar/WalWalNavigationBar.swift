@@ -28,7 +28,7 @@ public final class WalWalNavigationBar: UIView {
     let label = UILabel()
     label.textColor = Colors.black.color
     label.textAlignment = .center
-    label.font = Fonts.KR.H4
+    label.font = Fonts.KR.H5.B
     return label
   }()
   

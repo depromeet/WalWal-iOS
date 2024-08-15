@@ -108,12 +108,14 @@ public final class WalWalInputBox: UIView {
   public init(
     defaultState: InputBoxActiveState,
     placeholder: String,
-    rightIcon: WlaWalInputBoxIcon = .none
+    rightIcon: WlaWalInputBoxIcon = .none,
+    isAlwaysKeyboard: Bool = false
   ) {
     self.rightButton = WalWalTouchArea(image: rightIcon.image)
     self.rightIcon = rightIcon
     self.stateRelay.accept(defaultState)
     super.init(frame: .zero)
+    self.textField.delegate = isAlwaysKeyboard ? self : nil
     
     configureAttributes(placeholder: placeholder)
     configureLayouts()
@@ -247,6 +249,10 @@ public final class WalWalInputBox: UIView {
   
   // MARK: - Methods
   
+  public func focusOnTextField(){
+    textField.becomeFirstResponder()
+  }
+  
   private func updateAppearance(activeState: InputBoxActiveState) {
     switch activeState {
     case .active:
@@ -264,6 +270,14 @@ public final class WalWalInputBox: UIView {
     let startIndex = text.startIndex
     let cutting = String(text[startIndex...maxIndex])
     textField.text = cutting
+  }
+}
+
+// MARK: - UITextFieldDelegate
+
+extension WalWalInputBox: UITextFieldDelegate {
+  public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    return false
   }
 }
 

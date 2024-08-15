@@ -37,6 +37,7 @@ public enum ProfileSettingReactorAction {
   
   case viewDidLoad
   case didSelectItem(at: IndexPath)
+  case tapBackButton
 }
 
 public enum ProfileSettingReactorMutation {
@@ -46,6 +47,7 @@ public enum ProfileSettingReactorMutation {
   case setSettingItemModel([ProfileSettingItemModel])
   case setLogout(Bool)
   case setRevoke(Bool)
+  case moveToBack
 }
 
 public struct ProfileSettingReactorState {

@@ -24,7 +24,7 @@ import Kingfisher
 
 public final class MissionViewControllerImp<R: MissionReactor>: UIViewController, MissionViewController {
   
-  private typealias Images = ResourceKitAsset.Assets
+  private typealias Images = ResourceKitAsset.Images
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   

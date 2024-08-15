@@ -14,6 +14,7 @@ import MissionDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
 import OnboardingDependencyFactory
+import FeedDependencyFactory
 
 import WalWalNetwork
 
@@ -41,7 +42,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
-    onboardingDependencyFactory: OnboardingDependencyFactory
+    onboardingDependencyFactory: OnboardingDependencyFactory,
+    feedDependencyFactory: FeedDependencyFactory
   ) -> any AppCoordinator {
     return AppCoordinatorImp(
       navigationController: navigationController,
@@ -52,6 +54,7 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       myPageDependencyFactory: myPageDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
       onboardingDependencyFactory: onboardingDependencyFactory
+      feedDependencyFactory: feedDependencyFactory
     )
   }
   

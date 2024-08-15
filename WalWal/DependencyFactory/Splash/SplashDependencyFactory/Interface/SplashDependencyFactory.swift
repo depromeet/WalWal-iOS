@@ -14,6 +14,7 @@ import MissionDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
 import OnboardingDependencyFactory
+import FeedDependencyFactory
 
 import AppCoordinator
 import SplashDomain
@@ -28,6 +29,7 @@ public protocol SplashDependencyFactory {
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     onboardingDependencyFactory: OnboardingDependencyFactory
+    feedDependencyFactory: FeedDependencyFactory
   ) -> any AppCoordinator
   func makeCheckTokenUseCase() -> CheckTokenUsecase
   func makeSplashReactor<T: AppCoordinator>(coordinator: T) -> any SplashReactor

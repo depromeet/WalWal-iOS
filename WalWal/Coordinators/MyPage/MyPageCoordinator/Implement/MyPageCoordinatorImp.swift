@@ -46,7 +46,11 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
       .subscribe(with: self, onNext: { owner, flow in
         switch flow {
         case .showRecordDetail:
-          self.showRecordDetailVC()
+          owner.showRecordDetailVC()
+        case .showProfileEdit:
+          owner.showProfileEditVC()
+        case .showProfileSetting:
+          owner.showProfileSettingVC()
         }
       })
       .disposed(by: disposeBag)
@@ -89,22 +93,25 @@ extension MyPageCoordinatorImp {
 // MARK: - Create and Start(Show) with Flow(View)
 
 extension MyPageCoordinatorImp {
-  
-  /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
-  fileprivate func start__() {
-    /// let __Coordinator = dependencyFactory.make__Coordinator(
-    ///   navigationController: navigationController,
-    ///   parentCoordinator: self
-    /// )
-    /// childCoordinator = __Coordinator
-    /// __Coordinator.start()
-  }
-  
-  /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
+  /// 기록 상세뷰
   fileprivate func showRecordDetailVC() {
     let reactor = myPageDependencyFactory.makeRecordDetailReactor(coordinator: self)
-     let RecordDetailVC = myPageDependencyFactory.makeRecordDetailViewController(reactor: reactor)
-     self.pushViewController(viewController: RecordDetailVC, animated: false)
+    let RecordDetailVC = myPageDependencyFactory.makeRecordDetailViewController(reactor: reactor)
+    self.pushViewController(viewController: RecordDetailVC, animated: false)
+  }
+  
+  /// 프로필 설정뷰
+  fileprivate func showProfileSettingVC() {
+    let reactor = myPageDependencyFactory.makeProfileSettingReactor(coordinator: self)
+    let ProfileSettingVC = myPageDependencyFactory.makeProfileSettingViewController(reactor: reactor)
+    self.pushViewController(viewController: ProfileSettingVC, animated: false)
+  }
+  
+  /// 프로필 변경뷰
+  fileprivate func showProfileEditVC() {
+    let reactor = myPageDependencyFactory.makeProfileEditReactor(coordinator: self)
+    let ProfileEditVC = myPageDependencyFactory.makeProfileEditViewController(reactor: reactor)
+    self.pushViewController(viewController: ProfileEditVC, animated: false)
   }
 }
 

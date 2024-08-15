@@ -30,7 +30,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   
   private let containerView = UIView()
   private let navigationBar = WalWalNavigationBar(
-    leftItems: [.back],
+    leftItems: [.darkBack],
     title: "설정",
     rightItems: []
   )
@@ -43,14 +43,14 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   }
   
   public var disposeBag = DisposeBag()
-  public var __reactor: R
+  public var profileSetting: R
   
   // MARK: - Initializer
   
   public init(
     reactor: R
   ) {
-    self.__reactor = reactor
+    self.profileSetting = reactor
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -61,7 +61,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   // MARK: - Lifecycle
   
   public override func viewDidLoad() {
-    self.reactor = __reactor
+    self.reactor = profileSetting
     super.viewDidLoad()
     setAttribute()
     setLayout()
@@ -113,6 +113,11 @@ extension ProfileSettingViewControllerImp: View {
     settingTableView.rx
       .itemSelected
       .map { Reactor.Action.didSelectItem(at: $0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    navigationBar.leftItems?[0].rx.tapped
+      .map { Reactor.Action.tapBackButton }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
