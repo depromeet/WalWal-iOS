@@ -28,7 +28,7 @@ public protocol SplashDependencyFactory {
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
-    onboardingDependencyFactory: OnboardingDependencyFactory
+    onboardingDependencyFactory: OnboardingDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory
   ) -> any AppCoordinator
   func makeCheckTokenUseCase() -> CheckTokenUsecase
