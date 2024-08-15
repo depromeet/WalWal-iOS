@@ -36,6 +36,7 @@ public final class WalWalFeed: UIView {
       withReuseIdentifier: FeedHeaderView.identifier
     )
     $0.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 24, right: 0)
+    $0.showsHorizontalScrollIndicator = false
   }
   
   // MARK: - Property
