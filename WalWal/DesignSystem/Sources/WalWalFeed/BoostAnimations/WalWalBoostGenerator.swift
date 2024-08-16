@@ -36,6 +36,7 @@ final class WalWalBoostGenerator {
   private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
   
   let boostFinished = PublishSubject<BoostResult>()
+  var isEndedLongPress = false
   
   init(
     feed: WalWalFeed,
@@ -82,6 +83,7 @@ final class WalWalBoostGenerator {
       overlayView: overlayView
     ){ [weak self] in
       guard let self = self else { return }
+      if isEndedLongPress { return }
       self.addTiltAnimation(to: detailView)
       self.setupBoostAnimationComponents(in: detailView, window: window)
     }
