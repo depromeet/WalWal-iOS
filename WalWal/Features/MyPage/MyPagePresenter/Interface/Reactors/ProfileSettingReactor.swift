@@ -45,30 +45,23 @@ public enum ProfileSettingReactorMutation {
   case setAppVersion(String)
   case setIsRecentVersion(Bool)
   case setSettingItemModel([ProfileSettingItemModel])
-  case setLogout(Bool)
-  case setRevoke(Bool)
+  case moveToAuth
   case moveToBack
 }
 
 public struct ProfileSettingReactorState {
   public var isLoading: Bool
-  public var isLogoutSuccess: Bool
-  public var isRevokeSuccess: Bool
   public var appVersionString: String
   public var isRecent: Bool
   public var settings: [ProfileSettingItemModel]
   
   public init(
     isLoading: Bool = false,
-    isLogoutSuccess: Bool = false,
-    isRevokeSuccess: Bool = false,
     appVersionString: String = "",
     isRecent: Bool = false,
     settings: [ProfileSettingItemModel] = []
   ) {
     self.isLoading = isLoading
-    self.isLogoutSuccess = isLogoutSuccess
-    self.isRevokeSuccess = isRevokeSuccess
     self.appVersionString = appVersionString
     self.isRecent = isRecent
     self.settings = settings
