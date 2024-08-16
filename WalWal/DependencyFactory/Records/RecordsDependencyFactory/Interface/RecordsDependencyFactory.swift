@@ -8,6 +8,14 @@
 
 import UIKit
 
+import RecordsDomain
+import RecordsData
+
 public protocol RecordsDependencyFactory {
-  
+  func injectRecordsRepository() -> RecordRepository
+  func injectCheckCalendarRecordsUseCase() -> CheckCalendarRecordsUseCase
+  func injectCheckCompletedTotalRecordsUseCase() -> CheckCompletedTotalRecordsUseCase
+  func injectCheckRecordStatusUseCase() -> CheckRecordStatusUseCase
+  func injectSaveRecordUseCase() -> SaveRecordUseCase
+  func injectStartRecordUseCase() -> StartRecordUseCase
 }
