@@ -27,6 +27,7 @@ enum DependencyFactoryStr: String {
   case feed = "Feed"
   case sample = "Sample"
   case fcm = "FCM"
+  case records = "Records"
 }
 
 enum CoordinatorStr: String {
@@ -51,6 +52,7 @@ enum FeatureStr: String {
   case mission = "Mission"
   case myPage = "MyPage"
   case fcm = "FCM"
+  case records = "Records"
   case feed = "Feed"
 }
 
@@ -108,6 +110,7 @@ extension TargetDependency {
     public struct WalWalTabBar: WalWalDependency { }
     public struct Mission: WalWalDependency { }
     public struct FCM: WalWalDependency { }
+    public struct Records: WalWalDependency { }
     public struct Feed: WalWalDependency { }
   }
   
@@ -167,6 +170,11 @@ extension TargetDependency {
       public struct Domain: WalWalDependency {}
     }
     
+    public struct Records: WalWalDependency {
+      public struct Data: WalWalDependency {}
+      public struct Domain: WalWalDependency {}
+    }
+    
     public struct Feed: WalWalDependency {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
@@ -215,6 +223,11 @@ public extension TargetDependency.DependencyFactory.MyPage {
 public extension TargetDependency.DependencyFactory.FCM {
   static let Interface = Self.project(dependencyName: .fcm, isInterface: true)
   static let Implement = Self.project(dependencyName: .fcm, isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.Records {
+  static let Interface = Self.project(dependencyName: .records, isInterface: true)
+  static let Implement = Self.project(dependencyName: .records, isInterface: false)
 }
 
 public extension TargetDependency.DependencyFactory.Feed {
@@ -324,6 +337,16 @@ public extension TargetDependency.Feature.FCM.Data {
   static let Implement = Self.project(name: .fcm, layer: .data, isInterface: false)
 }
 
+public extension TargetDependency.Feature.Records.Domain {
+  static let Interface = Self.project(name: .records, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .records, layer: .domain, isInterface: false)
+}
+
+public extension TargetDependency.Feature.Records.Data {
+  static let Interface = Self.project(name: .records, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .records, layer: .data, isInterface: false)
+}
+  
 public extension TargetDependency.Feature.Feed.Presenter {
   static let Interface = Self.project(name: .feed, layer: .presenter, isInterface: true)
   static let Implement = Self.project(name: .feed, layer: .presenter, isInterface: false)

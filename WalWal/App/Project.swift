@@ -72,6 +72,7 @@ let project = Project(
         .DependencyFactory.MyPage.Implement,
         .DependencyFactory.FCM.Implement,
         .DependencyFactory.Onboarding.Implement,
+        .DependencyFactory.Records.Implement,
         .DependencyFactory.Feed.Implement
       ],
       settings: .settings(
