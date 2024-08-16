@@ -75,6 +75,7 @@ extension AuthReactorImp {
       .flatMap { owner, result -> Observable<Mutation> in
         owner.userTokensSaveUseCase.execute(tokens: result)
         if result.isTemporaryToken {
+          owner.coordinator.startOnboarding()
           return .just(.showIndicator(show: false))
         } else {
           return owner.fcmTokenSave()
