@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RecordsDependencyFactory
 
 public class RecordsDependencyFactoryImp: RecordsDependencyFactory {
   

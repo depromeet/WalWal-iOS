@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AuthDomain
 import LocalStorage
 
 public class UserTokensSaveUseCaseImp: UserTokensSaveUseCase {
