@@ -68,15 +68,21 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     return CheckTokenUsecaseImp()
   }
   
+  public func injectCheckIsFirstLoadedUseCase() -> CheckIsFirstLoadedUseCase {
+    return CheckIsFirstLoadedUseCaseImp()
+  }
+  
   public func injectSplashReactor<T: AppCoordinator>(
     coordinator: T,
     checkTokenUseCase: CheckTokenUsecase,
+    checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
   ) -> any SplashReactor {
     return SplashReactorImp(
       coordinator: coordinator,
       checkTokenUseCase: checkTokenUseCase,
+      checkIsFirstLoadedUseCase: checkIsFirstLoadedUseCase,
       fcmSaveUseCase: fcmSaveUseCase,
       checkRecordCalendarUseCase: checkRecordCalendarUseCase
     )

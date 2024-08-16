@@ -103,11 +103,13 @@ public final class AppCoordinatorImp: AppCoordinator {
   
   public func start() {
     let checkTokenUseCase = appDependencyFactory.injectCheckTokenUseCase()
+    let checkIsFirstLoadedUseCase = appDependencyFactory.injectCheckIsFirstLoadedUseCase()
     let fcmSaveUseCase = fcmDependencyFactory.injectFCMSaveUseCase()
     let checkRecordCalendarUseCase = recordsDependencyFactory.injectCheckCalendarRecordsUseCase()
     let reactor = appDependencyFactory.injectSplashReactor(
       coordinator: self,
       checkTokenUseCase: checkTokenUseCase,
+      checkIsFirstLoadedUseCase: checkIsFirstLoadedUseCase,
       fcmSaveUseCase: fcmSaveUseCase,
       checkRecordCalendarUseCase: checkRecordCalendarUseCase
     )

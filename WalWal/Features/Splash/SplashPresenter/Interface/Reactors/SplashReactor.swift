@@ -37,6 +37,7 @@ public protocol SplashReactor:
   init(
     coordinator: any AppCoordinator,
     checkTokenUseCase: CheckTokenUsecase,
+    checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
   )

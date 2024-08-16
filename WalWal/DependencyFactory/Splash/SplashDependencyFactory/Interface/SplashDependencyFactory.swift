@@ -42,9 +42,12 @@ public protocol SplashDependencyFactory {
   
   func injectCheckTokenUseCase() -> CheckTokenUsecase
   
+  func injectCheckIsFirstLoadedUseCase() -> CheckIsFirstLoadedUseCase
+  
   func injectSplashReactor<T: AppCoordinator>(
     coordinator: T,
     checkTokenUseCase: CheckTokenUsecase,
+    checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
   ) -> any SplashReactor
