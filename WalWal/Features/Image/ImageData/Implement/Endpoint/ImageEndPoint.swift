@@ -40,11 +40,11 @@ extension ImageEndPoint {
     switch self {
     case .membersUploadComplete:
       return "/images/members/me/upload-complete"
-    case .membersUploadURL(let body):
+    case .membersUploadURL:
       return "/images/members/me/upload-url"
-    case .recordUploadComplete(let body):
+    case .recordUploadComplete:
       return "/images/members/me/upload-url"
-    case .recordUploadURL(let body):
+    case .recordUploadURL:
       return "/images/mission-record/upload-url"
     case .uploadMemberImage, .uploadRecordImage:
       return ""
@@ -52,7 +52,12 @@ extension ImageEndPoint {
   }
   
   var method: HTTPMethod {
-    return .post
+    switch self {
+    case .membersUploadURL, .membersUploadComplete, .recordUploadComplete, .recordUploadURL:
+      return .post
+    case .uploadMemberImage, .uploadRecordImage:
+      return .put
+    }
   }
   
   var parameters: RequestParams {
