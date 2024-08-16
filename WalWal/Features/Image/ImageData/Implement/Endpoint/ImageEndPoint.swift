@@ -7,3 +7,81 @@
 //
 
 import Foundation
+import WalWalNetwork
+import LocalStorage
+import ImageData
+
+import Alamofire
+
+enum ImageEndPoint<T>: APIEndpoint where T: Decodable {
+  typealias ResponseType = T
+  
+  case membersUploadComplete(body: MemberUploadBody)
+  case membersUploadURL(body: MemberUploadUrlBody)
+  case recordUploadComplete(body: MissionRecordUploadBody)
+  case recordUploadURL(body: MissionRecordUploadURLBody)
+  case uploadMemberImage(url: String)
+  case uploadRecordImage(url: String)
+}
+
+extension ImageEndPoint {
+  var baseURLType: URLType {
+    switch self {
+    case .membersUploadComplete, .membersUploadURL, .recordUploadComplete, .recordUploadURL:
+      return .walWalBaseURL
+    case let .uploadMemberImage(url):
+      return .presignedURL(url)
+    case let .uploadRecordImage(url):
+      return .presignedURL(url)
+    }
+  }
+  
+  var path: String {
+    switch self {
+    case .membersUploadComplete:
+      return "/images/members/me/upload-complete"
+    case .membersUploadURL(let body):
+      return "/images/members/me/upload-url"
+    case .recordUploadComplete(let body):
+      return "/images/members/me/upload-url"
+    case .recordUploadURL(let body):
+      return "/images/mission-record/upload-url"
+    case .uploadMemberImage, .uploadRecordImage:
+      return ""
+    }
+  }
+  
+  var method: HTTPMethod {
+    return .post
+  }
+  
+  var parameters: RequestParams {
+    switch self {
+    case let .membersUploadComplete(body):
+      return .requestWithbody(body)
+    case let .membersUploadURL(body):
+      return .requestWithbody(body)
+    case let .recordUploadComplete(body):
+      return .requestWithbody(body)
+    case let .recordUploadURL(body):
+      return .requestWithbody(body)
+    case .uploadMemberImage, .uploadRecordImage:
+      return .upload
+    }
+  }
+  
+  var headerType: HTTPHeaderType {
+    switch self {
+    case .membersUploadURL, .membersUploadComplete:
+      return .authorization(
+        UserDefaults.string(forUserDefaultsKey: .temporaryToken)
+      )
+    case .recordUploadURL, .recordUploadComplete:
+      return .authorization(
+        KeychainWrapper.shared.accessToken ?? ""
+      )
+    case .uploadMemberImage, .uploadRecordImage:
+      return .uploadJPEG
+    }
+  }
+}
