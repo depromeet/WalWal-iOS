@@ -32,7 +32,6 @@ final class WalWalFeedViewController: UIViewController {
   
   private let dummyData: [WalWalFeedModel] = [
     .init(id: 1,
-          isFeedCell: false,
           date: "2024년 8월 10일",
           nickname: "찐찐도그",
           missionTitle: "산책 미션을 수행했어요!",
@@ -40,7 +39,6 @@ final class WalWalFeedViewController: UIViewController {
           missionImage: ResourceKitAsset.Sample.feedSample.image,
           boostCount: 324),
     .init(id: 2,
-          isFeedCell: true,
           date: "2024년 8월 10일",
           nickname: "찐찐도그",
           missionTitle: "산책 미션을 수행했어요!",
@@ -48,7 +46,6 @@ final class WalWalFeedViewController: UIViewController {
           missionImage: ResourceKitAsset.Sample.feedSample.image,
           boostCount: 324),
     .init(id: 3,
-          isFeedCell: false,
           date: "2024년 8월 10일",
           nickname: "찐찐도그",
           missionTitle: "산책 미션을 수행했어요!",
