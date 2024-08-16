@@ -31,35 +31,24 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   // MARK: - UI
   
   private let rootContainer = UIView()
-  private let todayMissionLabel = UILabel().then {
-    $0.text = "오늘의 미션"
-    $0.textColor = Colors.walwalOrange.color
-    $0.font = Fonts.KR.H6.B
-  }
-  private let titleLabel = UILabel().then {
-    $0.font = Fonts.KR.H2
-    $0.textColor = Colors.black.color
-    $0.text = "반려동물과 함께\n산책한 사진을 찍어요"
-    $0.numberOfLines = 2
-    $0.textAlignment = .center
-  }
-  private let missionImageView = UIImageView().then {
-    $0.image = ResourceKitAsset.Sample.missionSample.image
-    $0.contentMode = .scaleAspectFit
-  }
+  private let missionStartView = MissionStartView(
+    missionTitle: "반려동물과 함께\n산책한 사진을 찍어요",
+    missionImage: ResourceKitAsset.Sample.missionSample.image
+  )
   private lazy var missionCountBubbleView = BubbleView(
     color: Colors.gray150.color,
     image: Images.missionStartIcon.image,
     text: "\(missionCount)번째 미션을 수행해볼까요?"
   )
-  private let missionStartButton = UIButton().then {
-    $0.backgroundColor = Colors.walwalOrange.color
-    $0.setTitle("미션 시작하기", for: .normal)
-  }
+  private let missionStartButton = WalWalButton_Icon(
+    type: .active,
+    title: "미션 시작하기",
+    icon:Images.flagS.image
+  )
   
   // MARK: - Properties
   
-  private let missionCount = 12
+  private let missionCount = 0
   
   public var disposeBag = DisposeBag()
   public var missionReactor: R
@@ -79,6 +68,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    missionCountBubbleView.startFloatingAnimation()
     configureAttribute()
     configureLayout()
     self.reactor = missionReactor
@@ -88,8 +78,10 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    rootContainer.pin.all(view.pin.safeArea)
-    rootContainer.flex.layout()
+    rootContainer.pin
+      .all(view.pin.safeArea)
+    rootContainer.flex
+      .layout()
   }
   
   public func configureAttribute() {
@@ -101,24 +93,16 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     rootContainer.flex
       .paddingTop(80.adjusted)
       .define {
-        $0.addItem(todayMissionLabel)
+        $0.addItem(missionStartView)
           .alignSelf(.center)
-        $0.addItem(titleLabel)
-          .marginTop(14.adjusted)
-          .marginHorizontal(20.adjusted)
-        $0.addItem(missionImageView)
-          .marginTop(14.adjusted)
-          .marginHorizontal(0)
-          .height(330.adjusted)
         $0.addItem()
           .direction(.columnReverse)
           .marginTop(17.adjusted)
           .define {
             $0.addItem(missionStartButton)
               .marginHorizontal(20.adjusted)
-              .height(50.adjusted)
             $0.addItem(missionCountBubbleView)
-              .marginBottom(-2.adjusted)
+              .marginBottom(-20.adjusted)
               .alignSelf(.center)
           }
       }
@@ -127,13 +111,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   // MARK: - Method
   
   private func setMissionData(_ model: MissionModel) {
-    titleLabel.text = model.title
-    // TODO: 이미지 넣기
-    //    if let imageUrl = URL(string: model.imageUrl) {
-    //      missionImageView.kf.setImage(with: imageUrl)
-    //    } else {
-    //      missionImageView.image = Assets.sampleImage.image
-    //    }
+    // 미션 데이터 세팅
   }
 }
 
