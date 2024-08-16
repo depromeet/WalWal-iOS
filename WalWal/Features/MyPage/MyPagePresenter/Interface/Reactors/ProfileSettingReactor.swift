@@ -9,6 +9,7 @@
 import UIKit
 import MyPageDomain
 import MyPageCoordinator
+import FCMDomain
 
 import ReactorKit
 import RxSwift
@@ -73,6 +74,7 @@ public protocol ProfileSettingReactor: Reactor where Action == ProfileSettingRea
   
   init(
     coordinator: any MyPageCoordinator,
-    tokenDeleteUseCase: TokenDeleteUseCase
+    tokenDeleteUseCase: TokenDeleteUseCase,
+    fcmDeleteUseCase: FCMDeleteUseCase
   )
 }

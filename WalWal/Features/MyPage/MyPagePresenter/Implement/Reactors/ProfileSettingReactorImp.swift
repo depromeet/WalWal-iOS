@@ -11,6 +11,7 @@ import MyPageDomain
 import MyPagePresenter
 import MyPageCoordinator
 import ResourceKit
+import FCMDomain
 
 import ReactorKit
 import RxSwift
@@ -25,13 +26,16 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   public let initialState: State
   public let coordinator: any MyPageCoordinator
   private let tokenDeleteUseCase: TokenDeleteUseCase
+  private let fcmDeleteUseCase: FCMDeleteUseCase
   
   public init(
     coordinator: any MyPageCoordinator,
-    tokenDeleteUseCase: TokenDeleteUseCase
+    tokenDeleteUseCase: TokenDeleteUseCase,
+    fcmDeleteUseCase: FCMDeleteUseCase
   ) {
     self.coordinator = coordinator
     self.tokenDeleteUseCase = tokenDeleteUseCase
+    self.fcmDeleteUseCase = fcmDeleteUseCase
     self.initialState = State(
       isLoading: false,
       appVersionString: "",
@@ -86,9 +90,19 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
 
 extension ProfileSettingReactorImp {
   private func logout() -> Observable<Mutation> {
-    tokenDeleteUseCase.execute()
-    return .just(.moveToAuth)
+    return fcmDeleteUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
+        owner.tokenDeleteUseCase.execute()
+        return .just(.moveToAuth)
+      }.catch { error in
+        print(error.localizedDescription)
+        return .just(.moveToAuth)
+      }
+    
   }
+  
   
   private func fetchAppVersion() -> Observable<Mutation> {
     let fetchedVersion = "1.0" // 실제 앱스토어 버전 받아오는 로직 필요

@@ -22,6 +22,7 @@ import FCMDependencyFactory
 import OnboardingDependencyFactory
 import FeedDependencyFactory
 import RecordsDependencyFactory
+import FCMDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -187,7 +188,8 @@ extension AppCoordinatorImp {
       parentCoordinator: self,
       missionDependencyFactory: missionDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
-      feedDependencyFactory: feedDependencyFactory
+      feedDependencyFactory: feedDependencyFactory,
+      fcmDependencyFactory: fcmDependencyFactory
     )
     childCoordinator = walwalTabBarCoordinator
     walwalTabBarCoordinator.start()

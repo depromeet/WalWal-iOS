@@ -8,6 +8,7 @@
 
 import UIKit
 import MyPageDependencyFactory
+import FCMDependencyFactory
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -17,6 +18,7 @@ import MyPagePresenter
 import MyPagePresenterImp
 import MyPageDomain
 import MyPageDomainImp
+import FCMDomain
 
 public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   
@@ -26,12 +28,14 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   
   public func makeMyPageCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: (any BaseCoordinator)?
+    parentCoordinator: (any BaseCoordinator)?,
+    fcmDependencyFactory: FCMDependencyFactory
   ) -> any MyPageCoordinator {
     return MyPageCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
-      myPageDependencyFactory: self
+      myPageDependencyFactory: self,
+      fcmDependencyFactory: fcmDependencyFactory
     )
   }
   
@@ -57,11 +61,13 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   
   public func injectProfileSettingReactor<T: MyPageCoordinator>(
     coordinator: T,
-    tokenDeleteUseCase: TokenDeleteUseCase
+    tokenDeleteUseCase: TokenDeleteUseCase,
+    fcmDeleteUseCase: FCMDeleteUseCase
   ) -> any ProfileSettingReactor {
     return ProfileSettingReactorImp(
       coordinator: coordinator,
-      tokenDeleteUseCase: tokenDeleteUseCase
+      tokenDeleteUseCase: tokenDeleteUseCase,
+      fcmDeleteUseCase: fcmDeleteUseCase
     )
   }
   

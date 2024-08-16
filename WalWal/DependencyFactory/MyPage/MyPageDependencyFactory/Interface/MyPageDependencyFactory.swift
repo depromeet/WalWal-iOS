@@ -14,11 +14,15 @@ import MyPageData
 import MyPageDomain
 import MyPagePresenter
 
+import FCMDependencyFactory
+import FCMDomain
+
 public protocol MyPageDependencyFactory {
   
   func makeMyPageCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: (any BaseCoordinator)?
+    parentCoordinator: (any BaseCoordinator)?,
+    fcmDependencyFactory: FCMDependencyFactory
   ) -> any MyPageCoordinator
   func injectTokenDeleteUseCase() -> TokenDeleteUseCase
   func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor
@@ -29,7 +33,8 @@ public protocol MyPageDependencyFactory {
   func injectProfileEditViewController<T: ProfileEditReactor>(reactor: T) -> any ProfileEditViewController
   func injectProfileSettingReactor<T: MyPageCoordinator>(
     coordinator: T,
-    tokenDeleteUseCase: TokenDeleteUseCase
+    tokenDeleteUseCase: TokenDeleteUseCase,
+    fcmDeleteUseCase: FCMDeleteUseCase
   ) -> any ProfileSettingReactor
   func injectProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController
 }

@@ -10,6 +10,7 @@ import UIKit
 import MissionDependencyFactory
 import MyPageDependencyFactory
 import FeedDependencyFactory
+import FCMDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -20,6 +21,7 @@ public protocol WalWalTabBarDependencyFactory {
     parentCoordinator: any BaseCoordinator,
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
-    feedDependencyFactory: FeedDependencyFactory
+    feedDependencyFactory: FeedDependencyFactory,
+    fcmDependencyFactory: FCMDependencyFactory
   ) -> any WalWalTabBarCoordinator
 }
