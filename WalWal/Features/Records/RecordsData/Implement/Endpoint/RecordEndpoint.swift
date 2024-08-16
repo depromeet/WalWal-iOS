@@ -18,7 +18,7 @@ enum RecordEndpoint<T>: APIEndpoint where T: Decodable {
   case saveRecord(body: SaveRecordBody)
   case startRecord(body: StartRecordBody)
   case checkRecordStatus(query: CheckRecordStatusQuery)
-  case checkCalendarRecords(body: CalendarRecordBody)
+  case checkCalendarRecords(query: CalendarRecordQuery)
   case checkCompletedTotalRecords
 }
 
@@ -44,9 +44,9 @@ extension RecordEndpoint {
   
   var method: HTTPMethod {
     switch self {
-    case .saveRecord, .startRecord, .checkCalendarRecords, .checkCompletedTotalRecords:
+    case .saveRecord, .startRecord, .checkCompletedTotalRecords:
       return .post
-    case .checkRecordStatus:
+    case .checkRecordStatus, .checkCalendarRecords:
       return .get
     }
   }
@@ -55,8 +55,8 @@ extension RecordEndpoint {
     switch self {
     case .saveRecord(let body):
       return .requestWithbody(body)
-    case .checkCalendarRecords(let body):
-      return .requestWithbody(body)
+    case .checkCalendarRecords(let query):
+      return .requestQuery(query)
     case .startRecord(let body):
       return .requestWithbody(body)
     case .checkRecordStatus(let query):

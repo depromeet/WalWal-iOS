@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct CalendarRecordBody: Encodable {
+struct CalendarRecordQuery: Encodable {
   let cursor: String
   let limit: Int
 }

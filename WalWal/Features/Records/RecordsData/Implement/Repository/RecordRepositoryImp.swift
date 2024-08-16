@@ -44,8 +44,8 @@ public final class RecordRepositoryImp: RecordRepository {
   }
   
   public func checkCalendarRecords(cursor: String, limit: Int) -> Single<MissionRecordCalendarDTO> {
-    let body = CalendarRecordBody(cursor: cursor, limit: limit)
-    let endPoint = RecordEndpoint<MissionRecordCalendarDTO>.checkCalendarRecords(body: body)
+    let query = CalendarRecordQuery(cursor: cursor, limit: limit)
+    let endPoint = RecordEndpoint<MissionRecordCalendarDTO>.checkCalendarRecords(query: query)
     return networkService.request(endpoint: endPoint, isNeedInterceptor: true)
       .compactMap{ $0 }
       .asObservable()
