@@ -80,13 +80,8 @@ final class WalWalBoostGenerator {
     animateDetailViewAppearance(
       detailView,
       backgroundView: backgroundView,
-      overlayView: overlayView
-    ){ [weak self] in
-      guard let self = self else { return }
-      if isEndedLongPress { return }
-      self.addTiltAnimation(to: detailView)
-      self.setupBoostAnimationComponents(in: detailView, window: window)
-    }
+      window: window
+    )
     
     currentDetailView = detailView
     currentBackgroundView = backgroundView
@@ -174,10 +169,10 @@ extension WalWalBoostGenerator {
   private func animateDetailViewAppearance(
     _ detailView: UIView,
     backgroundView: UIView,
-    overlayView: UIView,
-    completion: @escaping () -> Void
+    window: UIWindow
   ) {
     detailView.transform = .identity
+    backgroundView.alpha = 0
     UIView.animateKeyframes(
       withDuration: 0.5,
       delay: 0,
@@ -185,7 +180,6 @@ extension WalWalBoostGenerator {
       animations: {
         UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1) {
           backgroundView.alpha = 1
-          overlayView.alpha = 1
         }
         
         UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
@@ -196,8 +190,15 @@ extension WalWalBoostGenerator {
           detailView.transform = .identity
         }
       }
-    ){ _ in
-      completion()
+    ) { _ in
+      /// 애니메이션 완료 후 추가 작업이 필요한 경우 여기에 구현
+    }
+    
+    /// DetailView가 작아진 후 다시 커지기 시작할 때 다른 애니메이션 시작
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+      guard let self = self else { return }
+      self.addTiltAnimation(to: detailView)
+      self.setupBoostAnimationComponents(in: detailView, window: window)
     }
   }
   
