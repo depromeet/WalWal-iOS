@@ -55,15 +55,21 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     return RegisterUseCaseImp(authRepository: injectAuthRepository())
   }
   
+  public func injectUserTokensUseCase() -> UserTokensSaveUseCase {
+    return UserTokensSaveUseCaseImp()
+  }
+  
   public func injectAuthReactor<T: AuthCoordinator>(
     coordinator: T,
     socialLoginUseCase: SocialLoginUseCase,
-    fcmSaveUseCase: FCMSaveUseCase
+    fcmSaveUseCase: FCMSaveUseCase,
+    userTokensSaveUseCase: UserTokensSaveUseCase
   ) -> any AuthReactor {
     return AuthReactorImp(
       coordinator: coordinator,
       socialLoginUseCase: socialLoginUseCase,
-      fcmSaveUseCase: fcmSaveUseCase
+      fcmSaveUseCase: fcmSaveUseCase,
+      userTokensSaveUseCase: userTokensSaveUseCase
     )
   }
   

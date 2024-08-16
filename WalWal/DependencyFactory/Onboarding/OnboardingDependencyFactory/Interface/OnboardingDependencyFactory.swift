@@ -39,7 +39,8 @@ public protocol OnboardingDependencyFactory {
   func injectOnboardingProfileReactor<T: OnboardingCoordinator>(
     coordinator: T,
     fcmSaveUseCase: FCMSaveUseCase,
-    registerUseCase: RegisterUseCase
+    registerUseCase: RegisterUseCase,
+    userTokensUseCase: UserTokensSaveUseCase
   ) -> any OnboardingProfileReactor
   
   func injectOnboardingViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController

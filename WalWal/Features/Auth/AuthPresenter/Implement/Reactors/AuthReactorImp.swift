@@ -13,8 +13,6 @@ import AuthCoordinator
 
 import FCMDomain
 
-import LocalStorage
-
 import ReactorKit
 import RxSwift
 
@@ -27,16 +25,19 @@ public final class AuthReactorImp: AuthReactor {
   public let coordinator: any AuthCoordinator
   private let socialLoginUseCase: SocialLoginUseCase
   private let fcmSaveUseCase: FCMSaveUseCase
+  private let userTokensSaveUseCase: UserTokensSaveUseCase
   
   public init(
     coordinator: any AuthCoordinator,
     socialLoginUseCase: SocialLoginUseCase,
-    fcmSaveUseCase: FCMSaveUseCase
+    fcmSaveUseCase: FCMSaveUseCase,
+    userTokensSaveUseCase: UserTokensSaveUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
     self.socialLoginUseCase = socialLoginUseCase
     self.fcmSaveUseCase = fcmSaveUseCase
+    self.userTokensSaveUseCase = userTokensSaveUseCase
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -70,15 +71,13 @@ extension AuthReactorImp {
   private func socialLoginRequest(provider: ProviderType, token: String) -> Observable<Mutation> {
     return socialLoginUseCase.execute(provider: provider, token: token)
       .asObservable()
-      .flatMap { result -> Observable<Mutation> in
+      .withUnretained(self)
+      .flatMap { owner, result -> Observable<Mutation> in
+        owner.userTokensSaveUseCase.execute(tokens: result)
         if result.isTemporaryToken {
-          UserDefaults.setValue(value: result.accessToken, forUserDefaultKey: .temporaryToken)
-          self.coordinator.startOnboarding()
           return .just(.showIndicator(show: false))
         } else {
-          UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
-          let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
-          return self.fcmTokenSave()
+          return owner.fcmTokenSave()
         }
       }
       .catch { error -> Observable<Mutation> in
@@ -92,8 +91,9 @@ extension AuthReactorImp {
   private func fcmTokenSave() -> Observable<Mutation> {
     return fcmSaveUseCase.execute()
       .asObservable()
-      .flatMap { _ -> Observable<Mutation> in
-        self.coordinator.startMission()
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
+        owner.coordinator.startMission()
         return .just(.showIndicator(show: false))
       }
       .catch { _ -> Observable<Mutation> in

@@ -100,7 +100,8 @@ extension OnboardingCoordinatorImp {
     let reactor = onboardingDependencyFactory.injectOnboardingProfileReactor(
       coordinator: self,
       fcmSaveUseCase: fcmDependencyFactory.injectFCMSaveUseCase(),
-      registerUseCase: authDependencyFactory.injectRegisterUseCase()
+      registerUseCase: authDependencyFactory.injectRegisterUseCase(),
+      userTokensUseCase: authDependencyFactory.injectUserTokensUseCase()
     )
     let vc = onboardingDependencyFactory.injectOnboardingProfileViewController(reactor: reactor, petType: petType)
     self.pushViewController(viewController: vc, animated: true)

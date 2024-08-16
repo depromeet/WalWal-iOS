@@ -16,7 +16,6 @@ import AuthDomain
 
 import Utility
 import DesignSystem
-import LocalStorage
 
 import ReactorKit
 import RxSwift
@@ -32,19 +31,22 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   private let nicknameValidUseCase: any NicknameValidUseCase
   private let uploadImageUseCase: any UploadImageUseCase
   private let fcmSaveUseCase: FCMSaveUseCase
+  private let userTokensSaveUseCase: UserTokensSaveUseCase
   
   public init(
     coordinator: any OnboardingCoordinator,
     registerUseCase: any RegisterUseCase,
     nicknameValidUseCase: any NicknameValidUseCase,
     uploadImageUseCase: any UploadImageUseCase,
-    fcmSaveUseCase: FCMSaveUseCase
+    fcmSaveUseCase: FCMSaveUseCase,
+    userTokensSaveUseCase: UserTokensSaveUseCase
   ) {
     self.coordinator = coordinator
     self.registerUseCase = registerUseCase
     self.nicknameValidUseCase = nicknameValidUseCase
     self.uploadImageUseCase = uploadImageUseCase
     self.fcmSaveUseCase = fcmSaveUseCase
+    self.userTokensSaveUseCase = userTokensSaveUseCase
     self.initialState = State()
   }
   
@@ -125,9 +127,7 @@ extension OnboardingProfileReactorImp {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
-        print("== 회원가입 완료 ==")
-        UserDefaults.setValue(value: result.refreshToken, forUserDefaultKey: .refreshToken)
-        let _ = KeychainWrapper.shared.setAccessToken(result.accessToken)
+        owner.userTokensSaveUseCase.execute(tokens: result)
         return owner.saveFCMToken() 
       }
       .catch { error -> Observable<Mutation> in

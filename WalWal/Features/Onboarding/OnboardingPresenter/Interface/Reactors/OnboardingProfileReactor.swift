@@ -45,7 +45,8 @@ public protocol OnboardingProfileReactor:
     registerUseCase: any RegisterUseCase,
     nicknameValidUseCase: any NicknameValidUseCase,
     uploadImageUseCase: any UploadImageUseCase,
-    fcmSaveUseCase: FCMSaveUseCase
+    fcmSaveUseCase: FCMSaveUseCase,
+    userTokensSaveUseCase: UserTokensSaveUseCase
   )
 }
 

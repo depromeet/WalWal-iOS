@@ -72,14 +72,16 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
   public func injectOnboardingProfileReactor<T: OnboardingCoordinator>(
     coordinator: T,
     fcmSaveUseCase: FCMSaveUseCase,
-    registerUseCase: RegisterUseCase
+    registerUseCase: RegisterUseCase,
+    userTokensUseCase: UserTokensSaveUseCase
   ) -> any OnboardingProfileReactor {
     return OnboardingProfileReactorImp(
       coordinator: coordinator,
       registerUseCase: registerUseCase,
       nicknameValidUseCase: injectNicknameValidUseCase(),
       uploadImageUseCase: injectUploadImageUseCase(),
-      fcmSaveUseCase: fcmSaveUseCase
+      fcmSaveUseCase: fcmSaveUseCase,
+      userTokensSaveUseCase: userTokensUseCase
     )
   }
   
