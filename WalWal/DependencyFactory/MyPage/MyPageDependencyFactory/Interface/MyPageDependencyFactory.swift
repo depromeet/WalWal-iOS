@@ -21,15 +21,15 @@ public protocol MyPageDependencyFactory {
     parentCoordinator: (any BaseCoordinator)?
   ) -> any MyPageCoordinator
   func injectTokenDeleteUseCase() -> TokenDeleteUseCase
-  func makeMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor
-  func makeMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
-  func makeRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor
-  func makeRecordDetailViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController
-  func makeProfileEditReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileEditReactor
-  func makeProfileEditViewController<T: ProfileEditReactor>(reactor: T) -> any ProfileEditViewController
-  func makeProfileSettingReactor<T: MyPageCoordinator>(
+  func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor
+  func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
+  func injectRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor
+  func injectRecordDetailViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController
+  func injectProfileEditReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileEditReactor
+  func injectProfileEditViewController<T: ProfileEditReactor>(reactor: T) -> any ProfileEditViewController
+  func injectProfileSettingReactor<T: MyPageCoordinator>(
     coordinator: T,
     tokenDeleteUseCase: TokenDeleteUseCase
   ) -> any ProfileSettingReactor
-  func makeProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController
+  func injectProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController
 }

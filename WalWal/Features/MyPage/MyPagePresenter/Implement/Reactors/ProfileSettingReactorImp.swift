@@ -82,7 +82,9 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     }
     return newState
   }
-  
+}
+
+extension ProfileSettingReactorImp {
   private func logout() -> Observable<Mutation> {
     tokenDeleteUseCase.execute()
     return .just(.moveToAuth)

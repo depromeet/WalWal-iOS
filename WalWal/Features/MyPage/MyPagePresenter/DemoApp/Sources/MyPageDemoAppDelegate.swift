@@ -27,8 +27,8 @@ final class MyPageAppDelegate: UIResponder, UIApplicationDelegate {
       navigationController: navigationController,
       parentCoordinator: nil
     )
-    let reactor = dependencyFactory.makeMyPageReactor(coordinator: coordinator)
-    let viewController = dependencyFactory.makeMyPageViewController(reactor: reactor)
+    let reactor = dependencyFactory.injectMyPageReactor(coordinator: coordinator)
+    let viewController = dependencyFactory.injectMyPageViewController(reactor: reactor)
     
     window.rootViewController = viewController
     window.makeKeyAndVisible()

@@ -69,8 +69,8 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let reactor = myPageDependencyFactory.makeMyPageReactor(coordinator: self)
-    let myPageVC = myPageDependencyFactory.makeMyPageViewController(reactor: reactor)
+    let reactor = myPageDependencyFactory.injectMyPageReactor(coordinator: self)
+    let myPageVC = myPageDependencyFactory.injectMyPageViewController(reactor: reactor)
     self.baseViewController = myPageVC
     self.pushViewController(viewController: myPageVC, animated: false)
   }
@@ -95,25 +95,25 @@ extension MyPageCoordinatorImp {
 extension MyPageCoordinatorImp {
   /// 기록 상세뷰
   fileprivate func showRecordDetailVC() {
-    let reactor = myPageDependencyFactory.makeRecordDetailReactor(coordinator: self)
-    let RecordDetailVC = myPageDependencyFactory.makeRecordDetailViewController(reactor: reactor)
+    let reactor = myPageDependencyFactory.injectRecordDetailReactor(coordinator: self)
+    let RecordDetailVC = myPageDependencyFactory.injectRecordDetailViewController(reactor: reactor)
     self.pushViewController(viewController: RecordDetailVC, animated: false)
   }
   
   /// 프로필 설정뷰
   fileprivate func showProfileSettingVC() {
-    let reactor = myPageDependencyFactory.makeProfileSettingReactor(
+    let reactor = myPageDependencyFactory.injectProfileSettingReactor(
       coordinator: self,
       tokenDeleteUseCase: myPageDependencyFactory.injectTokenDeleteUseCase()
     )
-    let ProfileSettingVC = myPageDependencyFactory.makeProfileSettingViewController(reactor: reactor)
+    let ProfileSettingVC = myPageDependencyFactory.injectProfileSettingViewController(reactor: reactor)
     self.pushViewController(viewController: ProfileSettingVC, animated: true)
   }
   
   /// 프로필 변경뷰
   fileprivate func showProfileEditVC() {
-    let reactor = myPageDependencyFactory.makeProfileEditReactor(coordinator: self)
-    let ProfileEditVC = myPageDependencyFactory.makeProfileEditViewController(reactor: reactor)
+    let reactor = myPageDependencyFactory.injectProfileEditReactor(coordinator: self)
+    let ProfileEditVC = myPageDependencyFactory.injectProfileEditViewController(reactor: reactor)
     self.pushViewController(viewController: ProfileEditVC, animated: false)
   }
 }
