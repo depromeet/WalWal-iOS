@@ -51,4 +51,11 @@ public extension UserDefaults {
   ) {
     UserDefaults.standard.set(value, forKey: key.rawValue)
   }
+  
+  /// UserDefaults 값 삭제
+  /// `UserDefaults.remove(forUserDefaultKey.remove(.accessToken)`
+  static func remove(forUserDefaultKey key: UserDefaults.Key) {
+    UserDefaults.standard.removeObject(forKey: key.rawValue)
+  }
+  
 }
