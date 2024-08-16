@@ -29,6 +29,9 @@ let project = Project(
             "CFBundleShortVersionString": "0.9.0",
             "CFBundleVersion": "1",
             "UILaunchStoryboardName": "LaunchScreen",
+            "UILaunchScreen": [
+              "UIImageName": "Splash"
+            ],
             "ITSAppUsesNonExemptEncryption": false,
             "CFBundleURLTypes": [
               [
