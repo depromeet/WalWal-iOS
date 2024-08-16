@@ -12,6 +12,7 @@ import OnboardingCoordinator
 import OnboardingPresenter
 
 import FCMDomain
+import ImageDomain
 import AuthDomain
 
 import Utility
@@ -29,7 +30,7 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   public let coordinator: any OnboardingCoordinator
   private let registerUseCase: any RegisterUseCase
   private let nicknameValidUseCase: any NicknameValidUseCase
-  private let uploadImageUseCase: any UploadImageUseCase
+  private let uploadMemberUseCase: any UploadMemberUseCase
   private let fcmSaveUseCase: FCMSaveUseCase
   private let userTokensSaveUseCase: UserTokensSaveUseCase
   
@@ -37,14 +38,14 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
     coordinator: any OnboardingCoordinator,
     registerUseCase: any RegisterUseCase,
     nicknameValidUseCase: any NicknameValidUseCase,
-    uploadImageUseCase: any UploadImageUseCase,
+    uploadMemberUseCase: any UploadMemberUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase
   ) {
     self.coordinator = coordinator
     self.registerUseCase = registerUseCase
     self.nicknameValidUseCase = nicknameValidUseCase
-    self.uploadImageUseCase = uploadImageUseCase
+    self.uploadMemberUseCase = uploadMemberUseCase
     self.fcmSaveUseCase = fcmSaveUseCase
     self.userTokensSaveUseCase = userTokensSaveUseCase
     self.initialState = State()
@@ -107,7 +108,7 @@ extension OnboardingProfileReactorImp {
   /// 프로필 이미지 업로드
   private func uploadImage(profile: WalWalProfileModel, nickname: String, petType: String) -> Observable<Mutation> {
     guard let imagedata = profile.selectImage?.jpegData(compressionQuality: 0.8) else { return .never() }
-    return uploadImageUseCase.execute(nickname: nickname, type: "JPEG", image: imagedata)
+    return uploadMemberUseCase.execute(nickname: nickname, type: "JPEG", image: imagedata)
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
