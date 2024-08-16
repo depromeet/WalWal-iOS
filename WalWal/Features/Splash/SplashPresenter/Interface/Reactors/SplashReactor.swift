@@ -7,6 +7,8 @@
 //
 
 import SplashDomain
+import FCMDomain
+import RecordsDomain
 import AppCoordinator
 
 import ReactorKit
@@ -34,6 +36,8 @@ public protocol SplashReactor:
   
   init(
     coordinator: any AppCoordinator,
-    checkTokenUseCase: CheckTokenUsecase
+    checkTokenUseCase: CheckTokenUsecase,
+    fcmSaveUseCase: FCMSaveUseCase,
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
   )
 }
