@@ -15,13 +15,20 @@ import MyPageDependencyFactory
 import FCMDependencyFactory
 import OnboardingDependencyFactory
 import FeedDependencyFactory
+import RecordsDependencyFactory
 
 import AppCoordinator
+
 import SplashDomain
 import SplashPresenter
 
+import FCMDomain
+
+import RecordsDomain
+
 public protocol SplashDependencyFactory {
-  func makeAppCoordinator(
+  
+  func injectAppCoordinator(
     navigationController: UINavigationController,
     authDependencyFactory: AuthDependencyFactory,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
@@ -29,9 +36,18 @@ public protocol SplashDependencyFactory {
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     onboardingDependencyFactory: OnboardingDependencyFactory,
-    feedDependencyFactory: FeedDependencyFactory
+    feedDependencyFactory: FeedDependencyFactory,
+    recordsDependencyFactory: RecordsDependencyFactory
   ) -> any AppCoordinator
-  func makeCheckTokenUseCase() -> CheckTokenUsecase
-  func makeSplashReactor<T: AppCoordinator>(coordinator: T) -> any SplashReactor
-  func makeSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController
+  
+  func injectCheckTokenUseCase() -> CheckTokenUsecase
+  
+  func injectSplashReactor<T: AppCoordinator>(
+    coordinator: T,
+    checkTokenUseCase: CheckTokenUsecase,
+    fcmSaveUseCase: FCMSaveUseCase,
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
+  ) -> any SplashReactor
+  
+  func injectSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController
 }

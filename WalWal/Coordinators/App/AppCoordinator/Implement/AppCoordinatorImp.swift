@@ -20,6 +20,7 @@ import MyPageDependencyFactory
 import FCMDependencyFactory
 import OnboardingDependencyFactory
 import FeedDependencyFactory
+import RecordsDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -45,6 +46,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   public var fcmDependencyFactory: FCMDependencyFactory
   public var onboardingDependencyFactory: OnboardingDependencyFactory
   public var feedDependencyFactory: FeedDependencyFactory
+  public var recordsDependencyFactory: RecordsDependencyFactory
   
   /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
   /// 그리고 하위 Coordinator를 생성할 때 마다, 하위에 해당하는 인터페이스 모두 전달
@@ -57,7 +59,8 @@ public final class AppCoordinatorImp: AppCoordinator {
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     onboardingDependencyFactory: OnboardingDependencyFactory,
-    feedDependencyFactory: FeedDependencyFactory
+    feedDependencyFactory: FeedDependencyFactory,
+    recordsDependencyFactory: RecordsDependencyFactory
   ) {
     self.navigationController = navigationController
     self.appDependencyFactory = appDependencyFactory
@@ -68,6 +71,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     self.fcmDependencyFactory = fcmDependencyFactory
     self.onboardingDependencyFactory = onboardingDependencyFactory
     self.feedDependencyFactory = feedDependencyFactory
+    self.recordsDependencyFactory = recordsDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -98,8 +102,16 @@ public final class AppCoordinatorImp: AppCoordinator {
   }
   
   public func start() {
-    let reactor = appDependencyFactory.makeSplashReactor(coordinator: self)
-    let splashVC = appDependencyFactory.makeSplashViewController(reactor: reactor)
+    let checkTokenUseCase = appDependencyFactory.injectCheckTokenUseCase()
+    let fcmSaveUseCase = fcmDependencyFactory.injectFCMSaveUseCase()
+    let checkRecordCalendarUseCase = recordsDependencyFactory.injectCheckCalendarRecordsUseCase()
+    let reactor = appDependencyFactory.injectSplashReactor(
+      coordinator: self,
+      checkTokenUseCase: checkTokenUseCase,
+      fcmSaveUseCase: fcmSaveUseCase,
+      checkRecordCalendarUseCase: checkRecordCalendarUseCase
+    )
+    let splashVC = appDependencyFactory.injectSplashViewController(reactor: reactor)
     self.baseViewController = splashVC
     self.pushViewController(viewController: splashVC, animated: false)
   }
