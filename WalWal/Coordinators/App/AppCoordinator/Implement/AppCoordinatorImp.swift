@@ -10,6 +10,7 @@ import UIKit
 import BaseCoordinator
 import AppCoordinator
 import AuthCoordinator
+import OnboardingCoordinator
 
 import SplashDependencyFactory
 import AuthDependencyFactory
@@ -17,6 +18,7 @@ import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
+import OnboardingDependencyFactory
 import FeedDependencyFactory
 
 import RxSwift
@@ -41,6 +43,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   public var missionDependencyFactory: MissionDependencyFactory
   public var myPageDependencyFactory: MyPageDependencyFactory
   public var fcmDependencyFactory: FCMDependencyFactory
+  public var onboardingDependencyFactory: OnboardingDependencyFactory
   public var feedDependencyFactory: FeedDependencyFactory
   
   /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
@@ -52,8 +55,9 @@ public final class AppCoordinatorImp: AppCoordinator {
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
-    feedDependencyFactory: FeedDependencyFactory,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    onboardingDependencyFactory: OnboardingDependencyFactory,
+    feedDependencyFactory: FeedDependencyFactory
   ) {
     self.navigationController = navigationController
     self.appDependencyFactory = appDependencyFactory
@@ -62,6 +66,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     self.missionDependencyFactory = missionDependencyFactory
     self.myPageDependencyFactory = myPageDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
+    self.onboardingDependencyFactory = onboardingDependencyFactory
     self.feedDependencyFactory = feedDependencyFactory
     bindChildToParentAction()
     bindState()
@@ -75,6 +80,8 @@ public final class AppCoordinatorImp: AppCoordinator {
           owner.startAuth()
         case .startHome:
           owner.startTabBar()
+        case .startOnboarding:
+          owner.startOnboarding()
         }
       })
       .disposed(by: disposeBag)
@@ -85,6 +92,8 @@ public final class AppCoordinatorImp: AppCoordinator {
   public func handleChildEvent<T: ParentAction>(_ event: T) {
     if let authEvent = event as? AuthCoordinatorAction {
       handleAuthEvent(.requireParentAction(authEvent))
+    } else if let onboardingEvent = event as? OnboardingCoordinatorAction {
+      handleOnboardingEvent(.requireParentAction(onboardingEvent))
     }
   }
   
@@ -108,7 +117,19 @@ extension AppCoordinatorImp {
       switch action {
       case .startOnboarding:
         // TODO: - Onboarding 연결
-        print("온보딩 화면")
+        destination.accept(.startOnboarding)
+      case .startMission:
+        destination.accept(.startHome)
+      }
+    }
+  }
+  
+  private func handleOnboardingEvent(_ event: CoordinatorEvent<OnboardingCoordinatorAction>) {
+    switch event {
+    case .finished:
+      childCoordinator = nil
+    case .requireParentAction(let action):
+      switch action {
       case .startMission:
         destination.accept(.startHome)
       }
@@ -142,6 +163,17 @@ extension AppCoordinatorImp {
     )
     childCoordinator = walwalTabBarCoordinator
     walwalTabBarCoordinator.start()
+  }
+  
+  private func startOnboarding() {
+    let onboardingCoordinator = onboardingDependencyFactory.makeOnboardingCoordinator(
+      navigationController: navigationController,
+      parentCoordinator: self,
+      fcmDependencyFactory: fcmDependencyFactory,
+      authDependencyFactory: authDependencyFactory
+    )
+    childCoordinator = onboardingCoordinator
+    onboardingCoordinator.start()
   }
 }
 

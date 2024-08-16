@@ -57,7 +57,8 @@ public final class AuthCoordinatorImp: AuthCoordinator {
     let reactor = authDependencyFactory.injectAuthReactor(
       coordinator: self,
       socialLoginUseCase: authDependencyFactory.injectSocialLoginUseCase(),
-      fcmSaveUseCase: fcmDependencyFactory.injectFCMSaveUseCase()
+      fcmSaveUseCase: fcmDependencyFactory.injectFCMSaveUseCase(),
+      userTokensSaveUseCase: authDependencyFactory.injectUserTokensUseCase()
     )
     let authVC = authDependencyFactory.injectAuthViewController(reactor: reactor)
     self.baseViewController = authVC

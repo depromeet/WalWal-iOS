@@ -20,6 +20,7 @@ enum Layer: String {
 enum DependencyFactoryStr: String {
   case splash = "Splash"
   case auth = "Auth"
+  case onboarding = "Onboarding"
   case walwalTabBar = "WalWalTabBar"
   case mission = "Mission"
   case myPage = "MyPage"
@@ -37,6 +38,7 @@ enum CoordinatorStr: String {
   case sampleApp = "SampleApp"
   case sampleHome = "SampleHome"
   case auth = "Auth"
+  case onboarding = "Onboarding"
   case mission = "Mission"
   case feed = "Feed"
   case myPage = "MyPage"
@@ -45,6 +47,7 @@ enum CoordinatorStr: String {
 enum FeatureStr: String {
   case splash = "Splash"
   case auth = "Auth"
+  case onboarding = "Onboarding"
   case sample = "Sample"
   case mission = "Mission"
   case myPage = "MyPage"
@@ -103,6 +106,7 @@ extension TargetDependency {
     public struct Sample: WalWalDependency { }
     public struct MyPage: WalWalDependency { }
     public struct Auth: WalWalDependency { }
+    public struct Onboarding: WalWalDependency { }
     public struct WalWalTabBar: WalWalDependency { }
     public struct Mission: WalWalDependency { }
     public struct FCM: WalWalDependency { }
@@ -115,6 +119,7 @@ extension TargetDependency {
     public struct App: WalWalDependency { }
     public struct WalWalTabBar: WalWalDependency { }
     public struct Auth: WalWalDependency { }
+    public struct Onboarding: WalWalDependency { }
     public struct Mission: WalWalDependency { }
     public struct MyPage: WalWalDependency { }
     public struct Feed: WalWalDependency { }
@@ -131,6 +136,12 @@ extension TargetDependency {
     }
     
     public struct Auth {
+      public struct Data: WalWalDependency {}
+      public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
+    }
+    
+    public struct Onboarding {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
       public struct Presenter: WalWalDependency {}
@@ -182,6 +193,11 @@ public extension TargetDependency.DependencyFactory.Splash {
 public extension TargetDependency.DependencyFactory.Auth {
   static let Interface = Self.project(dependencyName: .auth, isInterface: true)
   static let Implement = Self.project(dependencyName: .auth, isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.Onboarding {
+  static let Interface = Self.project(dependencyName: .onboarding, isInterface: true)
+  static let Implement = Self.project(dependencyName: .onboarding, isInterface: false)
 }
 
 public extension TargetDependency.DependencyFactory.WalWalTabBar {
@@ -249,6 +265,21 @@ public extension TargetDependency.Feature.Auth.Domain {
 public extension TargetDependency.Feature.Auth.Data {
   static let Interface = Self.project(name: .auth, layer: .data, isInterface: true)
   static let Implement = Self.project(name: .auth, layer: .data, isInterface: false)
+}
+
+public extension TargetDependency.Feature.Onboarding.Presenter {
+  static let Interface = Self.project(name: .onboarding, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .onboarding, layer: .presenter, isInterface: false)
+}
+
+public extension TargetDependency.Feature.Onboarding.Domain {
+  static let Interface = Self.project(name: .onboarding, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .onboarding, layer: .domain, isInterface: false)
+}
+
+public extension TargetDependency.Feature.Onboarding.Data {
+  static let Interface = Self.project(name: .onboarding, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .onboarding, layer: .data, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Sample.Presenter {
@@ -361,6 +392,11 @@ public extension TargetDependency.Coordinator.WalWalTabBar {
 public extension TargetDependency.Coordinator.Auth {
   static let Interface = Self.project(name: .auth, isInterface: true)
   static let Implement = Self.project(name: .auth, isInterface: false)
+}
+
+public extension TargetDependency.Coordinator.Onboarding {
+  static let Interface = Self.project(name: .onboarding, isInterface: true)
+  static let Implement = Self.project(name: .onboarding, isInterface: false)
 }
 
 public extension TargetDependency.Coordinator.Base {

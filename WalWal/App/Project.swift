@@ -45,7 +45,9 @@ let project = Project(
             ],
             "LSApplicationQueriesSchemes": [
               "kakaokompassauth"
-            ]
+            ],
+            "NSCameraUsageDescription": "미션 인증 사진 촬영을 위해 카메라 권한이 필요합니다.",
+            "NSPhotoLibraryUsageDescription": "프로필 이미지를 선택하기 위해 앨범 접근 권한이 필요합니다."
           ]
       ),
       sources: ["Sources/**"],
@@ -69,6 +71,7 @@ let project = Project(
         .DependencyFactory.Mission.Implement,
         .DependencyFactory.MyPage.Implement,
         .DependencyFactory.FCM.Implement,
+        .DependencyFactory.Onboarding.Implement,
         .DependencyFactory.Records.Implement,
         .DependencyFactory.Feed.Implement
       ],

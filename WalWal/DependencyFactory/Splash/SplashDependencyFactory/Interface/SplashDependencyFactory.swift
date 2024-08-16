@@ -13,6 +13,7 @@ import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
+import OnboardingDependencyFactory
 import FeedDependencyFactory
 
 import AppCoordinator
@@ -26,8 +27,9 @@ public protocol SplashDependencyFactory {
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
-    feedDependencyFactory: FeedDependencyFactory,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    onboardingDependencyFactory: OnboardingDependencyFactory,
+    feedDependencyFactory: FeedDependencyFactory
   ) -> any AppCoordinator
   func makeCheckTokenUseCase() -> CheckTokenUsecase
   func makeSplashReactor<T: AppCoordinator>(coordinator: T) -> any SplashReactor

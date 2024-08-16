@@ -11,6 +11,7 @@ import AuthDependencyFactoryImp
 import WalWalTabBarDependencyFactoryImp
 import MissionDependencyFactoryImp
 import MyPageDependencyFactoryImp
+import OnboardingDependencyFactoryImp
 import FeedDependencyFactoryImp
 import AppCoordinator
 import FCMDependencyFactoryImp
@@ -24,6 +25,7 @@ extension AppDelegate {
     let missionDependencyFactory = MissionDependencyFactoryImp()
     let myPageDependencyFactory = MyPageDependencyFactoryImp()
     let fcmDependencyFactory = FCMDependencyFactoryImp()
+    let onboardingDependencyFactory = OnboardingDependencyFactoryImp()
     let feedDependencyFactory = FeedDependencyFactoryImp()
     
     return splashDependencyFactory.makeAppCoordinator(
@@ -32,8 +34,9 @@ extension AppDelegate {
       walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
       missionDependencyFactory: missionDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
-      feedDependencyFactory: feedDependencyFactory,
-      fcmDependencyFactory: fcmDependencyFactory
+      fcmDependencyFactory: fcmDependencyFactory,
+      onboardingDependencyFactory: onboardingDependencyFactory,
+      feedDependencyFactory: feedDependencyFactory
     )
   }
 }

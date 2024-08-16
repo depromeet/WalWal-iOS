@@ -67,6 +67,8 @@ public final class WalWalInputBox: UIView {
     $0.textAlignment = .center
     $0.font = Fonts.KR.H6.M
     $0.textColor = Colors.black.color
+    $0.autocorrectionType = .no
+    $0.spellCheckingType = .no
   }
   
   fileprivate let placeholderLabel = UILabel().then {
@@ -137,8 +139,8 @@ public final class WalWalInputBox: UIView {
     errorLabel.pin
       .left()
       .right()
-      .top(to: containerView.edge.bottom)
-      .marginTop(6)
+      .below(of: containerView)
+      .top(6)
       .height(20)
     errorLabel.flex
       .layout()
@@ -260,6 +262,14 @@ public final class WalWalInputBox: UIView {
       textField.textColor = Colors.gray500.color
       isUserInteractionEnabled = false
     }
+  }
+  
+  /// 특정 글자 수 제한에 맞게 자르기 위한 메서드
+  public func cutText(length: Int, text: String) {
+    let maxIndex = text.index(text.startIndex, offsetBy: length-1)
+    let startIndex = text.startIndex
+    let cutting = String(text[startIndex...maxIndex])
+    textField.text = cutting
   }
 }
 

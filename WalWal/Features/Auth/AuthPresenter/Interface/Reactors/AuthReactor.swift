@@ -39,6 +39,7 @@ public protocol AuthReactor:
   init(
     coordinator: any AuthCoordinator,
     socialLoginUseCase: SocialLoginUseCase,
-    fcmSaveUseCase: FCMSaveUseCase
+    fcmSaveUseCase: FCMSaveUseCase,
+    userTokensSaveUseCase: UserTokensSaveUseCase
   )
 }

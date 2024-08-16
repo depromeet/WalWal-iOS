@@ -20,7 +20,7 @@ public final class FCMSaveUseCaseImp: FCMSaveUseCase {
     self.fcmRepository = fcmRepository
   }
   
-  public func excute() -> Single<Void> {
+  public func execute() -> Single<Void> {
     return fcmRepository.fcmTokenSave(token: UserDefaults.string(forUserDefaultsKey: .notification))
   }
 }

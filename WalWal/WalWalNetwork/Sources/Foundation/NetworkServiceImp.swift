@@ -30,6 +30,7 @@ public final class NetworkService: NetworkServiceProtocol {
         return (response, convertedData)
       }
       .catch({ error in
+        print(error.localizedDescription)
         guard let afError = error.asAFError, let responseCode = afError.responseCode else {
           let walwalError = WalWalNetworkError.unknown(error)
           self.responseError(endpoint, result: walwalError)

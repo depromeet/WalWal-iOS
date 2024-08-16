@@ -120,7 +120,7 @@ extension WalWalNavigationBar {
     self.addSubview(containerView)
     
     self.containerView.flex
-      .height(60)
+      .height(50)
       .direction(.row)
       .alignItems(.center)
       .backgroundColor(colorType.backgroundColor)
@@ -135,7 +135,7 @@ extension WalWalNavigationBar {
                 .marginRight(16)
             }
           }
-          .marginLeft(15)
+          .marginLeft(10)
         
         flex.addItem(self.titleLabel)
           .grow(1)
