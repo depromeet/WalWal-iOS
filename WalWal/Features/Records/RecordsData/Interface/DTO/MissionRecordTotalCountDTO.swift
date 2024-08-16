@@ -8,6 +8,6 @@
 
 import Foundation
 
-public struct MissionRecordTotalCountDTO: Codable {
+public struct MissionRecordTotalCountDTO: Decodable {
     public let totalCount: Int
 }

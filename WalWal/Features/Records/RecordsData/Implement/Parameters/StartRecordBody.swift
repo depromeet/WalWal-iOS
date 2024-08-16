@@ -8,6 +8,6 @@
 
 import Foundation
 
-struct StartRecordBody: Codable {
+struct StartRecordBody: Encodable {
   let missionId: Int
 }

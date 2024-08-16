@@ -8,6 +8,6 @@
 
 import Foundation
 
-struct CheckRecordStatusQuery: Codable {
+struct CheckRecordStatusQuery: Encodable {
   let missionId: Int
 }

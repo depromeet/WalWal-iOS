@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct SaveRecordBody: Codable {
+public struct SaveRecordBody: Encodable {
   let missionId: Int
   let content: String
 }

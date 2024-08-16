@@ -9,7 +9,7 @@
 import Foundation
 import RecordsData
 
-public struct MissionRecordCalendarModel: Codable {
+public struct MissionRecordCalendarModel {
   public let list: [MissionRecordListModel]
   public let nextCursor: MissionRecordCursorModel
   

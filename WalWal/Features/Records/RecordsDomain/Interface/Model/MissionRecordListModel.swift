@@ -9,7 +9,7 @@
 import Foundation
 import RecordsData
 
-public struct MissionRecordListModel: Codable {
+public struct MissionRecordListModel {
   public let imageId: Int
   public let imageUrl: String
   public let missionDate: String

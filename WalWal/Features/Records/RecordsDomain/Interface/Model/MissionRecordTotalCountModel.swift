@@ -9,7 +9,7 @@
 import Foundation
 import RecordsData
 
-public struct MissionRecordTotalCountModel: Codable {
+public struct MissionRecordTotalCountModel {
   public let totalCount: Int
   
   public init(dto: MissionRecordTotalCountDTO) {
