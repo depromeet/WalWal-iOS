@@ -10,7 +10,7 @@ import UIKit
 
 import RxSwift
 
-public protocol MyPageDataInterface {
-  func excute()
+public protocol MyPageRepository {
+  func withdraw() -> Single<Void>
 }
 

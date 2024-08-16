@@ -18,7 +18,11 @@ import MyPagePresenter
 import MyPagePresenterImp
 import MyPageDomain
 import MyPageDomainImp
+import MyPageData
+import MyPageDataImp
 import FCMDomain
+
+import WalWalNetwork
 
 public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   
@@ -39,8 +43,17 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     )
   }
   
+  public func injectMyPageRepository() -> MyPageRepository {
+    let networkService = NetworkService()
+    return MyPageRepositoryImp(networkService: networkService)
+  }
+  
   public func injectTokenDeleteUseCase() -> TokenDeleteUseCase {
     return TokenDeleteUseCaseImp()
+  }
+  
+  public func injectWithdrawUseCase() -> WithdrawUseCase {
+    return WithdrawUseCaseImp(mypageRepository: injectMyPageRepository())
   }
   
   public func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor {
@@ -62,12 +75,14 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   public func injectProfileSettingReactor<T: MyPageCoordinator>(
     coordinator: T,
     tokenDeleteUseCase: TokenDeleteUseCase,
-    fcmDeleteUseCase: FCMDeleteUseCase
+    fcmDeleteUseCase: FCMDeleteUseCase,
+    withdrawUseCase: WithdrawUseCase
   ) -> any ProfileSettingReactor {
     return ProfileSettingReactorImp(
       coordinator: coordinator,
       tokenDeleteUseCase: tokenDeleteUseCase,
-      fcmDeleteUseCase: fcmDeleteUseCase
+      fcmDeleteUseCase: fcmDeleteUseCase,
+      withdrawUseCase: withdrawUseCase
     )
   }
   

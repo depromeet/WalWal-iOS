@@ -27,15 +27,18 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   public let coordinator: any MyPageCoordinator
   private let tokenDeleteUseCase: TokenDeleteUseCase
   private let fcmDeleteUseCase: FCMDeleteUseCase
+  private let withdrawUseCase: WithdrawUseCase
   
   public init(
     coordinator: any MyPageCoordinator,
     tokenDeleteUseCase: TokenDeleteUseCase,
-    fcmDeleteUseCase: FCMDeleteUseCase
+    fcmDeleteUseCase: FCMDeleteUseCase,
+    withdrawUseCase: WithdrawUseCase
   ) {
     self.coordinator = coordinator
     self.tokenDeleteUseCase = tokenDeleteUseCase
     self.fcmDeleteUseCase = fcmDeleteUseCase
+    self.withdrawUseCase = withdrawUseCase
     self.initialState = State(
       isLoading: false,
       appVersionString: "",
@@ -54,7 +57,9 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       ])
     case let .didSelectItem(at: indexPath):
       if indexPath.row == 0 {
-        return logout()
+        return deleteFCMToken(authAction: .logout)
+      } else if indexPath.row == 2 {
+        return deleteFCMToken(authAction: .withdraw)
       } else {
         return .never()
       }
@@ -89,18 +94,36 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
 }
 
 extension ProfileSettingReactorImp {
-  private func logout() -> Observable<Mutation> {
+  private func deleteFCMToken(authAction: AuthAction) -> Observable<Mutation> {
     return fcmDeleteUseCase.execute()
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
-        owner.tokenDeleteUseCase.execute()
-        return .just(.moveToAuth)
-      }.catch { error in
+        if authAction == .logout {
+          owner.tokenDeleteUseCase.execute()
+          return .just(.moveToAuth)
+        } else if authAction == .withdraw {
+          return owner.withdraw()
+        }
+        return .never()
+      }
+      .catch { error -> Observable<Mutation> in
         print(error.localizedDescription)
         return .just(.moveToAuth)
       }
-    
+  }
+  
+  private func withdraw() -> Observable<Mutation> {
+    return withdrawUseCase.execute()
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        return .just(.moveToAuth)
+      }
+      .catch { error -> Observable<Mutation> in
+        print(error.localizedDescription)
+        return .never()
+      }
+      
   }
   
   
@@ -139,4 +162,8 @@ extension ProfileSettingReactorImp {
             rightText: "")
     ]
   }
+}
+
+fileprivate enum AuthAction {
+  case logout, withdraw
 }

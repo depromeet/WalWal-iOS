@@ -24,7 +24,10 @@ public protocol MyPageDependencyFactory {
     parentCoordinator: (any BaseCoordinator)?,
     fcmDependencyFactory: FCMDependencyFactory
   ) -> any MyPageCoordinator
+  
+  func injectMyPageRepository() -> MyPageRepository
   func injectTokenDeleteUseCase() -> TokenDeleteUseCase
+  func injectWithdrawUseCase() -> WithdrawUseCase
   func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor
   func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
   func injectRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor
@@ -34,7 +37,8 @@ public protocol MyPageDependencyFactory {
   func injectProfileSettingReactor<T: MyPageCoordinator>(
     coordinator: T,
     tokenDeleteUseCase: TokenDeleteUseCase,
-    fcmDeleteUseCase: FCMDeleteUseCase
+    fcmDeleteUseCase: FCMDeleteUseCase,
+    withdrawUseCase: WithdrawUseCase
   ) -> any ProfileSettingReactor
   func injectProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController
 }
