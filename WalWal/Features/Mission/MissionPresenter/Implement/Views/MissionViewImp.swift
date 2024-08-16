@@ -25,7 +25,6 @@ import Kingfisher
 public final class MissionViewControllerImp<R: MissionReactor>: UIViewController, MissionViewController {
   
   private typealias Images = ResourceKitAsset.Images
-  private typealias AssetImage = ResourceKitAsset.Assets
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
@@ -38,7 +37,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   )
   private lazy var missionCountBubbleView = BubbleView(
     color: Colors.gray150.color,
-    image: AssetImage.missionStartIcon.image,
+    image: Images.missionStartIcon.image,
     text: "\(missionCount)번째 미션을 수행해볼까요?"
   )
   private let missionStartButton = WalWalButton_Icon(
