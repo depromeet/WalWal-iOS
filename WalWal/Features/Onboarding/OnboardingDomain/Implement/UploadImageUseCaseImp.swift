@@ -19,7 +19,7 @@ public final class UploadImageUseCaseImp: UploadImageUseCase {
     self.onboardingRepository = onboardingRepository
   }
   
-  public func excute(nickname: String, type: String, image: Data) -> Single<Void> {
+  public func execute(nickname: String, type: String, image: Data) -> Single<Void> {
     onboardingRepository.uploadImage(nickname: nickname, type: type, image: image)
   }
 }

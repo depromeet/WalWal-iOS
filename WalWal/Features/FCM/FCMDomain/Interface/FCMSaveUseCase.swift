@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol FCMSaveUseCase {
-  func excute() -> Single<Void>
+  func execute() -> Single<Void>
 }

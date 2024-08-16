@@ -16,5 +16,5 @@ public protocol SocialLoginUseCase {
   /// - Parameters:
   ///   - provider: 소셜 로그인 타입 (.apple, .kakao)
   ///   - token: apple - authcode / kakao - accesstoken
-  func excute(provider: ProviderType, token: String) -> Single<AuthToken>
+  func execute(provider: ProviderType, token: String) -> Single<AuthToken>
 }

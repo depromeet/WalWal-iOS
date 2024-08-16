@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol NicknameValidUseCase {
-  func excute(nickname: String) -> Single<Void>
+  func execute(nickname: String) -> Single<Void>
 }

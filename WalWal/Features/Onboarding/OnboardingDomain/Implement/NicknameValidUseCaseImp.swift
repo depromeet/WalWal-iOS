@@ -20,7 +20,7 @@ public final class NicknameValidUseCaseImp: NicknameValidUseCase {
     self.onboardingRepository = repository
   }
   
-  public func excute(nickname: String) -> Single<Void> {
+  public func execute(nickname: String) -> Single<Void> {
     return onboardingRepository.checkValidNickname(nickname: nickname)
   }
   

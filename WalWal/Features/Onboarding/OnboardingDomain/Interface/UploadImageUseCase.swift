@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol UploadImageUseCase {
-  func excute(nickname: String, type: String, image: Data) -> Single<Void>
+  func execute(nickname: String, type: String, image: Data) -> Single<Void>
 }

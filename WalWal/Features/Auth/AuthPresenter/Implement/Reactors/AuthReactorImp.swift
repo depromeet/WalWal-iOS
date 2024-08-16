@@ -68,7 +68,7 @@ public final class AuthReactorImp: AuthReactor {
 
 extension AuthReactorImp {
   private func socialLoginRequest(provider: ProviderType, token: String) -> Observable<Mutation> {
-    return socialLoginUseCase.excute(provider: provider, token: token)
+    return socialLoginUseCase.execute(provider: provider, token: token)
       .asObservable()
       .flatMap { result -> Observable<Mutation> in
         if result.isTemporaryToken {
@@ -90,7 +90,7 @@ extension AuthReactorImp {
   }
   
   private func fcmTokenSave() -> Observable<Mutation> {
-    return fcmSaveUseCase.excute()
+    return fcmSaveUseCase.execute()
       .asObservable()
       .flatMap { _ -> Observable<Mutation> in
         self.coordinator.startMission()

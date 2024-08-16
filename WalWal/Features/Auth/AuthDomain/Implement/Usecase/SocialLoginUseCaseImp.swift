@@ -18,7 +18,7 @@ public final class SocialLoginUseCaseImp: SocialLoginUseCase {
   public init(authDataRepository: AuthRepository) {
     self.authDataRepository = authDataRepository
   }
-  public func excute(provider: ProviderType, token: String) -> Single<AuthToken> {
+  public func execute(provider: ProviderType, token: String) -> Single<AuthToken> {
     return authDataRepository.socialLogin(provider: provider.rawValue, token: token)
       .map { AuthToken(dto: $0) }
       .asObservable()
