@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AppCoordinator
 import SplashDependencyFactoryImp
 import AuthDependencyFactoryImp
 import WalWalTabBarDependencyFactoryImp
@@ -13,8 +14,8 @@ import MissionDependencyFactoryImp
 import MyPageDependencyFactoryImp
 import OnboardingDependencyFactoryImp
 import FeedDependencyFactoryImp
-import AppCoordinator
 import FCMDependencyFactoryImp
+import RecordsDependencyFactoryImp
 
 extension AppDelegate {
   func injectWalWalImplement(navigation: UINavigationController) -> any AppCoordinator {
@@ -27,8 +28,9 @@ extension AppDelegate {
     let fcmDependencyFactory = FCMDependencyFactoryImp()
     let onboardingDependencyFactory = OnboardingDependencyFactoryImp()
     let feedDependencyFactory = FeedDependencyFactoryImp()
+    let recordsDependencyFactory = RecordsDependencyFactoryImp()
     
-    return splashDependencyFactory.makeAppCoordinator(
+    return splashDependencyFactory.injectAppCoordinator(
       navigationController: navigation,
       authDependencyFactory: authDependencyFactory,
       walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
@@ -36,7 +38,8 @@ extension AppDelegate {
       myPageDependencyFactory: myPageDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
       onboardingDependencyFactory: onboardingDependencyFactory,
-      feedDependencyFactory: feedDependencyFactory
+      feedDependencyFactory: feedDependencyFactory,
+      recordsDependencyFactory: recordsDependencyFactory
     )
   }
 }

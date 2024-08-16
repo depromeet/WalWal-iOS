@@ -15,6 +15,7 @@ import MyPageDependencyFactory
 import FCMDependencyFactory
 import OnboardingDependencyFactory
 import FeedDependencyFactory
+import RecordsDependencyFactory
 
 import WalWalNetwork
 
@@ -29,13 +30,16 @@ import SplashDomainImp
 import SplashPresenter
 import SplashPresenterImp
 
+import FCMDomain
+import RecordsDomain
+
 public class SplashDependencyFactoryImp: SplashDependencyFactory {
   
   public init() {
     
   }
   
-  public func makeAppCoordinator(
+  public func injectAppCoordinator(
     navigationController: UINavigationController,
     authDependencyFactory: AuthDependencyFactory,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
@@ -43,7 +47,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     onboardingDependencyFactory: OnboardingDependencyFactory,
-    feedDependencyFactory: FeedDependencyFactory
+    feedDependencyFactory: FeedDependencyFactory,
+    recordsDependencyFactory: RecordsDependencyFactory
   ) -> any AppCoordinator {
     return AppCoordinatorImp(
       navigationController: navigationController,
@@ -54,22 +59,30 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       myPageDependencyFactory: myPageDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
       onboardingDependencyFactory: onboardingDependencyFactory,
-      feedDependencyFactory: feedDependencyFactory
+      feedDependencyFactory: feedDependencyFactory,
+      recordsDependencyFactory: recordsDependencyFactory
     )
   }
   
-  public func makeCheckTokenUseCase() -> CheckTokenUsecase {
+  public func injectCheckTokenUseCase() -> CheckTokenUsecase {
     return CheckTokenUsecaseImp()
   }
   
-  public func makeSplashReactor<T: AppCoordinator>(coordinator: T) -> any SplashReactor {
+  public func injectSplashReactor<T: AppCoordinator>(
+    coordinator: T,
+    checkTokenUseCase: CheckTokenUsecase,
+    fcmSaveUseCase: FCMSaveUseCase,
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
+  ) -> any SplashReactor {
     return SplashReactorImp(
       coordinator: coordinator,
-      checkTokenUseCase: makeCheckTokenUseCase()
+      checkTokenUseCase: checkTokenUseCase,
+      fcmSaveUseCase: fcmSaveUseCase,
+      checkRecordCalendarUseCase: checkRecordCalendarUseCase
     )
   }
   
-  public func makeSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController {
+  public func injectSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController {
     return SplashViewControllerImp(reactor: reactor)
   }
 }
