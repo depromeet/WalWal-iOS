@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+import RxSwift
+
+public protocol TokenDeleteUseCase {
+  func execute()
+}

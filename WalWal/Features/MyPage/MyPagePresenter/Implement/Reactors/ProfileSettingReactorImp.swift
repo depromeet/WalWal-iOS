@@ -24,11 +24,14 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   
   public let initialState: State
   public let coordinator: any MyPageCoordinator
+  private let tokenDeleteUseCase: TokenDeleteUseCase
   
   public init(
-    coordinator: any MyPageCoordinator
+    coordinator: any MyPageCoordinator,
+    tokenDeleteUseCase: TokenDeleteUseCase
   ) {
     self.coordinator = coordinator
+    self.tokenDeleteUseCase = tokenDeleteUseCase
     self.initialState = State(
       isLoading: false,
       isLogoutSuccess: false,
@@ -82,9 +85,9 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   
   private func handleSelection(at indexPath: IndexPath) -> Observable<Mutation> {
     if indexPath.row == 0 {
-      // 로그아웃 로직 추가
-      print("로그아웃")
-      return Observable.just(.setLogout(true))
+      tokenDeleteUseCase.execute()
+      coordinator.startAuth()
+      return .never()
     } else if indexPath.row == 2 {
       // 회원 탈퇴 로직 추가
       print("회원탈퇴")

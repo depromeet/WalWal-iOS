@@ -20,12 +20,16 @@ public protocol MyPageDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?
   ) -> any MyPageCoordinator
+  func injectTokenDeleteUseCase() -> TokenDeleteUseCase
   func makeMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor
   func makeMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
   func makeRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor
   func makeRecordDetailViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController
   func makeProfileEditReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileEditReactor
   func makeProfileEditViewController<T: ProfileEditReactor>(reactor: T) -> any ProfileEditViewController
-  func makeProfileSettingReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileSettingReactor
+  func makeProfileSettingReactor<T: MyPageCoordinator>(
+    coordinator: T,
+    tokenDeleteUseCase: TokenDeleteUseCase
+  ) -> any ProfileSettingReactor
   func makeProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController
 }

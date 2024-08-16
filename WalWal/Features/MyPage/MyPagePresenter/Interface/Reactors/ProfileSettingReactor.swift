@@ -79,6 +79,7 @@ public protocol ProfileSettingReactor: Reactor where Action == ProfileSettingRea
   var coordinator: any MyPageCoordinator { get }
   
   init(
-    coordinator: any MyPageCoordinator
+    coordinator: any MyPageCoordinator,
+    tokenDeleteUseCase: TokenDeleteUseCase
   )
 }

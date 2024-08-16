@@ -10,7 +10,7 @@ import UIKit
 import BaseCoordinator
 
 public enum MyPageCoordinatorAction: ParentAction {
-  
+  case startAuth
 }
 
 public enum MyPageCoordinatorFlow: CoordinatorFlow {
@@ -22,5 +22,5 @@ public enum MyPageCoordinatorFlow: CoordinatorFlow {
 public protocol MyPageCoordinator: BaseCoordinator
 where Flow == MyPageCoordinatorFlow,
       Action == MyPageCoordinatorAction{
-  
+  func startAuth()
 }

@@ -16,6 +16,7 @@ import FeedDependencyFactory
 import BaseCoordinator
 import WalWalTabBarCoordinator
 import MissionCoordinator
+import MyPageCoordinator
 
 import RxSwift
 import RxCocoa
@@ -81,15 +82,9 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
   /// 여기도, WalWalTabBar이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   public func handleChildEvent<T: ParentAction>(_ event: T) {
-    /// if let missionEvent = event as? CoordinatorEvent<MissonCoordinatorAction> {
-    ///   handleMissionEvent(missionEvent)
-    /// } else if let feedEvent = event as? CoordinatorEvent<FeedCoordinatorAction> {
-    ///   handleFeedEvent(feedEvent)
-    /// } else if let notificationEvent = event as? CoordinatorEvent<NotificationCoordinatorAction> {
-    ///   handleNotificationEvent(notificationEvent)
-    /// } else if let myPageEvent = event as? CoordinatorEvent<MyPageCoordinatorAction> {
-    ///   handleMyPageEvent(myPageEvent)
-    /// }
+    if let mypageEvent = event as? MyPageCoordinatorAction {
+      handleMypageEvent(.requireParentAction(mypageEvent))
+    }
   }
   
   public func start() {
@@ -111,32 +106,18 @@ extension WalWalTabBarCoordinatorImp {
     }
   }
   
-  /// fileprivate func feedEvent(_ event: CoordinatorEvent<FeedCoordinatorAction>) {
-  ///   switch event {
-  ///   case .finished:
-  ///     childCoordinator = nil
-  ///   case .requireParentAction(let action):
-  ///     switch action { }
-  ///   }
-  /// }
-  ///
-  /// fileprivate func notificationEvent(_ event: CoordinatorEvent<NotificationCoordinatorAction>) {
-  ///   switch event {
-  ///   case .finished:
-  ///     childCoordinator = nil
-  ///   case .requireParentAction(let action):
-  ///     switch action { }
-  ///   }
-  /// }
-  ///
-  /// fileprivate func myPageEvent(_ event: CoordinatorEvent<MyPageCoordinatorAction>) {
-  ///   switch event {
-  ///   case .finished:
-  ///     childCoordinator = nil
-  ///   case .requireParentAction(let action):
-  ///     switch action { }
-  ///   }
-  /// }
+  fileprivate func handleMypageEvent(_ event: CoordinatorEvent<MyPageCoordinatorAction>) {
+    switch event {
+    case .finished:
+      childCoordinator = nil
+    case let .requireParentAction(action):
+      switch action {
+      case .startAuth:
+        startAuth()
+      }
+    }
+  }
+  
 }
 
 // MARK: - Create and Start(Show) with Flow(View)
@@ -190,7 +171,9 @@ extension WalWalTabBarCoordinatorImp {
 // MARK: - WalWalTabBar(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
 extension WalWalTabBarCoordinatorImp {
-  
+  public func startAuth() {
+    requireParentAction(.startAuth)
+  }
 }
 
 // MARK: - Private Method

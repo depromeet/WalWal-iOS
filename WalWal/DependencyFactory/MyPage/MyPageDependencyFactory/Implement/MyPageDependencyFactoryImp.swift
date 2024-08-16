@@ -15,6 +15,8 @@ import MyPageCoordinatorImp
 
 import MyPagePresenter
 import MyPagePresenterImp
+import MyPageDomain
+import MyPageDomainImp
 
 public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   
@@ -33,6 +35,10 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     )
   }
   
+  public func injectTokenDeleteUseCase() -> TokenDeleteUseCase {
+    return TokenDeleteUseCaseImp()
+  }
+  
   public func makeMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor {
     return MyPageReactorImp(coordinator: coordinator)
   }
@@ -49,8 +55,14 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     return RecordDetailViewControllerImp(reactor: reactor)
   }
   
-  public func makeProfileSettingReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileSettingReactor {
-    return ProfileSettingReactorImp(coordinator: coordinator)
+  public func makeProfileSettingReactor<T: MyPageCoordinator>(
+    coordinator: T,
+    tokenDeleteUseCase: TokenDeleteUseCase
+  ) -> any ProfileSettingReactor {
+    return ProfileSettingReactorImp(
+      coordinator: coordinator,
+      tokenDeleteUseCase: tokenDeleteUseCase
+    )
   }
   
   public func makeProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController {

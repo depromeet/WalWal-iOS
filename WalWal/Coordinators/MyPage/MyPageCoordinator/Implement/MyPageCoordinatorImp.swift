@@ -102,9 +102,12 @@ extension MyPageCoordinatorImp {
   
   /// 프로필 설정뷰
   fileprivate func showProfileSettingVC() {
-    let reactor = myPageDependencyFactory.makeProfileSettingReactor(coordinator: self)
+    let reactor = myPageDependencyFactory.makeProfileSettingReactor(
+      coordinator: self,
+      tokenDeleteUseCase: myPageDependencyFactory.injectTokenDeleteUseCase()
+    )
     let ProfileSettingVC = myPageDependencyFactory.makeProfileSettingViewController(reactor: reactor)
-    self.pushViewController(viewController: ProfileSettingVC, animated: false)
+    self.pushViewController(viewController: ProfileSettingVC, animated: true)
   }
   
   /// 프로필 변경뷰
@@ -120,5 +123,7 @@ extension MyPageCoordinatorImp {
 // MARK: - MyPage(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
 extension MyPageCoordinatorImp {
-  
+  public func startAuth() {
+    requireParentAction(.startAuth)
+  }
 }
