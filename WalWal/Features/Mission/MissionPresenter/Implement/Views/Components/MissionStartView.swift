@@ -30,19 +30,20 @@ final class MissionStartView: UIView {
   private let titleLabel = UILabel().then {
     $0.font = Fonts.KR.H2
     $0.textColor = Colors.black.color
-    $0.text = "반려동물과 함께\n산책한 사진을 찍어요"
     $0.numberOfLines = 2
     $0.textAlignment = .center
   }
   private let missionImageView = UIImageView().then {
-    $0.image = ResourceKitAsset.Sample.missionSample.image
     $0.contentMode = .scaleAspectFit
   }
   
   // MARK: - Initializers
   
-  init() {
+  init(missionTitle: String, missionImage: UIImage) {
     super.init(frame: .zero)
+    titleLabel.text = missionTitle
+    missionImageView.image = missionImage /// 데이터 통신하면서 String 타입으로 수정 예정
+    
     configureAttribute()
     configureLayout()
   }

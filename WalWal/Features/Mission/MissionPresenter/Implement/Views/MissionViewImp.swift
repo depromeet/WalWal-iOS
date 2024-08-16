@@ -25,25 +25,31 @@ import Kingfisher
 public final class MissionViewControllerImp<R: MissionReactor>: UIViewController, MissionViewController {
   
   private typealias Images = ResourceKitAsset.Images
+  private typealias AssetImage = ResourceKitAsset.Assets
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
   // MARK: - UI
   
   private let rootContainer = UIView()
-  private let missionStartView = MissionStartView()
+  private let missionStartView = MissionStartView(
+    missionTitle: "반려동물과 함께\n산책한 사진을 찍어요",
+    missionImage: ResourceKitAsset.Sample.missionSample.image
+  )
   private lazy var missionCountBubbleView = BubbleView(
     color: Colors.gray150.color,
-    image: Images.missionStartIcon.image,
+    image: AssetImage.missionStartIcon.image,
     text: "\(missionCount)번째 미션을 수행해볼까요?"
   )
-  private let missionStartButton = WalWalButton_Icon(type: .active,
+  private let missionStartButton = WalWalButton_Icon(
+    type: .active,
                                                      title: "미션 시작하기",
-                                                     icon:Images.flagS.image)
+                                                     icon:Images.flagS.image
+  )
   
   // MARK: - Properties
   
-  private let missionCount = 12
+  private let missionCount = 0
   
   public var disposeBag = DisposeBag()
   public var missionReactor: R
@@ -106,12 +112,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   // MARK: - Method
   
   private func setMissionData(_ model: MissionModel) {
-    // TODO: 이미지 넣기
-    //    if let imageUrl = URL(string: model.imageUrl) {
-    //      missionImageView.kf.setImage(with: imageUrl)
-    //    } else {
-    //      missionImageView.image = Assets.sampleImage.image
-    //    }
+    // 미션 데이터 세팅
   }
 }
 
