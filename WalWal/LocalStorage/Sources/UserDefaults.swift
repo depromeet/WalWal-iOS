@@ -16,7 +16,7 @@ public extension UserDefaults {
     case notification
     case refreshToken
     case temporaryToken
-    case isFirstLoaded
+    case isAlreadyLoaded
   }
   
   // MARK: - GET

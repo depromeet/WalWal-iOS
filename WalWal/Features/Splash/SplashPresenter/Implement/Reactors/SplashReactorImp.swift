@@ -48,8 +48,8 @@ public final class SplashReactorImp: SplashReactor {
     switch action {
     case .checkToken:
       return checkIsFirstLoadedUseCase.execute()
-        .flatMap { isFirstLoaded in
-          isFirstLoaded ? .just(.startAuth) : self.handleTokenCheckFlow()
+        .flatMap { isAlreadyLoaded in
+          isAlreadyLoaded ? self.handleTokenCheckFlow() : .just(.startAuth)
         }
     }
   }
