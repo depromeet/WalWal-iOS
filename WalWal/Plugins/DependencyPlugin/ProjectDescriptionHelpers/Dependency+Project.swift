@@ -341,13 +341,13 @@ public extension TargetDependency.Feature.Records.Data {
 }
 
 public extension TargetDependency.Feature.Image.Domain {
-  static let Interface = Self.project(name: .records, layer: .domain, isInterface: true)
-  static let Implement = Self.project(name: .records, layer: .domain, isInterface: false)
+  static let Interface = Self.project(name: .image, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .image, layer: .domain, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Image.Data {
-  static let Interface = Self.project(name: .records, layer: .data, isInterface: true)
-  static let Implement = Self.project(name: .records, layer: .data, isInterface: false)
+  static let Interface = Self.project(name: .image, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .image, layer: .data, isInterface: false)
 }
  
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
