@@ -264,7 +264,7 @@ extension WalWalBoostGenerator {
   ) {
     feedbackGenerator.impactOccurred()
     
-    if count >= 10 {
+    if count == 1 {
       walwalEmitter.configureEmitter(
         in: detailView,
         positionRatio: CGPoint(x: 0.5, y: 0.5),
