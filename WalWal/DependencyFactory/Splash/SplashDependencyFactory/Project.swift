@@ -19,6 +19,9 @@ let project = Project.invertedDualTargetProject(
     .DependencyFactory.Auth.Interface,
     .DependencyFactory.WalWalTabBar.Interface,
     .DependencyFactory.Onboarding.Interface,
+    .DependencyFactory.Records.Interface,
+    .DependencyFactory.FCM.Interface,
+    
     .Feature.Splash.Presenter.Interface
   ],
   implementDependencies: [
