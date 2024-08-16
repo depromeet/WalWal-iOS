@@ -73,6 +73,7 @@ let project = Project(
         .DependencyFactory.Mission.Implement,
         .DependencyFactory.MyPage.Implement,
         .DependencyFactory.FCM.Implement,
+        .DependencyFactory.Image.Implement,
         .DependencyFactory.Onboarding.Implement,
         .DependencyFactory.Records.Implement,
         .DependencyFactory.Feed.Implement

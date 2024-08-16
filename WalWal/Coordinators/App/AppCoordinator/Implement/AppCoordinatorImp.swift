@@ -19,6 +19,7 @@ import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
+import ImageDependencyFactory
 import OnboardingDependencyFactory
 import FeedDependencyFactory
 import RecordsDependencyFactory
@@ -45,6 +46,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   public var missionDependencyFactory: MissionDependencyFactory
   public var myPageDependencyFactory: MyPageDependencyFactory
   public var fcmDependencyFactory: FCMDependencyFactory
+  public var imageDependencyFactory: ImageDependencyFactory
   public var onboardingDependencyFactory: OnboardingDependencyFactory
   public var feedDependencyFactory: FeedDependencyFactory
   public var recordsDependencyFactory: RecordsDependencyFactory
@@ -59,6 +61,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory,
     onboardingDependencyFactory: OnboardingDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory
@@ -70,6 +73,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     self.missionDependencyFactory = missionDependencyFactory
     self.myPageDependencyFactory = myPageDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
+    self.imageDependencyFactory = imageDependencyFactory
     self.onboardingDependencyFactory = onboardingDependencyFactory
     self.feedDependencyFactory = feedDependencyFactory
     self.recordsDependencyFactory = recordsDependencyFactory
@@ -198,6 +202,7 @@ extension AppCoordinatorImp {
       navigationController: navigationController,
       parentCoordinator: self,
       fcmDependencyFactory: fcmDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory,
       authDependencyFactory: authDependencyFactory
     )
     childCoordinator = onboardingCoordinator
