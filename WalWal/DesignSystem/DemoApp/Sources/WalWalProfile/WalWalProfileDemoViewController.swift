@@ -20,6 +20,14 @@ final class WalWalProfileDemoViewController: UIViewController {
   
   private let rootContainer = UIView()
   private let profileSelectView = WalWalProfile(type: .dog)
+  private let profileSelectView2 = WalWalProfile(
+    type: .cat,
+    defaultImage: "GREEN_CAT"
+  )
+  private let profileSelectView3 = WalWalProfile(
+    type: .cat,
+    userImage: ResourceKitAsset.Assets.onboarding3.image
+  )
   private let profileInfoLabel = UILabel().then {
     $0.numberOfLines = 0
     $0.textColor = .black
@@ -33,6 +41,7 @@ final class WalWalProfileDemoViewController: UIViewController {
     view.backgroundColor = .white
     configureLayout()
     bind()
+    
   }
   
   override func viewDidLayoutSubviews() {
@@ -54,10 +63,10 @@ final class WalWalProfileDemoViewController: UIViewController {
           .define {
             $0.addItem(profileSelectView)
               .width(100%)
-            $0.addItem(profileInfoLabel)
-              .alignSelf(.center)
+            $0.addItem(profileSelectView2)
               .width(100%)
-              .height(150)
+            $0.addItem(profileSelectView3)
+              .width(100%)
           }
         
         $0.addItem(completeButton)
@@ -68,6 +77,7 @@ final class WalWalProfileDemoViewController: UIViewController {
   }
   
   private func bind() {
+//    사용할 뷰컨에서 구현
 //    profileSelectView.showPHPicker
 //      .bind(with: self) { owner, _ in
 //        PHPickerManager.shared.presentPicker(vc: owner)
@@ -107,5 +117,6 @@ final class WalWalProfileDemoViewController: UIViewController {
         owner.view.layoutIfNeeded()
       }
       .disposed(by: disposeBag)
+    
   }
 }
