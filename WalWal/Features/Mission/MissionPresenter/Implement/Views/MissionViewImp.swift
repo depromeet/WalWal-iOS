@@ -42,8 +42,8 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   )
   private let missionStartButton = WalWalButton_Icon(
     type: .active,
-                                                     title: "미션 시작하기",
-                                                     icon:Images.flagS.image
+    title: "미션 시작하기",
+    icon:Images.flagS.image
   )
   
   // MARK: - Properties
