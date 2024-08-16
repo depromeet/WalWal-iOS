@@ -36,6 +36,7 @@ final class WalWalBoostGenerator {
   private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
   
   let boostFinished = PublishSubject<BoostResult>()
+  var isEndedLongPress = false
   
   init(
     feed: WalWalFeed,
@@ -79,15 +80,12 @@ final class WalWalBoostGenerator {
     animateDetailViewAppearance(
       detailView,
       backgroundView: backgroundView,
-      overlayView: overlayView
+      window: window
     )
     
     currentDetailView = detailView
     currentBackgroundView = backgroundView
     currentBlackOverlayView = overlayView
-    
-    addTiltAnimation(to: detailView)
-    setupBoostAnimationComponents(in: detailView, window: window)
   }
   
   /// 부스트 애니메이션 종료
@@ -171,13 +169,36 @@ extension WalWalBoostGenerator {
   private func animateDetailViewAppearance(
     _ detailView: UIView,
     backgroundView: UIView,
-    overlayView: UIView
+    window: UIWindow
   ) {
-    detailView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-    UIView.animate(withDuration: 0.3) {
-      backgroundView.alpha = 1
-      overlayView.alpha = 1
-      detailView.transform = .identity
+    detailView.transform = .identity
+    backgroundView.alpha = 0
+    UIView.animateKeyframes(
+      withDuration: 0.5,
+      delay: 0,
+      options: [],
+      animations: {
+        UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1) {
+          backgroundView.alpha = 1
+        }
+        
+        UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
+          detailView.transform = CGAffineTransform(scaleX: 0.98, y: 0.98).translatedBy(x: 0, y: 2)
+        }
+        
+        UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
+          detailView.transform = .identity
+        }
+      }
+    ) { _ in
+      /// 애니메이션 완료 후 추가 작업이 필요한 경우 여기에 구현
+    }
+    
+    /// DetailView가 작아진 후 다시 커지기 시작할 때 다른 애니메이션 시작
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+      guard let self = self else { return }
+      self.addTiltAnimation(to: detailView)
+      self.setupBoostAnimationComponents(in: detailView, window: window)
     }
   }
   
@@ -216,20 +237,20 @@ extension WalWalBoostGenerator {
   
   private func addTiltAnimation(to view: UIView) {
     let tiltAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
-    let frames = 144 /// 틱당 생기는 부자연스러움을 없애기 위해 144fps로 애니메이션 설정
+    let frames = 60 /// 틱당 생기는 부자연스러움을 없애기 위해 144fps로 애니메이션 설정
     var values = [Double]()
     var keyTimes = [NSNumber]()
     
     for i in 0...frames {
       let progress = Double(i) / Double(frames)
-      let angle = sin(progress * 2 * .pi) * (Double.pi / 24) /// 15도 각도를 1frame 만큼 각도 변환
+      let angle = sin(progress * 2 * .pi) * (Double.pi / 180) /// 15도 각도를 1frame 만큼 각도 변환
       values.append(angle)
       keyTimes.append(NSNumber(value: progress))
     }
     
     tiltAnimation.values = values
     tiltAnimation.keyTimes = keyTimes
-    tiltAnimation.duration = 0.3 /// 144프레임의 애니메이션을 0.3초 동안
+    tiltAnimation.duration = 0.1 /// 144프레임의 애니메이션을 0.3초 동안
     tiltAnimation.repeatCount = .infinity /// 무한 반복
     
     view.layer.add(tiltAnimation, forKey: "tilt")
@@ -243,7 +264,7 @@ extension WalWalBoostGenerator {
   ) {
     feedbackGenerator.impactOccurred()
     
-    if count >= 10 {
+    if count == 1 {
       walwalEmitter.configureEmitter(
         in: detailView,
         positionRatio: CGPoint(x: 0.5, y: 0.5),
@@ -255,19 +276,25 @@ extension WalWalBoostGenerator {
     
     switch count {
     case 50:
-      walwalBoostCenterLabel.updateCenterLabels(
-        with: burstCase.goodText,
-        in: detailView,
-        window: window,
-        burstMode: burstCase
-      )
+      walwalBoostCenterLabel.disappearLabels { [weak self] in
+        guard let ss = self else { return }
+        ss.walwalBoostCenterLabel.updateCenterLabels(
+          with: burstCase.goodText,
+          in: detailView,
+          window: window,
+          burstMode: burstCase
+        )
+      }
       walwalBoostBorder.startBorderAnimation(borderColor: Colors.walwalOrange.color)
     case 100:
-      walwalBoostCenterLabel.updateCenterLabels(
-        with: burstCase.greatText,
-        in: detailView, window: window,
-        burstMode: burstCase
-      )
+      walwalBoostCenterLabel.disappearLabels { [weak self] in
+        guard let ss = self else { return }
+        ss.walwalBoostCenterLabel.updateCenterLabels(
+          with: burstCase.greatText,
+          in: detailView, window: window,
+          burstMode: burstCase
+        )
+      }
       walwalBoostBorder.startBorderAnimation(borderColor: .red)
     case 150:
       walwalBoostBorder.startBorderAnimation(borderColor: .clear, isRainbow: true)

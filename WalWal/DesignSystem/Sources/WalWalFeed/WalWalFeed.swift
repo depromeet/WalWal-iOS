@@ -181,10 +181,12 @@ public final class WalWalFeed: UIView {
 
 extension WalWalFeed: GestureHandlerDelegate {
   func gestureHandlerDidBeginLongPress(_ gesture: UILongPressGestureRecognizer) {
+    walwalBoostGenerater.isEndedLongPress = false
     walwalBoostGenerater.startBoostAnimation(for: gesture, in: collectionView)
   }
   
   func gestureHandlerDidEndLongPress(_ gesture: UILongPressGestureRecognizer) {
+    walwalBoostGenerater.isEndedLongPress = true
     walwalBoostGenerater.stopBoostAnimation()
     updateBoostCount(for: gesture)
   }

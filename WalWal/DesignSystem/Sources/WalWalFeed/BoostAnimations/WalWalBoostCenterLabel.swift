@@ -16,33 +16,175 @@ final class WalWalBoostCenterLabel {
   private var centerLabels: [UILabel] = []
   private var centerShadowLabels: [UILabel] = []
   
-  func updateCenterLabels(with text: String, in detailView: UIView, window: UIWindow, burstMode: WalWalBurstString) {
+  private let letterSpacing: CGFloat = -1.0 // 음수 값으로 글자 간격을 좁힘
+  private let sideMargin: CGFloat = 20.0
+  private let characterOverlap: CGFloat = 8.0 // 글자 간 겹침 정도
+  
+  func updateCenterLabels(
+    with text: String,
+    in detailView: UIView,
+    window: UIWindow,
+    burstMode: WalWalBurstString
+  ) {
     clearExistingLabels()
     
-    let words = text.split(separator: " ")
-    var lines: [[String]] = [[]]
     let labelFont = burstMode.font
-    let windowWidth = window.bounds.width
+    let words = text.split(separator: " ")
+    let availableWidth = window.bounds.width - (2 * sideMargin)
+    let lines = calculateLines(for: words, with: labelFont, maxWidth: availableWidth)
+    
+    let countLabelY = detailView.center.y - 40
+    var startY = countLabelY + 60
+    
+    for (lineIndex, line) in lines.enumerated() {
+      let lineText = line.joined(separator: " ")
+      let totalWidth = calculateLineWidth(lineText, with: labelFont, considering: characterOverlap)
+      var startX = (window.bounds.width - totalWidth) / 2
+      
+      for (charIndex, char) in lineText.enumerated() {
+        if char == " " {
+          startX += calculateLineWidth(" ", with: labelFont, considering: characterOverlap)
+          continue
+        }
+        
+        let (label, shadowLabel) = createCharacterLabels(for: char, font: labelFont)
+        centerLabels.append(label)
+        centerShadowLabels.append(shadowLabel)
+        
+        label.center = CGPoint(x: startX + label.bounds.width / 2, y: startY)
+        shadowLabel.center = CGPoint(x: startX + shadowLabel.bounds.width / 2 + 4, y: startY + 4)
+        
+        window.addSubview(shadowLabel)
+        window.addSubview(label)
+        
+        let delay = Double(lineIndex * lineText.count + charIndex) * 0.05
+        animateLabel(label, shadowLabel: shadowLabel, delay: delay)
+        
+        startX += label.bounds.width - characterOverlap
+      }
+      
+      startY += (labelFont.lineHeight - 30)
+    }
+  }
+  
+  func disappearLabels(completion: @escaping () -> Void) {
+    let delayBetweenChars: TimeInterval = 0.05
+    var completionCount = 0
+    
+    for (index, (label, shadowLabel)) in zip(centerLabels, centerShadowLabels).enumerated() {
+      let delay = Double(index) * delayBetweenChars
+      animateLabelDisappearance(label, shadowLabel: shadowLabel, delay: delay) {
+        completionCount += 1
+        if completionCount == self.centerLabels.count {
+          self.clearExistingLabels()
+          completion()
+        }
+      }
+    }
+  }
+  
+  private func calculateLines(for words: [String.SubSequence], with font: UIFont, maxWidth: CGFloat) -> [[String]] {
+    var lines: [[String]] = [[]]
     var currentLineWidth: CGFloat = 0
     
     for word in words {
-      let wordWidth = calculateWordWidth(word, with: labelFont)
-      if currentLineWidth + wordWidth > windowWidth {
-        lines.append([String(word)])
-        currentLineWidth = wordWidth
+      let wordWidth = calculateLineWidth(String(word), with: font, considering: characterOverlap)
+      if currentLineWidth + wordWidth > maxWidth {
+        if !lines[lines.count - 1].isEmpty {
+          lines.append([String(word)])
+          currentLineWidth = wordWidth
+        } else {
+          lines[lines.count - 1].append(String(word))
+          lines.append([])
+          currentLineWidth = 0
+        }
       } else {
+        if !lines[lines.count - 1].isEmpty {
+          currentLineWidth += calculateLineWidth(" ", with: font, considering: characterOverlap)
+        }
         lines[lines.count - 1].append(String(word))
         currentLineWidth += wordWidth
       }
     }
     
-    let countLabelY = detailView.center.y - 40
-    var startY = countLabelY + 60
+    return lines.filter { !$0.isEmpty }
+  }
+  
+  private func calculateLineWidth(_ text: String, with font: UIFont, considering overlap: CGFloat) -> CGFloat {
+    let attributes = [NSAttributedString.Key.font: font]
+    let width = (text as NSString).size(withAttributes: attributes).width
+    return width - (CGFloat(text.count - 1) * overlap)
+  }
+  
+  private func createCharacterLabels(for char: Character, font: UIFont) -> (UILabel, UILabel) {
+    let label = createCharacterLabel(for: char, font: font)
+    let shadowLabel = createShadowLabel(for: char, font: font)
+    return (label, shadowLabel)
+  }
+  
+  private func animateLabel(_ label: UILabel, shadowLabel: UILabel, delay: TimeInterval) {
+    /// 초기 상태 설정
+    label.alpha = 1
+    shadowLabel.alpha = 1
+    label.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
+    shadowLabel.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
     
-    for line in lines {
-      let lineText = line.joined(separator: " ")
-      addCharactersAsLabels(lineText, to: window, startY: &startY, detailView: detailView, labelFont: labelFont)
+    /// 랜덤 시작 각도 (-15도에서 15도 사이)
+    let startAngle = [CGFloat.pi / 8, -CGFloat.pi / 8].randomElement() ?? CGFloat.pi / 8
+    
+    UIView.animateKeyframes(withDuration: 0.3, delay: delay, options: [], animations: {
+      
+      /// 크기 애니메이션 (팝업 효과)
+      UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
+        label.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: startAngle)
+        shadowLabel.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: startAngle)
+      }
+      
+      /// 크기 정상화 및 흔들림 애니메이션
+      UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
+        label.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: 0)
+        shadowLabel.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: 0)
+      }
+    })
+  }
+  
+  private func animateLabelDisappearance(_ label: UILabel, shadowLabel: UILabel, delay: TimeInterval, completion: @escaping () -> Void) {
+    /// 초기 상태 설정
+    label.alpha = 1
+    shadowLabel.alpha = 1
+    label.transform = .identity
+    shadowLabel.transform = .identity
+    
+    /// 랜덤 시작 각도 (-15도에서 15도 사이)
+    let startAngle = [CGFloat.pi / 8, -CGFloat.pi / 8].randomElement() ?? CGFloat.pi / 8
+    
+    UIView.animateKeyframes(withDuration: 0.3, delay: delay, options: [], animations: {
+      // 첫 번째 키프레임: 약간 커지면서 회전 시작
+      UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.3) {
+        let transform = CGAffineTransform(scaleX: 1.1, y: 1.1).rotated(by: startAngle / 2)
+        label.transform = transform
+        shadowLabel.transform = transform
+      }
+      
+      // 두 번째 키프레임: 작아지면서 완전히 회전하고 투명해짐
+      UIView.addKeyframe(withRelativeStartTime: 0.3, relativeDuration: 0.7) {
+        let transform = CGAffineTransform(scaleX: 0.1, y: 0.1).rotated(by: startAngle)
+        label.transform = transform
+        shadowLabel.transform = transform
+        label.alpha = 0
+        shadowLabel.alpha = 0
+      }
+    }) { _ in
+      label.transform = .identity
+      shadowLabel.transform = .identity
+      label.alpha = 0
+      shadowLabel.alpha = 0
+      completion()
     }
+  }
+  
+  private func removeSwingTransform(to view: UIView, endAngle: CGFloat) {
+    view.transform = CGAffineTransform(scaleX: 0.0, y: 0.0).rotated(by: endAngle)
   }
   
   func clearExistingLabels() {
@@ -50,63 +192,6 @@ final class WalWalBoostCenterLabel {
     centerShadowLabels.forEach { $0.removeFromSuperview() }
     centerLabels.removeAll()
     centerShadowLabels.removeAll()
-  }
-  
-  private func calculateWordWidth(_ word: String.SubSequence, with font: UIFont) -> CGFloat {
-    let testLabel = UILabel()
-    testLabel.attributedText = NSAttributedString(string: String(word), attributes: [.font: font])
-    testLabel.sizeToFit()
-    return testLabel.bounds.width
-  }
-  
-  private func addCharactersAsLabels(_ text: String, to window: UIWindow, startY: inout CGFloat, detailView: UIView, labelFont: UIFont) {
-    let characters = Array(text)
-    var delay: TimeInterval = 0
-    var totalWidth: CGFloat = 0
-    
-    for char in characters {
-      totalWidth += calculateCharacterWidth(char, with: labelFont)
-    }
-    
-    var startX = detailView.center.x - totalWidth / 2
-    
-    for char in characters {
-      addCharacterLabel(char, to: window, startX: &startX, startY: startY, detailView: detailView, labelFont: labelFont, delay: &delay)
-    }
-    
-    startY += labelFont.lineHeight - (labelFont.lineHeight * 0.25)
-  }
-  
-  private func calculateCharacterWidth(_ char: Character, with font: UIFont) -> CGFloat {
-    let testLabel = UILabel()
-    testLabel.attributedText = NSAttributedString(string: String(char), attributes: [.font: font])
-    testLabel.sizeToFit()
-    return testLabel.bounds.width
-  }
-  
-  private func addCharacterLabel(_ char: Character, to window: UIWindow, startX: inout CGFloat, startY: CGFloat, detailView: UIView, labelFont: UIFont, delay: inout TimeInterval) {
-    let shadowLabel = createShadowLabel(for: char, font: labelFont)
-    let label = createCharacterLabel(for: char, font: labelFont)
-    
-    centerLabels.append(label)
-    centerShadowLabels.append(shadowLabel)
-    
-    let initialY = startY + window.bounds.height / 2
-    shadowLabel.center = CGPoint(x: startX + shadowLabel.bounds.width / 2 + 4, y: initialY + 4)
-    label.center = CGPoint(x: startX + label.bounds.width / 2, y: initialY)
-    startX += label.bounds.width
-    
-    window.addSubview(shadowLabel)
-    window.addSubview(label)
-    
-    UIView.animate(withDuration: 0.5, delay: delay, options: [], animations: {
-      shadowLabel.alpha = 1
-      shadowLabel.center.y = startY + 4
-      label.alpha = 1
-      label.center.y = startY
-    }, completion: nil)
-    
-    delay += 0.1
   }
   
   private func createShadowLabel(for char: Character, font: UIFont) -> UILabel {
@@ -135,7 +220,7 @@ final class WalWalBoostCenterLabel {
         .strokeColor: Colors.black.color,
         .font: font,
         .foregroundColor: Colors.white.color,
-        .strokeWidth: -4
+        .strokeWidth: -6
       ]
     )
     label.attributedText = attrString

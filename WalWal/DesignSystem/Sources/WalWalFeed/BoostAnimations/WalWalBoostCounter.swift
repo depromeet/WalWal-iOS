@@ -25,7 +25,7 @@ final class WalWalBoostCounter {
     countLabel?.textAlignment = .center
     countLabel?.sizeToFit()
     countLabel?.center = CGPoint(x: detailView.center.x, y: detailView.center.y - 40)
-    countLabel?.alpha = 0
+    countLabel?.alpha = 1
     window.addSubview(countLabel!)
     updateCountLabelPosition(detailView: detailView)
   }
@@ -36,7 +36,6 @@ final class WalWalBoostCounter {
       self.currentCount += 1
       self.updateCountLabelText()
       self.updateCountLabelPosition(detailView: detailView)
-      self.showCountLabelIfNeeded()
       countUpdateHandler(self.currentCount)
     }
   }
@@ -54,7 +53,7 @@ final class WalWalBoostCounter {
       attributes: [
         .strokeColor: Colors.black.color,
         .foregroundColor: Colors.white.color,
-        .strokeWidth: -6.73,
+        .strokeWidth: -8,
         .font: Fonts.LotteriaChab.H1
       ]
     )
@@ -72,14 +71,5 @@ final class WalWalBoostCounter {
       x: detailViewCenter.x,
       y: detailViewCenter.y - 50 - labelSize.height / 2
     )
-  }
-  
-  
-  private func showCountLabelIfNeeded() {
-    if countLabel?.alpha == 0 {
-      UIView.animate(withDuration: 1.0) {
-        self.countLabel?.alpha = 1
-      }
-    }
   }
 }
