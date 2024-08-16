@@ -52,7 +52,6 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
     $0.isPagingEnabled = true
     $0.showsHorizontalScrollIndicator = false
     $0.bounces = false
-    $0.delegate = self
   }
   private lazy var pageControl = UIPageControl().then {
     $0.numberOfPages = 3
@@ -139,14 +138,6 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
           .height(80%)
       }
   }
-  
-  // MARK: - ScrollView Delegate
-  
-  public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    guard scrollView.frame.width > 0 else { return }
-    let pageIndex = round(scrollView.contentOffset.x / scrollView.frame.width)
-    pageControl.currentPage = Int(pageIndex)
-  }
 }
 
 // MARK: - Binding
@@ -170,6 +161,16 @@ extension OnboardingViewControllerImp: View {
   }
   
   public func bindEvent() {
+    scrollView.rx.setDelegate(self)
+      .disposed(by: disposeBag)
     
+    scrollView.rx.didScroll
+      .asDriver()
+      .drive(with: self) { owner, _ in
+        guard owner.scrollView.frame.width > 0 else { return }
+        let pageIndex = round(owner.scrollView.contentOffset.x / owner.scrollView.frame.width)
+        owner.pageControl.currentPage = Int(pageIndex)
+      }
+      .disposed(by: disposeBag)
   }
 }
