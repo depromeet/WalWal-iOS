@@ -275,20 +275,26 @@ extension WalWalBoostGenerator {
     
     switch count {
     case 50:
-      walwalBoostCenterLabel.updateCenterLabels(
-        with: burstCase.goodText,
-        in: detailView,
-        window: window,
-        burstMode: burstCase
-      )
-      walwalBoostBorder.startBorderAnimation(borderColor: Colors.walwalOrange.color)
+      walwalBoostCenterLabel.disappearLabels { [weak self] in
+        guard let ss = self else { return }
+        ss.walwalBoostCenterLabel.updateCenterLabels(
+          with: burstCase.goodText,
+          in: detailView,
+          window: window,
+          burstMode: burstCase
+        )
+        ss.walwalBoostBorder.startBorderAnimation(borderColor: Colors.walwalOrange.color)
+      }
     case 100:
-      walwalBoostCenterLabel.updateCenterLabels(
-        with: burstCase.greatText,
-        in: detailView, window: window,
-        burstMode: burstCase
-      )
-      walwalBoostBorder.startBorderAnimation(borderColor: .red)
+      walwalBoostCenterLabel.disappearLabels { [weak self] in
+        guard let ss = self else { return }
+        ss.walwalBoostCenterLabel.updateCenterLabels(
+          with: burstCase.greatText,
+          in: detailView, window: window,
+          burstMode: burstCase
+        )
+        ss.walwalBoostBorder.startBorderAnimation(borderColor: .red)
+      }
     case 150:
       walwalBoostBorder.startBorderAnimation(borderColor: .clear, isRainbow: true)
     default:

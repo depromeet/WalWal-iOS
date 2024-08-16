@@ -67,6 +67,23 @@ final class WalWalBoostCenterLabel {
     }
   }
   
+  func disappearLabels(completion: @escaping () -> Void) {
+    let totalDuration: TimeInterval = 0.6
+    let delayBetweenChars: TimeInterval = 0.05
+    var completionCount = 0
+    
+    for (index, (label, shadowLabel)) in zip(centerLabels, centerShadowLabels).enumerated() {
+      let delay = Double(index) * delayBetweenChars
+      animateLabelDisappearance(label, shadowLabel: shadowLabel, delay: delay) {
+        completionCount += 1
+        if completionCount == self.centerLabels.count {
+          self.clearExistingLabels()
+          completion()
+        }
+      }
+    }
+  }
+  
   private func calculateLines(for words: [String.SubSequence], with font: UIFont, maxWidth: CGFloat) -> [[String]] {
     var lines: [[String]] = [[]]
     var currentLineWidth: CGFloat = 0
@@ -137,9 +154,48 @@ final class WalWalBoostCenterLabel {
     })
   }
   
+  private func animateLabelDisappearance(_ label: UILabel, shadowLabel: UILabel, delay: TimeInterval, completion: @escaping () -> Void) {
+    /// 초기 상태 설정 (글자가 완전히 보이는 상태)
+    label.alpha = 1
+    shadowLabel.alpha = 1
+    label.transform = .identity
+    shadowLabel.transform = .identity
+    
+    /// 랜덤 끝 각도 (-15도에서 15도 사이)
+    let endAngle = CGFloat.random(in: -CGFloat.pi/12...CGFloat.pi/12)
+    
+    UIView.animateKeyframes(withDuration: 0.6, delay: delay, options: [], animations: {
+      
+      /// 알파값 애니메이션
+      UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1) {
+        label.alpha = 0
+        shadowLabel.alpha = 0
+      }
+
+      /// 크기 애니메이션 (축소 효과)
+      UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
+        label.transform = CGAffineTransform(scaleX: 0.1, y: 0.1).rotated(by: endAngle)
+        shadowLabel.transform = CGAffineTransform(scaleX: 0.1, y: 0.1).rotated(by: endAngle)
+      }
+      
+      /// 크기 정상화 및 흔들림 애니메이션 (역방향)
+      UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
+        self.removeSwingTransform(to: label, endAngle: endAngle, progress: 1)
+        self.removeSwingTransform(to: shadowLabel, endAngle: endAngle, progress: 1)
+      }
+    }) { _ in
+      completion()
+    }
+  }
+  
   private func applySwingTransform(to view: UIView, startAngle: CGFloat, progress: Double) {
     let swingAngle = startAngle * (1 - CGFloat(progress))
     view.transform = CGAffineTransform(scaleX: 1.0, y: 1.0).rotated(by: swingAngle)
+  }
+  
+  private func removeSwingTransform(to view: UIView, endAngle: CGFloat, progress: Double) {
+    let swingAngle = endAngle * (1 - CGFloat(progress))
+    view.transform = CGAffineTransform(scaleX: 0.1, y: 0.1).rotated(by: swingAngle)
   }
   
   func clearExistingLabels() {
