@@ -85,7 +85,6 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   
   private func logout() -> Observable<Mutation> {
     tokenDeleteUseCase.execute()
-    coordinator.startAuth()
     return .just(.moveToAuth)
   }
   
