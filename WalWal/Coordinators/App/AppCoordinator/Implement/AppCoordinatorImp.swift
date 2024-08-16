@@ -11,6 +11,7 @@ import BaseCoordinator
 import AppCoordinator
 import AuthCoordinator
 import OnboardingCoordinator
+import WalWalTabBarCoordinator
 
 import SplashDependencyFactory
 import AuthDependencyFactory
@@ -98,6 +99,8 @@ public final class AppCoordinatorImp: AppCoordinator {
       handleAuthEvent(.requireParentAction(authEvent))
     } else if let onboardingEvent = event as? OnboardingCoordinatorAction {
       handleOnboardingEvent(.requireParentAction(onboardingEvent))
+    } else if let homeEvent = event as? WalWalTabBarCoordinatorAction {
+      handleHomeEvent(.requireParentAction(homeEvent))
     }
   }
   
@@ -130,7 +133,6 @@ extension AppCoordinatorImp {
     case let .requireParentAction(action):
       switch action {
       case .startOnboarding:
-        // TODO: - Onboarding 연결
         destination.accept(.startOnboarding)
       case .startMission:
         destination.accept(.startHome)
@@ -146,6 +148,18 @@ extension AppCoordinatorImp {
       switch action {
       case .startMission:
         destination.accept(.startHome)
+      }
+    }
+  }
+  
+  private func handleHomeEvent(_ event: CoordinatorEvent<WalWalTabBarCoordinatorAction>) {
+    switch event {
+    case .finished:
+      childCoordinator = nil
+    case let .requireParentAction(action):
+      switch action {
+      case .startAuth:
+        destination.accept(.startAuth)
       }
     }
   }

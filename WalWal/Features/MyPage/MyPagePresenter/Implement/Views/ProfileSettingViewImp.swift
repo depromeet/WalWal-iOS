@@ -31,11 +31,12 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   private let containerView = UIView()
   private let navigationBar = WalWalNavigationBar(
     leftItems: [.darkBack],
+    leftItemSize: 40,
     title: "설정",
     rightItems: []
   )
   private let settingTableView = UITableView(frame: .zero, style: .plain).then {
-    $0.register(ProfileSettingTableViewCell.self, forCellReuseIdentifier: "ProfileSettingTableViewCell")
+    $0.register(ProfileSettingTableViewCell.self)
     $0.backgroundColor = AssetColor.gray100.color
     $0.isScrollEnabled = false
     $0.separatorStyle = .none

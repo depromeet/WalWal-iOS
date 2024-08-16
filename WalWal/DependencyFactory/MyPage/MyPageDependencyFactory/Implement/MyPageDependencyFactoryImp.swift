@@ -15,6 +15,8 @@ import MyPageCoordinatorImp
 
 import MyPagePresenter
 import MyPagePresenterImp
+import MyPageDomain
+import MyPageDomainImp
 
 public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   
@@ -33,35 +35,45 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     )
   }
   
-  public func makeMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor {
+  public func injectTokenDeleteUseCase() -> TokenDeleteUseCase {
+    return TokenDeleteUseCaseImp()
+  }
+  
+  public func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor {
     return MyPageReactorImp(coordinator: coordinator)
   }
   
-  public func makeMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController {
+  public func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController {
     return MyPageViewControllerImp(reactor: reactor)
   }
   
-  public func makeRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor {
+  public func injectRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor {
     return RecordDetailReactorImp(coordinator: coordinator)
   }
   
-  public func makeRecordDetailViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController {
+  public func injectRecordDetailViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController {
     return RecordDetailViewControllerImp(reactor: reactor)
   }
   
-  public func makeProfileSettingReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileSettingReactor {
-    return ProfileSettingReactorImp(coordinator: coordinator)
+  public func injectProfileSettingReactor<T: MyPageCoordinator>(
+    coordinator: T,
+    tokenDeleteUseCase: TokenDeleteUseCase
+  ) -> any ProfileSettingReactor {
+    return ProfileSettingReactorImp(
+      coordinator: coordinator,
+      tokenDeleteUseCase: tokenDeleteUseCase
+    )
   }
   
-  public func makeProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController {
+  public func injectProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController {
     return ProfileSettingViewControllerImp(reactor: reactor)
   }
   
-  public func makeProfileEditReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileEditReactor {
+  public func injectProfileEditReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileEditReactor {
     return ProfileEditReactorImp(coordinator: coordinator)
   }
   
-  public func makeProfileEditViewController<T: ProfileEditReactor>(reactor: T) -> any ProfileEditViewController {
+  public func injectProfileEditViewController<T: ProfileEditReactor>(reactor: T) -> any ProfileEditViewController {
     return ProfileEditViewControllerImp(reactor: reactor)
   }
 }

@@ -24,15 +24,16 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   
   public let initialState: State
   public let coordinator: any MyPageCoordinator
+  private let tokenDeleteUseCase: TokenDeleteUseCase
   
   public init(
-    coordinator: any MyPageCoordinator
+    coordinator: any MyPageCoordinator,
+    tokenDeleteUseCase: TokenDeleteUseCase
   ) {
     self.coordinator = coordinator
+    self.tokenDeleteUseCase = tokenDeleteUseCase
     self.initialState = State(
       isLoading: false,
-      isLogoutSuccess: false,
-      isRevokeSuccess: false,
       appVersionString: "",
       isRecent: false,
       settings: []
@@ -48,7 +49,11 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
         Observable.just(.setLoading(false))
       ])
     case let .didSelectItem(at: indexPath):
-      return handleSelection(at: indexPath)
+      if indexPath.row == 0 {
+        return logout()
+      } else {
+        return .never()
+      }
     case .tapBackButton:
       return Observable.just(.moveToBack)
     }
@@ -68,10 +73,8 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       }
     case let .setSettingItemModel(setting):
       newState.settings = setting
-    case let .setLogout(success):
-      newState.isLogoutSuccess = success
-    case let .setRevoke(success):
-      newState.isRevokeSuccess = success
+    case .moveToAuth:
+      coordinator.startAuth()
     case let .setIsRecentVersion(isRecent):
       newState.isRecent = isRecent
     case .moveToBack:
@@ -79,18 +82,12 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     }
     return newState
   }
-  
-  private func handleSelection(at indexPath: IndexPath) -> Observable<Mutation> {
-    if indexPath.row == 0 {
-      // 로그아웃 로직 추가
-      print("로그아웃")
-      return Observable.just(.setLogout(true))
-    } else if indexPath.row == 2 {
-      // 회원 탈퇴 로직 추가
-      print("회원탈퇴")
-      return Observable.just(.setRevoke(true))
-    }
-    return Observable.empty()
+}
+
+extension ProfileSettingReactorImp {
+  private func logout() -> Observable<Mutation> {
+    tokenDeleteUseCase.execute()
+    return .just(.moveToAuth)
   }
   
   private func fetchAppVersion() -> Observable<Mutation> {

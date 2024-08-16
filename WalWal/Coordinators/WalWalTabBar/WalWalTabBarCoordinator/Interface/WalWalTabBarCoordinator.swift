@@ -11,7 +11,7 @@ import ResourceKit
 import BaseCoordinator
 
 public enum WalWalTabBarCoordinatorAction: ParentAction {
-  
+  case startAuth
 }
 
 public enum WalWalTabBarCoordinatorFlow: Int, CoordinatorFlow, CaseIterable {
@@ -22,5 +22,5 @@ public enum WalWalTabBarCoordinatorFlow: Int, CoordinatorFlow, CaseIterable {
 }
 
 public protocol WalWalTabBarCoordinator: BaseCoordinator {
-
+  func startAuth()
 }
