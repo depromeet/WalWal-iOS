@@ -18,6 +18,7 @@ let project = Project.invertedPresenterWithDemoApp(
     .ThirdParty.ReactorKit,
     
     .Feature.Onboarding.Domain.Interface,
+    .Feature.Image.Domain.Interface
   ],
   implementDependencies: [
     .DependencyFactory.Onboarding.Interface,
