@@ -13,33 +13,106 @@ final class WalWalBoostBorder {
   
   private typealias Colors = ResourceKitAsset.Colors
   
-  private var borderLayer: CAShapeLayer?
+  private var borderLayers: [CAShapeLayer] = []
+  private weak var containerView: UIView?
+  private let cornerRadius: CGFloat = 20
   
   func addBorderLayer(to view: UIView) {
-    borderLayer = CAShapeLayer()
-    let path = UIBezierPath(roundedRect: view.bounds, cornerRadius: 20)
-    borderLayer?.path = path.cgPath
-    borderLayer?.fillColor = UIColor.clear.cgColor
-    borderLayer?.lineWidth = 5
-    borderLayer?.strokeEnd = 0
-    view.layer.addSublayer(borderLayer!)
+    containerView = view
+    borderLayers.forEach { $0.removeFromSuperlayer() }
+    borderLayers.removeAll()
   }
   
   func startBorderAnimation(borderColor: UIColor, isRainbow: Bool = false) {
+    guard let containerView = containerView else { return }
+    
+    let newLayer = CAShapeLayer()
+    let path = createDashedBorderPath(in: containerView.bounds)
+    newLayer.path = path.cgPath
+    newLayer.fillColor = UIColor.clear.cgColor
+    newLayer.lineWidth = 5
+    newLayer.strokeColor = borderColor.cgColor
+    
+    // 상단 중앙에서 시작하는 설정
+    newLayer.strokeStart = 0.0
+    newLayer.strokeEnd = 0.0
+    
+    containerView.layer.addSublayer(newLayer)
+    borderLayers.append(newLayer)
+    
     if isRainbow {
-      startRainbowBorderAnimation()
+      startRainbowBorderAnimation(for: newLayer)
     } else {
-      startDefaultBorderAnimation(borderColor: borderColor)
+      startDefaultBorderAnimation(for: newLayer)
     }
   }
   
+  private func createDashedBorderPath(in rect: CGRect) -> UIBezierPath {
+      let path = UIBezierPath()
+      let midX = rect.midX
+      let minY = rect.minY
+      let maxX = rect.maxX
+      let maxY = rect.maxY
+      let minX = rect.minX
+      
+      // 상단 중앙에서 시작
+      path.move(to: CGPoint(x: midX, y: minY))
+      
+      // 오른쪽 상단 모서리
+    path.addLine(to: CGPoint(x: maxX - cornerRadius, y: minY))
+    path.addArc(
+      withCenter: CGPoint(x: maxX - cornerRadius, y: minY + cornerRadius),
+      radius: cornerRadius,
+      startAngle: 3 * .pi / 2,
+      endAngle: 0,
+      clockwise: true
+    )
+    
+    // 오른쪽 하단 모서리
+    path.addLine(to: CGPoint(x: maxX, y: maxY - cornerRadius))
+    path.addArc(
+      withCenter: CGPoint(x: maxX - cornerRadius, y: maxY - cornerRadius),
+      radius: cornerRadius,
+      startAngle: 0,
+      endAngle: .pi / 2,
+      clockwise: true
+    )
+    
+    // 왼쪽 하단 모서리
+    path.addLine(to: CGPoint(x: minX + cornerRadius, y: maxY))
+    path.addArc(
+      withCenter: CGPoint(x: minX + cornerRadius, y: maxY - cornerRadius),
+      radius: cornerRadius,
+      startAngle: .pi / 2,
+      endAngle: .pi,
+      clockwise: true
+    )
+    
+    // 왼쪽 상단 모서리
+    path.addLine(to: CGPoint(x: minX, y: minY + cornerRadius))
+    path.addArc(
+      withCenter: CGPoint(x: minX + cornerRadius, y: minY + cornerRadius),
+      radius: cornerRadius,
+      startAngle: .pi,
+      endAngle: 3 * .pi / 2,
+      clockwise: true
+    )
+      
+      // 다시 시작점으로
+      path.addLine(to: CGPoint(x: midX, y: minY))
+      
+      return path
+    }
+  
   func stopBorderAnimation() {
-    borderLayer?.removeAllAnimations()
-    borderLayer?.removeFromSuperlayer()
-    borderLayer = nil
+    borderLayers.forEach { layer in
+      layer.removeAllAnimations()
+      layer.removeFromSuperlayer()
+    }
+    borderLayers.removeAll()
   }
   
-  private func startRainbowBorderAnimation() {
+  private func startRainbowBorderAnimation(for layer: CAShapeLayer) {
     let colors: [CGColor] = [
       Colors.pink.color.cgColor,
       Colors.walwalOrange.color.cgColor,
@@ -57,18 +130,26 @@ final class WalWalBoostBorder {
     rainbowAnimation.duration = 5.0
     rainbowAnimation.repeatCount = .infinity
     
-    borderLayer?.add(rainbowAnimation, forKey: "rainbowBorderAnimation")
+    layer.add(rainbowAnimation, forKey: "rainbowBorderAnimation")
+    
+    let strokeAnimation = CABasicAnimation(keyPath: "strokeEnd")
+    strokeAnimation.fromValue = 0.0
+    strokeAnimation.toValue = 1.0
+    strokeAnimation.duration = 2.5
+    strokeAnimation.fillMode = .forwards
+    strokeAnimation.isRemovedOnCompletion = false
+    
+    layer.add(strokeAnimation, forKey: "strokeAnimation")
   }
   
-  private func startDefaultBorderAnimation(borderColor: UIColor) {
+  private func startDefaultBorderAnimation(for layer: CAShapeLayer) {
     let animation = CABasicAnimation(keyPath: "strokeEnd")
-    animation.fromValue = 0
-    animation.toValue = 1
+    animation.fromValue = 0.0
+    animation.toValue = 1.0
     animation.duration = 2.5
     animation.isRemovedOnCompletion = false
     animation.fillMode = .forwards
     
-    borderLayer?.strokeColor = borderColor.cgColor
-    borderLayer?.add(animation, forKey: "borderAnimation")
+    layer.add(animation, forKey: "borderAnimation")
   }
 }

@@ -283,8 +283,8 @@ extension WalWalBoostGenerator {
           window: window,
           burstMode: burstCase
         )
-        ss.walwalBoostBorder.startBorderAnimation(borderColor: Colors.walwalOrange.color)
       }
+      walwalBoostBorder.startBorderAnimation(borderColor: Colors.walwalOrange.color)
     case 100:
       walwalBoostCenterLabel.disappearLabels { [weak self] in
         guard let ss = self else { return }
@@ -293,8 +293,8 @@ extension WalWalBoostGenerator {
           in: detailView, window: window,
           burstMode: burstCase
         )
-        ss.walwalBoostBorder.startBorderAnimation(borderColor: .red)
       }
+      walwalBoostBorder.startBorderAnimation(borderColor: .red)
     case 150:
       walwalBoostBorder.startBorderAnimation(borderColor: .clear, isRainbow: true)
     default:
