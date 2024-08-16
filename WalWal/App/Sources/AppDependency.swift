@@ -36,7 +36,7 @@ extension AppDelegate {
       myPageDependencyFactory: myPageDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
       onboardingDependencyFactory: onboardingDependencyFactory,
-      feedDependencyFactory: feedDependencyFactory,
+      feedDependencyFactory: feedDependencyFactory
     )
   }
 }

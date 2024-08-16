@@ -29,8 +29,16 @@ public final class AuthRepositoryImp: AuthRepository {
       .asSingle()
   }
   
-  public func register(nickname: String, petType: String, defaultProfile: String?) -> Single<AuthTokenDTO> {
-    let body = RegisterBody(nickname: nickname, raisePet: petType, profileImageUrl: defaultProfile)
+  public func register(
+    nickname: String,
+    petType: String,
+    defaultProfile: String?
+  ) -> Single<AuthTokenDTO> {
+    let body = RegisterBody(
+      nickname: nickname,
+      raisePet: petType,
+      profileImageUrl: defaultProfile
+    )
     let endPoint = AuthEndpoint<AuthTokenDTO>.register(body: body)
     return networkService.request(endpoint: endPoint, isNeedInterceptor: false)
       .compactMap { $0 }

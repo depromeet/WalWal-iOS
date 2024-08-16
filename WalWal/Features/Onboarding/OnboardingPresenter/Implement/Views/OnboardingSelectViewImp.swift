@@ -28,14 +28,17 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
-  /// 현재 뷰가 pop됐을 경우에 선택 값을 리셋하도록 설정하기 위한 이벤트
-  private let initState = PublishSubject<Void>()
   private let selectPetType = PublishRelay<String>()
   
   // MARK: - UI
   
   private let rootContainer = UIView()
-  private let navigationBar = WalWalNavigationBar(leftItems: [.darkBack], leftItemSize: 40, title: nil, rightItems: [])
+  private let navigationBar = WalWalNavigationBar(
+    leftItems: [.darkBack],
+    leftItemSize: 40,
+    title: nil,
+    rightItems: []
+  )
   private let contentContainer = UIView()
   private let progressView = ProgressView(index: 1)
   private let titleLabel = UILabel().then {
@@ -73,15 +76,6 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
     super.viewDidAppear(animated)
     if self.isMovingToParent {
       permissionView.showAlert()
-    }
-  }
-  
-  public override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
-    
-    /// navigation view에서 pop되는 경우에만 선택 값을 리셋하도록 설정
-    if self.isMovingFromParent {
-      initState.onNext(())
     }
   }
   
@@ -164,10 +158,10 @@ extension OnboardingSelectViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    initState
-      .map { Reactor.Action.initSelectView }
-      .bind(to: reactor.action)
-      .disposed(by: disposeBag)
+//    initState
+//      .map { Reactor.Action.initSelectView }
+//      .bind(to: reactor.action)
+//      .disposed(by: disposeBag)
     
     nextButton.rx.tapped
       .withLatestFrom(selectPetType)

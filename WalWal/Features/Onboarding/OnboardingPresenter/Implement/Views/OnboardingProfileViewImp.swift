@@ -241,9 +241,7 @@ extension OnboardingProfileViewControllerImp: View {
       .filter {
         !$0.isEmpty
       }
-      .drive(with: self) { owner, message in
-        owner.nicknameTextField.rx.errorMessage.onNext(message)
-      }
+      .drive(nicknameTextField.rx.errorMessage)
       .disposed(by: disposeBag)
     
     reactor.state

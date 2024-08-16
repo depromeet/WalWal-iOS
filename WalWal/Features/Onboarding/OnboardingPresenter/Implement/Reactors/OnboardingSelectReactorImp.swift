@@ -33,11 +33,6 @@ public final class OnboardingSelectReactorImp: OnboardingSelectReactor {
         .just(.selectAnimal(dog: dog, cat: cat)),
         .just(.selectCompleteButtonEnable(dog || cat))
       ])
-    case .initSelectView:
-      return .concat([
-        .just(.selectAnimal(dog: false, cat: false)),
-        .just(.selectCompleteButtonEnable(false))
-      ])
     case let .nextButtonTapped(flow):
       coordinator.destination.accept(flow)
       return .never()

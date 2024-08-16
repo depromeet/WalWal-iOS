@@ -91,7 +91,10 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     return OnboardingSelectViewControllerImp(reactor: reactor)
   }
   
-  public func injectOnboardingProfileViewController<T: OnboardingProfileReactor>(reactor: T, petType: String) -> any OnboardingProfileViewController {
+  public func injectOnboardingProfileViewController<T: OnboardingProfileReactor>(
+    reactor: T,
+    petType: String
+  ) -> any OnboardingProfileViewController {
     return OnboardingProfileViewControllerImp(reactor: reactor, petType: petType)
   }
 }

@@ -13,7 +13,11 @@ public struct RegisterBody: Encodable {
   let raisePet: String
   let profileImageUrl: String?
   
-  public init(nickname: String, raisePet: String, profileImageUrl: String?) {
+  public init(
+    nickname: String,
+    raisePet: String,
+    profileImageUrl: String?
+  ) {
     self.nickname = nickname
     self.raisePet = raisePet
     self.profileImageUrl = profileImageUrl

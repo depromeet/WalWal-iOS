@@ -13,7 +13,6 @@ import ReactorKit
 
 public enum OnboardingSelectReactorAction {
   case selectAnimal(dog: Bool, cat: Bool)
-  case initSelectView
   case nextButtonTapped(flow: OnboardingCoordinatorFlow)
 }
 

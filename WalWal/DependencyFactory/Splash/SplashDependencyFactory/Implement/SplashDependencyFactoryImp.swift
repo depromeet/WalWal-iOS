@@ -53,7 +53,7 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       missionDependencyFactory: missionDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
-      onboardingDependencyFactory: onboardingDependencyFactory
+      onboardingDependencyFactory: onboardingDependencyFactory,
       feedDependencyFactory: feedDependencyFactory
     )
   }
