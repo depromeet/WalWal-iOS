@@ -7,3 +7,8 @@
 //
 
 import Foundation
+
+/// Presigned URL Response DTO
+public struct PresignedURLDTO: Decodable {
+  public let presignedUrl: String
+}
