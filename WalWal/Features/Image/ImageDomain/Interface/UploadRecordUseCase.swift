@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+import RxSwift
+
+public protocol UploadRecordUseCase {
+  func execute(recordId: Int, type: String, image: Data) -> Single<Void>
+}

@@ -6,4 +6,22 @@
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import Foundation
+import UIKit
+import ImageData
+import ImageDomain
+
+import RxSwift
+
+public class UploadRecordUseCaseImp: UploadRecordUseCase {
+  
+  let imageRepository: ImageRepository
+  
+  public init(imageRepository: ImageRepository) {
+    self.imageRepository = imageRepository
+  }
+  
+  public func execute(recordId: Int, type: String, image: Data) -> Single<Void> {
+    imageRepository.uploadMissionImage(recordId: recordId, type: type, image: image)
+  }
+}
+
