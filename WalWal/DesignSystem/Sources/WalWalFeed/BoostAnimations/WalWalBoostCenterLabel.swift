@@ -68,7 +68,6 @@ final class WalWalBoostCenterLabel {
   }
   
   func disappearLabels(completion: @escaping () -> Void) {
-    let totalDuration: TimeInterval = 0.6
     let delayBetweenChars: TimeInterval = 0.05
     var completionCount = 0
     
@@ -125,20 +124,20 @@ final class WalWalBoostCenterLabel {
   
   private func animateLabel(_ label: UILabel, shadowLabel: UILabel, delay: TimeInterval) {
     /// 초기 상태 설정
-    label.alpha = 0
-    shadowLabel.alpha = 0
-    label.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
-    shadowLabel.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+    label.alpha = 1
+    shadowLabel.alpha = 1
+    label.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
+    shadowLabel.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
     
     /// 랜덤 시작 각도 (-15도에서 15도 사이)
     let startAngle = CGFloat.random(in: -CGFloat.pi/12...CGFloat.pi/12)
     
     UIView.animateKeyframes(withDuration: 0.6, delay: delay, options: [], animations: {
       /// 알파값 애니메이션
-      UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1) {
-        label.alpha = 1
-        shadowLabel.alpha = 1
-      }
+//      UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1) {
+//        label.alpha = 1
+//        shadowLabel.alpha = 1
+//      }
       
       /// 크기 애니메이션 (팝업 효과)
       UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
@@ -167,15 +166,15 @@ final class WalWalBoostCenterLabel {
     UIView.animateKeyframes(withDuration: 0.6, delay: delay, options: [], animations: {
       
       /// 알파값 애니메이션
-      UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1) {
+      UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 1) {
         label.alpha = 0
         shadowLabel.alpha = 0
       }
 
       /// 크기 애니메이션 (축소 효과)
       UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
-        label.transform = CGAffineTransform(scaleX: 0.1, y: 0.1).rotated(by: endAngle)
-        shadowLabel.transform = CGAffineTransform(scaleX: 0.1, y: 0.1).rotated(by: endAngle)
+        label.transform = CGAffineTransform(scaleX: 0.0, y: 0.0).rotated(by: endAngle)
+        shadowLabel.transform = CGAffineTransform(scaleX: 0.0, y: 0.0).rotated(by: endAngle)
       }
       
       /// 크기 정상화 및 흔들림 애니메이션 (역방향)
