@@ -9,6 +9,7 @@
 import UIKit
 import OnboardingDependencyFactory
 import FCMDependencyFactory
+import ImageDependencyFactory
 import AuthDependencyFactory
 
 import WalWalNetwork
@@ -17,6 +18,7 @@ import BaseCoordinator
 import OnboardingCoordinator
 import OnboardingCoordinatorImp
 
+import ImageDomainImp
 import OnboardingData
 import OnboardingDataImp
 import OnboardingDomain
@@ -26,6 +28,7 @@ import OnboardingPresenterImp
 
 import AuthDomain
 import FCMDomain
+import ImageDomain
 
 public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
   
@@ -35,6 +38,7 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     fcmDependencyFactory: FCMDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory,
     authDependencyFactory: AuthDependencyFactory
   )
   -> any OnboardingCoordinator {
@@ -43,6 +47,7 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
       parentCoordinator: parentCoordinator,
       onboardingDependencyFactory: self,
       fcmDependencyFactory: fcmDependencyFactory,
+      imageDependecyFactory: imageDependencyFactory,
       authDependencyFactory: authDependencyFactory
     )
   }
@@ -57,10 +62,6 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     return NicknameValidUseCaseImp(repository: injectOnboardingRepository())
   }
   
-  public func injectUploadImageUseCase() -> UploadImageUseCase {
-    return UploadImageUseCaseImp(onboardingRepository: injectOnboardingRepository())
-  }
-  
   public func injectOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor {
     return OnboardingReactorImp(coordinator: coordinator)
   }
@@ -72,6 +73,7 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
   public func injectOnboardingProfileReactor<T: OnboardingCoordinator>(
     coordinator: T,
     fcmSaveUseCase: FCMSaveUseCase,
+    uploadMemberUseCase: UploadMemberUseCase,
     registerUseCase: RegisterUseCase,
     userTokensUseCase: UserTokensSaveUseCase
   ) -> any OnboardingProfileReactor {
@@ -79,7 +81,7 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
       coordinator: coordinator,
       registerUseCase: registerUseCase,
       nicknameValidUseCase: injectNicknameValidUseCase(),
-      uploadImageUseCase: injectUploadImageUseCase(),
+      uploadMemberUseCase: uploadMemberUseCase,
       fcmSaveUseCase: fcmSaveUseCase,
       userTokensSaveUseCase: userTokensUseCase
     )
