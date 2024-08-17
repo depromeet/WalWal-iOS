@@ -18,10 +18,4 @@ public final class MyPageRepositoryImp: MyPageRepository {
   public init(networkService: NetworkServiceProtocol) {
     self.networkService = networkService
   }
-  
-  public func withdraw() -> Single<Void> {
-    let endpoint = MyPageEndPoint<EmptyResponse>.withdraw
-    return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
-      .map { _ in Void() }
-  }
 }

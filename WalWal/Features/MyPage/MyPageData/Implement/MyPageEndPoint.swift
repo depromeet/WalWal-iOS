@@ -14,7 +14,6 @@ import Alamofire
 
 enum MyPageEndPoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
-  case withdraw
 }
 
 extension MyPageEndPoint {
@@ -23,33 +22,17 @@ extension MyPageEndPoint {
   }
   
   var path: String {
-    switch self {
-    case .withdraw:
-      return "/auth/withdraw"
-    }
+    return ""
   }
   var method: HTTPMethod {
-    switch self {
-    case .withdraw:
-      return .delete
-    }
+    return .post
   }
   
   var parameters: RequestParams {
-    switch self {
-    case .withdraw:
-      return .requestPlain
-    }
+    return .requestPlain
   }
   
   var headerType: HTTPHeaderType {
-    switch self {
-    case .withdraw:
-      if let accessToken = KeychainWrapper.shared.accessToken {
-        return .authorization(accessToken)
-      } else{
-        return .plain
-      }
-    }
+    return .plain
   }
 }

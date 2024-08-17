@@ -11,6 +11,6 @@ import UIKit
 import RxSwift
 
 public protocol MyPageRepository {
-  func withdraw() -> Single<Void>
+  
 }
 

@@ -107,10 +107,15 @@ extension ProfileSettingReactorImp {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
+        let provider = UserDefaults.string(forUserDefaultsKey: .socialLogin)
         if authAction == .logout {
-          return owner.logout()
+          if provider == "kakao" {
+            return owner.kakaoLogout()
+          } else {
+            return owner.appleLogout()
+          }
         } else if authAction == .withdraw {
-          if UserDefaults.string(forUserDefaultsKey: .socialLogin) == "kakao" {
+          if provider == "kakao" {
             return owner.kakaoUnlink()
           } else {
             return owner.withdraw()
@@ -128,13 +133,6 @@ extension ProfileSettingReactorImp {
       }
   }
   
-  private func logout() -> Observable<Mutation> {
-    if UserDefaults.string(forUserDefaultsKey: .socialLogin) == "kakao" {
-      return kakaoLogout()
-    } else {
-      return appleLogout()
-    }
-  }
   private func appleLogout() -> Observable<Mutation> {
     return tokenDeleteUseCase.execute()
       .asObservable()
