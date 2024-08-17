@@ -79,6 +79,10 @@ extension AuthReactorImp {
       .flatMap { owner, token -> Observable<Mutation> in
         owner.socialLoginRequest(provider: .kakao, token: token)
       }
+      .catch { _ in
+        print("카카오 로그인 취소")
+        return .just(.showIndicator(show: false))
+      }
   }
   
   private func socialLoginRequest(provider: ProviderType, token: String) -> Observable<Mutation> {
