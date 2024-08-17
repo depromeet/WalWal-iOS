@@ -78,7 +78,8 @@ extension ImageEndPoint {
   var headerType: HTTPHeaderType {
     switch self {
     case .membersUploadURL, .membersUploadComplete:
-      let token = KeychainWrapper.shared.accessToken != nil ? KeychainWrapper.shared.accessToken : UserDefaults.string(forUserDefaultsKey: .temporaryToken)
+      let token = (KeychainWrapper.shared.accessToken != nil) ?
+      KeychainWrapper.shared.accessToken : UserDefaults.string(forUserDefaultsKey: .temporaryToken)
       return .authorization(token ?? "")
     case .recordUploadURL, .recordUploadComplete:
       return .authorization(
