@@ -30,7 +30,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
-  public var myPageDependencyFactory: MyPageDependencyFactory
+  private let myPageDependencyFactory: MyPageDependencyFactory
   private let fcmDependencyFactory: FCMDependencyFactory
   private let authDependencyFactory: AuthDependencyFactory
   public required init(

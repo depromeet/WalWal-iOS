@@ -28,8 +28,8 @@ public final class AuthCoordinatorImp: AuthCoordinator {
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
-  public var authDependencyFactory: AuthDependencyFactory
-  private var fcmDependencyFactory: FCMDependencyFactory
+  private let authDependencyFactory: AuthDependencyFactory
+  private let fcmDependencyFactory: FCMDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
