@@ -9,6 +9,8 @@
 import MyPageDomain
 import MyPagePresenter
 import MyPageCoordinator
+import GlobalState
+import DesignSystem
 
 import ReactorKit
 import RxSwift
@@ -21,21 +23,43 @@ public final class MyPageReactorImp: MyPageReactor {
   public let initialState: State
   public let coordinator: any MyPageCoordinator
   
+  private let fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase
+  
   public init(
-    coordinator: any MyPageCoordinator
+    coordinator: any MyPageCoordinator,
+    fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase
   ) {
     self.coordinator = coordinator
+    self.fetchWalWalCalendarModelsUseCase = fetchWalWalCalendarModelsUseCase
     self.initialState = State()
+  }
+  
+  /// `transform` 메서드를 사용하여 액션 스트림을 변형합니다.
+  public func transform(action: Observable<Action>) -> Observable<Action> {
+    /// 초기 액션으로 `loadCalendarData`를 추가
+    let initialLoadAction = Observable.just(Action.loadCalendarData)
+    /// 기존 액션 스트림과 초기 액션 스트림을 병합
+    return Observable.merge(action, initialLoadAction)
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .didSelectCalendarItem(model):
-      return Observable.just(.setSelectedCalendarItem(model))
+      return fetchWalWalCalendarModelsUseCase.execute()
+        .map { records -> [WalWalCalendarModel] in
+          self.convertToWalWalCalendarModels(from: records)
+        }
+        .map { Mutation.setCalendarData($0) }
     case .didTapSettingButton:
       return Observable.just(.moveToSettingView)
     case .didTapEditButton:
       return Observable.just(.moveToEditView)
+    case .loadCalendarData:
+      return fetchWalWalCalendarModelsUseCase.execute()
+        .map { records -> [WalWalCalendarModel] in
+          self.convertToWalWalCalendarModels(from: records)
+        }
+        .map { Mutation.setCalendarData($0) }
     }
   }
   
@@ -45,11 +69,26 @@ public final class MyPageReactorImp: MyPageReactor {
     case let .setSelectedCalendarItem(date):
       newState.selectedDate = date
       coordinator.destination.accept(.showRecordDetail)
+    case let .setCalendarData(calendarData):
+      newState.calendarData = calendarData
     case .moveToSettingView:
       coordinator.destination.accept(.showProfileSetting)
     case .moveToEditView:
       coordinator.destination.accept(.showProfileEdit)
     }
     return newState
+  }
+}
+
+extension MyPageReactorImp {
+  private func convertToWalWalCalendarModels(from records: [GlobalMissonRecordListModel]) -> [WalWalCalendarModel] {
+    return records.compactMap { record in
+      let image = GlobalState.shared.imageStore[record.imageUrl]
+      return WalWalCalendarModel(
+        imageId: record.imageId,
+        date: record.missionDate,
+        image: image
+      )
+    }
   }
 }
