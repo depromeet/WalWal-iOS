@@ -39,8 +39,18 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     return TokenDeleteUseCaseImp()
   }
   
-  public func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor {
-    return MyPageReactorImp(coordinator: coordinator)
+  public func injectFetchWalWalCalendarModelsUseCase() -> FetchWalWalCalendarModelsUseCase {
+    return FetchWalWalCalendarModelsUseCaseImp()
+  }
+  
+  public func injectMyPageReactor<T: MyPageCoordinator>(
+    coordinator: T,
+    fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase
+  ) -> any MyPageReactor {
+    return MyPageReactorImp(
+      coordinator: coordinator,
+      fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase
+    )
   }
   
   public func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController {

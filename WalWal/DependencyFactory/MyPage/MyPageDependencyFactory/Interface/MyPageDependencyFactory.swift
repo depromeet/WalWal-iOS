@@ -21,7 +21,11 @@ public protocol MyPageDependencyFactory {
     parentCoordinator: (any BaseCoordinator)?
   ) -> any MyPageCoordinator
   func injectTokenDeleteUseCase() -> TokenDeleteUseCase
-  func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor
+  func injectFetchWalWalCalendarModelsUseCase() -> FetchWalWalCalendarModelsUseCase
+  func injectMyPageReactor<T: MyPageCoordinator>(
+    coordinator: T,
+    fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase
+  ) -> any MyPageReactor
   func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
   func injectRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor
   func injectRecordDetailViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController
