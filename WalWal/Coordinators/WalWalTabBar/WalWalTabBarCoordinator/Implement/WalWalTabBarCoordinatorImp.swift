@@ -133,7 +133,7 @@ extension WalWalTabBarCoordinatorImp {
   
   fileprivate func startMission(navigationController: UINavigationController) -> any BaseCoordinator {
     print("미션 탭 선택")
-    let missionCoordinator = missionDependencyFactory.makeMissionCoordinator(
+    let missionCoordinator = missionDependencyFactory.injectMissionCoordinator(
       navigationController: navigationController,
       parentCoordinator: self
     )
@@ -142,24 +142,24 @@ extension WalWalTabBarCoordinatorImp {
   }
   
   fileprivate func startFeed(navigationController: UINavigationController) -> any BaseCoordinator {
-     print("피드 탭 선택")
+    print("피드 탭 선택")
     let feedCoordinator = feedDependencyFactory.makeFeedCoordinator(
-       navigationController: navigationController,
-       parentCoordinator: self
-     )
-     childCoordinator = feedCoordinator
-     feedCoordinator.start()
-     return feedCoordinator
-   }
+      navigationController: navigationController,
+      parentCoordinator: self
+    )
+    childCoordinator = feedCoordinator
+    feedCoordinator.start()
+    return feedCoordinator
+  }
   
   /// fileprivate func startNotification() {
-    /// print("알림 탭 선택")
-    /// let notificationCoordinator = notificationDependencyFactory.makenotificationCoordinator(
-    ///   navigationController: navigationController,
-    ///   parentCoordinator: self
-    /// )
-    /// childCoordinator = notificationCoordinator
-    /// notificationCoordinator.start()
+  /// print("알림 탭 선택")
+  /// let notificationCoordinator = notificationDependencyFactory.makenotificationCoordinator(
+  ///   navigationController: navigationController,
+  ///   parentCoordinator: self
+  /// )
+  /// childCoordinator = notificationCoordinator
+  /// notificationCoordinator.start()
   /// }
   
   fileprivate func startMyPage(navigationController: UINavigationController) -> any BaseCoordinator{
