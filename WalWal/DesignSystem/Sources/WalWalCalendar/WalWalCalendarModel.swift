@@ -7,19 +7,29 @@
 //
 
 import Foundation
+import UIKit
 
-public struct WalWalCalendarModel {
-  public let imageId: String
+public struct WalWalCalendarModel: Equatable {
+  public let imageId: Int
   public let date: String
-  public let imageData: Data
+  public let image: UIImage?
   
   public init(
-    imageId: String,
+    imageId: Int,
     date: String,
-    imageData: Data
+    image: UIImage?
   ) {
     self.imageId = imageId
     self.date = date
-    self.imageData = imageData
+    self.image = image
+  }
+
+  public static func ==(
+    lhs: WalWalCalendarModel,
+    rhs: WalWalCalendarModel
+  ) -> Bool {
+    return lhs.imageId == rhs.imageId &&
+    lhs.date == rhs.date &&
+    lhs.image == rhs.image
   }
 }
