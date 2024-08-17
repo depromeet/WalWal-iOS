@@ -25,7 +25,6 @@ enum DependencyFactoryStr: String {
   case mission = "Mission"
   case myPage = "MyPage"
   case feed = "Feed"
-  case sample = "Sample"
   case fcm = "FCM"
   case records = "Records"
 }
@@ -34,9 +33,6 @@ enum CoordinatorStr: String {
   case base = "Base"
   case app = "App"
   case walwalTabBar = "WalWalTabBar"
-  case sampleAuth = "SampleAuth"
-  case sampleApp = "SampleApp"
-  case sampleHome = "SampleHome"
   case auth = "Auth"
   case onboarding = "Onboarding"
   case mission = "Mission"
@@ -48,7 +44,6 @@ enum FeatureStr: String {
   case splash = "Splash"
   case auth = "Auth"
   case onboarding = "Onboarding"
-  case sample = "Sample"
   case mission = "Mission"
   case myPage = "MyPage"
   case fcm = "FCM"
@@ -103,7 +98,6 @@ extension TargetDependency {
   
   public struct DependencyFactory {
     public struct Splash: WalWalDependency { }
-    public struct Sample: WalWalDependency { }
     public struct MyPage: WalWalDependency { }
     public struct Auth: WalWalDependency { }
     public struct Onboarding: WalWalDependency { }
@@ -123,9 +117,6 @@ extension TargetDependency {
     public struct Mission: WalWalDependency { }
     public struct MyPage: WalWalDependency { }
     public struct Feed: WalWalDependency { }
-    public struct SampleAuth: WalWalDependency { }
-    public struct SampleApp: WalWalDependency { }
-    public struct SampleHome: WalWalDependency { }
   }
   
   public struct Feature {
@@ -142,12 +133,6 @@ extension TargetDependency {
     }
     
     public struct Onboarding {
-      public struct Data: WalWalDependency {}
-      public struct Domain: WalWalDependency {}
-      public struct Presenter: WalWalDependency {}
-    }
-    
-    public struct Sample {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
       public struct Presenter: WalWalDependency {}
@@ -203,11 +188,6 @@ public extension TargetDependency.DependencyFactory.Onboarding {
 public extension TargetDependency.DependencyFactory.WalWalTabBar {
   static let Interface = Self.project(dependencyName: .walwalTabBar, isInterface: true)
   static let Implement = Self.project(dependencyName: .walwalTabBar, isInterface: false)
-}
-
-public extension TargetDependency.DependencyFactory.Sample {
-  static let Interface = Self.project(dependencyName: .sample, isInterface: true)
-  static let Implement = Self.project(dependencyName: .sample, isInterface: false)
 }
 
 public extension TargetDependency.DependencyFactory.Mission {
@@ -282,21 +262,6 @@ public extension TargetDependency.Feature.Onboarding.Data {
   static let Implement = Self.project(name: .onboarding, layer: .data, isInterface: false)
 }
 
-public extension TargetDependency.Feature.Sample.Presenter {
-  static let Interface = Self.project(name: .sample, layer: .presenter, isInterface: true)
-  static let Implement = Self.project(name: .sample, layer: .presenter, isInterface: false)
-}
-
-public extension TargetDependency.Feature.Sample.Domain {
-  static let Interface = Self.project(name: .sample, layer: .domain, isInterface: true)
-  static let Implement = Self.project(name: .sample, layer: .domain, isInterface: false)
-}
-
-public extension TargetDependency.Feature.Sample.Data {
-  static let Interface = Self.project(name: .sample, layer: .data, isInterface: true)
-  static let Implement = Self.project(name: .sample, layer: .data, isInterface: false)
-}
-
 public extension TargetDependency.Feature.Mission.Presenter {
   static let Interface = Self.project(name: .mission, layer: .presenter, isInterface: true)
   static let Implement = Self.project(name: .mission, layer: .presenter, isInterface: false)
@@ -363,21 +328,6 @@ public extension TargetDependency.Feature.Feed.Data {
 }
 
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
-
-public extension TargetDependency.Coordinator.SampleApp {
-  static let Interface = Self.project(name: .sampleApp, isInterface: true)
-  static let Implement = Self.project(name: .sampleApp, isInterface: false)
-}
-
-public extension TargetDependency.Coordinator.SampleAuth {
-  static let Interface = Self.project(name: .sampleAuth, isInterface: true)
-  static let Implement = Self.project(name: .sampleAuth, isInterface: false)
-}
-
-public extension TargetDependency.Coordinator.SampleHome {
-  static let Interface = Self.project(name: .sampleHome, isInterface: true)
-  static let Implement = Self.project(name: .sampleHome, isInterface: false)
-}
 
 public extension TargetDependency.Coordinator.App {
   static let Interface = Self.project(name: .app, isInterface: true)
