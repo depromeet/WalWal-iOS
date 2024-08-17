@@ -67,17 +67,23 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     return TokenDeleteUseCaseImp()
   }
   
+  public func injectKakaoLoginUseCase() -> KakaoLoginUseCase {
+    return KakaoLoginUseCaseImp()
+  }
+  
   public func injectAuthReactor<T: AuthCoordinator>(
     coordinator: T,
     socialLoginUseCase: SocialLoginUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
-    userTokensSaveUseCase: UserTokensSaveUseCase
+    userTokensSaveUseCase: UserTokensSaveUseCase,
+    kakaoLoginUseCase: KakaoLoginUseCase
   ) -> any AuthReactor {
     return AuthReactorImp(
       coordinator: coordinator,
       socialLoginUseCase: socialLoginUseCase,
       fcmSaveUseCase: fcmSaveUseCase,
-      userTokensSaveUseCase: userTokensSaveUseCase
+      userTokensSaveUseCase: userTokensSaveUseCase,
+      kakaoLoginUseCase: kakaoLoginUseCase
     )
   }
   
