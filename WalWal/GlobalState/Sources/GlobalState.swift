@@ -33,7 +33,7 @@ public final class GlobalState {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, records -> Observable<Void> in
-        return owner.preloadImages()
+        return owner.preloadImages(globalState: .missonRecordList)
       }
       .subscribe()
       .disposed(by: disposeBag)
@@ -63,17 +63,22 @@ public final class GlobalState {
   }
   
   /// 이미지 미리 불러오기 메서드
-  private func preloadImages() -> Observable<Void> {
-    let downloadTasks = self.calendarRecords.value.map { record in
-      return downloadAndCacheImage(for: record)
+  private func preloadImages(globalState: GlobalStateType) -> Observable<Void> {
+    switch globalState {
+    case .missonRecordList:
+      let downloadTasks = self.calendarRecords.value.map { record in
+        return downloadAndCacheImage(for: record.imageUrl)
+      }
+      return Observable.concat(downloadTasks) /// 모든 다운로드 작업을 순차적으로 실행
+    case .c: /// 추가로 다루게 되는 모델
+      return .just(())
     }
-    return Observable.concat(downloadTasks) /// 모든 다운로드 작업을 순차적으로 실행
   }
   
   /// 이미지를 다운로드하고 캐시하는 메서드
-  private func downloadAndCacheImage(for record: GlobalMissonRecordListModel) -> Observable<Void> {
+  private func downloadAndCacheImage(for imageUrl: String) -> Observable<Void> {
     return Observable.create { observer in
-      let url = URL(string: record.imageUrl)
+      let url = URL(string: imageUrl)
       guard let url = url else {
         observer.onNext(())
         observer.onCompleted()
@@ -90,12 +95,12 @@ public final class GlobalState {
         switch result {
         case .success(let value):
           /// 다운로드된 이미지를 캐시 저장소에 저장 (key로써 imageUrl을 사용허자~)
-          owner.imageStore[record.imageUrl] = value.image
+          owner.imageStore[imageUrl] = value.image
           observer.onNext(())
         case .failure(let error):
           print("""
             - 😵 Kingfisher 이미지 다운로드 실패
-            - 😵 imageUrl: \(record.imageUrl)
+            - 😵 imageUrl: \(url)
             - 😵 error: \(error)
             """)
           
