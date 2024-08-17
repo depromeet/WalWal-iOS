@@ -29,7 +29,7 @@ extension AppDelegate {
     let fcmDependencyFactory = FCMDependencyFactoryImp()
     let onboardingDependencyFactory = OnboardingDependencyFactoryImp()
     let feedDependencyFactory = FeedDependencyFactoryImp()
-    let recordsDependencyFactory = RecordsDependencyFactoryImp(),
+    let recordsDependencyFactory = RecordsDependencyFactoryImp()
     let imageDependencyFactory = ImageDependencyFactoryImp()
     
     return splashDependencyFactory.injectAppCoordinator(
