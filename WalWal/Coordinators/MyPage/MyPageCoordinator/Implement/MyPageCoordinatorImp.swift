@@ -110,7 +110,8 @@ extension MyPageCoordinatorImp {
       coordinator: self,
       tokenDeleteUseCase: myPageDependencyFactory.injectTokenDeleteUseCase(),
       fcmDeleteUseCase: fcmDependencyFactory.injectFCMDeleteUseCase(),
-      withdrawUseCase: myPageDependencyFactory.injectWithdrawUseCase()
+      withdrawUseCase: myPageDependencyFactory.injectWithdrawUseCase(),
+      logoutUseCase: myPageDependencyFactory.injectLogoutUseCase()
     )
     let ProfileSettingVC = myPageDependencyFactory.injectProfileSettingViewController(reactor: reactor)
     self.pushViewController(viewController: ProfileSettingVC, animated: true)

@@ -21,6 +21,14 @@ public final class WithdrawUseCaseImp: WithdrawUseCase {
   }
   
   public func execute() -> Single<Void> {
-    return mypageRepository.withdraw()
+    if UserDefaults.string(forUserDefaultsKey: .socialLogin) == "kakao" {
+      return KakaoLogoutManager().kakaoUnlink()
+        .flatMap {
+          self.mypageRepository.withdraw()
+        }
+    } else {
+      return mypageRepository.withdraw()
+    }
+    
   }
 }

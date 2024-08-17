@@ -28,17 +28,20 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   private let tokenDeleteUseCase: TokenDeleteUseCase
   private let fcmDeleteUseCase: FCMDeleteUseCase
   private let withdrawUseCase: WithdrawUseCase
+  private let logoutUseCase: LogoutUseCase
   
   public init(
     coordinator: any MyPageCoordinator,
     tokenDeleteUseCase: TokenDeleteUseCase,
     fcmDeleteUseCase: FCMDeleteUseCase,
-    withdrawUseCase: WithdrawUseCase
+    withdrawUseCase: WithdrawUseCase,
+    logoutUseCase: LogoutUseCase
   ) {
     self.coordinator = coordinator
     self.tokenDeleteUseCase = tokenDeleteUseCase
     self.fcmDeleteUseCase = fcmDeleteUseCase
     self.withdrawUseCase = withdrawUseCase
+    self.logoutUseCase = logoutUseCase
     self.initialState = State(
       isLoading: false,
       appVersionString: "",
@@ -113,7 +116,7 @@ extension ProfileSettingReactorImp {
   }
   
   private func logout() -> Observable<Mutation> {
-    return KakaoLogoutManager().kakaoLogout()
+    return logoutUseCase.execute()
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
@@ -127,7 +130,7 @@ extension ProfileSettingReactorImp {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
-        print("탈퇴 성공")
+        print("탈퇴 완료")
         owner.tokenDeleteUseCase.execute()
         return .just(.moveToAuth)
       }
@@ -136,7 +139,6 @@ extension ProfileSettingReactorImp {
         self.tokenDeleteUseCase.execute()
         return .never()
       }
-      
   }
   
   

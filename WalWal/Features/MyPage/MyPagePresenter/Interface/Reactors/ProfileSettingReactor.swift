@@ -76,6 +76,7 @@ public protocol ProfileSettingReactor: Reactor where Action == ProfileSettingRea
     coordinator: any MyPageCoordinator,
     tokenDeleteUseCase: TokenDeleteUseCase,
     fcmDeleteUseCase: FCMDeleteUseCase,
-    withdrawUseCase: WithdrawUseCase
+    withdrawUseCase: WithdrawUseCase,
+    logoutUseCase: LogoutUseCase
   )
 }

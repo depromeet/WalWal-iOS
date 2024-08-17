@@ -9,6 +9,7 @@
 import Foundation
 import AuthData
 import AuthDomain
+import LocalStorage
 
 import RxSwift
 
@@ -20,7 +21,10 @@ public final class SocialLoginUseCaseImp: SocialLoginUseCase {
   }
   public func execute(provider: ProviderType, token: String) -> Single<AuthToken> {
     return authDataRepository.socialLogin(provider: provider.rawValue, token: token)
-      .map { AuthToken(dto: $0) }
+      .map {
+        UserDefaults.setValue(value: provider.rawValue, forUserDefaultKey: .socialLogin)
+        return AuthToken(dto: $0)
+      }
       .asObservable()
       .asSingle()
   }

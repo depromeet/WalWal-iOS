@@ -56,6 +56,10 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     return WithdrawUseCaseImp(mypageRepository: injectMyPageRepository())
   }
   
+  public func injectLogoutUseCase() -> LogoutUseCase {
+    return LogoutUseCaseImp()
+  }
+  
   public func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor {
     return MyPageReactorImp(coordinator: coordinator)
   }
@@ -76,13 +80,15 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     coordinator: T,
     tokenDeleteUseCase: TokenDeleteUseCase,
     fcmDeleteUseCase: FCMDeleteUseCase,
-    withdrawUseCase: WithdrawUseCase
+    withdrawUseCase: WithdrawUseCase,
+    logoutUseCase: LogoutUseCase
   ) -> any ProfileSettingReactor {
     return ProfileSettingReactorImp(
       coordinator: coordinator,
       tokenDeleteUseCase: tokenDeleteUseCase,
       fcmDeleteUseCase: fcmDeleteUseCase,
-      withdrawUseCase: withdrawUseCase
+      withdrawUseCase: withdrawUseCase,
+      logoutUseCase: logoutUseCase
     )
   }
   
