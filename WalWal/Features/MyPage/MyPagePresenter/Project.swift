@@ -20,6 +20,9 @@ let project = Project.invertedPresenterWithDemoApp(
     .Feature.MyPage.Domain.Interface,
   ],
   implementDependencies: [
+    .ThirdParty.KakaoSDKAuth,
+    .ThirdParty.KakaoSDKUser,
+    
     .DependencyFactory.MyPage.Interface,
     .DesignSystem
   ],

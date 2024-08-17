@@ -100,8 +100,7 @@ extension ProfileSettingReactorImp {
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
         if authAction == .logout {
-          owner.tokenDeleteUseCase.execute()
-          return .just(.moveToAuth)
+          return owner.logout()
         } else if authAction == .withdraw {
           return owner.withdraw()
         }
@@ -113,14 +112,28 @@ extension ProfileSettingReactorImp {
       }
   }
   
+  private func logout() -> Observable<Mutation> {
+    return KakaoLogoutManager().kakaoLogout()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
+        owner.tokenDeleteUseCase.execute()
+        return .just(.moveToAuth)
+      }
+  }
+  
   private func withdraw() -> Observable<Mutation> {
     return withdrawUseCase.execute()
       .asObservable()
-      .flatMap { _ -> Observable<Mutation> in
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
+        print("탈퇴 성공")
+        owner.tokenDeleteUseCase.execute()
         return .just(.moveToAuth)
       }
       .catch { error -> Observable<Mutation> in
-        print(error.localizedDescription)
+        print("탈퇴 실패 ", error.localizedDescription)
+        self.tokenDeleteUseCase.execute()
         return .never()
       }
       
