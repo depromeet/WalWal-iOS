@@ -27,6 +27,7 @@ public final class SplashReactorImp: SplashReactor {
   private let checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase
   private let fcmSaveUseCase: FCMSaveUseCase
   private let checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
+  private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   private let disposeBag = DisposeBag()
   
   public init(
@@ -34,13 +35,15 @@ public final class SplashReactorImp: SplashReactor {
     checkTokenUseCase: CheckTokenUsecase,
     checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
-    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   ) {
     self.coordinator = coordinator
     self.checkTokenUseCase = checkTokenUseCase
     self.checkIsFirstLoadedUseCase = checkIsFirstLoadedUseCase
     self.fcmSaveUseCase = fcmSaveUseCase
     self.checkRecordCalendarUseCase = checkRecordCalendarUseCase
+    self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
     self.initialState = State()
   }
   
@@ -102,26 +105,23 @@ extension SplashReactorImp {
   }
   
   private func checkRecordCalendar() -> Observable<Void> {
-    /// 최초 cursor 값 설정
-    return fetchCalendarRecords(cursor: "2024-01-01", limit: 10)
+    /// 우선 저장되어 있는 GlobalRecords 지우고, 새로운 calendar fetch
+    return removeGlobalCalendarRecordsUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ in owner.fetchCalendarRecords(cursor: "2024-01-01", limit: 10) }
   }
   
   private func fetchCalendarRecords(cursor: String, limit: Int) -> Observable<Void> {
     return checkRecordCalendarUseCase.execute(cursor: cursor, limit: limit)
       .asObservable()
       .flatMap { calendarModel -> Observable<Void> in
-        print("기록 캘린더 확인 완료: \(calendarModel)")
-        calendarModel.saveToGlobalState()
-        // nextCursor가 있으면 계속 데이터를 가져옴
         if let nextCursor = calendarModel.nextCursor.nextCursor {
           return self.fetchCalendarRecords(cursor: nextCursor, limit: limit)
         } else {
           return .just(Void())
         }
       }
-      .catch { error in
-        print("기록 캘린더 확인 중 에러 발생: \(error)")
-        return .just(Void()) // 에러 발생 시에도 흐름이 중단되지 않도록 처리
-      }
+      .catch { error in return .just(Void()) }
   }
 }

@@ -49,7 +49,8 @@ public protocol SplashDependencyFactory {
     checkTokenUseCase: CheckTokenUsecase,
     checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
-    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   ) -> any SplashReactor
   
   func injectSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController
