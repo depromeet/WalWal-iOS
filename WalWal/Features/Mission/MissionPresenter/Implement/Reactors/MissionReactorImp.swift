@@ -21,11 +21,14 @@ public final class MissionReactorImp: MissionReactor {
   
   public let initialState: State
   public let coordinator: any MissionCoordinator
+  public let todayMissionUseCase: any TodayMissionUseCase
   
   public init(
-    coordinator: any MissionCoordinator
+    coordinator: any MissionCoordinator,
+    todayMissionUseCase: any TodayMissionUseCase
   ) {
     self.coordinator = coordinator
+    self.todayMissionUseCase = todayMissionUseCase
     self.initialState = State()
   }
   

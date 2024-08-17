@@ -36,6 +36,7 @@ public protocol MissionReactor: Reactor where Action == MissionReactorAction, Mu
   var coordinator: any MissionCoordinator { get }
   
   init(
-    coordinator: any MissionCoordinator
+    coordinator: any MissionCoordinator,
+    todayMissionUseCase: any TodayMissionUseCase
   )
 }
