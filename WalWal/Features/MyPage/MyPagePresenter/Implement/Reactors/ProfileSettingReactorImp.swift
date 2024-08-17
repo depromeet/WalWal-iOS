@@ -31,19 +31,22 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   private let fcmDeleteUseCase: FCMDeleteUseCase
   private let withdrawUseCase: WithdrawUseCase
   private let kakaoLogoutUseCase: KakaoLogoutUseCase
+  private let kakaoUnlinkUseCase: KakaoUnlinkUseCase
   
   public init(
     coordinator: any MyPageCoordinator,
     tokenDeleteUseCase: TokenDeleteUseCase,
     fcmDeleteUseCase: FCMDeleteUseCase,
     withdrawUseCase: WithdrawUseCase,
-    kakaoLogoutUseCase: KakaoLogoutUseCase
+    kakaoLogoutUseCase: KakaoLogoutUseCase,
+    kakaoUnlinkUseCase: KakaoUnlinkUseCase
   ) {
     self.coordinator = coordinator
     self.tokenDeleteUseCase = tokenDeleteUseCase
     self.fcmDeleteUseCase = fcmDeleteUseCase
     self.withdrawUseCase = withdrawUseCase
     self.kakaoLogoutUseCase = kakaoLogoutUseCase
+    self.kakaoUnlinkUseCase = kakaoUnlinkUseCase
     self.initialState = State(
       isLoading: false,
       appVersionString: "",
@@ -107,7 +110,11 @@ extension ProfileSettingReactorImp {
         if authAction == .logout {
           return owner.logout()
         } else if authAction == .withdraw {
-          return owner.withdraw()
+          if UserDefaults.string(forUserDefaultsKey: .socialLogin) == "kakao" {
+            return owner.kakaoUnlink()
+          } else {
+            return owner.withdraw()
+          }
         }
         return .never()
       }
@@ -134,7 +141,6 @@ extension ProfileSettingReactorImp {
       .flatMap { _ -> Observable<Mutation> in
         return .just(.moveToAuth)
       }
-      
   }
   
   private func kakaoLogout() -> Observable<Mutation> {
@@ -166,6 +172,15 @@ extension ProfileSettingReactorImp {
         print("탈퇴 실패 ", error.localizedDescription)
         let _ = self.tokenDeleteUseCase.execute()
         return .just(.moveToAuth)
+      }
+  }
+  
+  private func kakaoUnlink() -> Observable<Mutation> {
+    return kakaoUnlinkUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
+        owner.withdraw()
       }
   }
   

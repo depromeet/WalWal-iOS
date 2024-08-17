@@ -7,3 +7,13 @@
 //
 
 import Foundation
+import AuthDomain
+
+import RxSwift
+
+public final class KakaoUnlinkUseCaseImp: KakaoUnlinkUseCase {
+  public init() { }
+  public func execute() -> Single<Void> {
+    return KakaoLoginManager().kakaoUnlink()
+  }
+}

@@ -73,14 +73,16 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     tokenDeleteUseCase: TokenDeleteUseCase,
     fcmDeleteUseCase: FCMDeleteUseCase,
     withdrawUseCase: WithdrawUseCase,
-    kakaoLogoutUseCase: KakaoLogoutUseCase
+    kakaoLogoutUseCase: KakaoLogoutUseCase,
+    kakaoUnlinkUseCase: KakaoUnlinkUseCase
   ) -> any ProfileSettingReactor {
     return ProfileSettingReactorImp(
       coordinator: coordinator,
       tokenDeleteUseCase: tokenDeleteUseCase,
       fcmDeleteUseCase: fcmDeleteUseCase,
       withdrawUseCase: withdrawUseCase,
-      kakaoLogoutUseCase: kakaoLogoutUseCase
+      kakaoLogoutUseCase: kakaoLogoutUseCase,
+      kakaoUnlinkUseCase: kakaoUnlinkUseCase
     )
   }
   

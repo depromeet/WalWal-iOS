@@ -78,6 +78,7 @@ public protocol ProfileSettingReactor: Reactor where Action == ProfileSettingRea
     tokenDeleteUseCase: TokenDeleteUseCase,
     fcmDeleteUseCase: FCMDeleteUseCase,
     withdrawUseCase: WithdrawUseCase,
-    kakaoLogoutUseCase: KakaoLogoutUseCase
+    kakaoLogoutUseCase: KakaoLogoutUseCase,
+    kakaoUnlinkUseCase: KakaoUnlinkUseCase
   )
 }

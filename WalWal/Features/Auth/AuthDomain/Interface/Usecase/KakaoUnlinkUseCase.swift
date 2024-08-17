@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+import RxSwift
+
+public protocol KakaoUnlinkUseCase {
+  func execute() -> Single<Void>
+}
