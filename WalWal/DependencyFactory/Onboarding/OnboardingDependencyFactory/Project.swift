@@ -18,6 +18,7 @@ let project = Project.invertedDualTargetProject(
     .Coordinator.Onboarding.Interface,
     .DependencyFactory.FCM.Interface,
     .DependencyFactory.Auth.Interface,
+    .DependencyFactory.Image.Interface,
     
     .Feature.Onboarding.Presenter.Interface
   ],

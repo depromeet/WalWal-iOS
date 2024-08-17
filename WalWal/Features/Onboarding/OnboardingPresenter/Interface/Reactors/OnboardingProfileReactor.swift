@@ -10,6 +10,7 @@ import OnboardingDomain
 import OnboardingCoordinator
 import DesignSystem
 import FCMDomain
+import ImageDomain
 import AuthDomain
 
 import ReactorKit
@@ -44,7 +45,7 @@ public protocol OnboardingProfileReactor:
     coordinator: any OnboardingCoordinator,
     registerUseCase: any RegisterUseCase,
     nicknameValidUseCase: any NicknameValidUseCase,
-    uploadImageUseCase: any UploadImageUseCase,
+    uploadMemberUseCase: UploadMemberUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase
   )
