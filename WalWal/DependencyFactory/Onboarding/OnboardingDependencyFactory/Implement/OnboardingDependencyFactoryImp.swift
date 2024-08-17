@@ -18,7 +18,6 @@ import BaseCoordinator
 import OnboardingCoordinator
 import OnboardingCoordinatorImp
 
-import ImageDomainImp
 import OnboardingData
 import OnboardingDataImp
 import OnboardingDomain

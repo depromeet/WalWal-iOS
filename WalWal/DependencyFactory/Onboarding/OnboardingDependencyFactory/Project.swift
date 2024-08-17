@@ -28,8 +28,6 @@ let project = Project.invertedDualTargetProject(
     .Feature.Auth.Data.Implement,
     .Feature.Onboarding.Data.Implement,
     .Feature.Onboarding.Domain.Implement,
-    .Feature.Onboarding.Presenter.Implement,
-    .Feature.Image.Data.Implement,
-    .Feature.Image.Domain.Implement
+    .Feature.Onboarding.Presenter.Implement
   ]
 )
