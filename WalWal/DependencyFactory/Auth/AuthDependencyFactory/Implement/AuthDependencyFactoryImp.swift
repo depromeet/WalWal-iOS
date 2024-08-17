@@ -71,6 +71,10 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     return KakaoLoginUseCaseImp()
   }
   
+  public func injectWithdrawUseCase() -> WithdrawUseCase {
+    return WithdrawUseCaseImp(authRepository: injectAuthRepository())
+  }
+  
   public func injectAuthReactor<T: AuthCoordinator>(
     coordinator: T,
     socialLoginUseCase: SocialLoginUseCase,

@@ -32,6 +32,7 @@ public protocol AuthDependencyFactory {
   func injectTokenDeleteUseCase() -> TokenDeleteUseCase
   func injectKakaoLogoutUseCase() -> KakaoLogoutUseCase
   func injectKakaoLoginUseCase() -> KakaoLoginUseCase
+  func injectWithdrawUseCase() ->  WithdrawUseCase
   
   func injectAuthReactor<T: AuthCoordinator>(
     coordinator: T,

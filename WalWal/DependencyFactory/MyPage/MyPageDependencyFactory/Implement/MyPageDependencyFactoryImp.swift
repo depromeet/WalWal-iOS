@@ -52,10 +52,6 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     return MyPageRepositoryImp(networkService: networkService)
   }
   
-  public func injectWithdrawUseCase() -> WithdrawUseCase {
-    return WithdrawUseCaseImp(mypageRepository: injectMyPageRepository())
-  }
-  
   public func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor {
     return MyPageReactorImp(coordinator: coordinator)
   }

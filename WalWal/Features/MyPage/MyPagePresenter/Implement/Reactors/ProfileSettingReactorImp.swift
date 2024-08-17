@@ -150,19 +150,22 @@ extension ProfileSettingReactorImp {
       }
   }
   
+  
   private func withdraw() -> Observable<Mutation> {
     return withdrawUseCase.execute()
       .asObservable()
       .withUnretained(self)
-      .flatMap { owner, _ -> Observable<Mutation> in
-        print("탈퇴 완료")
+      .flatMap { owner, _ in
         owner.tokenDeleteUseCase.execute()
+      }
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
         return .just(.moveToAuth)
       }
       .catch { error -> Observable<Mutation> in
         print("탈퇴 실패 ", error.localizedDescription)
-        self.tokenDeleteUseCase.execute()
-        return .never()
+        let _ = self.tokenDeleteUseCase.execute()
+        return .just(.moveToAuth)
       }
   }
   

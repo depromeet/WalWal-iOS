@@ -30,7 +30,6 @@ public protocol MyPageDependencyFactory {
   ) -> any MyPageCoordinator
   
   func injectMyPageRepository() -> MyPageRepository
-  func injectWithdrawUseCase() -> WithdrawUseCase
   func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor
   func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
   func injectRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor

@@ -114,7 +114,7 @@ extension MyPageCoordinatorImp {
       coordinator: self,
       tokenDeleteUseCase: authDependencyFactory.injectTokenDeleteUseCase(),
       fcmDeleteUseCase: fcmDependencyFactory.injectFCMDeleteUseCase(),
-      withdrawUseCase: myPageDependencyFactory.injectWithdrawUseCase(), // TODO: - auth 주입
+      withdrawUseCase: authDependencyFactory.injectWithdrawUseCase(), // TODO: - auth 주입
       kakaoLogoutUseCase: authDependencyFactory.injectKakaoLogoutUseCase()
     )
     let ProfileSettingVC = myPageDependencyFactory.injectProfileSettingViewController(reactor: reactor)

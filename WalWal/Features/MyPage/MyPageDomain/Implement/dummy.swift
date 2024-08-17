@@ -1,5 +1,5 @@
 //
-//  WithdrawUseCase.swift
+//  dummy.swift
 //  MyPageDomain
 //
 //  Created by Jiyeon on 8/17/24.
@@ -7,9 +7,3 @@
 //
 
 import Foundation
-
-import RxSwift
-
-public protocol WithdrawUseCase {
-  func execute() -> Single<Void>
-}
