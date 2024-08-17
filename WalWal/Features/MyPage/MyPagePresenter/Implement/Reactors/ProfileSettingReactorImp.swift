@@ -65,9 +65,15 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       ])
     case let .didSelectItem(at: indexPath):
       if indexPath.row == 0 {
-        return deleteFCMToken(authAction: .logout)
+        return .concat([
+          .just(.setLoading(true)),
+          deleteFCMToken(authAction: .logout)
+        ])
       } else if indexPath.row == 2 {
-        return deleteFCMToken(authAction: .withdraw)
+        return .concat([
+          .just(.setLoading(true)),
+          deleteFCMToken(authAction: .withdraw)
+        ])
       } else {
         return .never()
       }
@@ -128,7 +134,10 @@ extension ProfileSettingReactorImp {
         return self.tokenDeleteUseCase.execute()
           .asObservable()
           .flatMap { _ -> Observable<Mutation> in
-            return .just(.moveToAuth)
+            return .concat([
+              .just(.setLoading(false)),
+              .just(.moveToAuth)
+            ])
           }
       }
   }
@@ -137,7 +146,10 @@ extension ProfileSettingReactorImp {
     return tokenDeleteUseCase.execute()
       .asObservable()
       .flatMap { _ -> Observable<Mutation> in
-        return .just(.moveToAuth)
+        return .concat([
+          .just(.setLoading(false)),
+          .just(.moveToAuth)
+        ])
       }
   }
   
@@ -150,7 +162,14 @@ extension ProfileSettingReactorImp {
       }
       .asObservable()
       .flatMap { _ -> Observable<Mutation> in
-        return .just(.moveToAuth)
+        return .concat([
+          .just(.setLoading(false)),
+          .just(.moveToAuth)
+        ])
+      }
+      .catch { error in
+        print(error.localizedDescription)
+        return .just(.setLoading(false))
       }
   }
   
@@ -164,12 +183,18 @@ extension ProfileSettingReactorImp {
       }
       .asObservable()
       .flatMap { _ -> Observable<Mutation> in
-        return .just(.moveToAuth)
+        return .concat([
+          .just(.setLoading(false)),
+          .just(.moveToAuth)
+        ])
       }
       .catch { error -> Observable<Mutation> in
         print("탈퇴 실패 ", error.localizedDescription)
         let _ = self.tokenDeleteUseCase.execute()
-        return .just(.moveToAuth)
+        return .concat([
+          .just(.setLoading(false)),
+          .just(.moveToAuth)
+        ])
       }
   }
   
