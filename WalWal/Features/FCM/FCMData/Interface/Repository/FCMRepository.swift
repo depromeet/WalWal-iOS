@@ -12,5 +12,5 @@ import RxSwift
 
 public protocol FCMRepository {
   func fcmTokenSave(token: String) -> Single<Void>
-  func fcmTokenDelete(token: String) -> Single<Void>
+  func fcmTokenDelete() -> Single<Void>
 }

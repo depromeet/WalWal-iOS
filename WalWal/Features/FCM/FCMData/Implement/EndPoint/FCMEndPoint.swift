@@ -15,7 +15,7 @@ import Alamofire
 enum FCMEndPoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
   case saveToken(body: FCMTokenBody)
-  case deleteToken(body: FCMTokenBody)
+  case deleteToken
 }
 
 extension FCMEndPoint {
@@ -43,8 +43,8 @@ extension FCMEndPoint {
     switch self {
     case let .saveToken(body):
       return .requestWithbody(body)
-    case let .deleteToken(body):
-      return .requestWithbody(body)
+    case .deleteToken:
+      return .requestPlain
     }
   }
   

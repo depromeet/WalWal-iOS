@@ -21,6 +21,6 @@ public final class FCMDeleteUseCaseImp: FCMDeleteUseCase {
   }
   
   public func execute() -> Single<Void> {
-    return fcmRepository.fcmTokenDelete(token: UserDefaults.string(forUserDefaultsKey: .notification))
+    return fcmRepository.fcmTokenDelete()
   }
 }
