@@ -28,17 +28,17 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
     
   }
   
-  public func makeMissionRepository() -> MissionRepository {
+  public func injectMissionRepository() -> MissionRepository {
     let networkService = NetworkService()
     return MissionRepositoryImp(networkService: networkService)
   }
   
-  /// MissionUseCase라고 통칭해서 이름을 명명하지 않고, 해당 기능에 대한 이름 명시를 확실하게 해주세요
-  public func makeMissionUseCase() -> MissionUseCase {
-    return MissionUseCaseImp(missionDataRepository: makeMissionRepository())
+  
+  public func injectTodayMissionUseCase() -> any TodayMissionUseCase {
+    return TodayMissionUseCaseImp(missionDataRepository: injectMissionRepository())
   }
   
-  public func makeMissionCoordinator(
+  public func injectMissionCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?
   ) -> any MissionCoordinator {
@@ -49,13 +49,14 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
     )
   }
   
-  public func makeMissionReactor<T: MissionCoordinator>(coordinator: T) -> any MissionReactor {
+  public func injectMissionReactor<T: MissionCoordinator>(coordinator: T, todayMissionUseCase: any TodayMissionUseCase ) -> any MissionReactor {
     return MissionReactorImp(
-      coordinator: coordinator
+      coordinator: coordinator,
+      todayMissionUseCase: injectTodayMissionUseCase()
     )
   }
   
-  public func makeMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController {
+  public func injectMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController {
     return MissionViewControllerImp(reactor: reactor)
   }
 }
