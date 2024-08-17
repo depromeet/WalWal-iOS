@@ -50,17 +50,17 @@ public enum DefaultProfile: String, Equatable {
     
     // TODO: - 고양이 이미지 수정 필요
     case .yellowCat:
-      return ResourceKitAsset.Assets.yellowDog.image
+      return ResourceKitAsset.Assets.yellowCat.image
     case .pinkCat:
-      return ResourceKitAsset.Assets.pinkDog.image
+      return ResourceKitAsset.Assets.pinkCat.image
     case .greenCat:
-      return ResourceKitAsset.Assets.greenDog.image
+      return ResourceKitAsset.Assets.greenCat.image
     case .skyCat:
-      return ResourceKitAsset.Assets.skyDog.image
+      return ResourceKitAsset.Assets.skyCat.image
     case .blueCat:
-      return ResourceKitAsset.Assets.blueDog.image
+      return ResourceKitAsset.Assets.blueCat.image
     case .purpleCat:
-      return ResourceKitAsset.Assets.purpleDog.image
+      return ResourceKitAsset.Assets.purpleCat.image
       
     }
   }

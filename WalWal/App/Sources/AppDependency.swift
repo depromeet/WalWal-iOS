@@ -16,6 +16,7 @@ import OnboardingDependencyFactoryImp
 import FeedDependencyFactoryImp
 import FCMDependencyFactoryImp
 import RecordsDependencyFactoryImp
+import ImageDependencyFactoryImp
 
 extension AppDelegate {
   func injectWalWalImplement(navigation: UINavigationController) -> any AppCoordinator {
@@ -29,6 +30,7 @@ extension AppDelegate {
     let onboardingDependencyFactory = OnboardingDependencyFactoryImp()
     let feedDependencyFactory = FeedDependencyFactoryImp()
     let recordsDependencyFactory = RecordsDependencyFactoryImp()
+    let imageDependencyFactory = ImageDependencyFactoryImp()
     
     return splashDependencyFactory.injectAppCoordinator(
       navigationController: navigation,
@@ -37,6 +39,7 @@ extension AppDelegate {
       missionDependencyFactory: missionDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory,
       onboardingDependencyFactory: onboardingDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
       recordsDependencyFactory: recordsDependencyFactory

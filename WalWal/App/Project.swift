@@ -68,12 +68,12 @@ let project = Project(
         .ThirdParty.FirebaseMessaging,
         
         .DependencyFactory.Auth.Implement,
-        .DependencyFactory.Sample.Implement,
         .DependencyFactory.Splash.Implement,
         .DependencyFactory.WalWalTabBar.Implement,
         .DependencyFactory.Mission.Implement,
         .DependencyFactory.MyPage.Implement,
         .DependencyFactory.FCM.Implement,
+        .DependencyFactory.Image.Implement,
         .DependencyFactory.Onboarding.Implement,
         .DependencyFactory.Records.Implement,
         .DependencyFactory.Feed.Implement

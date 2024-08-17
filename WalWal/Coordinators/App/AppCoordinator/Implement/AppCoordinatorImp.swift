@@ -19,6 +19,7 @@ import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
+import ImageDependencyFactory
 import OnboardingDependencyFactory
 import FeedDependencyFactory
 import RecordsDependencyFactory
@@ -46,6 +47,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   private let missionDependencyFactory: MissionDependencyFactory
   private let myPageDependencyFactory: MyPageDependencyFactory
   private let fcmDependencyFactory: FCMDependencyFactory
+  private let imageDependencyFactory: ImageDependencyFactory
   private let onboardingDependencyFactory: OnboardingDependencyFactory
   private let feedDependencyFactory: FeedDependencyFactory
   private let recordsDependencyFactory: RecordsDependencyFactory
@@ -60,6 +62,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory,
     onboardingDependencyFactory: OnboardingDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory
@@ -71,6 +74,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     self.missionDependencyFactory = missionDependencyFactory
     self.myPageDependencyFactory = myPageDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
+    self.imageDependencyFactory = imageDependencyFactory
     self.onboardingDependencyFactory = onboardingDependencyFactory
     self.feedDependencyFactory = feedDependencyFactory
     self.recordsDependencyFactory = recordsDependencyFactory
@@ -201,6 +205,7 @@ extension AppCoordinatorImp {
       navigationController: navigationController,
       parentCoordinator: self,
       fcmDependencyFactory: fcmDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory,
       authDependencyFactory: authDependencyFactory
     )
     childCoordinator = onboardingCoordinator
