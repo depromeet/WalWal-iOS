@@ -12,7 +12,7 @@ import MissionDomain
 
 import RxSwift
 
-public final class MissionUseCaseImp: MissionUseCase {
+public final class TodayMissionUseCaseImp: TodayMissionUseCase {
   
   private let missionDataRepository: MissionRepository
   
