@@ -111,7 +111,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   // MARK: - Method
   
   private func setMissionData(_ model: MissionModel) {
-    // 미션 데이터 세팅
+    self.missionStartView.configureStartView(title: model.title, missionImageURL: model.imageURL)
   }
 }
 

@@ -8,6 +8,7 @@
 
 import UIKit
 import ResourceKit
+import DesignSystem
 
 import FlexLayout
 import PinLayout
@@ -76,5 +77,10 @@ final class MissionStartView: UIView {
           .marginHorizontal(0)
           .height(330.adjusted)
       }
+  }
+  
+  func configureStartView(title: String, missionImageURL: String) {
+    self.titleLabel.text = title
+    self.missionImageView.kf.setImage(with: URL(string: missionImageURL))
   }
 }
