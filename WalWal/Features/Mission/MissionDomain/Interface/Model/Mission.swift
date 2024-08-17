@@ -9,23 +9,17 @@
 import Foundation
 
 public struct MissionModel {
+  public let id: Int
   public let title: String
-  public let isStartMission: Bool
   public let imageURL: String
-  public let date: Int
-  public let backgroundColorCode: String
   
   public init(
+    id: Int,
     title: String,
-    isStartMission: Bool,
-    imageURL: String,
-    date: Int,
-    backgroundColorCode: String
+    imageURL: String
   ) {
+    self.id = id
     self.title = title
-    self.isStartMission = isStartMission
     self.imageURL = imageURL
-    self.date = date
-    self.backgroundColorCode = backgroundColorCode
   }
 }

@@ -24,11 +24,9 @@ public final class TodayMissionUseCaseImp: TodayMissionUseCase {
     return missionDataRepository.loadMissionInfo()
       .map {
         MissionModel(
+          id: $0.id,
           title: $0.title,
-          isStartMission: $0.isStartMission,
-          imageURL: $0.missionImageURL,
-          date: $0.date,
-          backgroundColorCode: $0.backgroundColorCode
+          imageURL: $0.illustrationURL
         )
       }
       .asObservable()
