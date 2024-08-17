@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import GlobalState
 import RecordsData
 
 public struct MissionRecordCalendarModel {
@@ -16,5 +17,17 @@ public struct MissionRecordCalendarModel {
   public init(dto: MissionRecordCalendarDTO) {
     self.list = dto.list.map{ MissionRecordListModel(dto: $0) }
     self.nextCursor = MissionRecordCursorModel( dto: dto )
+  }
+  
+  public func saveToGlobalState(globalState: GlobalState = GlobalState.shared) {
+    let globalRecords = self.list.map {
+      GlobalMissonRecordListModel(
+        imageId: $0.imageId,
+        imageUrl: $0.imageUrl,
+        missionDate: $0.missionDate
+      )
+    }
+    
+    globalState.updateCalendarRecord(with: globalRecords)
   }
 }
