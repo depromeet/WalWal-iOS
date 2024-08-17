@@ -33,6 +33,7 @@ let project = Project(
       dependencies: [
         .ThirdParty.RxSwift,
         .ThirdParty.RxCocoa,
+        .ThirdParty.Kingfisher
       ]
     ),
   ]
