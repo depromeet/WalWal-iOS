@@ -17,6 +17,7 @@ let project = Project.invertedDualTargetProject(
   interfaceDependencies: [
     .Coordinator.MyPage.Interface,
     .DependencyFactory.FCM.Interface,
+    .DependencyFactory.Auth.Interface,
     
     .Feature.MyPage.Presenter.Interface
   ],

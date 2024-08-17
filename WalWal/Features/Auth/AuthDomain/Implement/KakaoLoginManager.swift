@@ -1,6 +1,6 @@
 //
-//  KakaoLogoutManager.swift
-//  MyPageDomainImp
+//  KakaoLoginManager.swift
+//  AuthDomainImp
 //
 //  Created by Jiyeon on 8/17/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
@@ -13,8 +13,43 @@ import KakaoSDKUser
 import KakaoSDKAuth
 import KakaoSDKCommon
 
-
-final class KakaoLogoutManager {
+final class KakaoLoginManager {
+  /// 카카오 로그인 요청
+  ///
+  /// 사용 예시
+  /// ```swift
+  /// loginButton.rx.tap
+  ///     .flatMap {
+  ///       KakaoLoginManager().kakaoLoginRequest() // 로그인 요청
+  ///     }
+  ///     .bind { token in
+  ///       print(token)
+  ///     } onError { error in
+  ///       print(error.localizedDescription)
+  ///     }
+  ///     .disposed(by: disposeBag)
+  ///
+  /// ```
+  func kakaoLogin() -> Single<String> {
+      return Single<String>.create { single in
+          let loginCompletion: (OAuthToken?, Error?) -> Void = { oauthToken, error in
+              if let error = error {
+                  print("====kakao login error====")
+                  single(.failure(error))
+              } else if let oauthToken = oauthToken {
+                  print("====kakao login success====")
+                  single(.success(oauthToken.accessToken))
+              }
+          }
+        
+          if UserApi.isKakaoTalkLoginAvailable() {
+              UserApi.shared.loginWithKakaoTalk(completion: loginCompletion)
+          } else {
+              UserApi.shared.loginWithKakaoAccount(completion: loginCompletion)
+          }
+          return Disposables.create()
+      }
+  }
   
   /// 카카오 로그아웃 요청
   ///
@@ -72,4 +107,6 @@ final class KakaoLogoutManager {
       return Disposables.create()
     }
   }
+  
 }
+

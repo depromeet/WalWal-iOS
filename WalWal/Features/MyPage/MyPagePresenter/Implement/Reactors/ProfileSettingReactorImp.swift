@@ -12,6 +12,8 @@ import MyPagePresenter
 import MyPageCoordinator
 import ResourceKit
 import FCMDomain
+import AuthDomain
+import LocalStorage
 
 import ReactorKit
 import RxSwift
@@ -28,20 +30,20 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   private let tokenDeleteUseCase: TokenDeleteUseCase
   private let fcmDeleteUseCase: FCMDeleteUseCase
   private let withdrawUseCase: WithdrawUseCase
-  private let logoutUseCase: LogoutUseCase
+  private let kakaoLogoutUseCase: KakaoLogoutUseCase
   
   public init(
     coordinator: any MyPageCoordinator,
     tokenDeleteUseCase: TokenDeleteUseCase,
     fcmDeleteUseCase: FCMDeleteUseCase,
     withdrawUseCase: WithdrawUseCase,
-    logoutUseCase: LogoutUseCase
+    kakaoLogoutUseCase: KakaoLogoutUseCase
   ) {
     self.coordinator = coordinator
     self.tokenDeleteUseCase = tokenDeleteUseCase
     self.fcmDeleteUseCase = fcmDeleteUseCase
     self.withdrawUseCase = withdrawUseCase
-    self.logoutUseCase = logoutUseCase
+    self.kakaoLogoutUseCase = kakaoLogoutUseCase
     self.initialState = State(
       isLoading: false,
       appVersionString: "",
@@ -111,16 +113,39 @@ extension ProfileSettingReactorImp {
       }
       .catch { error -> Observable<Mutation> in
         print(error.localizedDescription)
-        return .just(.moveToAuth)
+        return self.tokenDeleteUseCase.execute()
+          .asObservable()
+          .flatMap { _ -> Observable<Mutation> in
+            return .just(.moveToAuth)
+          }
       }
   }
   
   private func logout() -> Observable<Mutation> {
-    return logoutUseCase.execute()
+    if UserDefaults.string(forUserDefaultsKey: .socialLogin) == "kakao" {
+      return kakaoLogout()
+    } else {
+      return appleLogout()
+    }
+  }
+  private func appleLogout() -> Observable<Mutation> {
+    return tokenDeleteUseCase.execute()
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        return .just(.moveToAuth)
+      }
+      
+  }
+  
+  private func kakaoLogout() -> Observable<Mutation> {
+    return kakaoLogoutUseCase.execute()
       .asObservable()
       .withUnretained(self)
-      .flatMap { owner, _ -> Observable<Mutation> in
+      .flatMap { owner, _ in
         owner.tokenDeleteUseCase.execute()
+      }
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
         return .just(.moveToAuth)
       }
   }

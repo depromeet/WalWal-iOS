@@ -9,6 +9,7 @@
 import Foundation
 import MyPageData
 import MyPageDomain
+import LocalStorage
 
 import RxSwift
 
@@ -22,10 +23,11 @@ public final class WithdrawUseCaseImp: WithdrawUseCase {
   
   public func execute() -> Single<Void> {
     if UserDefaults.string(forUserDefaultsKey: .socialLogin) == "kakao" {
-      return KakaoLogoutManager().kakaoUnlink()
-        .flatMap {
-          self.mypageRepository.withdraw()
-        }
+      return .never()
+//      return KakaoLogoutManager().kakaoUnlink()
+//        .flatMap {
+//          self.mypageRepository.withdraw()
+//        }
     } else {
       return mypageRepository.withdraw()
     }

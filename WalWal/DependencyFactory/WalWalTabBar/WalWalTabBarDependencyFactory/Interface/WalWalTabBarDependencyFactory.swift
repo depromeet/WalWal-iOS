@@ -11,6 +11,7 @@ import MissionDependencyFactory
 import MyPageDependencyFactory
 import FeedDependencyFactory
 import FCMDependencyFactory
+import AuthDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -22,6 +23,7 @@ public protocol WalWalTabBarDependencyFactory {
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    authDependencyFactory: AuthDependencyFactory
   ) -> any WalWalTabBarCoordinator
 }

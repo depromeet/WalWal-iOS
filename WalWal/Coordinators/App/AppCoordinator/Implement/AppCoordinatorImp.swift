@@ -189,7 +189,8 @@ extension AppCoordinatorImp {
       missionDependencyFactory: missionDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
-      fcmDependencyFactory: fcmDependencyFactory
+      fcmDependencyFactory: fcmDependencyFactory,
+      authDependencyFactory: authDependencyFactory
     )
     childCoordinator = walwalTabBarCoordinator
     walwalTabBarCoordinator.start()

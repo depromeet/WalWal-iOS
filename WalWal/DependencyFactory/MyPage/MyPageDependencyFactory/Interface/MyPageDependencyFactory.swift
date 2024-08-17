@@ -17,18 +17,20 @@ import MyPagePresenter
 import FCMDependencyFactory
 import FCMDomain
 
+import AuthDependencyFactory
+import AuthDomain
+
 public protocol MyPageDependencyFactory {
   
   func makeMyPageCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    authDependencyFactory: AuthDependencyFactory
   ) -> any MyPageCoordinator
   
   func injectMyPageRepository() -> MyPageRepository
-  func injectTokenDeleteUseCase() -> TokenDeleteUseCase
   func injectWithdrawUseCase() -> WithdrawUseCase
-  func injectLogoutUseCase() -> LogoutUseCase
   func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor
   func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
   func injectRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor
@@ -40,7 +42,7 @@ public protocol MyPageDependencyFactory {
     tokenDeleteUseCase: TokenDeleteUseCase,
     fcmDeleteUseCase: FCMDeleteUseCase,
     withdrawUseCase: WithdrawUseCase,
-    logoutUseCase: LogoutUseCase
+    kakaoLogoutUseCase: KakaoLogoutUseCase
   ) -> any ProfileSettingReactor
   func injectProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController
 }

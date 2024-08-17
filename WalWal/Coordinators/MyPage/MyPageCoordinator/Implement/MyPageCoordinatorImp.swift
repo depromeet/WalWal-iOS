@@ -9,6 +9,8 @@
 import UIKit
 import MyPageDependencyFactory
 import FCMDependencyFactory
+import AuthDependencyFactory
+
 import BaseCoordinator
 import MyPageCoordinator
 
@@ -30,17 +32,19 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   
   public var myPageDependencyFactory: MyPageDependencyFactory
   private let fcmDependencyFactory: FCMDependencyFactory
-  
+  private let authDependencyFactory: AuthDependencyFactory
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     myPageDependencyFactory: MyPageDependencyFactory,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    authDependencyFactory: AuthDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.myPageDependencyFactory = myPageDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
+    self.authDependencyFactory = authDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -108,10 +112,10 @@ extension MyPageCoordinatorImp {
   fileprivate func showProfileSettingVC() {
     let reactor = myPageDependencyFactory.injectProfileSettingReactor(
       coordinator: self,
-      tokenDeleteUseCase: myPageDependencyFactory.injectTokenDeleteUseCase(),
+      tokenDeleteUseCase: authDependencyFactory.injectTokenDeleteUseCase(),
       fcmDeleteUseCase: fcmDependencyFactory.injectFCMDeleteUseCase(),
-      withdrawUseCase: myPageDependencyFactory.injectWithdrawUseCase(),
-      logoutUseCase: myPageDependencyFactory.injectLogoutUseCase()
+      withdrawUseCase: myPageDependencyFactory.injectWithdrawUseCase(), // TODO: - auth 주입
+      kakaoLogoutUseCase: authDependencyFactory.injectKakaoLogoutUseCase()
     )
     let ProfileSettingVC = myPageDependencyFactory.injectProfileSettingViewController(reactor: reactor)
     self.pushViewController(viewController: ProfileSettingVC, animated: true)

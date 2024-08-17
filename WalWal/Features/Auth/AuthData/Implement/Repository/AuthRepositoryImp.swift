@@ -45,4 +45,10 @@ public final class AuthRepositoryImp: AuthRepository {
       .asObservable()
       .asSingle()
   }
+  
+  public func withdraw() -> Single<Void> {
+    let endpoint = AuthEndpoint<EmptyResponse>.withdraw
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
+      .map { _ in Void() }
+  }
 }

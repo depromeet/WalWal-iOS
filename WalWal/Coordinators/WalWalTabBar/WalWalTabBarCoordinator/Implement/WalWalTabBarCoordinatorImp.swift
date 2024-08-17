@@ -13,6 +13,7 @@ import MissionDependencyFactory
 import MyPageDependencyFactory
 import FeedDependencyFactory
 import FCMDependencyFactory
+import AuthDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -43,6 +44,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   public var myPageDependencyFactory: MyPageDependencyFactory
   public var feedDependencyFactory: FeedDependencyFactory
   private var fcmDependencyFactory: FCMDependencyFactory
+  private var authDependencyFactory: AuthDependencyFactory
+  
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
@@ -50,7 +53,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    authDependencyFactory: AuthDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -59,7 +63,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     self.myPageDependencyFactory = myPageDependencyFactory
     self.feedDependencyFactory = feedDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
-    
+    self.authDependencyFactory = authDependencyFactory
     self.tabBarController = WalWalTabBarViewController()
     
     bindChildToParentAction()
@@ -163,7 +167,8 @@ extension WalWalTabBarCoordinatorImp {
     let myPageCoordinator = myPageDependencyFactory.makeMyPageCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
-      fcmDependencyFactory: fcmDependencyFactory
+      fcmDependencyFactory: fcmDependencyFactory,
+      authDependencyFactory: authDependencyFactory
     )
     myPageCoordinator.start()
     return myPageCoordinator

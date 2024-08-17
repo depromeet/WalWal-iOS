@@ -9,6 +9,7 @@
 import UIKit
 import MyPageDependencyFactory
 import FCMDependencyFactory
+import AuthDependencyFactory
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -21,6 +22,7 @@ import MyPageDomainImp
 import MyPageData
 import MyPageDataImp
 import FCMDomain
+import AuthDomain
 
 import WalWalNetwork
 
@@ -33,13 +35,15 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   public func makeMyPageCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    authDependencyFactory: AuthDependencyFactory
   ) -> any MyPageCoordinator {
     return MyPageCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       myPageDependencyFactory: self,
-      fcmDependencyFactory: fcmDependencyFactory
+      fcmDependencyFactory: fcmDependencyFactory,
+      authDependencyFactory: authDependencyFactory
     )
   }
   
@@ -48,16 +52,8 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     return MyPageRepositoryImp(networkService: networkService)
   }
   
-  public func injectTokenDeleteUseCase() -> TokenDeleteUseCase {
-    return TokenDeleteUseCaseImp()
-  }
-  
   public func injectWithdrawUseCase() -> WithdrawUseCase {
     return WithdrawUseCaseImp(mypageRepository: injectMyPageRepository())
-  }
-  
-  public func injectLogoutUseCase() -> LogoutUseCase {
-    return LogoutUseCaseImp()
   }
   
   public func injectMyPageReactor<T: MyPageCoordinator>(coordinator: T) -> any MyPageReactor {
@@ -81,14 +77,14 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     tokenDeleteUseCase: TokenDeleteUseCase,
     fcmDeleteUseCase: FCMDeleteUseCase,
     withdrawUseCase: WithdrawUseCase,
-    logoutUseCase: LogoutUseCase
+    kakaoLogoutUseCase: KakaoLogoutUseCase
   ) -> any ProfileSettingReactor {
     return ProfileSettingReactorImp(
       coordinator: coordinator,
       tokenDeleteUseCase: tokenDeleteUseCase,
       fcmDeleteUseCase: fcmDeleteUseCase,
       withdrawUseCase: withdrawUseCase,
-      logoutUseCase: logoutUseCase
+      kakaoLogoutUseCase: kakaoLogoutUseCase
     )
   }
   

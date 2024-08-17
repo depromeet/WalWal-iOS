@@ -10,6 +10,7 @@ import UIKit
 import MyPageDomain
 import MyPageCoordinator
 import FCMDomain
+import AuthDomain
 
 import ReactorKit
 import RxSwift
@@ -77,6 +78,6 @@ public protocol ProfileSettingReactor: Reactor where Action == ProfileSettingRea
     tokenDeleteUseCase: TokenDeleteUseCase,
     fcmDeleteUseCase: FCMDeleteUseCase,
     withdrawUseCase: WithdrawUseCase,
-    logoutUseCase: LogoutUseCase
+    kakaoLogoutUseCase: KakaoLogoutUseCase
   )
 }

@@ -29,6 +29,9 @@ public protocol AuthDependencyFactory {
   func injectSocialLoginUseCase() -> SocialLoginUseCase
   func injectRegisterUseCase() -> RegisterUseCase
   func injectUserTokensUseCase() -> UserTokensSaveUseCase
+  func injectTokenDeleteUseCase() -> TokenDeleteUseCase
+  func injectKakaoLogoutUseCase() -> KakaoLogoutUseCase
+  
   func injectAuthReactor<T: AuthCoordinator>(
     coordinator: T,
     socialLoginUseCase: SocialLoginUseCase,
