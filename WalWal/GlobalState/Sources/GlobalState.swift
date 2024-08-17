@@ -19,7 +19,7 @@ public final class GlobalState {
   
   public private(set) var calendarRecords = BehaviorRelay<[GlobalMissonRecordListModel]>(value: [])
   /// 이미지 저장소 (캐시된 이미지를 저장하는 딕셔너리)
-  private var imageStore: [String: UIImage] = [:]
+  public private(set) var imageStore: [String: UIImage] = [:]
   
   private let disposeBag = DisposeBag()
   
@@ -31,9 +31,9 @@ public final class GlobalState {
     /// calendarRecords가 변경될 때마다 이미지를 다운로드
     calendarRecords
       .asObservable()
-      .flatMap { [weak self] records -> Observable<Void> in
-        guard let self = self else { return .empty() }
-        return self.preloadImages(for: records)
+      .withUnretained(self)
+      .flatMap { owner, records -> Observable<Void> in
+        return owner.preloadImages()
       }
       .subscribe()
       .disposed(by: disposeBag)
@@ -63,8 +63,8 @@ public final class GlobalState {
   }
   
   /// 이미지 미리 불러오기 메서드
-  private func preloadImages(for records: [GlobalMissonRecordListModel]) -> Observable<Void> {
-    let downloadTasks = records.map { record in
+  private func preloadImages() -> Observable<Void> {
+    let downloadTasks = self.calendarRecords.value.map { record in
       return downloadAndCacheImage(for: record)
     }
     return Observable.concat(downloadTasks) /// 모든 다운로드 작업을 순차적으로 실행
@@ -93,7 +93,12 @@ public final class GlobalState {
           owner.imageStore[record.imageUrl] = value.image
           observer.onNext(())
         case .failure(let error):
-          print("Kingfisher 이미지 다운로드 실패: \(error)")
+          print("""
+            - 😵 Kingfisher 이미지 다운로드 실패
+            - 😵 imageUrl: \(record.imageUrl)
+            - 😵 error: \(error)
+            """)
+          
           observer.onNext(())
         }
         observer.onCompleted()
