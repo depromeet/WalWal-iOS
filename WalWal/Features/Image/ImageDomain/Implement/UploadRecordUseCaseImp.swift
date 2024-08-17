@@ -12,9 +12,9 @@ import ImageDomain
 
 import RxSwift
 
-public class UploadRecordUseCaseImp: UploadRecordUseCase {
+final public class UploadRecordUseCaseImp: UploadRecordUseCase {
   
-  let imageRepository: ImageRepository
+  private let imageRepository: ImageRepository
   
   public init(imageRepository: ImageRepository) {
     self.imageRepository = imageRepository
