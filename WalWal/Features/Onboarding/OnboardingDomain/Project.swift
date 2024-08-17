@@ -17,7 +17,8 @@ let project = Project.invertedDualTargetProject(
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
     .Feature.Onboarding.Data.Interface,
-    .Feature.Auth.Data.Interface
+    .Feature.Auth.Data.Interface,
+    .GlobalState
   ],
   implementDependencies: [
     .DependencyFactory.Onboarding.Interface

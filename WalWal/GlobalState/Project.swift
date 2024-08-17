@@ -31,9 +31,6 @@ let project = Project(
       infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
-        .Feature.Records.Domain.Interface,
-        .Feature.Mission.Domain.Interface,
-        
         .ThirdParty.RxSwift,
         .ThirdParty.RxCocoa,
       ]

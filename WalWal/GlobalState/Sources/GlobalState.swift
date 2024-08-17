@@ -7,8 +7,6 @@
 //
 
 import Foundation
-import MissionDomain
-import RecordsDomain
 
 import RxSwift
 import RxCocoa
