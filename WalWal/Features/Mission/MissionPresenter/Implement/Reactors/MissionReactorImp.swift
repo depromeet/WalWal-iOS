@@ -37,10 +37,7 @@ public final class MissionReactorImp: MissionReactor {
     case .loadMission:
       return Observable.concat([
         Observable.just(Mutation.setLoading(true)),
-        fetchMissionData()
-          .map {
-            Mutation.setMission($0)
-          },
+        fetchMissionData(),
         Observable.just(Mutation.setLoading(false))
       ])
       
@@ -57,19 +54,20 @@ public final class MissionReactorImp: MissionReactor {
       newState.mission = mission
     case .setLoading(let isLoading):
       newState.isLoading = isLoading
+    case .missionLoadFailed(let error):
+      newState.isLoading = false
     }
     return newState
   }
   
-  private func fetchMissionData() -> Observable<MissionModel> {
-    /// 더미데이터
-    let mission = MissionModel(
-      title: "반려동물과 함께\n산책한 사진을 찍어요",
-      isStartMission: false,
-      imageURL: "",
-      date: 123,
-      backgroundColorCode: "FFDD77"
-    )
-    return Observable.just(mission).delay(.seconds(1), scheduler: MainScheduler.instance)
+  private func fetchMissionData() -> Observable<Mutation> {
+    return todayMissionUseCase.excute()
+      .asObservable()
+      .map { mission in
+        return Mutation.setMission(mission)
+      }
+      .catch { error in
+        return Observable.just(Mutation.missionLoadFailed(error))
+      }
   }
 }

@@ -20,6 +20,7 @@ public enum MissionReactorAction {
 public enum MissionReactorMutation {
   case setMission(MissionModel)
   case setLoading(Bool)
+  case missionLoadFailed(Error)
 }
 
 public struct MissionReactorState {
