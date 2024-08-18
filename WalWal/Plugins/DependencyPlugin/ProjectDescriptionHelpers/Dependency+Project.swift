@@ -28,6 +28,7 @@ enum DependencyFactoryStr: String {
   case fcm = "FCM"
   case records = "Records"
   case image = "Image"
+  case missionUpload = "MissionUpload"
   case members = "Members"
 }
 
@@ -40,6 +41,7 @@ enum CoordinatorStr: String {
   case mission = "Mission"
   case feed = "Feed"
   case myPage = "MyPage"
+  case missionUpload = "MissionUpload"
 }
 
 enum FeatureStr: String {
@@ -52,6 +54,7 @@ enum FeatureStr: String {
   case records = "Records"
   case image = "Image"
   case feed = "Feed"
+  case missionUpload = "MissionUpload"
   case members = "Members"
 }
 
@@ -112,6 +115,7 @@ extension TargetDependency {
     public struct Records: WalWalDependency { }
     public struct Image: WalWalDependency { }
     public struct Feed: WalWalDependency { }
+    public struct MissionUpload: WalWalDependency { }
     public struct Members: WalWalDependency { }
   }
   
@@ -124,6 +128,7 @@ extension TargetDependency {
     public struct Mission: WalWalDependency { }
     public struct MyPage: WalWalDependency { }
     public struct Feed: WalWalDependency { }
+    public struct MissionUpload: WalWalDependency { }
   }
   
   public struct Feature {
@@ -178,6 +183,9 @@ extension TargetDependency {
       public struct Domain: WalWalDependency {}
     }
     
+    public struct MissionUpload: WalWalDependency {
+      public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
     public struct Members: WalWalDependency {
       public struct Data: WalWalDependency { }
       public struct Domain: WalWalDependency { }
@@ -237,6 +245,9 @@ public extension TargetDependency.DependencyFactory.Feed {
   static let Implement = Self.project(dependencyName: .feed, isInterface: false)
 }
 
+public extension TargetDependency.DependencyFactory.MissionUpload {
+  static let Interface = Self.project(dependencyName: .missionUpload, isInterface: true)
+  static let Implement = Self.project(dependencyName: .missionUpload, isInterface: false)
 public extension TargetDependency.DependencyFactory.Members {
   static let Interface = Self.project(dependencyName: .members, isInterface: true)
   static let Implement = Self.project(dependencyName: .members, isInterface: false)
@@ -362,6 +373,16 @@ public extension TargetDependency.Feature.Image.Domain {
 public extension TargetDependency.Feature.Image.Data {
   static let Interface = Self.project(name: .image, layer: .data, isInterface: true)
   static let Implement = Self.project(name: .image, layer: .data, isInterface: false)
+}
+
+public extension TargetDependency.Feature.MissionUpload.Presenter {
+  static let Interface = Self.project(name: .missionUpload, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .missionUpload, layer: .presenter, isInterface: false)
+}
+
+public extension TargetDependency.Feature.MissionUpload.Domain {
+  static let Interface = Self.project(name: .missionUpload, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .missionUpload, layer: .domain, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Members.Domain {
