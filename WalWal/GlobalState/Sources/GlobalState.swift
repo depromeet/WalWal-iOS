@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Utility
 
 import RxSwift
 import RxCocoa
@@ -75,41 +76,14 @@ public final class GlobalState {
     }
   }
   
-  /// 이미지를 다운로드하고 캐시하는 메서드
-  private func downloadAndCacheImage(for imageUrl: String) -> Observable<Void> {
-    return Observable.create { observer in
-      let url = URL(string: imageUrl)
-      guard let url = url else {
-        observer.onNext(())
-        observer.onCompleted()
-        return Disposables.create()
-      }
-      
-      /// Kingfisher를 사용해 이미지 다운로드 및 캐싱
-      let resource = KF.ImageResource(downloadURL: url)
-      KingfisherManager.shared.retrieveImage(with: resource) { [weak self] result in
-        guard let owner = self else {
-          observer.onCompleted()
-          return
-        }
-        switch result {
-        case .success(let value):
-          /// 다운로드된 이미지를 캐시 저장소에 저장 (key로써 imageUrl을 사용허자~)
-          owner.imageStore[imageUrl] = value.image
-          observer.onNext(())
-        case .failure(let error):
-          print("""
-            - 😵 Kingfisher 이미지 다운로드 실패
-            - 😵 imageUrl: \(url)
-            - 😵 error: \(error)
-            """)
-          
-          observer.onNext(())
-        }
-        observer.onCompleted()
-      }
-      
-      return Disposables.create()
-    }
+  /// 이미지를 다운로드하고 캐시에 저장하는 메서드
+  public func downloadAndCacheImage(for imageUrl: String) -> Observable<Void> {
+    return ImageCacheManager().downloadImage(for: imageUrl)
+      .withUnretained(self)
+      .do(onNext: { owner, image in
+        guard let image = image else { return }
+        owner.imageStore[imageUrl] = image
+      })
+      .map { _ in }
   }
 }

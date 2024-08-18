@@ -31,7 +31,8 @@ let project = Project(
       infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
-        .ThirdParty.RxCocoa
+        .ThirdParty.RxCocoa,
+        .ThirdParty.Kingfisher
       ]
     ),
   ]
