@@ -17,7 +17,9 @@ let project = Project.invertedDualTargetProject(
   interfaceDependencies: [
     .Coordinator.Mission.Interface,
     
-    .Feature.Mission.Presenter.Interface
+    .Feature.Mission.Presenter.Interface,
+    .Feature.Image.Domain.Interface,
+    .Feature.Records.Domain.Interface
   ],
   implementDependencies: [
     .Coordinator.Mission.Implement,
