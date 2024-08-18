@@ -8,10 +8,12 @@
 
 import UIKit
 import ResourceKit
+
 import FlexLayout
 import PinLayout
 import RxSwift
 import RxCocoa
+import Lottie
 
 public final class WalWalFeed: UIView {
   
@@ -38,6 +40,7 @@ public final class WalWalFeed: UIView {
     $0.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 24, right: 0)
     $0.showsHorizontalScrollIndicator = false
   }
+  private let lottieView = LottieAnimationView(name: "refresh")
   
   // MARK: - Property
   
@@ -140,6 +143,8 @@ public final class WalWalFeed: UIView {
         owner.currentFeedData = feedData
         owner.collectionView.layoutSubviews()
         owner.collectionView.reloadData()
+        owner.lottieView.isHidden = true
+        owner.lottieView.stop()
       })
       .disposed(by: disposeBag)
     
@@ -162,6 +167,8 @@ public final class WalWalFeed: UIView {
       $0.addItem(collectionView)
         .grow(1)
     }
+    lottieView.pin
+      .center()
   }
   
   // MARK: - Boost Count Update
@@ -231,5 +238,22 @@ extension WalWalFeed: UICollectionViewDataSource {
 extension WalWalFeed: UICollectionViewDelegateFlowLayout {
   public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
     return CGSize(width: collectionView.bounds.width, height: headerHeight)
+  }
+}
+
+// MARK: - UIScrollViewDelegate
+
+extension WalWalFeed: UIScrollViewDelegate {
+  public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    if scrollView.contentOffset.y <= 0 {
+      lottieView.isHidden = false
+      lottieView.play()
+    }
+  }
+  
+  public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    if scrollView.contentOffset.y <= -100 {
+      feedData.accept([])
+    }
   }
 }
