@@ -45,9 +45,11 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   // MARK: - Properties
   
   private var missionCount: Int = 0
+  private var missionId: Int = 0
   private var isMissionStarted: Bool = false
   private var recordImageURL: String = ""
   
+  private var timerDisposeBag = DisposeBag()
   public var disposeBag = DisposeBag()
   public var missionReactor: R
   
@@ -122,6 +124,30 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private func configureMissionCompleteView(missionImageURL: String) {
     // 미션 완료뷰 이미지 넣기
   }
+  
+  private func startCountdownTimer() {
+    // 기존 타이머 정리
+    timerDisposeBag = DisposeBag()
+    
+    Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+      .map { _ in self.calculateTimeRemainingUntilMidnight() }
+      .bind(to: missionStartButton.rx.title)
+      .disposed(by: timerDisposeBag)
+  }
+  
+  private func calculateTimeRemainingUntilMidnight() -> String {
+    let calendar = Calendar.current
+    let now = Date()
+    let midnight = calendar.startOfDay(for: now).addingTimeInterval(86400) // 다음 날 자정
+    
+    let components = calendar.dateComponents([.hour, .minute, .second], from: now, to: midnight)
+    
+    guard let hour = components.hour, let minute = components.minute, let second = components.second else {
+      return "남은 시간 계산 실패"
+    }
+    
+    return String(format: "%02d:%02d:%02d 남았어요!", hour, minute, second)
+  }
 }
 
 extension MissionViewControllerImp: View {
@@ -147,13 +173,23 @@ extension MissionViewControllerImp: View {
         owner.isMissionStarted = state.isMissionStarted
         
         owner.missionCountBubbleView.missionCount.accept(state.totalMissionCount)
-        owner.missionCountBubbleView.isCompleted.accept(state.isMissionStarted)
+        owner.missionCountBubbleView.isCompleted.accept(state.missionStatus?.statusMessage == .completed)
         
         if let status = state.missionStatus {
           owner.recordImageURL = status.imageUrl
+          switch status.statusMessage {
+          case .notCompleted:
+            owner.isMissionStarted = false
+            owner.missionStartButton.title = "미션 시작하기"
+            owner.timerDisposeBag = DisposeBag()
+          case .inProgress, .completed:
+            owner.isMissionStarted = true
+            owner.startCountdownTimer()
+          }
         }
         
         if let mission = state.mission {
+          owner.missionId = mission.id
           owner.setMissionData(mission)
         }
         
