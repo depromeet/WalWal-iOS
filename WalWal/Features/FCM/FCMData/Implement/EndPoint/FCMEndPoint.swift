@@ -15,6 +15,7 @@ import Alamofire
 enum FCMEndPoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
   case saveToken(body: FCMTokenBody)
+  case deleteToken
 }
 
 extension FCMEndPoint {
@@ -24,7 +25,7 @@ extension FCMEndPoint {
   
   var path: String{
     switch self {
-    case .saveToken:
+    case .saveToken, .deleteToken:
       return "/alarm/token"
     }
   }
@@ -33,6 +34,8 @@ extension FCMEndPoint {
     switch self {
     case .saveToken:
       return .post
+    case .deleteToken:
+      return .delete
     }
   }
   
@@ -40,12 +43,14 @@ extension FCMEndPoint {
     switch self {
     case let .saveToken(body):
       return .requestWithbody(body)
+    case .deleteToken:
+      return .requestPlain
     }
   }
   
   var headerType: HTTPHeaderType {
     switch self {
-    case .saveToken:
+    case .saveToken, .deleteToken:
       if let accessToken = KeychainWrapper.shared.accessToken {
         return .authorization(accessToken)
       } else{

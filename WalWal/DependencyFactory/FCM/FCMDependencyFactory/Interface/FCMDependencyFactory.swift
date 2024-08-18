@@ -15,5 +15,5 @@ public protocol FCMDependencyFactory {
   
   func injectFCMRepository() -> FCMRepository
   func injectFCMSaveUseCase() -> FCMSaveUseCase
-  
+  func injectFCMDeleteUseCase() -> FCMDeleteUseCase
 }

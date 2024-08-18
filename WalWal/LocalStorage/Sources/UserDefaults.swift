@@ -17,6 +17,7 @@ public extension UserDefaults {
     case refreshToken
     case temporaryToken
     case isAlreadyLoaded
+    case socialLogin
   }
   
   // MARK: - GET

@@ -12,6 +12,8 @@ import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
 import MyPageDependencyFactory
 import FeedDependencyFactory
+import FCMDependencyFactory
+import AuthDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -41,6 +43,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   public var missionDependencyFactory: MissionDependencyFactory
   public var myPageDependencyFactory: MyPageDependencyFactory
   public var feedDependencyFactory: FeedDependencyFactory
+  private var fcmDependencyFactory: FCMDependencyFactory
+  private var authDependencyFactory: AuthDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
@@ -48,7 +52,9 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
-    feedDependencyFactory: FeedDependencyFactory
+    feedDependencyFactory: FeedDependencyFactory,
+    fcmDependencyFactory: FCMDependencyFactory,
+    authDependencyFactory: AuthDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -56,7 +62,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     self.missionDependencyFactory = missionDependencyFactory
     self.myPageDependencyFactory = myPageDependencyFactory
     self.feedDependencyFactory = feedDependencyFactory
-    
+    self.fcmDependencyFactory = fcmDependencyFactory
+    self.authDependencyFactory = authDependencyFactory
     self.tabBarController = WalWalTabBarViewController()
     
     bindChildToParentAction()
@@ -159,7 +166,9 @@ extension WalWalTabBarCoordinatorImp {
     print("마이페이지 탭 선택")
     let myPageCoordinator = myPageDependencyFactory.makeMyPageCoordinator(
       navigationController: navigationController,
-      parentCoordinator: self
+      parentCoordinator: self,
+      fcmDependencyFactory: fcmDependencyFactory,
+      authDependencyFactory: authDependencyFactory
     )
     myPageCoordinator.start()
     return myPageCoordinator

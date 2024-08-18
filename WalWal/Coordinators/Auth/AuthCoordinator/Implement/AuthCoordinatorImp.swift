@@ -28,8 +28,8 @@ public final class AuthCoordinatorImp: AuthCoordinator {
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
-  public var authDependencyFactory: AuthDependencyFactory
-  private var fcmDependencyFactory: FCMDependencyFactory
+  private let authDependencyFactory: AuthDependencyFactory
+  private let fcmDependencyFactory: FCMDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
@@ -58,7 +58,8 @@ public final class AuthCoordinatorImp: AuthCoordinator {
       coordinator: self,
       socialLoginUseCase: authDependencyFactory.injectSocialLoginUseCase(),
       fcmSaveUseCase: fcmDependencyFactory.injectFCMSaveUseCase(),
-      userTokensSaveUseCase: authDependencyFactory.injectUserTokensUseCase()
+      userTokensSaveUseCase: authDependencyFactory.injectUserTokensUseCase(),
+      kakaoLoginUseCase: authDependencyFactory.injectKakaoLoginUseCase()
     )
     let authVC = authDependencyFactory.injectAuthViewController(reactor: reactor)
     self.baseViewController = authVC

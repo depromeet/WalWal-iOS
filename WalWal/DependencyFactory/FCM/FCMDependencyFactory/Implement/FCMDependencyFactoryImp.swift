@@ -29,4 +29,8 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
     return FCMSaveUseCaseImp(fcmRepository: injectFCMRepository())
   }
   
+  public func injectFCMDeleteUseCase() -> FCMDeleteUseCase {
+    return FCMDeleteUseCaseImp(fcmRepository: injectFCMRepository())
+  }
+  
 }

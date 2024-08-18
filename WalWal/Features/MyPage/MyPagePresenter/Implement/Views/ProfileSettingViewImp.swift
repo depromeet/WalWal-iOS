@@ -136,6 +136,15 @@ extension ProfileSettingViewControllerImp: View {
           )
         }
         .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.isLoading }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, show in
+        ActivityIndicator.shared.showIndicator.accept(show)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

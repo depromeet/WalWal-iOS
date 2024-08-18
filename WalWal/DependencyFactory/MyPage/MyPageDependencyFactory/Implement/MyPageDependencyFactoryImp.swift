@@ -8,6 +8,8 @@
 
 import UIKit
 import MyPageDependencyFactory
+import FCMDependencyFactory
+import AuthDependencyFactory
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -17,6 +19,12 @@ import MyPagePresenter
 import MyPagePresenterImp
 import MyPageDomain
 import MyPageDomainImp
+import MyPageData
+import MyPageDataImp
+import FCMDomain
+import AuthDomain
+
+import WalWalNetwork
 
 public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   
@@ -26,17 +34,22 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   
   public func makeMyPageCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: (any BaseCoordinator)?
+    parentCoordinator: (any BaseCoordinator)?,
+    fcmDependencyFactory: FCMDependencyFactory,
+    authDependencyFactory: AuthDependencyFactory
   ) -> any MyPageCoordinator {
     return MyPageCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
-      myPageDependencyFactory: self
+      myPageDependencyFactory: self,
+      fcmDependencyFactory: fcmDependencyFactory,
+      authDependencyFactory: authDependencyFactory
     )
   }
   
-  public func injectTokenDeleteUseCase() -> TokenDeleteUseCase {
-    return TokenDeleteUseCaseImp()
+  public func injectMyPageRepository() -> MyPageRepository {
+    let networkService = NetworkService()
+    return MyPageRepositoryImp(networkService: networkService)
   }
   
   public func injectFetchWalWalCalendarModelsUseCase() -> FetchWalWalCalendarModelsUseCase {
@@ -67,11 +80,19 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   
   public func injectProfileSettingReactor<T: MyPageCoordinator>(
     coordinator: T,
-    tokenDeleteUseCase: TokenDeleteUseCase
+    tokenDeleteUseCase: TokenDeleteUseCase,
+    fcmDeleteUseCase: FCMDeleteUseCase,
+    withdrawUseCase: WithdrawUseCase,
+    kakaoLogoutUseCase: KakaoLogoutUseCase,
+    kakaoUnlinkUseCase: KakaoUnlinkUseCase
   ) -> any ProfileSettingReactor {
     return ProfileSettingReactorImp(
       coordinator: coordinator,
-      tokenDeleteUseCase: tokenDeleteUseCase
+      tokenDeleteUseCase: tokenDeleteUseCase,
+      fcmDeleteUseCase: fcmDeleteUseCase,
+      withdrawUseCase: withdrawUseCase,
+      kakaoLogoutUseCase: kakaoLogoutUseCase,
+      kakaoUnlinkUseCase: kakaoUnlinkUseCase
     )
   }
   

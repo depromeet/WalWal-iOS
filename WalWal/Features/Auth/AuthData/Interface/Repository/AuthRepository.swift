@@ -17,4 +17,6 @@ public protocol AuthRepository {
     petType: String,
     defaultProfile: String?
   ) -> Single<AuthTokenDTO>
+  
+  func withdraw() -> Single<Void>
 }

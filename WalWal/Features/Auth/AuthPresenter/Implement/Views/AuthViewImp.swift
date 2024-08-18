@@ -153,10 +153,7 @@ extension AuthViewControllerImp: View {
       .disposed(by: disposeBag)
     
     kakaoLoginButton.rx.tap
-      .flatMap { _ in
-        KakaoLoginManager().kakaoLogin()
-      }
-      .map { Reactor.Action.kakaoLoginTapped(accessToken: $0) }
+      .map { Reactor.Action.kakaoLoginTapped }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
