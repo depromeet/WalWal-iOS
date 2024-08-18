@@ -14,6 +14,7 @@ import MyPageDependencyFactory
 import FeedDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
+import RecordsDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -41,6 +42,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   
   public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var missionDependencyFactory: MissionDependencyFactory
+  public var recordDependencyFactory: RecordsDependencyFactory
   public var myPageDependencyFactory: MyPageDependencyFactory
   public var feedDependencyFactory: FeedDependencyFactory
   private var fcmDependencyFactory: FCMDependencyFactory
@@ -54,7 +56,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     myPageDependencyFactory: MyPageDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
-    authDependencyFactory: AuthDependencyFactory
+    authDependencyFactory: AuthDependencyFactory,
+    recordDependencyFactory: RecordsDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -64,6 +67,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     self.feedDependencyFactory = feedDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
     self.authDependencyFactory = authDependencyFactory
+    self.recordDependencyFactory = recordDependencyFactory
     self.tabBarController = WalWalTabBarViewController()
     
     bindChildToParentAction()
@@ -135,7 +139,8 @@ extension WalWalTabBarCoordinatorImp {
     print("미션 탭 선택")
     let missionCoordinator = missionDependencyFactory.injectMissionCoordinator(
       navigationController: navigationController,
-      parentCoordinator: self
+      parentCoordinator: self,
+      recordDependencyFactory: recordDependencyFactory
     )
     missionCoordinator.start()
     return missionCoordinator

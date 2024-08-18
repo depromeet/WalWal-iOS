@@ -13,6 +13,7 @@ import MyPageDependencyFactory
 import FeedDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
+import RecordsDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -31,7 +32,8 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
     myPageDependencyFactory: MyPageDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
-    authDependencyFactory: AuthDependencyFactory
+    authDependencyFactory: AuthDependencyFactory,
+    recordDependencyFactory: RecordsDependencyFactory
   ) -> any WalWalTabBarCoordinator {
     return WalWalTabBarCoordinatorImp(
       navigationController: navigationController,
@@ -41,7 +43,8 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
       myPageDependencyFactory: myPageDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
-      authDependencyFactory: authDependencyFactory
+      authDependencyFactory: authDependencyFactory,
+      recordDependencyFactory: recordDependencyFactory
     )
   }
   

@@ -18,11 +18,20 @@ final class MissionAppDelegate: UIResponder, UIApplicationDelegate {
     
     let dependencyFactory = MissionDependencyFactoryImp()
     let navigationController = UINavigationController()
-    let coordinator = dependencyFactory.injectMissionCoordinator(navigationController: navigationController, parentCoordinator: nil)
-    let reactor = dependencyFactory.injectMissionReactor(coordinator: coordinator, todayMissionUseCase: dependencyFactory.injectTodayMissionUseCase())
-    let viewController = dependencyFactory.injectMissionViewController(reactor: reactor)
-    
-    window.rootViewController = viewController
+//    let coordinator = dependencyFactory.injectMissionCoordinator(
+//      navigationController: navigationController,
+//      parentCoordinator: nil,
+//      recordDependencyFactory: recordde)
+//    let reactor = dependencyFactory.injectMissionReactor(
+//      coordinator: coordinator,
+//      todayMissionUseCase: <#T##any TodayMissionUseCase#>,
+//      checkCompletedTotalRecordsUseCase: <#T##any CheckCompletedTotalRecordsUseCase#>,
+//      checkRecordStatusUseCase: <#T##any CheckRecordStatusUseCase#>,
+//      startRecordUseCase: <#T##any StartRecordUseCase#>
+//    )
+//    let viewController = dependencyFactory.injectMissionViewController(reactor: reactor)
+//    
+    window.rootViewController = navigationController
     window.makeKeyAndVisible()
     self.window = window
     return true
