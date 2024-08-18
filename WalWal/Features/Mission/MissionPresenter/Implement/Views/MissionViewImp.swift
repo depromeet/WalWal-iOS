@@ -162,6 +162,12 @@ extension MissionViewControllerImp: View {
   }
   
   public func bindEvent() {
-    
+    missionStartButton.rx.tapped
+      .subscribe(with: self) { owner, _ in
+        owner.reactor?.action
+          .onNext(.startMission(owner.missionId))
+        print("미션 시작")
+      }
+      .disposed(by: disposeBag)
   }
 }
