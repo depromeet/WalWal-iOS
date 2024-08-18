@@ -46,7 +46,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   private var missionCount: Int = 0
   private var missionId: Int = 0
-  private var isMissionStarted: Bool = false
+  private var isMissionCompleted: Bool = false
   private var recordImageURL: String = ""
   
   private var timerDisposeBag = DisposeBag()
@@ -170,21 +170,27 @@ extension MissionViewControllerImp: View {
       .map { $0 }
       .subscribe(with: self, onNext: { owner, state in
         owner.missionCount = state.totalMissionCount
-        owner.isMissionStarted = state.isMissionStarted
+        owner.isMissionCompleted = state.isMissionStarted
         
         owner.missionCountBubbleView.missionCount.accept(state.totalMissionCount)
         owner.missionCountBubbleView.isCompleted.accept(state.missionStatus?.statusMessage == .completed)
         
         if let status = state.missionStatus {
           owner.recordImageURL = status.imageUrl
+          print(status.statusMessage.description)
           switch status.statusMessage {
           case .notCompleted:
-            owner.isMissionStarted = false
+            owner.isMissionCompleted = false
             owner.missionStartButton.title = "미션 시작하기"
             owner.timerDisposeBag = DisposeBag()
-          case .inProgress, .completed:
-            owner.isMissionStarted = true
+          case .inProgress:
             owner.startCountdownTimer()
+            
+            owner.missionStartButton.icon = Images.watchL.image
+          case .completed:
+            owner.isMissionCompleted = true
+            owner.missionStartButton.title = "내 미션 기록 보기"
+            owner.missionStartButton.icon = Images.calendarL.image
           }
         }
         
