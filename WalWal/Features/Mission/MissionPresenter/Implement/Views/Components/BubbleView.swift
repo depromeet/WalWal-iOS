@@ -11,6 +11,9 @@ import ResourceKit
 import FlexLayout
 import PinLayout
 import Then
+import RxSwift
+import RxCocoa
+
 
 public final class BubbleView: UIView {
   
@@ -123,38 +126,24 @@ public final class BubbleView: UIView {
   }
   
   func startFloatingAnimation() {
-    let moveUp = CABasicAnimation(keyPath: "position.y")
-    moveUp.fromValue = self.layer.position.y
-    moveUp.toValue = self.layer.position.y - 10
-    moveUp.duration = 1.5
-    moveUp.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-    moveUp.autoreverses = true
-    moveUp.repeatCount = .infinity
+    let moveAnimation = CAKeyframeAnimation(keyPath: "transform.translation.y")
     
-    let scaleUp = CABasicAnimation(keyPath: "transform.scale")
-    scaleUp.fromValue = 1.0
-    scaleUp.toValue = 1.0
-    scaleUp.duration = 1.5
-    scaleUp.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-    scaleUp.autoreverses = true
-    scaleUp.repeatCount = .infinity
+    moveAnimation.values = [0, -10, 0]
+    moveAnimation.keyTimes = [0, 0.4, 1]
+    moveAnimation.duration = 1.5
+    moveAnimation.timingFunctions = [
+      CAMediaTimingFunction(name: .easeOut),
+      CAMediaTimingFunction(name: .easeIn)
+    ]
     
-    let rotation = CABasicAnimation(keyPath: "transform.rotation")
-    rotation.fromValue = -CGFloat.pi / 180
-    rotation.toValue = CGFloat.pi / 180
-    rotation.duration = 2.0
-    rotation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-    rotation.autoreverses = true
-    rotation.repeatCount = .infinity
+    moveAnimation.autoreverses = true
+    moveAnimation.repeatCount = .infinity
     
-    self.layer.add(moveUp, forKey: "moveUp")
-    self.layer.add(scaleUp, forKey: "scaleUp")
-    self.layer.add(rotation, forKey: "rotation")
+    self.layer.add(moveAnimation, forKey: "moveUpDown")
   }
+  
   
   func stopFloatingAnimation() {
     self.layer.removeAnimation(forKey: "moveUp")
-    self.layer.removeAnimation(forKey: "scaleUp")
-    self.layer.removeAnimation(forKey: "rotation")
   }
 }
