@@ -44,9 +44,9 @@ extension RecordEndpoint {
   
   var method: HTTPMethod {
     switch self {
-    case .saveRecord, .startRecord, .checkCompletedTotalRecords:
+    case .saveRecord, .startRecord:
       return .post
-    case .checkRecordStatus, .checkCalendarRecords:
+    case .checkRecordStatus, .checkCalendarRecords, .checkCompletedTotalRecords:
       return .get
     }
   }
