@@ -432,6 +432,7 @@ public extension TargetDependency.ThirdParty {
   static let KakaoSDKUser = TargetDependency.external(name: "KakaoSDKUser")
   static let KakaoSDKCommon = TargetDependency.external(name: "KakaoSDKCommon")
   static let FirebaseMessaging = TargetDependency.package(product: "FirebaseMessaging", type: .runtime)
+  static let Lottie = TargetDependency.external(name: "Lottie")
   
   static let FlexLayout = framework(name: "FlexLayout")
   static let PinLayout = framework(name: "PinLayout")

@@ -36,6 +36,7 @@ let project = Project(
         .ThirdParty.RxGesture,
         .ThirdParty.Then,
         .ThirdParty.Kingfisher,
+        .ThirdParty.Lottie,
         .ResourceKit
       ]),
     Target(
