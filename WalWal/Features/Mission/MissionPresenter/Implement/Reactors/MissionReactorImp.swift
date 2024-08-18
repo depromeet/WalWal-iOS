@@ -46,15 +46,19 @@ public final class MissionReactorImp: MissionReactor {
     switch action {
     case .loadMissionInfo:
       return Observable.concat([
-        Observable.just(Mutation.setLoading(true)),
-        fetchMissionData(),
+        Observable.just( Mutation.setLoading(true)),
+        fetchMissionData()
+          .flatMap { mutation -> Observable<Mutation> in
+            if case let .setMission(mission) = mutation {
+              return self.checkMissionStatus(id: mission.id).startWith(mutation)
+            }
+            return Observable.just(mutation)
+          },
         fetchMissionCount(),
         Observable.just(Mutation.setLoading(false))
       ])
-    case .startMission:
-      return startMission()
-    case let .checkMissionStatus(id):
-      return checkMissionStatus(id: id)
+    case let .startMission(id):
+      return startMission(id: id)
     }
   }
   
@@ -90,8 +94,8 @@ public final class MissionReactorImp: MissionReactor {
   }
   
   
-  private func startMission() -> Observable<Mutation> {
-    return startRecordUseCase.execute(missionId: 1)
+  private func startMission(id: Int) -> Observable<Mutation> {
+    return startRecordUseCase.execute(missionId:id)
       .asObservable()
       .map { _ in
         return Mutation.missionStarted
