@@ -15,8 +15,8 @@ public struct MissionRecordStatusModel {
   public let statusMessage: StatusMessage
   
   public init(dto: MissionRecordStatusDTO) {
-    self.recordId = dto.recordId
-    self.imageUrl = dto.imageUrl
+    self.recordId = dto.recordId ?? 0
+    self.imageUrl = dto.imageUrl ?? ""
     self.statusMessage = StatusMessage(rawValue: dto.status) ?? .notCompleted
   }
 }

@@ -26,8 +26,8 @@ extension WalWalNetworkError: LocalizedError {
     switch self {
     case .invalidRequest:
       return "해당 요청이 유효하지 않습니다."
-    case .decodingError:
-      return "데이터 타입을 decode 하는데에 실패하였습니다."
+    case .decodingError(let error):
+      return "데이터 타입을 decode 하는데에 실패하였습니다.\(error)"
     case .serverError(let message):
       let message = message ?? "서버에 문제가 발생하였습니다."
       return "\(message)"
