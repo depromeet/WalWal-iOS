@@ -44,17 +44,17 @@ public final class MissionReactorImp: MissionReactor {
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .loadMission:
+    case .loadMissionInfo:
       return Observable.concat([
         Observable.just(Mutation.setLoading(true)),
         fetchMissionData(),
+        fetchMissionCount(),
         Observable.just(Mutation.setLoading(false))
       ])
     case .startMission:
-      // Mission 시작 로직을 추가
       return startMission()
-    case .checkMissionStatus:
-      return checkMissionStatus()
+    case let .checkMissionStatus(id):
+      return checkMissionStatus(id: id)
     }
   }
   
@@ -65,16 +65,28 @@ public final class MissionReactorImp: MissionReactor {
       newState.mission = mission
     case .setLoading(let isLoading):
       newState.isLoading = isLoading
-    case .missionLoadFailed(let error):
-      newState.isLoading = false
-      newState.error = error
     case .missionStarted:
-      // 미션 시작 시의 상태 업데이트
       newState.isMissionStarted = true
     case .setMissionStatus(let status):
+      newState.isMissionStarted = status.statusMessage == .completed
       newState.missionStatus = status
+    case .setMissionCount(let count):
+      newState.totalMissionCount = count
+    case .missionLoadFailed:
+      newState.isLoading = false
     }
     return newState
+  }
+  
+  private func fetchMissionCount() -> Observable<Mutation> {
+    return checkCompletedTotalRecordsUseCase.execute()
+      .asObservable()
+      .map {
+        return Mutation.setMissionCount($0.totalCount)
+      }
+      .catch { error in
+        Observable.just(Mutation.missionLoadFailed(error))
+      }
   }
   
   
@@ -89,8 +101,8 @@ public final class MissionReactorImp: MissionReactor {
       }
   }
   
-  private func checkMissionStatus() -> Observable<Mutation> {
-    return checkRecordStatusUseCase.execute(missionId: 1)
+  private func checkMissionStatus(id: Int) -> Observable<Mutation> {
+    return checkRecordStatusUseCase.execute(missionId: id)
       .asObservable()
       .map { status in
         return Mutation.setMissionStatus(status)
