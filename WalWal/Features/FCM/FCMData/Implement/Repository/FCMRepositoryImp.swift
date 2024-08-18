@@ -26,4 +26,9 @@ public final class FCMRepositoryImp: FCMRepository {
       .map { _ in Void() }
   }
   
+  public func fcmTokenDelete() -> Single<Void> {
+    let endPoint = FCMEndPoint<EmptyResponse>.deleteToken
+    return networkService.request(endpoint: endPoint, isNeedInterceptor: true)
+      .map { _ in Void() }
+  }
 }

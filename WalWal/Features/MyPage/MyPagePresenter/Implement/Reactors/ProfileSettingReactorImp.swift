@@ -11,6 +11,9 @@ import MyPageDomain
 import MyPagePresenter
 import MyPageCoordinator
 import ResourceKit
+import FCMDomain
+import AuthDomain
+import LocalStorage
 
 import ReactorKit
 import RxSwift
@@ -25,13 +28,25 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
   public let initialState: State
   public let coordinator: any MyPageCoordinator
   private let tokenDeleteUseCase: TokenDeleteUseCase
+  private let fcmDeleteUseCase: FCMDeleteUseCase
+  private let withdrawUseCase: WithdrawUseCase
+  private let kakaoLogoutUseCase: KakaoLogoutUseCase
+  private let kakaoUnlinkUseCase: KakaoUnlinkUseCase
   
   public init(
     coordinator: any MyPageCoordinator,
-    tokenDeleteUseCase: TokenDeleteUseCase
+    tokenDeleteUseCase: TokenDeleteUseCase,
+    fcmDeleteUseCase: FCMDeleteUseCase,
+    withdrawUseCase: WithdrawUseCase,
+    kakaoLogoutUseCase: KakaoLogoutUseCase,
+    kakaoUnlinkUseCase: KakaoUnlinkUseCase
   ) {
     self.coordinator = coordinator
     self.tokenDeleteUseCase = tokenDeleteUseCase
+    self.fcmDeleteUseCase = fcmDeleteUseCase
+    self.withdrawUseCase = withdrawUseCase
+    self.kakaoLogoutUseCase = kakaoLogoutUseCase
+    self.kakaoUnlinkUseCase = kakaoUnlinkUseCase
     self.initialState = State(
       isLoading: false,
       appVersionString: "",
@@ -50,7 +65,15 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       ])
     case let .didSelectItem(at: indexPath):
       if indexPath.row == 0 {
-        return logout()
+        return .concat([
+          .just(.setLoading(true)),
+          deleteFCMToken(authAction: .logout)
+        ])
+      } else if indexPath.row == 2 {
+        return .concat([
+          .just(.setLoading(true)),
+          deleteFCMToken(authAction: .withdraw)
+        ])
       } else {
         return .never()
       }
@@ -85,10 +108,105 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
 }
 
 extension ProfileSettingReactorImp {
-  private func logout() -> Observable<Mutation> {
-    tokenDeleteUseCase.execute()
-    return .just(.moveToAuth)
+  private func deleteFCMToken(authAction: AuthAction) -> Observable<Mutation> {
+    return fcmDeleteUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
+        let provider = UserDefaults.string(forUserDefaultsKey: .socialLogin)
+        if authAction == .logout {
+          if provider == "kakao" {
+            return owner.kakaoLogout()
+          } else {
+            return owner.appleLogout()
+          }
+        } else if authAction == .withdraw {
+          if provider == "kakao" {
+            return owner.kakaoUnlink()
+          } else {
+            return owner.withdraw()
+          }
+        }
+        return .never()
+      }
+      .catch { error -> Observable<Mutation> in
+        print(error.localizedDescription)
+        return self.tokenDeleteUseCase.execute()
+          .asObservable()
+          .flatMap { _ -> Observable<Mutation> in
+            return .concat([
+              .just(.setLoading(false)),
+              .just(.moveToAuth)
+            ])
+          }
+      }
   }
+  
+  private func appleLogout() -> Observable<Mutation> {
+    return tokenDeleteUseCase.execute()
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        return .concat([
+          .just(.setLoading(false)),
+          .just(.moveToAuth)
+        ])
+      }
+  }
+  
+  private func kakaoLogout() -> Observable<Mutation> {
+    return kakaoLogoutUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ in
+        owner.tokenDeleteUseCase.execute()
+      }
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        return .concat([
+          .just(.setLoading(false)),
+          .just(.moveToAuth)
+        ])
+      }
+      .catch { error in
+        print(error.localizedDescription)
+        return .just(.setLoading(false))
+      }
+  }
+  
+  
+  private func withdraw() -> Observable<Mutation> {
+    return withdrawUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ in
+        owner.tokenDeleteUseCase.execute()
+      }
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        return .concat([
+          .just(.setLoading(false)),
+          .just(.moveToAuth)
+        ])
+      }
+      .catch { error -> Observable<Mutation> in
+        print("탈퇴 실패 ", error.localizedDescription)
+        let _ = self.tokenDeleteUseCase.execute()
+        return .concat([
+          .just(.setLoading(false)),
+          .just(.moveToAuth)
+        ])
+      }
+  }
+  
+  private func kakaoUnlink() -> Observable<Mutation> {
+    return kakaoUnlinkUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
+        owner.withdraw()
+      }
+  }
+  
   
   private func fetchAppVersion() -> Observable<Mutation> {
     let fetchedVersion = "1.0" // 실제 앱스토어 버전 받아오는 로직 필요
@@ -125,4 +243,8 @@ extension ProfileSettingReactorImp {
             rightText: "")
     ]
   }
+}
+
+fileprivate enum AuthAction {
+  case logout, withdraw
 }

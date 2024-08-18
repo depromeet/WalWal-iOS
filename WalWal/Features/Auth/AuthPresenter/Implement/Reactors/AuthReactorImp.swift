@@ -26,18 +26,21 @@ public final class AuthReactorImp: AuthReactor {
   private let socialLoginUseCase: SocialLoginUseCase
   private let fcmSaveUseCase: FCMSaveUseCase
   private let userTokensSaveUseCase: UserTokensSaveUseCase
+  private let kakaoLoginUseCase: KakaoLoginUseCase
   
   public init(
     coordinator: any AuthCoordinator,
     socialLoginUseCase: SocialLoginUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
-    userTokensSaveUseCase: UserTokensSaveUseCase
+    userTokensSaveUseCase: UserTokensSaveUseCase,
+    kakaoLoginUseCase: KakaoLoginUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
     self.socialLoginUseCase = socialLoginUseCase
     self.fcmSaveUseCase = fcmSaveUseCase
     self.userTokensSaveUseCase = userTokensSaveUseCase
+    self.kakaoLoginUseCase = kakaoLoginUseCase
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -47,10 +50,10 @@ public final class AuthReactorImp: AuthReactor {
         .just(.showIndicator(show: true)),
         socialLoginRequest(provider: .apple, token: authCode)
       ])
-    case let .kakaoLoginTapped(accessToken):
+    case .kakaoLoginTapped:
       return .concat([
         .just(.showIndicator(show: true)),
-        socialLoginRequest(provider: .kakao, token: accessToken)
+        kakaoLogin()
       ])
     }
   }
@@ -68,6 +71,20 @@ public final class AuthReactorImp: AuthReactor {
 }
 
 extension AuthReactorImp {
+  
+  private func kakaoLogin() -> Observable<Mutation> {
+    return kakaoLoginUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, token -> Observable<Mutation> in
+        owner.socialLoginRequest(provider: .kakao, token: token)
+      }
+      .catch { _ in
+        print("카카오 로그인 취소")
+        return .just(.showIndicator(show: false))
+      }
+  }
+  
   private func socialLoginRequest(provider: ProviderType, token: String) -> Observable<Mutation> {
     return socialLoginUseCase.execute(provider: provider, token: token)
       .asObservable()
