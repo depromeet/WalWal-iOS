@@ -417,6 +417,11 @@ public extension TargetDependency.Coordinator.Feed {
   static let Implement = Self.project(name: .feed, isInterface: false)
 }
 
+public extension TargetDependency.Coordinator.MissionUpload {
+  static let Interface = Self.project(name: .missionUpload, isInterface: true)
+  static let Implement = Self.project(name: .missionUpload, isInterface: false)
+}
+
 public extension TargetDependency.ThirdParty {
   private static func framework(name: String) -> TargetDependency {
     .xcframework(path: .relativeToRoot("Tuist/Dependencies/Carthage/Build/\(name).xcframework"), status: .optional)

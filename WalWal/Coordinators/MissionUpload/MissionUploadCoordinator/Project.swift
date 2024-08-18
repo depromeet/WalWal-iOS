@@ -18,6 +18,7 @@ let project = Project.invertedDualTargetProject(
     .Coordinator.Base.Interface
   ],
   implementDependencies: [
-    .DependencyFactory.MissionUpload.Interface
+    .DependencyFactory.MissionUpload.Interface,
+    .DependencyFactory.Records.Interface
   ]
 )

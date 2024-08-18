@@ -23,6 +23,6 @@ let project = Project.invertedPresenterWithDemoApp(
     .DesignSystem
   ],
   demoAppDependencies: [
-    .DependencyFactory.Implement
+    .DependencyFactory.MissionUpload.Implement
   ]
 )
