@@ -16,7 +16,8 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .Feature.Feed.Data.Interface
+    .Feature.Feed.Data.Interface,
+    .GlobalState
   ],
   implementDependencies: [
     .DependencyFactory.Feed.Interface

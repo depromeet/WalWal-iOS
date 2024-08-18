@@ -6,11 +6,11 @@
 //  Created by 조용인
 //
 
-
 import UIKit
 import MyPagePresenter
 import DesignSystem
 import ResourceKit
+import GlobalState
 
 import Then
 import PinLayout
@@ -143,7 +143,10 @@ extension MyPageViewControllerImp: View {
   }
   
   public func bindState(reactor: R) {
-    
+    reactor.state.map { $0.calendarData }
+      .distinctUntilChanged()
+      .bind(to: calendar.rx.updateModels)
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

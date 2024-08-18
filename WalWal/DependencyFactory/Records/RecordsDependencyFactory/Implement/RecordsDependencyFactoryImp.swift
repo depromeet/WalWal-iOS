@@ -39,11 +39,15 @@ public class RecordsDependencyFactoryImp: RecordsDependencyFactory {
     return CheckRecordStatusUseCaseImp(recordRepository: injectRecordsRepository())
   }
   
+  public func injectRemoveGlobalCalendarRecordsUseCase() -> any RemoveGlobalCalendarRecordsUseCase {
+    return RemoveGlobalCalendarRecordsUseCaseImp()
+  }
+  
   public func injectSaveRecordUseCase() -> any SaveRecordUseCase {
     return SaveRecordUseCaseImp(recordRepository: injectRecordsRepository())
   }
   
-  public func injectStartRecordUseCase() -> any RecordsDomain.StartRecordUseCase {
+  public func injectStartRecordUseCase() -> any StartRecordUseCase {
     return StartRecordUseCaseImp(recordRepository: injectRecordsRepository())
   }
 }

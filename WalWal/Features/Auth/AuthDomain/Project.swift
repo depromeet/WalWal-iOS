@@ -16,6 +16,7 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
+    .GlobalState,
     .ThirdParty.KakaoSDKAuth,
     .ThirdParty.KakaoSDKUser,
     

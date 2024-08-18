@@ -2,7 +2,7 @@
 //  Project.swift
 //  ProjectDescriptionHelpers
 //
-//  Created by 조용인 on 6/25/24.
+//  Created by 조용인 on 8/16/24.
 //
 
 import ProjectDescription
@@ -12,7 +12,7 @@ import DependencyPlugin
 let organizationName = "olderStoneBed.io"
 
 let project = Project(
-  name: "Utility",
+  name: "GlobalState",
   organizationName: organizationName,
   settings: .settings(configurations: [
     .debug(name: "Debug", xcconfig: .relativeToRoot("Config/Debug.xcconfig")),
@@ -20,10 +20,10 @@ let project = Project(
   ]),
   targets: [
     Target(
-      name: "Utility",
+      name: "GlobalState",
       platform: .iOS,
       product: .framework,
-      bundleId: "\(organizationName).Utility",
+      bundleId: "\(organizationName).GlobalState",
       deploymentTarget: .iOS(
         targetVersion: "15.0.0",
         devices: [.iphone]
@@ -31,8 +31,9 @@ let project = Project(
       infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
+        .ThirdParty.RxSwift,
         .ThirdParty.RxCocoa,
-        .ThirdParty.Kingfisher
+        .Utility
       ]
     ),
   ]

@@ -9,6 +9,7 @@
 import Foundation
 import RecordsData
 import RecordsDomain
+import GlobalState
 
 import RxSwift
 
@@ -21,6 +22,10 @@ public final class CheckCalendarRecordsUseCaseImp: CheckCalendarRecordsUseCase {
   
   public func execute(cursor: String, limit: Int) -> Single<MissionRecordCalendarModel> {
     return recordRepository.checkCalendarRecords(cursor: cursor, limit: limit)
-      .map{ MissionRecordCalendarModel(dto: $0) }
+      .map{
+        let calendarModel = MissionRecordCalendarModel(dto: $0)
+        calendarModel.saveToGlobalState()
+        return calendarModel
+      }
   }
 }

@@ -17,17 +17,20 @@ public enum MyPageReactorAction {
   case didSelectCalendarItem(WalWalCalendarModel)
   case didTapSettingButton
   case didTapEditButton
+  case loadCalendarData
 }
 
 public enum MyPageReactorMutation {
   case setSelectedCalendarItem(WalWalCalendarModel)
+  case setCalendarData([WalWalCalendarModel]) // 캘린더 데이터를 설정하는 뮤테이션 추가
   case moveToSettingView
   case moveToEditView
 }
 
 public struct MyPageReactorState {
   public init() { }
-  public var selectedDate: WalWalCalendarModel = .init(imageId: "", date: "", imageData: .init())
+  public var selectedDate: WalWalCalendarModel = .init(imageId: 0, date: "", image: nil)
+  public var calendarData: [WalWalCalendarModel] = [] // 캘린더 데이터를 저장할 상태 추가
 }
 
 public protocol MyPageReactor: Reactor where Action == MyPageReactorAction, Mutation == MyPageReactorMutation, State == MyPageReactorState {
@@ -35,6 +38,7 @@ public protocol MyPageReactor: Reactor where Action == MyPageReactorAction, Muta
   var coordinator: any MyPageCoordinator { get }
   
   init(
-    coordinator: any MyPageCoordinator
+    coordinator: any MyPageCoordinator,
+    fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase
   )
 }

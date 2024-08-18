@@ -39,6 +39,7 @@ public protocol SplashReactor:
     checkTokenUseCase: CheckTokenUsecase,
     checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
-    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   )
 }

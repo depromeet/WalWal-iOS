@@ -40,7 +40,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   public weak var parentCoordinator: (any BaseCoordinator)?
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
-  
+
   private let appDependencyFactory: SplashDependencyFactory
   private let authDependencyFactory: AuthDependencyFactory
   private let walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
@@ -114,12 +114,14 @@ public final class AppCoordinatorImp: AppCoordinator {
     let checkIsFirstLoadedUseCase = appDependencyFactory.injectCheckIsFirstLoadedUseCase()
     let fcmSaveUseCase = fcmDependencyFactory.injectFCMSaveUseCase()
     let checkRecordCalendarUseCase = recordsDependencyFactory.injectCheckCalendarRecordsUseCase()
+    let removeGlobalCalendarRecordsUseCase = recordsDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase()
     let reactor = appDependencyFactory.injectSplashReactor(
       coordinator: self,
       checkTokenUseCase: checkTokenUseCase,
       checkIsFirstLoadedUseCase: checkIsFirstLoadedUseCase,
       fcmSaveUseCase: fcmSaveUseCase,
-      checkRecordCalendarUseCase: checkRecordCalendarUseCase
+      checkRecordCalendarUseCase: checkRecordCalendarUseCase,
+      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase
     )
     let splashVC = appDependencyFactory.injectSplashViewController(reactor: reactor)
     self.baseViewController = splashVC

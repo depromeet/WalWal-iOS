@@ -92,6 +92,7 @@ extension WalWalDependency {
 extension TargetDependency {
   public static let Utility =  TargetDependency.project(target: "Utility", path: .relativeToRoot("Utility"))
   public static let LocalStorage = TargetDependency.project(target: "LocalStorage", path: .relativeToRoot("LocalStorage"))
+  public static let GlobalState = TargetDependency.project(target: "GlobalState", path: .relativeToRoot("GlobalState"))
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
   public static let DesignSystem =  TargetDependency.project(target: "DesignSystem", path: .relativeToRoot("DesignSystem"))
   public static let WalWalNetwork = TargetDependency.project(target: "WalWalNetwork", path: .relativeToRoot("WalWalNetwork"))

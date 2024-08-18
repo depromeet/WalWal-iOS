@@ -16,6 +16,7 @@ public protocol RecordsDependencyFactory {
   func injectCheckCalendarRecordsUseCase() -> CheckCalendarRecordsUseCase
   func injectCheckCompletedTotalRecordsUseCase() -> CheckCompletedTotalRecordsUseCase
   func injectCheckRecordStatusUseCase() -> CheckRecordStatusUseCase
+  func injectRemoveGlobalCalendarRecordsUseCase() -> RemoveGlobalCalendarRecordsUseCase
   func injectSaveRecordUseCase() -> SaveRecordUseCase
   func injectStartRecordUseCase() -> StartRecordUseCase
 }
