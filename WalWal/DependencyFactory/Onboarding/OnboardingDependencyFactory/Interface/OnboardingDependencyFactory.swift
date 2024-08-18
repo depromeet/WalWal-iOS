@@ -10,6 +10,7 @@ import UIKit
 import BaseCoordinator
 import OnboardingCoordinator
 import FCMDependencyFactory
+import ImageDependencyFactory
 import AuthDependencyFactory
 
 import AuthData
@@ -18,6 +19,7 @@ import OnboardingDomain
 import OnboardingPresenter
 
 import FCMDomain
+import ImageDomain
 import AuthDomain
 
 public protocol OnboardingDependencyFactory {
@@ -26,19 +28,20 @@ public protocol OnboardingDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator:( any BaseCoordinator)?,
     fcmDependencyFactory: FCMDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory,
     authDependencyFactory: AuthDependencyFactory
   ) -> any OnboardingCoordinator
   
   func injectOnboardingRepository() -> OnboardingRepository
   
   func injectNicknameValidUseCase() -> NicknameValidUseCase
-  func injectUploadImageUseCase() -> UploadImageUseCase
   
   func injectOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor
   func injectOnboardingSelectReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingSelectReactor
   func injectOnboardingProfileReactor<T: OnboardingCoordinator>(
     coordinator: T,
     fcmSaveUseCase: FCMSaveUseCase,
+    uploadMemberUseCase: UploadMemberUseCase,
     registerUseCase: RegisterUseCase,
     userTokensUseCase: UserTokensSaveUseCase
   ) -> any OnboardingProfileReactor

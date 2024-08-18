@@ -24,7 +24,7 @@ public enum PetType: String {
 /// - Parameters:
 ///   - type: 동물 타입 (.dog or .cat)
 public final class WalWalProfile: UIView {
-  private typealias Image = ResourceKitAsset.Sample
+  private typealias Images = ResourceKitAsset.Assets
   
   /// ViewController에게 PHPickerView presnest 요청하기 위한 이벤트
   ///
@@ -41,11 +41,13 @@ public final class WalWalProfile: UIView {
   public var curProfileItems = PublishRelay<WalWalProfileModel>()
   /// PHPickerView에서 선택한 이미지를 전달받기 위한 이벤트
   public var selectedImageData = PublishRelay<UIImage>()
-  
+  /// 이미지 컬렉션 뷰 디폴트 포커스 위치 설정
+  private var focusIndex = BehaviorRelay<IndexPath>(value: IndexPath(item: 0, section: 0))
   private let changeSelectImage = PublishRelay<WalWalProfileCell>()
   private var defaultImages: [DefaultProfile]
   private var defaultImageIndex: Int = 0
   private var defaultImageCount: Int
+  private var userSelectImage: UIImage = Images.activeImage.image
   
   private lazy var profileItem: [WalWalProfileModel] = [
     WalWalProfileModel(
@@ -54,7 +56,7 @@ public final class WalWalProfile: UIView {
     ),
     WalWalProfileModel(
       profileType: .selectImage,
-      selectImage: nil // TODO: - 기본 이미지 설정
+      selectImage: userSelectImage
     )
   ]
   private var disposeBag = DisposeBag()
@@ -85,13 +87,31 @@ public final class WalWalProfile: UIView {
   
   // MARK: - Initialize
   
-  public init(type: PetType) {
+  /// - Parameters:
+  ///   - type: 반려동물 타입
+  ///   - defaultImage: 기본 이미지 이름
+  ///   - userImage: 사용자 선택 이미지 설정
+  public init(
+    type: PetType,
+    defaultImage: String? = nil,
+    userImage: UIImage? = nil
+  ) {
     defaultImages = type == .dog ? DefaultProfile.defaultDogs : DefaultProfile.defaultCats
+    if let defaultImage = defaultImage, let defaultType = DefaultProfile(rawValue: defaultImage) {
+      self.defaultImageIndex = defaultImages.firstIndex(of: defaultType) ?? 0
+    } else {
+      self.defaultImageIndex = 0
+    }
     defaultImageCount = defaultImages.count
     marginItems = (viewWidth - profileSize*2)/2
+    if let userImage = userImage {
+      self.userSelectImage = userImage
+    }
+    
     super.init(frame: .zero)
     setLayout()
     bind()
+    focusIndex.accept(IndexPath(item: userImage != nil ? 1 : 0, section: 0))
   }
   
   @available(*, unavailable)
@@ -179,6 +199,14 @@ public final class WalWalProfile: UIView {
       }
       .disposed(by: disposeBag)
     
+    focusIndex
+      .asDriver()
+      .drive(with: self) { owner, index in
+        DispatchQueue.main.async {
+          owner.collectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: false)
+        }
+      }
+      .disposed(by: disposeBag)
   }
 }
 
@@ -207,8 +235,10 @@ extension WalWalProfile: UICollectionViewDelegateFlowLayout {
     let cellWidth = profileSize + marginItems
     let index = Int(round(scrolledOffset / cellWidth))
     let centerX = scrollView.center.x + scrollView.contentOffset.x
+    if index >= 0 {
+      curProfileItems.accept(profileItem[index])
+    }
     
-    curProfileItems.accept(profileItem[index])
     
     for cell in collectionView.visibleCells {
       let cellCenterX = cell.center.x

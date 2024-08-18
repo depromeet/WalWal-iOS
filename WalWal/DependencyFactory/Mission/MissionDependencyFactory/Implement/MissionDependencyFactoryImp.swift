@@ -40,7 +40,7 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
   
   public func makeMissionCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: any BaseCoordinator
+    parentCoordinator: (any BaseCoordinator)?
   ) -> any MissionCoordinator {
     return MissionCoordinatorImp(
       navigationController: navigationController,

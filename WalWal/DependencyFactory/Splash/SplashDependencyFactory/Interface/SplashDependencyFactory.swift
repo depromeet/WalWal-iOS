@@ -13,6 +13,7 @@ import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
+import ImageDependencyFactory
 import OnboardingDependencyFactory
 import FeedDependencyFactory
 import RecordsDependencyFactory
@@ -35,6 +36,7 @@ public protocol SplashDependencyFactory {
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory,
     onboardingDependencyFactory: OnboardingDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory

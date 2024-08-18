@@ -12,5 +12,4 @@ import RxSwift
 
 public protocol OnboardingRepository {
   func checkValidNickname(nickname: String) -> Single<Void>
-  func uploadImage(nickname: String, type: String, image: Data) -> Single<Void>
 }

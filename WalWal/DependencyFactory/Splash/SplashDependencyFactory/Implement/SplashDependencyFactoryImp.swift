@@ -13,6 +13,7 @@ import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
+import ImageDependencyFactory
 import OnboardingDependencyFactory
 import FeedDependencyFactory
 import RecordsDependencyFactory
@@ -46,6 +47,7 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     missionDependencyFactory: MissionDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory,
     onboardingDependencyFactory: OnboardingDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory
@@ -58,6 +60,7 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       missionDependencyFactory: missionDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory,
       onboardingDependencyFactory: onboardingDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
       recordsDependencyFactory: recordsDependencyFactory

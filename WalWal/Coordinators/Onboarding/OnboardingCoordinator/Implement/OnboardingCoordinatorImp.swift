@@ -9,6 +9,7 @@
 import UIKit
 import OnboardingDependencyFactory
 import FCMDependencyFactory
+import ImageDependencyFactory
 import AuthDependencyFactory
 
 import BaseCoordinator
@@ -32,6 +33,7 @@ public final class OnboardingCoordinatorImp: OnboardingCoordinator {
   
   public var onboardingDependencyFactory: OnboardingDependencyFactory
   private var fcmDependencyFactory: FCMDependencyFactory
+  private var imageDependencyFactory: ImageDependencyFactory
   private var authDependencyFactory: AuthDependencyFactory
   
   public required init(
@@ -39,12 +41,14 @@ public final class OnboardingCoordinatorImp: OnboardingCoordinator {
     parentCoordinator: (any BaseCoordinator)?,
     onboardingDependencyFactory: OnboardingDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
+    imageDependecyFactory: ImageDependencyFactory,
     authDependencyFactory: AuthDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.onboardingDependencyFactory = onboardingDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
+    self.imageDependencyFactory = imageDependecyFactory
     self.authDependencyFactory = authDependencyFactory
     bindChildToParentAction()
     bindState()
@@ -100,6 +104,7 @@ extension OnboardingCoordinatorImp {
     let reactor = onboardingDependencyFactory.injectOnboardingProfileReactor(
       coordinator: self,
       fcmSaveUseCase: fcmDependencyFactory.injectFCMSaveUseCase(),
+      uploadMemberUseCase: imageDependencyFactory.injectUploadMemberUseCase(),
       registerUseCase: authDependencyFactory.injectRegisterUseCase(),
       userTokensUseCase: authDependencyFactory.injectUserTokensUseCase()
     )

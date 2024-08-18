@@ -18,7 +18,7 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
   private typealias Color = ResourceKitAsset.Colors
   private typealias Font = ResourceKitFontFamily.KR
   private typealias Image = ResourceKitAsset.Images
-  private typealias Sample = ResourceKitAsset.Sample
+  private typealias Assets = ResourceKitAsset.Assets
   
   var disposeBag = DisposeBag()
   
@@ -36,11 +36,11 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
     $0.backgroundColor = Color.walwalOrange.color
   }
   private let profileImageView = UIImageView().then {
-    $0.backgroundColor = Color.walwalBeige.color
-    $0.tintColor = Color.white.color
+    $0.backgroundColor = Color.white.color
+    $0.contentMode = .scaleAspectFit
   }
   private let inActiveimageView = UIImageView().then {
-    $0.backgroundColor = Color.gray200.color
+    $0.image = Assets.inactiveImage.image
   }
   
   // MARK: - Initialize
@@ -117,12 +117,13 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
     if data.profileType == .defaultImage {
       if let defaultImage = data.defaultImage {
         profileImageView.image = defaultImage.image
+        inActiveimageView.image = Assets.inactiveDefault.image
       }
       let changeImage = Image.swapL.image
       changeButton.setImage(changeImage, for: .normal)
     } else {
       profileImageView.image = data.selectImage
-      changeButton.setImage(Sample.pencil.image, for: .normal) // TODO: - 이미지 에셋 확정 후 수정 필요
+      changeButton.setImage(Image.editL.image, for: .normal) // TODO: - 이미지 에셋 확정 후 수정 필요
     }
     if isActive {
       inActiveimageView.isHidden = true
