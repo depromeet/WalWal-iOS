@@ -29,9 +29,9 @@ public protocol MissionDependencyFactory {
   ) -> any MissionCoordinator
   func injectMissionReactor<T: MissionCoordinator>(
     coordinator: T,
-    todayMissionUseCase: any TodayMissionUseCase,
-    checkCompletedTotalRecordsUseCase: any CheckCompletedTotalRecordsUseCase,
-    checkRecordStatusUseCase: any CheckRecordStatusUseCase,
+    todayMissionUseCase: TodayMissionUseCase,
+    checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
+    checkRecordStatusUseCase: CheckRecordStatusUseCase,
     startRecordUseCase: StartRecordUseCase
   ) -> any MissionReactor
   func injectMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController

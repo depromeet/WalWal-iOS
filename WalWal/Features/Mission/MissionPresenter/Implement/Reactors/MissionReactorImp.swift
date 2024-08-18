@@ -22,17 +22,17 @@ public final class MissionReactorImp: MissionReactor {
   
   public let initialState: State
   public let coordinator: any MissionCoordinator
-  public let todayMissionUseCase: any TodayMissionUseCase
-  public let checkCompletedTotalRecordsUseCase: any CheckCompletedTotalRecordsUseCase
-  public let checkRecordStatusUseCase: any CheckRecordStatusUseCase
-  public let startRecordUseCase: any StartRecordUseCase
+  public let todayMissionUseCase: TodayMissionUseCase
+  public let checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase
+  public let checkRecordStatusUseCase: CheckRecordStatusUseCase
+  public let startRecordUseCase: StartRecordUseCase
   
   public init(
     coordinator: any MissionCoordinator,
-    todayMissionUseCase: any TodayMissionUseCase,
-    checkCompletedTotalRecordsUseCase: any CheckCompletedTotalRecordsUseCase,
-    checkRecordStatusUseCase: any CheckRecordStatusUseCase,
-    startRecordUseCase: any StartRecordUseCase
+    todayMissionUseCase: TodayMissionUseCase,
+    checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
+    checkRecordStatusUseCase: CheckRecordStatusUseCase,
+    startRecordUseCase: StartRecordUseCase
   ) {
     self.coordinator = coordinator
     self.todayMissionUseCase = todayMissionUseCase

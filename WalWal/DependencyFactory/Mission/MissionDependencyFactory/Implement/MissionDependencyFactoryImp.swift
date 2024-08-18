@@ -56,10 +56,10 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
   
   public func injectMissionReactor<T>(
     coordinator: T,
-    todayMissionUseCase: any TodayMissionUseCase,
-    checkCompletedTotalRecordsUseCase: any CheckCompletedTotalRecordsUseCase,
-    checkRecordStatusUseCase: any CheckRecordStatusUseCase,
-    startRecordUseCase: any StartRecordUseCase
+    todayMissionUseCase: TodayMissionUseCase,
+    checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
+    checkRecordStatusUseCase: CheckRecordStatusUseCase,
+    startRecordUseCase: StartRecordUseCase
   ) -> any MissionReactor where T : MissionCoordinator {
     return MissionReactorImp(
       coordinator: coordinator,
