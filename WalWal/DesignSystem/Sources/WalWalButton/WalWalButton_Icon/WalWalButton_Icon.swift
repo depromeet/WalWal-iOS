@@ -37,7 +37,7 @@ public class WalWalButton_Icon: UIControl {
   
   private lazy var titleLabel = UILabel().then {
     $0.textAlignment = .center
-    $0.font = Fonts.KR.H5.B
+    $0.font = Fonts.KR.H7.B
     $0.textColor = Colors.white.color
     $0.text = title
   }
@@ -94,8 +94,12 @@ public class WalWalButton_Icon: UIControl {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    rootView.pin.all()
-    rootView.flex.layout()
+    rootView.pin
+      .all()
+    rootView.flex
+      .layout()
+    titleLabel.flex
+      .markDirty()
   }
   
   // MARK: - Methods
