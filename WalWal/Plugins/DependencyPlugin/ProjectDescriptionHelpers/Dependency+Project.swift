@@ -28,6 +28,7 @@ enum DependencyFactoryStr: String {
   case fcm = "FCM"
   case records = "Records"
   case image = "Image"
+  case missionUpload = "MissionUpload"
 }
 
 enum CoordinatorStr: String {
@@ -39,6 +40,7 @@ enum CoordinatorStr: String {
   case mission = "Mission"
   case feed = "Feed"
   case myPage = "MyPage"
+  case missionUpload = "MissionUpload"
 }
 
 enum FeatureStr: String {
@@ -51,6 +53,7 @@ enum FeatureStr: String {
   case records = "Records"
   case image = "Image"
   case feed = "Feed"
+  case missionUpload = "MissionUpload"
 }
 
 protocol WalWalDependency {
@@ -110,6 +113,7 @@ extension TargetDependency {
     public struct Records: WalWalDependency { }
     public struct Image: WalWalDependency { }
     public struct Feed: WalWalDependency { }
+    public struct MissionUpload: WalWalDependency { }
   }
   
   public struct Coordinator {
@@ -121,6 +125,7 @@ extension TargetDependency {
     public struct Mission: WalWalDependency { }
     public struct MyPage: WalWalDependency { }
     public struct Feed: WalWalDependency { }
+    public struct MissionUpload: WalWalDependency { }
   }
   
   public struct Feature {
@@ -173,6 +178,11 @@ extension TargetDependency {
     public struct Image: WalWalDependency {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
+    }
+    
+    public struct MissionUpload: WalWalDependency {
+      public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
     }
   }
 }
@@ -227,6 +237,11 @@ public extension TargetDependency.DependencyFactory.Image {
 public extension TargetDependency.DependencyFactory.Feed {
   static let Interface = Self.project(dependencyName: .feed, isInterface: true)
   static let Implement = Self.project(dependencyName: .feed, isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.MissionUpload {
+  static let Interface = Self.project(dependencyName: .missionUpload, isInterface: true)
+  static let Implement = Self.project(dependencyName: .missionUpload, isInterface: false)
 }
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
@@ -350,7 +365,17 @@ public extension TargetDependency.Feature.Image.Data {
   static let Interface = Self.project(name: .image, layer: .data, isInterface: true)
   static let Implement = Self.project(name: .image, layer: .data, isInterface: false)
 }
- 
+
+public extension TargetDependency.Feature.MissionUpload.Presenter {
+  static let Interface = Self.project(name: .missionUpload, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .missionUpload, layer: .presenter, isInterface: false)
+}
+
+public extension TargetDependency.Feature.MissionUpload.Domain {
+  static let Interface = Self.project(name: .missionUpload, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .missionUpload, layer: .domain, isInterface: false)
+}
+
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비
 
 public extension TargetDependency.Coordinator.App {
