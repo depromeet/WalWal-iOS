@@ -97,7 +97,8 @@ extension FeedViewControllerImp: View {
   }
   
   public func bindState(reactor: R) {
-    
+    reactor.action
+      .onNext(.loadFeedData(cursor: "2024-01-01", limits: 10))
   }
   
   public func bindEvent() {
