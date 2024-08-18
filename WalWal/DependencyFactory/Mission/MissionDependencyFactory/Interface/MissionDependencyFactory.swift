@@ -10,9 +10,13 @@ import UIKit
 import BaseCoordinator
 import MissionCoordinator
 
+import RecordsDependencyFactory
+
 import MissionData
 import MissionDomain
 import MissionPresenter
+
+import RecordsDomain
 
 public protocol MissionDependencyFactory {
   
@@ -20,8 +24,15 @@ public protocol MissionDependencyFactory {
   func injectTodayMissionUseCase() -> TodayMissionUseCase
   func injectMissionCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: (any BaseCoordinator)?
+    parentCoordinator: (any BaseCoordinator)?,
+    recordDependencyFactory: RecordsDependencyFactory
   ) -> any MissionCoordinator
-  func injectMissionReactor<T: MissionCoordinator>(coordinator: T, todayMissionUseCase: any TodayMissionUseCase) -> any MissionReactor
+  func injectMissionReactor<T: MissionCoordinator>(
+    coordinator: T,
+    todayMissionUseCase: any TodayMissionUseCase,
+    checkCompletedTotalRecordsUseCase: any CheckCompletedTotalRecordsUseCase,
+    checkRecordStatusUseCase: any CheckRecordStatusUseCase,
+    startRecordUseCase: StartRecordUseCase
+  ) -> any MissionReactor
   func injectMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController
 }
