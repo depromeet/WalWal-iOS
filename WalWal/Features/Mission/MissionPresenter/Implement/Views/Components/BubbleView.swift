@@ -21,7 +21,9 @@ public final class BubbleView: UIView {
   // MARK: - UI
   
   private let containerView = UIView()
-  private let iconImageView = UIImageView()
+  private let iconImageView = UIImageView().then {
+    $0.image = Images.missionStartIcon.image
+  }
   private let titleLabel = UILabel().then {
     $0.textColor = Colors.walwalOrange.color
     $0.font = Fonts.KR.H6.B
@@ -32,19 +34,17 @@ public final class BubbleView: UIView {
   
   private var tipWidth: CGFloat = 16
   private var tipHeight: CGFloat = 16
-  private var text: String = ""
+  public var missionCount = BehaviorRelay<Int>(value: 0)
+  public var isCompleted = BehaviorRelay<Bool>(value: false)
+  
+  private let disposeBag = DisposeBag()
   
   // MARK: - Initializers
   
-  public init(
-    color: UIColor,
-    image: UIImage? = nil,
-    text: String
-  ) {
+  public init() {
     super.init(frame: .zero)
-    self.backgroundColor = color
-    self.iconImageView.image = image
-    self.titleLabel.text = text
+    self.backgroundColor =  Colors.gray150.color
+    bind()
     configureAttribute()
     configureLayout()
   }
@@ -86,6 +86,16 @@ public final class BubbleView: UIView {
           .height(19)
       }
   }
+  
+  private func bind() {
+    Observable.combineLatest(missionCount, isCompleted)
+      .map { count, completed -> String in
+        return completed ? "\(count+1)번째 함께 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
+      }
+      .bind(to: titleLabel.rx.text)
+      .disposed(by: disposeBag)
+  }
+  
   
   private func setTipShape(viewColor: UIColor, tipWidth: CGFloat, tipHeight: CGFloat) {
     let tipStartX = (containerView.bounds.width - tipWidth) / 2.0

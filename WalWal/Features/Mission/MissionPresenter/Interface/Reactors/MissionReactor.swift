@@ -15,9 +15,9 @@ import ReactorKit
 import RxSwift
 
 public enum MissionReactorAction {
-  case loadMission
+  case loadMissionInfo
   case startMission
-  case checkMissionStatus
+  case checkMissionStatus(Int)
 }
 
 public enum MissionReactorMutation {
@@ -26,6 +26,7 @@ public enum MissionReactorMutation {
   case missionLoadFailed(Error)
   case missionStarted
   case setMissionStatus(MissionRecordStatusModel)
+  case setMissionCount(Int)
 }
 
 
@@ -34,7 +35,7 @@ public struct MissionReactorState {
   public var isLoading: Bool = false
   public var isMissionStarted: Bool = false
   public var missionStatus: MissionRecordStatusModel?
-  public var error: Error?
+  public var totalMissionCount : Int = 0
   
   public init() {
     
