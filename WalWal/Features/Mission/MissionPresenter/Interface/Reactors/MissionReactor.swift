@@ -24,11 +24,17 @@ public enum MissionReactorMutation {
   case setMission(MissionModel)
   case setLoading(Bool)
   case missionLoadFailed(Error)
+  case missionStarted
+  case setMissionStatus(MissionRecordStatusModel)
 }
+
 
 public struct MissionReactorState {
   public var mission: MissionModel?
   public var isLoading: Bool = false
+  public var isMissionStarted: Bool = false
+  public var missionStatus: MissionRecordStatusModel?
+  public var error: Error?
   
   public init() {
     

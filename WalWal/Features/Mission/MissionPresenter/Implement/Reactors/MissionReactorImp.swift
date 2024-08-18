@@ -52,9 +52,9 @@ public final class MissionReactorImp: MissionReactor {
       ])
     case .startMission:
       // Mission 시작 로직을 추가
-      return Observable.just(startRecordUseCase.execute(missionId: 1))
+      return startMission()
     case .checkMissionStatus:
-      <#code#>
+      return checkMissionStatus()
     }
   }
   
@@ -67,9 +67,39 @@ public final class MissionReactorImp: MissionReactor {
       newState.isLoading = isLoading
     case .missionLoadFailed(let error):
       newState.isLoading = false
+      newState.error = error
+    case .missionStarted:
+      // 미션 시작 시의 상태 업데이트
+      newState.isMissionStarted = true
+    case .setMissionStatus(let status):
+      newState.missionStatus = status
     }
     return newState
   }
+  
+  
+  private func startMission() -> Observable<Mutation> {
+    return startRecordUseCase.execute(missionId: 1)
+      .asObservable()
+      .map { _ in
+        return Mutation.missionStarted
+      }
+      .catch { error in
+        return Observable.just(Mutation.missionLoadFailed(error))
+      }
+  }
+  
+  private func checkMissionStatus() -> Observable<Mutation> {
+    return checkRecordStatusUseCase.execute(missionId: 1)
+      .asObservable()
+      .map { status in
+        return Mutation.setMissionStatus(status)
+      }
+      .catch { error in
+        return Observable.just(Mutation.missionLoadFailed(error))
+      }
+  }
+  
   
   private func fetchMissionData() -> Observable<Mutation> {
     return todayMissionUseCase.excute()
