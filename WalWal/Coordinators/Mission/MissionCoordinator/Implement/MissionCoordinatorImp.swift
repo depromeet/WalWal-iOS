@@ -10,13 +10,14 @@ import UIKit
 import BaseCoordinator
 import MissionCoordinator
 
+import MissionDomain
+
 import MissionDependencyFactory
 import RecordsDependencyFactory
 import ImageDependencyFactory
 
 import RxSwift
 import RxCocoa
-import MissionDomain
 
 public final class MissionCoordinatorImp: MissionCoordinator {
   
