@@ -18,8 +18,8 @@ final class MissionAppDelegate: UIResponder, UIApplicationDelegate {
     
     let dependencyFactory = MissionDependencyFactoryImp()
     let navigationController = UINavigationController()
-    let coordinator = dependencyFactory.injectMissionCoordinator(navigationController: navigationController, parentCoordinator: nil, todayMissionUseCase: dependencyFactory.injectTodayMissionUseCase())
-    let reactor = dependencyFactory.injectMissionReactor(coordinator: coordinator)
+    let coordinator = dependencyFactory.injectMissionCoordinator(navigationController: navigationController, parentCoordinator: nil)
+    let reactor = dependencyFactory.injectMissionReactor(coordinator: coordinator, todayMissionUseCase: dependencyFactory.injectTodayMissionUseCase())
     let viewController = dependencyFactory.injectMissionViewController(reactor: reactor)
     
     window.rootViewController = viewController

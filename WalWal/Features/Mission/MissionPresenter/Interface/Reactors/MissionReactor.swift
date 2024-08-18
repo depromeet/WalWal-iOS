@@ -8,13 +8,16 @@
 
 import MissionCoordinator
 
+import MissionDomain
+import RecordsDomain
+
 import ReactorKit
 import RxSwift
-import MissionDomain
 
 public enum MissionReactorAction {
   case loadMission
   case startMission
+  case checkMissionStatus
 }
 
 public enum MissionReactorMutation {
@@ -38,6 +41,9 @@ public protocol MissionReactor: Reactor where Action == MissionReactorAction, Mu
   
   init(
     coordinator: any MissionCoordinator,
-    todayMissionUseCase: any TodayMissionUseCase
-  )
+    todayMissionUseCase: any TodayMissionUseCase,
+    checkCompletedTotalRecordsUseCase: any CheckCompletedTotalRecordsUseCase,
+    checkRecordStatusUseCase: any CheckRecordStatusUseCase,
+    startRecordUseCase: any StartRecordUseCase
+  ) 
 }

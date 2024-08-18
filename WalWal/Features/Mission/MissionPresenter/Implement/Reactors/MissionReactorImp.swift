@@ -10,6 +10,7 @@ import UIKit
 import MissionPresenter
 import MissionCoordinator
 import MissionDomain
+import RecordsDomain
 
 import ReactorKit
 import RxSwift
@@ -22,13 +23,22 @@ public final class MissionReactorImp: MissionReactor {
   public let initialState: State
   public let coordinator: any MissionCoordinator
   public let todayMissionUseCase: any TodayMissionUseCase
+  public let checkCompletedTotalRecordsUseCase: any CheckCompletedTotalRecordsUseCase
+  public let checkRecordStatusUseCase: any CheckRecordStatusUseCase
+  public let startRecordUseCase: any StartRecordUseCase
   
   public init(
     coordinator: any MissionCoordinator,
-    todayMissionUseCase: any TodayMissionUseCase
+    todayMissionUseCase: any TodayMissionUseCase,
+    checkCompletedTotalRecordsUseCase: any CheckCompletedTotalRecordsUseCase,
+    checkRecordStatusUseCase: any CheckRecordStatusUseCase,
+    startRecordUseCase: any StartRecordUseCase
   ) {
     self.coordinator = coordinator
     self.todayMissionUseCase = todayMissionUseCase
+    self.checkCompletedTotalRecordsUseCase = checkCompletedTotalRecordsUseCase
+    self.checkRecordStatusUseCase = checkRecordStatusUseCase
+    self.startRecordUseCase = startRecordUseCase
     self.initialState = State()
   }
   
@@ -40,10 +50,11 @@ public final class MissionReactorImp: MissionReactor {
         fetchMissionData(),
         Observable.just(Mutation.setLoading(false))
       ])
-      
     case .startMission:
       // Mission 시작 로직을 추가
-      return Observable.empty()
+      return Observable.just(startRecordUseCase.execute(missionId: 1))
+    case .checkMissionStatus:
+      <#code#>
     }
   }
   

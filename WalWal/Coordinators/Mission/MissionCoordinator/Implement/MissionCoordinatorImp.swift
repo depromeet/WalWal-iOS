@@ -11,6 +11,8 @@ import BaseCoordinator
 import MissionCoordinator
 
 import MissionDependencyFactory
+import RecordsDependencyFactory
+import ImageDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -30,15 +32,18 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   public var baseViewController: UIViewController?
   
   public var missionDependencyFactory: MissionDependencyFactory
+  public var recordDependencyFactory: RecordsDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    missionDependencyFactory: MissionDependencyFactory
+    missionDependencyFactory: MissionDependencyFactory,
+    recordDependencyFactory: RecordsDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.missionDependencyFactory = missionDependencyFactory
+    self.recordDependencyFactory = recordDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -66,7 +71,10 @@ public final class MissionCoordinatorImp: MissionCoordinator {
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
     let reactor = missionDependencyFactory.injectMissionReactor(
       coordinator: self,
-      todayMissionUseCase: missionDependencyFactory.injectTodayMissionUseCase()
+      todayMissionUseCase: missionDependencyFactory.injectTodayMissionUseCase(),
+      checkCompletedTotalRecordsUseCase: recordDependencyFactory.injectCheckCompletedTotalRecordsUseCase(),
+      checkRecordStatusUseCase: recordDependencyFactory.injectCheckRecordStatusUseCase(),
+      startRecordUseCase: recordDependencyFactory.injectStartRecordUseCase()
     )
     let missionVC = missionDependencyFactory.injectMissionViewController(reactor: reactor)
     self.baseViewController = missionVC
