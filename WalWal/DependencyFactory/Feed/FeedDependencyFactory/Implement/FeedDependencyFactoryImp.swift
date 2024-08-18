@@ -25,6 +25,15 @@ import FeedPresenterImp
 public class FeedDependencyFactoryImp: FeedDependencyFactory {
   public init() { }
   
+  public func injectFeedRepository() -> FeedRepository {
+    let networkService = NetworkService()
+    return FeedRepositoryImp(networkService: networkService)
+  }
+  
+  public func injectFetchFeedUseCase() -> any FetchFeedUseCase {
+    return FetchFeedUseCaseImp(feedRepository: injectFeedRepository())
+  }
+  
   public func makeFeedCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any FeedCoordinator {
     return FeedCoordinatorImp(
       navigationController: navigationController,
@@ -35,11 +44,13 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
   
   public func makeFeedReactor<T>(coordinator: T) -> any FeedPresenter.FeedReactor where T : FeedCoordinator {
     return FeedReactorImp(
-      coordinator: coordinator
+      coordinator: coordinator,
+      fetchFeedUseCase: injectFetchFeedUseCase()
     )
   }
   
   public func makeFeedViewController<T>(reactor: T) -> any FeedPresenter.FeedViewController where T : FeedPresenter.FeedReactor {
     return FeedViewControllerImp(reactor: reactor)
   }
+  
 }
