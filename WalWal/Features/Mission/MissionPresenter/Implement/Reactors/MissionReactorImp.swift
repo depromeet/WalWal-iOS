@@ -118,7 +118,7 @@ public final class MissionReactorImp: MissionReactor {
   
   
   private func fetchMissionData() -> Observable<Mutation> {
-    return todayMissionUseCase.excute()
+    return todayMissionUseCase.execute()
       .asObservable()
       .map { mission in
         return Mutation.setMission(mission)

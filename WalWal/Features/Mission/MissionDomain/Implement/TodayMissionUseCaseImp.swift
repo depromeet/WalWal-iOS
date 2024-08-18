@@ -20,7 +20,7 @@ public final class TodayMissionUseCaseImp: TodayMissionUseCase {
     self.missionDataRepository = missionDataRepository
   }
   
-  public func excute() -> Single<MissionModel> {
+  public func execute() -> Single<MissionModel> {
     return missionDataRepository.loadMissionInfo()
       .map {
         MissionModel(
