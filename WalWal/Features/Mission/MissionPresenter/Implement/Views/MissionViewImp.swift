@@ -126,7 +126,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   }
   
   private func startCountdownTimer() {
-    // 기존 타이머 정리
     timerDisposeBag = DisposeBag()
     
     Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
@@ -138,7 +137,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private func calculateTimeRemainingUntilMidnight() -> String {
     let calendar = Calendar.current
     let now = Date()
-    let midnight = calendar.startOfDay(for: now).addingTimeInterval(86400) // 다음 날 자정
+    let midnight = calendar.startOfDay(for: now).addingTimeInterval(86400)
     
     let components = calendar.dateComponents([.hour, .minute, .second], from: now, to: midnight)
     
@@ -185,7 +184,6 @@ extension MissionViewControllerImp: View {
             owner.timerDisposeBag = DisposeBag()
           case .inProgress:
             owner.startCountdownTimer()
-            
             owner.missionStartButton.icon = Images.watchL.image
           case .completed:
             owner.isMissionCompleted = true
