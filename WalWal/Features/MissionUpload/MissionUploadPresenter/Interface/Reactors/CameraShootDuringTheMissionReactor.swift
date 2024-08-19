@@ -6,6 +6,7 @@
 //  Created by 조용인
 //
 
+import UIKit
 import MissionUploadDomain
 import MissionUploadCoordinator
 
@@ -13,16 +14,22 @@ import ReactorKit
 import RxSwift
 
 public enum CameraShootDuringTheMissionReactorAction {
-  
+  case takePhotoButtonTapped
+  case photoCaptured(UIImage) /// 카메라에서 촬영된 이미지 액션
+  case switchCamera
 }
 
 public enum CameraShootDuringTheMissionReactorMutation {
-  
+  case setCapturedPhoto(UIImage)
+  case setLoading(Bool)
 }
 
 public struct CameraShootDuringTheMissionReactorState {
-  public init() {
+  public var capturedPhoto: UIImage? = nil
+  public var isLoading: Bool = false
   
+  public init() {
+    
   }
 }
 

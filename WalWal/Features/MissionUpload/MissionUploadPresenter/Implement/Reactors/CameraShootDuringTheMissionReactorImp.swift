@@ -1,5 +1,5 @@
 //
-//  MissionUploadReactorImp.swift
+//  CameraShootDuringTheMissionReactorImp.swift
 //
 //  MissionUpload
 //
@@ -13,7 +13,8 @@ import MissionUploadCoordinator
 import ReactorKit
 import RxSwift
 
-public final class MissionUploadReactorImp: CameraShootDuringTheMissionReactor {
+public final class CameraShootDuringTheMissionReactorImp: CameraShootDuringTheMissionReactor {
+  
   public typealias Action = CameraShootDuringTheMissionReactorAction
   public typealias Mutation = CameraShootDuringTheMissionReactorMutation
   public typealias State = CameraShootDuringTheMissionReactorState
@@ -21,18 +22,40 @@ public final class MissionUploadReactorImp: CameraShootDuringTheMissionReactor {
   public let initialState: State
   public let coordinator: any MissionUploadCoordinator
   
-  public init(
-    coordinator: any MissionUploadCoordinator
-  ) {
+  private let disposeBag = DisposeBag()
+  
+  public init(coordinator: any MissionUploadCoordinator) {
     self.coordinator = coordinator
     self.initialState = State()
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
-    
+    switch action {
+    case .takePhotoButtonTapped:
+      return Observable.concat([
+        Observable.just(.setLoading(true)),
+        Observable.just(.setLoading(false))
+      ])
+    case .switchCamera:
+      return Observable.empty()
+    case .photoCaptured(let image):
+      return Observable.just(Mutation.setCapturedPhoto(image)) /// 촬영된 이미지를 상태에 반영
+    }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
-    
+    var newState = state
+    switch mutation {
+    case .setCapturedPhoto(let image):
+      newState.capturedPhoto = image
+    case .setLoading(let isLoading):
+      newState.isLoading = isLoading
+    }
+    return newState
   }
+}
+
+// MARK: - Private Method
+extension CameraShootDuringTheMissionReactorImp {
+  
 }
