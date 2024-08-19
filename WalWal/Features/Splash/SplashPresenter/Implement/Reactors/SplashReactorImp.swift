@@ -98,7 +98,7 @@ extension SplashReactorImp {
       .flatMap { _ in self.checkRecordCalendar() }
       .flatMap { _ in self.fetchProfileInfo() }
       .map { _ in .startMain }
-      .catchAndReturn(.startMain)
+      .catchAndReturn(.startAuth)
   }
   
   private func saveFCMToken() -> Observable<Void> {
