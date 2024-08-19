@@ -49,7 +49,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private var isMissionCompleted: Bool = false
   private var recordImageURL: String = ""
   
-  private var timerDisposeBag = DisposeBag()
   public var disposeBag = DisposeBag()
   public var missionReactor: R
   
@@ -124,29 +123,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private func configureMissionCompleteView(missionImageURL: String) {
     // 미션 완료뷰 이미지 넣기
   }
-  
-  private func startCountdownTimer() {
-    timerDisposeBag = DisposeBag()
-    
-    Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
-      .map { _ in self.calculateTimeRemainingUntilMidnight() }
-      .bind(to: missionStartButton.rx.title)
-      .disposed(by: timerDisposeBag)
-  }
-  
-  private func calculateTimeRemainingUntilMidnight() -> String {
-    let calendar = Calendar.current
-    let now = Date()
-    let midnight = calendar.startOfDay(for: now).addingTimeInterval(86400)
-    
-    let components = calendar.dateComponents([.hour, .minute, .second], from: now, to: midnight)
-    
-    guard let hour = components.hour, let minute = components.minute, let second = components.second else {
-      return "남은 시간 계산 실패"
-    }
-    
-    return String(format: "%02d:%02d:%02d 남았어요!", hour, minute, second)
-  }
 }
 
 extension MissionViewControllerImp: View {
@@ -166,39 +142,50 @@ extension MissionViewControllerImp: View {
   
   public func bindState(reactor: R) {
     reactor.state
+      .map {  $0.totalMissionCount  }
+      .subscribe(with: self) { owner, count in
+        owner.missionCount = count
+        owner.missionCountBubbleView.missionCount.accept(count)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
       .map { $0 }
       .subscribe(with: self, onNext: { owner, state in
-        owner.missionCount = state.totalMissionCount
-        owner.isMissionCompleted = state.isMissionStarted
         
-        owner.missionCountBubbleView.missionCount.accept(state.totalMissionCount)
+        owner.isMissionCompleted = state.isMissionStarted
         owner.missionCountBubbleView.isCompleted.accept(state.missionStatus?.statusMessage == .completed)
         
+        owner.missionStartButton.title = state.buttonText
         if let status = state.missionStatus {
           owner.recordImageURL = status.imageUrl
           print(status.statusMessage.description)
           switch status.statusMessage {
           case .notCompleted:
             owner.isMissionCompleted = false
-            owner.missionStartButton.title = "미션 시작하기"
-            owner.timerDisposeBag = DisposeBag()
           case .inProgress:
-            owner.startCountdownTimer()
             owner.missionStartButton.icon = Images.watchL.image
           case .completed:
             owner.isMissionCompleted = true
-            owner.missionStartButton.title = "내 미션 기록 보기"
             owner.missionStartButton.icon = Images.calendarL.image
           }
         }
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.mission }
+      .subscribe(with: self) { owner, mission in
         
-        if let mission = state.mission {
+        if let mission {
           owner.missionId = mission.id
           owner.setMissionData(mission)
         }
-        
-      })
+      }
       .disposed(by: disposeBag)
+    
+    
+    
   }
   
   public func bindEvent() {

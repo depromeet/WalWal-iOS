@@ -20,6 +20,8 @@ public final class MissionReactorImp: MissionReactor {
   public typealias Mutation = MissionReactorMutation
   public typealias State = MissionReactorState
   
+  private var timerDisposeBag = DisposeBag()
+  
   public let initialState: State
   public let coordinator: any MissionCoordinator
   public let todayMissionUseCase: TodayMissionUseCase
@@ -65,8 +67,16 @@ public final class MissionReactorImp: MissionReactor {
     case .missionStarted:
       newState.isMissionStarted = true
     case .setMissionStatus(let status):
-      newState.isMissionStarted = status.statusMessage == .completed
+      newState.isMissionStarted = status.statusMessage == .inProgress || status.statusMessage == .completed
       newState.missionStatus = status
+      switch status.statusMessage {
+      case .notCompleted:
+        newState.buttonText = "미션 시작하기"
+      case .inProgress:
+        newState.buttonText = "\(calculateTimeRemainingUntilMidnight())"
+      case .completed:
+        newState.buttonText = "내 미션 기록 보기"
+      }
     case .setMissionCount(let count):
       newState.totalMissionCount = count
     case .missionLoadFailed:
@@ -132,5 +142,20 @@ public final class MissionReactorImp: MissionReactor {
       .catch { error in
         return Observable.just(Mutation.missionLoadFailed(error))
       }
+  }
+  
+  // MARK: - MissionTimer
+  private func calculateTimeRemainingUntilMidnight() -> String {
+    let calendar = Calendar.current
+    let now = Date()
+    let midnight = calendar.startOfDay(for: now).addingTimeInterval(86400)
+    
+    let components = calendar.dateComponents([.hour, .minute, .second], from: now, to: midnight)
+    
+    guard let hour = components.hour, let minute = components.minute, let second = components.second else {
+      return "남은 시간 계산 실패"
+    }
+    
+    return String(format: "%02d:%02d:%02d 남았어요!", hour, minute, second)
   }
 }

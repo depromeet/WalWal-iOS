@@ -35,6 +35,7 @@ public struct MissionReactorState {
   public var isMissionStarted: Bool = false
   public var missionStatus: MissionRecordStatusModel?
   public var totalMissionCount : Int = 0
+  public var buttonText: String = "미션 시작하기" // 초기값
   
   public init() {
     
