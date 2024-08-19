@@ -17,15 +17,15 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-public final class MissionUploadViewControllerImp<R: MissionUploadReactor>: UIViewController, MissionUploadViewController {
+public final class MissionUploadViewControllerImp<R: CameraShootDuringTheMissionReactor>: UIViewController, CameraShootDuringTheMissionViewController {
   
   public var disposeBag = DisposeBag()
-  public var __reactor: R
+  public var cameraShootingDuringTheMissionReactor: R
   
   public init(
       reactor: R
   ) {
-    self.__reactor = reactor
+    self.cameraShootingDuringTheMissionReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -39,7 +39,7 @@ public final class MissionUploadViewControllerImp<R: MissionUploadReactor>: UIVi
     super.viewDidLoad()
     setAttribute()
     setLayout()
-    self.reactor = __reactor
+    self.reactor = self.cameraShootingDuringTheMissionReactor
   }
     
   

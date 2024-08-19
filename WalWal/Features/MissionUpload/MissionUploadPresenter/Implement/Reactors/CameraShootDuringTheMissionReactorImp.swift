@@ -13,16 +13,16 @@ import MissionUploadCoordinator
 import ReactorKit
 import RxSwift
 
-public final class MissionUploadReactorImp: SplashReactor {
-  public typealias Action = MissionUploadReactorAction
-  public typealias Mutation = MissionUploadReactorMutation
-  public typealias State = MissionUploadReactorState
+public final class MissionUploadReactorImp: CameraShootDuringTheMissionReactor {
+  public typealias Action = CameraShootDuringTheMissionReactorAction
+  public typealias Mutation = CameraShootDuringTheMissionReactorMutation
+  public typealias State = CameraShootDuringTheMissionReactorState
   
   public let initialState: State
-  public let coordinator: any __Coordinator
+  public let coordinator: any MissionUploadCoordinator
   
   public init(
-    coordinator: any __Coordinator
+    coordinator: any MissionUploadCoordinator
   ) {
     self.coordinator = coordinator
     self.initialState = State()

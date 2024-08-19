@@ -17,12 +17,12 @@ let project = Project.invertedDualTargetProject(
   interfaceDependencies: [
     .Coordinator.MissionUpload.Interface,
     
-    .Feature.Records.Domain.Interface,
     .Feature.MissionUpload.Presenter.Interface
   ],
   implementDependencies: [
     .Coordinator.MissionUpload.Implement,
     
-    .Feature.MissionUpload.Presenter.Implement
+    .Feature.MissionUpload.Presenter.Implement,
+    .Feature.MissionUpload.Domain.Implement,
   ]
 )
