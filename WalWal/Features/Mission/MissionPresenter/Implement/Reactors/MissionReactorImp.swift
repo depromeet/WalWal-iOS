@@ -54,6 +54,8 @@ public final class MissionReactorImp: MissionReactor {
       ])
     case let .startMission(id):
       return startMission(id: id)
+    case .startTimer:
+      return startMissionTimer()
     }
   }
   
@@ -73,7 +75,7 @@ public final class MissionReactorImp: MissionReactor {
       case .notCompleted:
         newState.buttonText = "미션 시작하기"
       case .inProgress:
-        newState.buttonText = "\(calculateTimeRemainingUntilMidnight())"
+        startTimerObservable()
       case .completed:
         newState.buttonText = "내 미션 기록 보기"
       }
@@ -81,6 +83,8 @@ public final class MissionReactorImp: MissionReactor {
       newState.totalMissionCount = count
     case .missionLoadFailed:
       newState.isLoading = false
+    case .setButtionText(let text):
+      newState.buttonText = text
     }
     return newState
   }
@@ -158,4 +162,30 @@ public final class MissionReactorImp: MissionReactor {
     
     return String(format: "%02d:%02d:%02d 남았어요!", hour, minute, second)
   }
+  
+  
+  private func startMissionTimer() -> Observable<Mutation> {
+    let timerObservable = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+      .startWith(0)
+      .map { _ in return self.calculateTimeRemainingUntilMidnight() }
+      .flatMap { time -> Observable<Mutation> in
+        return Observable.from([Mutation.setButtionText(time)])
+      }
+    return timerObservable
+  }
+  private func startTimerObservable() {
+    timerDisposeBag = DisposeBag()
+    
+    Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+      .startWith(0)
+      .map { [weak self] _ in
+        self?.calculateTimeRemainingUntilMidnight() ?? "00:00:00"
+      }
+      .map { Mutation.setButtionText($0) }
+      .subscribe(with: self, onNext: { owner, mutation in
+        owner.action.onNext(.startTimer)
+      })
+      .disposed(by: timerDisposeBag)
+  }
+  
 }

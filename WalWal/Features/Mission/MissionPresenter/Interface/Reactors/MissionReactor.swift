@@ -17,6 +17,7 @@ import RxSwift
 public enum MissionReactorAction {
   case loadMissionInfo
   case startMission(Int)
+  case startTimer
 }
 
 public enum MissionReactorMutation {
@@ -26,6 +27,7 @@ public enum MissionReactorMutation {
   case missionStarted
   case setMissionStatus(MissionRecordStatusModel)
   case setMissionCount(Int)
+  case setButtionText(String)
 }
 
 

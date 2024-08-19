@@ -159,7 +159,6 @@ extension MissionViewControllerImp: View {
         owner.missionStartButton.title = state.buttonText
         if let status = state.missionStatus {
           owner.recordImageURL = status.imageUrl
-          print(status.statusMessage.description)
           switch status.statusMessage {
           case .notCompleted:
             owner.isMissionCompleted = false
