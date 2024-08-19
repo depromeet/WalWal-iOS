@@ -22,7 +22,9 @@ public final class ProfileInfoUseCaseImp: ProfileInfoUseCase {
   public func execute() -> Single<ProfileInfo> {
     return mypageRepository.profileInfo()
       .map {
-        ProfileInfo(dto: $0)
+        let profile = ProfileInfo(dto: $0)
+        profile.saveToGlobalState()
+        return profile
       }
       .asObservable()
       .asSingle()

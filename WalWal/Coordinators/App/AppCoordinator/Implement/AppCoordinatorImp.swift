@@ -115,13 +115,15 @@ public final class AppCoordinatorImp: AppCoordinator {
     let fcmSaveUseCase = fcmDependencyFactory.injectFCMSaveUseCase()
     let checkRecordCalendarUseCase = recordsDependencyFactory.injectCheckCalendarRecordsUseCase()
     let removeGlobalCalendarRecordsUseCase = recordsDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase()
+    let profileInfoUseCase = myPageDependencyFactory.injectProfileInfoUseCase()
     let reactor = appDependencyFactory.injectSplashReactor(
       coordinator: self,
       checkTokenUseCase: checkTokenUseCase,
       checkIsFirstLoadedUseCase: checkIsFirstLoadedUseCase,
       fcmSaveUseCase: fcmSaveUseCase,
       checkRecordCalendarUseCase: checkRecordCalendarUseCase,
-      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase
+      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
+      profileInfoUseCase: profileInfoUseCase
     )
     let splashVC = appDependencyFactory.injectSplashViewController(reactor: reactor)
     self.baseViewController = splashVC

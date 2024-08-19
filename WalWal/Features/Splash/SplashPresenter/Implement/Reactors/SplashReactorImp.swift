@@ -10,6 +10,7 @@ import SplashDomain
 import SplashPresenter
 import FCMDomain
 import RecordsDomain
+import MyPageDomain
 import AppCoordinator
 
 import ReactorKit
@@ -28,6 +29,7 @@ public final class SplashReactorImp: SplashReactor {
   private let fcmSaveUseCase: FCMSaveUseCase
   private let checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
   private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
+  private let profileInfoUseCase: ProfileInfoUseCase
   private let disposeBag = DisposeBag()
   
   public init(
@@ -36,7 +38,8 @@ public final class SplashReactorImp: SplashReactor {
     checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    profileInfoUseCase: ProfileInfoUseCase
   ) {
     self.coordinator = coordinator
     self.checkTokenUseCase = checkTokenUseCase
@@ -44,6 +47,7 @@ public final class SplashReactorImp: SplashReactor {
     self.fcmSaveUseCase = fcmSaveUseCase
     self.checkRecordCalendarUseCase = checkRecordCalendarUseCase
     self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
+    self.profileInfoUseCase = profileInfoUseCase
     self.initialState = State()
   }
   
@@ -92,6 +96,7 @@ extension SplashReactorImp {
     // FCM 토큰 저장, 기록 캘린더 확인을 순차적으로 처리
     return saveFCMToken()
       .flatMap { _ in self.checkRecordCalendar() }
+      .flatMap { _ in self.fetchProfileInfo() }
       .map { _ in .startMain }
       .catchAndReturn(.startMain)
   }
@@ -123,5 +128,11 @@ extension SplashReactorImp {
         }
       }
       .catch { error in return .just(Void()) }
+  }
+  
+  private func fetchProfileInfo() -> Observable<Void> {
+    return profileInfoUseCase.execute()
+      .asObservable()
+      .map { _ in Void() }
   }
 }

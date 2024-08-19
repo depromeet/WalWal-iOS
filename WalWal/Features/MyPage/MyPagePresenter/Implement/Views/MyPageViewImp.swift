@@ -44,10 +44,9 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   
   private let calendar = WalWalCalendar(initialModels: [])
   
-  private let profileCardView = WalWalProfileCardView(
+  private lazy var profileCardView = WalWalProfileCardView(
     profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
-    name: "조용인",
-    subDescription: "안녕하세요 반가워요 👍🏻",
+    name: " ",
     chipStyle: .tonal,
     chipTitle: "수정"
   )
@@ -146,6 +145,14 @@ extension MyPageViewControllerImp: View {
     reactor.state.map { $0.calendarData }
       .distinctUntilChanged()
       .bind(to: calendar.rx.updateModels)
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.profileData }
+      .compactMap { $0 }
+      .bind(with: self) { owner, data in
+        owner.profileCardView.changeProfileInfo(nickname: data.nickname, image: data.profileURL)
+      }
       .disposed(by: disposeBag)
   }
   

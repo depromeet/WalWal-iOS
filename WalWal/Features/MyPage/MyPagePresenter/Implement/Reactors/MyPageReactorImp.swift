@@ -24,16 +24,16 @@ public final class MyPageReactorImp: MyPageReactor {
   public let coordinator: any MyPageCoordinator
   
   private let fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase
-  private let profileInfoUseCase: ProfileInfoUseCase
+  private let fetchProfileInfoUseCase: FetchProfileInfoUseCase
   
   public init(
     coordinator: any MyPageCoordinator,
     fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
-    profileInfoUseCase: ProfileInfoUseCase
+    fetchProfileInfoUseCase: FetchProfileInfoUseCase
   ) {
     self.coordinator = coordinator
     self.fetchWalWalCalendarModelsUseCase = fetchWalWalCalendarModelsUseCase
-    self.profileInfoUseCase = profileInfoUseCase
+    self.fetchProfileInfoUseCase = fetchProfileInfoUseCase
     self.initialState = State()
   }
   
@@ -41,8 +41,9 @@ public final class MyPageReactorImp: MyPageReactor {
   public func transform(action: Observable<Action>) -> Observable<Action> {
     /// 초기 액션으로 `loadCalendarData`를 추가
     let initialLoadAction = Observable.just(Action.loadCalendarData)
+    let initialProfileAction = Observable.just(Action.loadProfileInfo)
     /// 기존 액션 스트림과 초기 액션 스트림을 병합
-    return Observable.merge(action, initialLoadAction)
+    return Observable.merge(action, initialLoadAction, initialProfileAction)
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -63,6 +64,12 @@ public final class MyPageReactorImp: MyPageReactor {
           self.convertToWalWalCalendarModels(from: records)
         }
         .map { Mutation.setCalendarData($0) }
+    case .loadProfileInfo:
+      return fetchProfileInfoUseCase.execute()
+        .asObservable()
+        .flatMap { info -> Observable<Mutation> in
+          return .just(.profileInfo(data: .init(global: info)))
+        }
     }
   }
   
@@ -78,6 +85,8 @@ public final class MyPageReactorImp: MyPageReactor {
       coordinator.destination.accept(.showProfileSetting)
     case .moveToEditView:
       coordinator.destination.accept(.showProfileEdit)
+    case let .profileInfo(data):
+      newState.profileData = data
     }
     return newState
   }

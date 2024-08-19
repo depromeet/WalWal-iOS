@@ -31,11 +31,11 @@ public protocol MyPageDependencyFactory {
   func injectMyPageRepository() -> MyPageRepository
   func injectFetchWalWalCalendarModelsUseCase() -> FetchWalWalCalendarModelsUseCase
   func injectProfileInfoUseCase() -> ProfileInfoUseCase
-  
+  func injectFetchProfileInfoUseCase() -> FetchProfileInfoUseCase
   func injectMyPageReactor<T: MyPageCoordinator>(
     coordinator: T,
     fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
-    profileInfoUseCase: ProfileInfoUseCase
+    fetchProfileInfoUseCase: FetchProfileInfoUseCase
   ) -> any MyPageReactor
   func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
   func injectRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor
