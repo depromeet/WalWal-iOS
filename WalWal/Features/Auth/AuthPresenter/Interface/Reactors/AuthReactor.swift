@@ -9,6 +9,7 @@
 import AuthDomain
 import AuthCoordinator
 import FCMDomain
+import RecordsDomain
 
 import ReactorKit
 import RxSwift
@@ -41,6 +42,8 @@ public protocol AuthReactor:
     socialLoginUseCase: SocialLoginUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase,
-    kakaoLoginUseCase: KakaoLoginUseCase
+    kakaoLoginUseCase: KakaoLoginUseCase,
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   )
 }

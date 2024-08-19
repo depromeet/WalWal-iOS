@@ -183,7 +183,8 @@ extension AppCoordinatorImp {
     let authCoordinator = authDependencyFactory.injectAuthCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
-      fcmDependencyFactory: fcmDependencyFactory
+      fcmDependencyFactory: fcmDependencyFactory,
+      recordsDependencyFactory: recordsDependencyFactory
     )
     childCoordinator = authCoordinator
     authCoordinator.start()

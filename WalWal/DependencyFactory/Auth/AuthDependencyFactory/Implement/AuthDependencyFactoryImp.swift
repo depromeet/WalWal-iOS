@@ -9,6 +9,7 @@
 import UIKit
 import AuthDependencyFactory
 import FCMDependencyFactory
+import RecordsDependencyFactory
 
 import WalWalNetwork
 
@@ -24,6 +25,7 @@ import AuthPresenter
 import AuthPresenterImp
 
 import FCMDomain
+import RecordsDomain
 
 public class AuthDependencyFactoryImp: AuthDependencyFactory {
   
@@ -32,13 +34,15 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
   public func injectAuthCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    recordsDependencyFactory: RecordsDependencyFactory
   ) -> any AuthCoordinator {
     return AuthCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       authDependencyFactory: self,
-      fcmDependencyFactory: fcmDependencyFactory
+      fcmDependencyFactory: fcmDependencyFactory,
+      recordsDependencyFactory: recordsDependencyFactory
     )
   }
   
@@ -83,14 +87,18 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     socialLoginUseCase: SocialLoginUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase,
-    kakaoLoginUseCase: KakaoLoginUseCase
+    kakaoLoginUseCase: KakaoLoginUseCase,
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   ) -> any AuthReactor {
     return AuthReactorImp(
       coordinator: coordinator,
       socialLoginUseCase: socialLoginUseCase,
       fcmSaveUseCase: fcmSaveUseCase,
       userTokensSaveUseCase: userTokensSaveUseCase,
-      kakaoLoginUseCase: kakaoLoginUseCase
+      kakaoLoginUseCase: kakaoLoginUseCase,
+      checkRecordCalendarUseCase: checkRecordCalendarUseCase,
+      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase
     )
   }
   
