@@ -70,7 +70,8 @@ public final class BubbleView: UIView {
     self.addSubview(containerView)
     containerView.pin
       .all()
-    
+    titleLabel.flex
+      .markDirty()
     layer.cornerRadius = containerView.bounds.height / 2
   }
   
