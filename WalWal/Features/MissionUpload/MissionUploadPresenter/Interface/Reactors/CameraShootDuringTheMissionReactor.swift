@@ -14,14 +14,14 @@ import ReactorKit
 import RxSwift
 
 public enum CameraShootDuringTheMissionReactorAction {
-  case takePhotoButtonTapped
   case photoCaptured(UIImage) /// 카메라에서 촬영된 이미지 액션
-  case switchCamera
+  case backButtonTapped
 }
 
 public enum CameraShootDuringTheMissionReactorMutation {
   case setCapturedPhoto(UIImage)
   case setLoading(Bool)
+  case moveToMain
 }
 
 public struct CameraShootDuringTheMissionReactorState {
