@@ -24,6 +24,7 @@ import OnboardingDependencyFactory
 import FeedDependencyFactory
 import RecordsDependencyFactory
 import FCMDependencyFactory
+import MembersDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -51,6 +52,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   private let onboardingDependencyFactory: OnboardingDependencyFactory
   private let feedDependencyFactory: FeedDependencyFactory
   private let recordsDependencyFactory: RecordsDependencyFactory
+  private let memberDependencyFactory: MembersDependencyFactory
   
   /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
   /// 그리고 하위 Coordinator를 생성할 때 마다, 하위에 해당하는 인터페이스 모두 전달
@@ -65,7 +67,8 @@ public final class AppCoordinatorImp: AppCoordinator {
     imageDependencyFactory: ImageDependencyFactory,
     onboardingDependencyFactory: OnboardingDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory,
+    memberDependencyFactory: MembersDependencyFactory
   ) {
     self.navigationController = navigationController
     self.appDependencyFactory = appDependencyFactory
@@ -78,6 +81,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     self.onboardingDependencyFactory = onboardingDependencyFactory
     self.feedDependencyFactory = feedDependencyFactory
     self.recordsDependencyFactory = recordsDependencyFactory
+    self.memberDependencyFactory = memberDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -115,7 +119,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     let fcmSaveUseCase = fcmDependencyFactory.injectFCMSaveUseCase()
     let checkRecordCalendarUseCase = recordsDependencyFactory.injectCheckCalendarRecordsUseCase()
     let removeGlobalCalendarRecordsUseCase = recordsDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase()
-    let profileInfoUseCase = myPageDependencyFactory.injectProfileInfoUseCase()
+    let memberInfoUseCase = memberDependencyFactory.injectMemberInfoUseCase()
     let reactor = appDependencyFactory.injectSplashReactor(
       coordinator: self,
       checkTokenUseCase: checkTokenUseCase,
@@ -123,7 +127,7 @@ public final class AppCoordinatorImp: AppCoordinator {
       fcmSaveUseCase: fcmSaveUseCase,
       checkRecordCalendarUseCase: checkRecordCalendarUseCase,
       removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
-      profileInfoUseCase: profileInfoUseCase
+      memberInfoUseCase: memberInfoUseCase
     )
     let splashVC = appDependencyFactory.injectSplashViewController(reactor: reactor)
     self.baseViewController = splashVC

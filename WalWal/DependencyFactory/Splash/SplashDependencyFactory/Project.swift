@@ -22,6 +22,7 @@ let project = Project.invertedDualTargetProject(
     .DependencyFactory.Records.Interface,
     .DependencyFactory.FCM.Interface,
     .DependencyFactory.MyPage.Interface,
+    .DependencyFactory.Members.Interface,
     
     .Feature.Splash.Presenter.Interface
   ],

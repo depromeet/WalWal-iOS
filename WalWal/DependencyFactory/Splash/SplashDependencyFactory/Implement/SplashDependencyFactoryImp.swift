@@ -17,6 +17,7 @@ import ImageDependencyFactory
 import OnboardingDependencyFactory
 import FeedDependencyFactory
 import RecordsDependencyFactory
+import MembersDependencyFactory
 
 import WalWalNetwork
 
@@ -33,7 +34,7 @@ import SplashPresenterImp
 
 import FCMDomain
 import RecordsDomain
-import MyPageDomain
+import MembersDomain
 
 public class SplashDependencyFactoryImp: SplashDependencyFactory {
   
@@ -51,7 +52,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     imageDependencyFactory: ImageDependencyFactory,
     onboardingDependencyFactory: OnboardingDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory,
+    memberDependencyFactory: MembersDependencyFactory
   ) -> any AppCoordinator {
     return AppCoordinatorImp(
       navigationController: navigationController,
@@ -64,7 +66,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       imageDependencyFactory: imageDependencyFactory,
       onboardingDependencyFactory: onboardingDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
-      recordsDependencyFactory: recordsDependencyFactory
+      recordsDependencyFactory: recordsDependencyFactory,
+      memberDependencyFactory: memberDependencyFactory
     )
   }
   
@@ -83,7 +86,7 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
-    profileInfoUseCase: ProfileInfoUseCase
+    memberInfoUseCase: MemberInfoUseCase
   ) -> any SplashReactor {
     return SplashReactorImp(
       coordinator: coordinator,
@@ -92,7 +95,7 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       fcmSaveUseCase: fcmSaveUseCase,
       checkRecordCalendarUseCase: checkRecordCalendarUseCase,
       removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
-      profileInfoUseCase: profileInfoUseCase
+      memberInfoUseCase: memberInfoUseCase
     )
   }
   

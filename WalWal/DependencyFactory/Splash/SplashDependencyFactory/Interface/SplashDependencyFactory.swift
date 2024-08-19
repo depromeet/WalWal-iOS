@@ -17,6 +17,7 @@ import ImageDependencyFactory
 import OnboardingDependencyFactory
 import FeedDependencyFactory
 import RecordsDependencyFactory
+import MembersDependencyFactory
 
 import AppCoordinator
 
@@ -26,7 +27,7 @@ import SplashPresenter
 import FCMDomain
 
 import RecordsDomain
-import MyPageDomain
+import MembersDomain
 
 public protocol SplashDependencyFactory {
   
@@ -40,7 +41,8 @@ public protocol SplashDependencyFactory {
     imageDependencyFactory: ImageDependencyFactory,
     onboardingDependencyFactory: OnboardingDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory,
+    memberDependencyFactory: MembersDependencyFactory
   ) -> any AppCoordinator
   
   func injectCheckTokenUseCase() -> CheckTokenUsecase
@@ -54,7 +56,7 @@ public protocol SplashDependencyFactory {
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
-    profileInfoUseCase: ProfileInfoUseCase
+    memberInfoUseCase: MemberInfoUseCase
   ) -> any SplashReactor
   
   func injectSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController
