@@ -37,7 +37,7 @@ public final class NetworkService: NetworkServiceProtocol {
           return .error(walwalError)
         }
         
-        let walwalError = WalWalNetworkError.networkError(statusCode: responseCode, message: "")
+        let walwalError = WalWalNetworkError.networkError(message: nil)
         self.responseError(endpoint, statusCode: responseCode, result: walwalError)
         return .error(walwalError)
       })
@@ -78,7 +78,7 @@ public final class NetworkService: NetworkServiceProtocol {
           case .success(_):
             single(.success(true))
           case .failure(let fail):
-            let error = WalWalNetworkError.networkError(statusCode: fail.responseCode ?? 0, message: "")
+            let error = WalWalNetworkError.networkError(message: nil)
             single(.failure(error))
           }
         }
@@ -98,16 +98,16 @@ extension NetworkService {
   ) -> Result<T?, Error> {
     let statusCode = response.statusCode
     if !(200...299).contains(statusCode) {
-      var error = WalWalNetworkError.serverError(statusCode: statusCode, message: nil)
+      var error = WalWalNetworkError.serverError(message: nil)
       do {
         let errorResponse = try JSONDecoder().decode(BaseResponse<ErrorResponse>.self, from: data)
         switch statusCode {
         case 400...499:
-          error = WalWalNetworkError.networkError(statusCode: statusCode, message: errorResponse.data?.message)
+          error = WalWalNetworkError.networkError(message: errorResponse.data?.message)
         case 500...599:
-          error = WalWalNetworkError.serverError(statusCode: statusCode, message: errorResponse.data?.message)
+          error = WalWalNetworkError.serverError(message: errorResponse.data?.message)
         default:
-          error = WalWalNetworkError.networkError(statusCode: statusCode, message: nil)
+          error = WalWalNetworkError.networkError(message: nil)
         }
       } catch { }
      
@@ -120,7 +120,7 @@ extension NetworkService {
         responseSuccess(endpoint, result: responseModel)
         return .success(responseModel.data)
       } else {
-        let error = WalWalNetworkError.networkError(statusCode: statusCode, message: "")
+        let error = WalWalNetworkError.networkError(message: nil)
         responseError(endpoint, statusCode: statusCode, result: error)
         return .failure(error)
       }
