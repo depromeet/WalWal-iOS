@@ -39,6 +39,7 @@ public protocol MyPageReactor: Reactor where Action == MyPageReactorAction, Muta
   
   init(
     coordinator: any MyPageCoordinator,
-    fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase
+    fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
+    profileInfoUseCase: ProfileInfoUseCase
   )
 }

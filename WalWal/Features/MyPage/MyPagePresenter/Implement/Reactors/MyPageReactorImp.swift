@@ -24,13 +24,16 @@ public final class MyPageReactorImp: MyPageReactor {
   public let coordinator: any MyPageCoordinator
   
   private let fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase
+  private let profileInfoUseCase: ProfileInfoUseCase
   
   public init(
     coordinator: any MyPageCoordinator,
-    fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase
+    fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
+    profileInfoUseCase: ProfileInfoUseCase
   ) {
     self.coordinator = coordinator
     self.fetchWalWalCalendarModelsUseCase = fetchWalWalCalendarModelsUseCase
+    self.profileInfoUseCase = profileInfoUseCase
     self.initialState = State()
   }
   
