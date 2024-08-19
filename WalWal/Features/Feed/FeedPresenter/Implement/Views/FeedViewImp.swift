@@ -18,6 +18,7 @@ import FlexLayout
 import ReactorKit
 import RxSwift
 import RxCocoa
+import Lottie
 
 public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, FeedViewController {
   
@@ -29,6 +30,7 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   
   private let rootContainer = UIView()
   private lazy var feed = WalWalFeed(feedData: dummyData, isFeed: true)
+  private let loadingView = LottieAnimationView(name: "refrech.json")
   
   // MARK: - Properties
   
@@ -93,12 +95,17 @@ extension FeedViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    
+      reactor.action
+        .onNext(.loadFeedData(cursor: "", limits: 10))
   }
   
   public func bindState(reactor: R) {
-    reactor.action
-      .onNext(.loadFeedData(cursor: "2024-01-01", limits: 10))
+    reactor.state
+      .map {  $0.feedData }
+      .subscribe(with: self, onNext: { owner, feed in
+        owner.feed.feedData.accept(feed)
+      })
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

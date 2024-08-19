@@ -64,13 +64,16 @@ public final class FeedReactorImp: FeedReactor {
   private func convertFeedModel(feedList: [FeedListModel]) -> [WalWalFeedModel]{
     return feedList.compactMap { feed in
       let image = GlobalState.shared.imageStore[feed.missionRecordImageURL]
+      let formattedMissionTitle = feed.missionTitle
+                  .replacingOccurrences(of: "\n", with: " ")
+                  .trimmingCharacters(in: .whitespaces)
       return WalWalFeedModel(
-        id: feed.missionID,
+        id: feed.missionRecordID,
         date: feed.createdDate,
-        nickname: "\(feed.authorID)",
-        missionTitle: "\(feed.missionID)",
-        profileImage: UIImage(),
-        missionImage: image ?? UIImage(),
+        nickname: feed.authorNickName,
+        missionTitle: formattedMissionTitle,
+        profileImage: feed.authorProfileImageURL,
+        missionImage: feed.missionRecordImageURL,
         boostCount: feed.totalBoostCount)
     }
   }
