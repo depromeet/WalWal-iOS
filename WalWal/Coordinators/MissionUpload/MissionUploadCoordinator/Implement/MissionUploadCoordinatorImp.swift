@@ -8,6 +8,9 @@
 
 import UIKit
 import MissionUploadDependencyFactory
+import RecordsDependencyFactory
+import ImageDependencyFactory
+
 import BaseCoordinator
 import MissionUploadCoordinator
 
@@ -27,16 +30,22 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
-  public var MissionUploadDependencyFactory: MissionUploadDependencyFactory
+  public var missionUploadDependencyFactory: MissionUploadDependencyFactory
+  public var recordsDependencyFactory: RecordsDependencyFactory
+  public var imageDependencyFactory: ImageDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    MissionUploadDependencyFactory: MissionUploadDependencyFactory
+    missionUploadDependencyFactory: MissionUploadDependencyFactory,
+    recordsDependencyFactory: RecordsDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
-    self.MissionUploadDependencyFactory = MissionUploadDependencyFactory
+    self.missionUploadDependencyFactory = missionUploadDependencyFactory
+    self.recordsDependencyFactory = recordsDependencyFactory
+    self.imageDependencyFactory = imageDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -65,10 +74,16 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let reactor = dependencyFactory.make__Reactor(coordinator: self)
-    let __VC = dependencyFactory.make__ViewController(reactor: reactor)
-    self.baseViewController = __VC
-    self.pushViewController(viewController: __VC, animated: false)
+    let saveRecordUseCase = recordsDependencyFactory.injectSaveRecordUseCase()
+    let uploadRecordUseCase = imageDependencyFactory.injectUploadRecordUseCase()
+    let reactor = missionUploadDependencyFactory.injectCameraShootDuringTheMissionReactorReactor(
+      coordinator: self,
+      saveRecordUseCase: saveRecordUseCase,
+      uploadRecordUseCase: uploadRecordUseCase
+    )
+    let cameraShootDuringTheMissionViewController = missionUploadDependencyFactory.injectCameraShootDuringTheMissionViewController(reactor: reactor)
+    self.baseViewController = cameraShootDuringTheMissionViewController
+    self.pushViewController(viewController: cameraShootDuringTheMissionViewController, animated: false)
   }
 }
 
