@@ -99,7 +99,7 @@ extension OnboardingProfileReactorImp {
         return .concat([
           .just(.showIndicator(show: false)),
           .just(.buttonEnable(isEnable: false)),
-          .just(.invalidNickname(message: OnboardingError.duplicateNickname.message))
+          .just(.invalidNickname(message: error.localizedDescription))
         ])
       }
       
@@ -117,7 +117,7 @@ extension OnboardingProfileReactorImp {
       .catch { error -> Observable<Mutation> in
         return .concat([
           .just(.showIndicator(show: false)),
-          .just(.registerError(message: OnboardingError.imageUploadError.message))
+          .just(.invalidNickname(message: error.localizedDescription))
         ])
       }
   }
@@ -149,6 +149,7 @@ extension OnboardingProfileReactorImp {
       }
       .catch { _ -> Observable<Mutation> in
         print("FCM 토큰 저장 오류")
+        self.coordinator.startMission()
         return .concat([
           .just(.showIndicator(show: false)),
           .just(.registerError(message: OnboardingError.registerError.message))
