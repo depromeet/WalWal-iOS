@@ -11,6 +11,6 @@ import UIKit
 import RxSwift
 
 public protocol FetchFeedUseCase {
-  func excute(cursor: String, limit: Int) -> Single<FeedModel>
+  func execute(cursor: String, limit: Int) -> Single<FeedModel>
 }
 
