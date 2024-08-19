@@ -151,7 +151,11 @@ extension MyPageViewControllerImp: View {
       .map { $0.profileData }
       .compactMap { $0 }
       .bind(with: self) { owner, data in
-        owner.profileCardView.changeProfileInfo(nickname: data.nickname, image: data.profileURL)
+        owner.profileCardView.changeProfileInfo(
+          nickname: data.nickname,
+          image: data.profileImage,
+          raisePet: data.raisePet
+        )
       }
       .disposed(by: disposeBag)
   }

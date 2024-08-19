@@ -156,13 +156,19 @@ public final class WalWalProfileCardView: UIView {
     subDescriptionLabel.textColor = Colors.gray600.color
   }
   
+  /// 프로필 정보 변경 메서드
   public func changeProfileInfo(
     nickname: String,
-    image: String,
+    image: UIImage?,
+    raisePet: String,
     subDescription: String? = nil
   ) {
     nameLabel.text = nickname
-    profileImageView.image = DefaultProfile(rawValue: image)?.image ?? ResourceKitAsset.Assets.blueDog.image
+    if let image = image {
+      profileImageView.image = image
+    } else {
+      profileImageView.image = raisePet == "DOG" ? DefaultProfile.yellowDog.image : DefaultProfile.yellowCat.image
+    }
     subDescriptionLabel.text = subDescription
   }
 }

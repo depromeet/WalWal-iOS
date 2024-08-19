@@ -94,8 +94,7 @@ public final class GlobalState {
       }
       return Observable.concat(downloadTasks) /// 모든 다운로드 작업을 순차적으로 실행
     case let .profile(url):
-      let _ = downloadAndCacheImage(for: url)
-      return .just(())
+      return downloadAndCacheImage(for: url)
     }
   }
   
