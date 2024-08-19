@@ -22,8 +22,8 @@ public final class WalWalToast {
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Images = ResourceKitAsset.Images
   
-  private let fadeInDuration: TimeInterval = 0.25
-  private let maintenanceTime: TimeInterval = 2
+  private let fadeInDuration: TimeInterval = 0.3
+  private let maintenanceTime: TimeInterval = 1.5
   private let fadeOutDutaion: TimeInterval = 0.5
   private let tabbarHeight: CGFloat = 68
   private let bottomMargin: CGFloat = 13
@@ -71,7 +71,7 @@ public final class WalWalToast {
     container.flex
       .layout(mode: .adjustHeight)
     container.pin
-      .bottom(safeAreaBottomInset+bottom)
+      .bottom(safeAreaBottomInset+bottom-10)
   }
   
   /// 토스트 메세지 띄우는 메서드
@@ -98,14 +98,17 @@ public final class WalWalToast {
   }
   
   private func render() {
+    guard let window = UIWindow.key else { return }
     UIView.animate(
       withDuration: self.fadeInDuration,
       delay: 0,
-      options: [.allowUserInteraction, .transitionCrossDissolve],
+      options: [.allowUserInteraction, .curveEaseOut],
       animations: { [weak self] in
         guard let self = self else {
           return
         }
+        self.container.transform = CGAffineTransform(translationX: 0, y: -10)
+        self.container.pin.bottom(window.safeAreaInsets.bottom + 13)
         container.alpha = 1.0
       },
       completion: { [weak self] _ in
@@ -118,6 +121,7 @@ public final class WalWalToast {
           options: [.allowUserInteraction, .transitionCrossDissolve],
           animations: {
             self.container.alpha = 0.0
+            self.container.transform = .identity
           },
           completion: { _ in
             self.container.removeFromSuperview()
