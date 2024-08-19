@@ -64,7 +64,7 @@ public final class WalWalProfileCardView: UIView {
   public init(
     profileImage: UIImage,
     name: String,
-    subDescription: String,
+    subDescription: String? = nil,
     chipStyle: WalWalChip.ChipStyle,
     chipTitle: String? = nil,
     selectedChipStyle: WalWalChip.ChipStyle = WalWalChip.ChipStyle.none,
@@ -76,7 +76,7 @@ public final class WalWalProfileCardView: UIView {
     self.selectedChipTitle = selectedChipTitle
     self.profileImage = profileImage
     self.name = name
-    self.subDescription = subDescription
+    self.subDescription = subDescription ?? ""
     self.actionChip = WalWalChip(
       text: chipTitle,
       selectedText: selectedChipTitle,
@@ -154,6 +154,22 @@ public final class WalWalProfileCardView: UIView {
     
     subDescriptionLabel.font = Fonts.KR.B1
     subDescriptionLabel.textColor = Colors.gray600.color
+  }
+  
+  /// 프로필 정보 변경 메서드
+  public func changeProfileInfo(
+    nickname: String,
+    image: UIImage?,
+    raisePet: String,
+    subDescription: String? = nil
+  ) {
+    nameLabel.text = nickname
+    if let image = image {
+      profileImageView.image = image
+    } else {
+      profileImageView.image = raisePet == "DOG" ? DefaultProfile.yellowDog.image : DefaultProfile.yellowCat.image
+    }
+    subDescriptionLabel.text = subDescription
   }
 }
 

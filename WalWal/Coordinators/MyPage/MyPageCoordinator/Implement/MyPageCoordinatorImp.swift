@@ -80,7 +80,8 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     let fetchWalWalCalendarModelsUseCase = myPageDependencyFactory.injectFetchWalWalCalendarModelsUseCase()
     let reactor = myPageDependencyFactory.injectMyPageReactor(
       coordinator: self,
-      fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase
+      fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
+      fetchProfileInfoUseCase: myPageDependencyFactory.injectFetchProfileInfoUseCase()
     )
     let myPageVC = myPageDependencyFactory.injectMyPageViewController(reactor: reactor)
     self.baseViewController = myPageVC

@@ -18,4 +18,12 @@ public final class MyPageRepositoryImp: MyPageRepository {
   public init(networkService: NetworkServiceProtocol) {
     self.networkService = networkService
   }
+  
+  public func profileInfo() -> Single<MemberDTO> {
+    let endpoint = MyPageEndPoint<MemberDTO>.myInfo
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
+      .compactMap { $0 }
+      .asObservable()
+      .asSingle()
+  }
 }

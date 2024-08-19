@@ -33,6 +33,7 @@ import SplashPresenterImp
 
 import FCMDomain
 import RecordsDomain
+import MyPageDomain
 
 public class SplashDependencyFactoryImp: SplashDependencyFactory {
   
@@ -81,7 +82,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    profileInfoUseCase: ProfileInfoUseCase
   ) -> any SplashReactor {
     return SplashReactorImp(
       coordinator: coordinator,
@@ -89,7 +91,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       checkIsFirstLoadedUseCase: checkIsFirstLoadedUseCase,
       fcmSaveUseCase: fcmSaveUseCase,
       checkRecordCalendarUseCase: checkRecordCalendarUseCase,
-      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase
+      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
+      profileInfoUseCase: profileInfoUseCase
     )
   }
   

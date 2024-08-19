@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Utility
+import ResourceKit
 
 import RxSwift
 import RxCocoa
@@ -19,6 +20,7 @@ public final class GlobalState {
   public static let shared = GlobalState()
   
   public private(set) var calendarRecords = BehaviorRelay<[GlobalMissonRecordListModel]>(value: [])
+  public private(set) var profileInfo = BehaviorRelay<GlobalProfileModel>(value: .init(nickname: "", profileURL: "", raisePet: "DOG"))
   /// 이미지 저장소 (캐시된 이미지를 저장하는 딕셔너리)
   public private(set) var imageStore: [String: UIImage] = [:]
   
@@ -38,6 +40,26 @@ public final class GlobalState {
       }
       .subscribe()
       .disposed(by: disposeBag)
+    
+    profileInfo
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, info -> Observable<Void> in
+        if DefaultProfile(rawValue: info.profileURL) == nil {
+          return owner.preloadImages(globalState: .profile(info.profileURL))
+        }
+        return .empty()
+      }
+      .subscribe()
+      .disposed(by: disposeBag)
+  }
+  
+  public func updateProfileInfo(data: GlobalProfileModel) {
+    profileInfo.accept(data)
+  }
+  
+  public func fetchProfileImage(url: String) -> UIImage? {
+    return imageStore[url]
   }
   
   /// 캘린더 기록 추가 메서드
@@ -71,8 +93,8 @@ public final class GlobalState {
         return downloadAndCacheImage(for: record.imageUrl)
       }
       return Observable.concat(downloadTasks) /// 모든 다운로드 작업을 순차적으로 실행
-    case .c: /// 추가로 다루게 되는 모델
-      return .just(())
+    case let .profile(url):
+      return downloadAndCacheImage(for: url)
     }
   }
   

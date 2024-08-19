@@ -26,6 +26,7 @@ import SplashPresenter
 import FCMDomain
 
 import RecordsDomain
+import MyPageDomain
 
 public protocol SplashDependencyFactory {
   
@@ -52,7 +53,8 @@ public protocol SplashDependencyFactory {
     checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    profileInfoUseCase: ProfileInfoUseCase
   ) -> any SplashReactor
   
   func injectSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController
