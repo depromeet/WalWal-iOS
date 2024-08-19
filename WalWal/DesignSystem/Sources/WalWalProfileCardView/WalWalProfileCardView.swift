@@ -64,7 +64,7 @@ public final class WalWalProfileCardView: UIView {
   public init(
     profileImage: UIImage,
     name: String,
-    subDescription: String,
+    subDescription: String? = nil,
     chipStyle: WalWalChip.ChipStyle,
     chipTitle: String? = nil,
     selectedChipStyle: WalWalChip.ChipStyle = WalWalChip.ChipStyle.none,
@@ -76,7 +76,7 @@ public final class WalWalProfileCardView: UIView {
     self.selectedChipTitle = selectedChipTitle
     self.profileImage = profileImage
     self.name = name
-    self.subDescription = subDescription
+    self.subDescription = subDescription ?? ""
     self.actionChip = WalWalChip(
       text: chipTitle,
       selectedText: selectedChipTitle,
@@ -154,6 +154,16 @@ public final class WalWalProfileCardView: UIView {
     
     subDescriptionLabel.font = Fonts.KR.B1
     subDescriptionLabel.textColor = Colors.gray600.color
+  }
+  
+  public func changeProfileInfo(
+    nickname: String,
+    image: String,
+    subDescription: String? = nil
+  ) {
+    nameLabel.text = nickname
+    profileImageView.image = DefaultProfile(rawValue: image)?.image ?? ResourceKitAsset.Assets.blueDog.image
+    subDescriptionLabel.text = subDescription
   }
 }
 
