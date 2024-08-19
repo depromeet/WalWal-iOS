@@ -14,9 +14,11 @@ import OnboardingPresenter
 import FCMDomain
 import ImageDomain
 import AuthDomain
+import MembersDomain
 
 import Utility
 import DesignSystem
+import GlobalState
 
 import ReactorKit
 import RxSwift
@@ -33,6 +35,7 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   private let uploadMemberUseCase: any UploadMemberUseCase
   private let fcmSaveUseCase: FCMSaveUseCase
   private let userTokensSaveUseCase: UserTokensSaveUseCase
+  private let memberInfoUseCase: MemberInfoUseCase
   
   public init(
     coordinator: any OnboardingCoordinator,
@@ -40,7 +43,8 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
     nicknameValidUseCase: any NicknameValidUseCase,
     uploadMemberUseCase: any UploadMemberUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
-    userTokensSaveUseCase: UserTokensSaveUseCase
+    userTokensSaveUseCase: UserTokensSaveUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   ) {
     self.coordinator = coordinator
     self.registerUseCase = registerUseCase
@@ -48,6 +52,7 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
     self.uploadMemberUseCase = uploadMemberUseCase
     self.fcmSaveUseCase = fcmSaveUseCase
     self.userTokensSaveUseCase = userTokensSaveUseCase
+    self.memberInfoUseCase = memberInfoUseCase
     self.initialState = State()
   }
   
@@ -102,7 +107,7 @@ extension OnboardingProfileReactorImp {
           .just(.invalidNickname(message: error.localizedDescription))
         ])
       }
-      
+    
   }
   
   /// 프로필 이미지 업로드
@@ -129,7 +134,7 @@ extension OnboardingProfileReactorImp {
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
         owner.userTokensSaveUseCase.execute(tokens: result)
-        return owner.saveFCMToken() 
+        return owner.saveFCMToken()
       }
       .catch { error -> Observable<Mutation> in
         return .concat([
@@ -144,8 +149,8 @@ extension OnboardingProfileReactorImp {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
-        owner.coordinator.startMission()
-        return .just(.showIndicator(show: false))
+        GlobalState.shared.resetRecords()
+        return owner.fetchProfileInfo()
       }
       .catch { _ -> Observable<Mutation> in
         print("FCM 토큰 저장 오류")
@@ -157,6 +162,15 @@ extension OnboardingProfileReactorImp {
       }
   }
   
+  private func fetchProfileInfo() -> Observable<Mutation> {
+    return memberInfoUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
+        owner.coordinator.startMission()
+        return .just(.showIndicator(show: false))
+      }
+  }
   
   private func checkValidForm(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
     if nickname.count < 2 {

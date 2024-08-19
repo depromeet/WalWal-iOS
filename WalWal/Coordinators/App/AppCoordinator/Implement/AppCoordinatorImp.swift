@@ -218,7 +218,8 @@ extension AppCoordinatorImp {
       parentCoordinator: self,
       fcmDependencyFactory: fcmDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,
-      authDependencyFactory: authDependencyFactory
+      authDependencyFactory: authDependencyFactory,
+      membersDependencyFactory: memberDependencyFactory
     )
     childCoordinator = onboardingCoordinator
     onboardingCoordinator.start()

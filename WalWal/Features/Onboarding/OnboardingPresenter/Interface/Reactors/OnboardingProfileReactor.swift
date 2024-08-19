@@ -12,6 +12,7 @@ import DesignSystem
 import FCMDomain
 import ImageDomain
 import AuthDomain
+import MembersDomain
 
 import ReactorKit
 
@@ -47,7 +48,8 @@ public protocol OnboardingProfileReactor:
     nicknameValidUseCase: any NicknameValidUseCase,
     uploadMemberUseCase: UploadMemberUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
-    userTokensSaveUseCase: UserTokensSaveUseCase
+    userTokensSaveUseCase: UserTokensSaveUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   )
 }
 

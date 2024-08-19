@@ -11,6 +11,7 @@ import OnboardingDependencyFactory
 import FCMDependencyFactory
 import ImageDependencyFactory
 import AuthDependencyFactory
+import MembersDependencyFactory
 
 import WalWalNetwork
 
@@ -28,6 +29,7 @@ import OnboardingPresenterImp
 import AuthDomain
 import FCMDomain
 import ImageDomain
+import MembersDomain
 
 public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
   
@@ -38,7 +40,8 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     parentCoordinator: (any BaseCoordinator)?,
     fcmDependencyFactory: FCMDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
-    authDependencyFactory: AuthDependencyFactory
+    authDependencyFactory: AuthDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   )
   -> any OnboardingCoordinator {
     return OnboardingCoordinatorImp(
@@ -47,7 +50,8 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
       onboardingDependencyFactory: self,
       fcmDependencyFactory: fcmDependencyFactory,
       imageDependecyFactory: imageDependencyFactory,
-      authDependencyFactory: authDependencyFactory
+      authDependencyFactory: authDependencyFactory,
+      membersDependencyFactory: membersDependencyFactory
     )
   }
   
@@ -74,7 +78,8 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     fcmSaveUseCase: FCMSaveUseCase,
     uploadMemberUseCase: UploadMemberUseCase,
     registerUseCase: RegisterUseCase,
-    userTokensUseCase: UserTokensSaveUseCase
+    userTokensUseCase: UserTokensSaveUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   ) -> any OnboardingProfileReactor {
     return OnboardingProfileReactorImp(
       coordinator: coordinator,
@@ -82,7 +87,8 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
       nicknameValidUseCase: injectNicknameValidUseCase(),
       uploadMemberUseCase: uploadMemberUseCase,
       fcmSaveUseCase: fcmSaveUseCase,
-      userTokensSaveUseCase: userTokensUseCase
+      userTokensSaveUseCase: userTokensUseCase,
+      memberInfoUseCase: memberInfoUseCase
     )
   }
   

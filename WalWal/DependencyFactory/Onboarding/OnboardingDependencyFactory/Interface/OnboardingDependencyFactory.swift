@@ -12,6 +12,7 @@ import OnboardingCoordinator
 import FCMDependencyFactory
 import ImageDependencyFactory
 import AuthDependencyFactory
+import MembersDependencyFactory
 
 import AuthData
 import OnboardingData
@@ -21,6 +22,7 @@ import OnboardingPresenter
 import FCMDomain
 import ImageDomain
 import AuthDomain
+import MembersDomain
 
 public protocol OnboardingDependencyFactory {
   
@@ -29,7 +31,8 @@ public protocol OnboardingDependencyFactory {
     parentCoordinator:( any BaseCoordinator)?,
     fcmDependencyFactory: FCMDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
-    authDependencyFactory: AuthDependencyFactory
+    authDependencyFactory: AuthDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   ) -> any OnboardingCoordinator
   
   func injectOnboardingRepository() -> OnboardingRepository
@@ -43,7 +46,8 @@ public protocol OnboardingDependencyFactory {
     fcmSaveUseCase: FCMSaveUseCase,
     uploadMemberUseCase: UploadMemberUseCase,
     registerUseCase: RegisterUseCase,
-    userTokensUseCase: UserTokensSaveUseCase
+    userTokensUseCase: UserTokensSaveUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   ) -> any OnboardingProfileReactor
   
   func injectOnboardingViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController
