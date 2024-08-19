@@ -122,8 +122,8 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
       let changeImage = Image.swapL.image
       changeButton.setImage(changeImage, for: .normal)
     } else {
-      profileImageView.image = data.selectImage
-      changeButton.setImage(Image.editL.image, for: .normal) // TODO: - 이미지 에셋 확정 후 수정 필요
+      profileImageView.image = data.selectImage ?? Assets.activeImage.image
+      changeButton.setImage(Image.editL.image, for: .normal)
     }
     if isActive {
       inActiveimageView.isHidden = true

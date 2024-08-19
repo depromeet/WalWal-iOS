@@ -29,7 +29,6 @@ public protocol MyPageDependencyFactory {
     authDependencyFactory: AuthDependencyFactory
   ) -> any MyPageCoordinator
   func injectMyPageRepository() -> MyPageRepository
-  func injectTokenDeleteUseCase() -> TokenDeleteUseCase
   func injectFetchWalWalCalendarModelsUseCase() -> FetchWalWalCalendarModelsUseCase
   func injectMyPageReactor<T: MyPageCoordinator>(
     coordinator: T,

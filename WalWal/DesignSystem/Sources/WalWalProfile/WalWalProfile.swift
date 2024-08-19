@@ -47,7 +47,7 @@ public final class WalWalProfile: UIView {
   private var defaultImages: [DefaultProfile]
   private var defaultImageIndex: Int = 0
   private var defaultImageCount: Int
-  private var userSelectImage: UIImage = Images.activeImage.image
+  private var userSelectImage: UIImage? = nil
   
   private lazy var profileItem: [WalWalProfileModel] = [
     WalWalProfileModel(
