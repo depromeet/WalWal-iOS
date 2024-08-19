@@ -102,8 +102,8 @@ final class WalWalFeedCellView: UIView {
   func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false) {
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = feedData.missionTitle
-    profileImageView.image = feedData.profileImage
-    missionImageView.image = feedData.missionImage
+    profileImageView.kfSetImage(url: feedData.profileImage)
+    missionImageView.kfSetImage(url: feedData.missionImage)
     boostCountLabel.text = "\(feedData.boostCount)"
     let isBoostImage = isBoost ? ResourceKitAsset.Sample.fireActive.image : ResourceKitAsset.Sample.fireDef.image
     let isBoostColor = isBoost ? Colors.walwalOrange.color : Colors.gray500.color
