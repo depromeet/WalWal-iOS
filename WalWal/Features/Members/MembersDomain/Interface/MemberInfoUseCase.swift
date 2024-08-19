@@ -10,6 +10,6 @@ import Foundation
 
 import RxSwift
 
-public protocol MembersInfoUseCase {
+public protocol MemberInfoUseCase {
   func execute() -> Single<MemeberInfo>
 }

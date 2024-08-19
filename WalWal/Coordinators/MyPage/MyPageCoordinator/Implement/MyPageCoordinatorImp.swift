@@ -10,6 +10,7 @@ import UIKit
 import MyPageDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
+import MembersDependencyFactory
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -33,18 +34,21 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   private let myPageDependencyFactory: MyPageDependencyFactory
   private let fcmDependencyFactory: FCMDependencyFactory
   private let authDependencyFactory: AuthDependencyFactory
+  private let membersDependencyFactory: MembersDependencyFactory
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
-    authDependencyFactory: AuthDependencyFactory
+    authDependencyFactory: AuthDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.myPageDependencyFactory = myPageDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
     self.authDependencyFactory = authDependencyFactory
+    self.membersDependencyFactory = membersDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -78,10 +82,11 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
     let fetchWalWalCalendarModelsUseCase = myPageDependencyFactory.injectFetchWalWalCalendarModelsUseCase()
+    let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
     let reactor = myPageDependencyFactory.injectMyPageReactor(
       coordinator: self,
       fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
-      fetchProfileInfoUseCase: myPageDependencyFactory.injectFetchProfileInfoUseCase()
+      fetchMemberInfoUseCase: fetchMemberInfoUseCase
     )
     let myPageVC = myPageDependencyFactory.injectMyPageViewController(reactor: reactor)
     self.baseViewController = myPageVC
@@ -119,7 +124,7 @@ extension MyPageCoordinatorImp {
       coordinator: self,
       tokenDeleteUseCase: authDependencyFactory.injectTokenDeleteUseCase(),
       fcmDeleteUseCase: fcmDependencyFactory.injectFCMDeleteUseCase(),
-      withdrawUseCase: authDependencyFactory.injectWithdrawUseCase(), // TODO: - auth 주입
+      withdrawUseCase: authDependencyFactory.injectWithdrawUseCase(),
       kakaoLogoutUseCase: authDependencyFactory.injectKakaoLogoutUseCase(),
       kakaoUnlinkUseCase: authDependencyFactory.injectKakaoUnlinkUseCase()
     )

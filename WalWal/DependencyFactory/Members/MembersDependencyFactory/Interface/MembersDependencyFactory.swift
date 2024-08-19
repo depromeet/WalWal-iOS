@@ -14,7 +14,7 @@ import MembersDomain
 public protocol MembersDependencyFactory {
   
   func injectMembersRepository() -> MembersRepository
-  func injectMembersInfoUseCase() -> MembersInfoUseCase
+  func injectMemberInfoUseCase() -> MemberInfoUseCase
   func injectFetchMemberInfoUseCase() -> FetchMemberInfoUseCase
   
 }

@@ -10,6 +10,7 @@ import UIKit
 import MyPageDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
+import MembersDependencyFactory
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -23,6 +24,7 @@ import MyPageData
 import MyPageDataImp
 import FCMDomain
 import AuthDomain
+import MembersDomain
 
 import WalWalNetwork
 
@@ -36,14 +38,16 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     fcmDependencyFactory: FCMDependencyFactory,
-    authDependencyFactory: AuthDependencyFactory
+    authDependencyFactory: any AuthDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   ) -> any MyPageCoordinator {
     return MyPageCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       myPageDependencyFactory: self,
       fcmDependencyFactory: fcmDependencyFactory,
-      authDependencyFactory: authDependencyFactory
+      authDependencyFactory: authDependencyFactory,
+      membersDependencyFactory: membersDependencyFactory
     )
   }
   
@@ -67,12 +71,12 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   public func injectMyPageReactor<T: MyPageCoordinator>(
     coordinator: T,
     fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
-    fetchProfileInfoUseCase: FetchProfileInfoUseCase
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase
   ) -> any MyPageReactor {
     return MyPageReactorImp(
       coordinator: coordinator,
       fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
-      fetchProfileInfoUseCase: fetchProfileInfoUseCase
+      fetchMemberInfoUseCase: fetchMemberInfoUseCase
     )
   }
   

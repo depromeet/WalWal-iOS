@@ -12,7 +12,7 @@ import MembersDomain
 
 import RxSwift
 
-public final class MemberInfoUseCaseImp: MembersInfoUseCase {
+public final class MemberInfoUseCaseImp: MemberInfoUseCase {
   private let memberRepository: MembersRepository
   
   public init(memberRepository: MembersRepository) {

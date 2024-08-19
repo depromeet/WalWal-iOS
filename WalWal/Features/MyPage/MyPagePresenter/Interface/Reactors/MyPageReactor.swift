@@ -9,6 +9,7 @@
 import MyPageDomain
 import MyPageCoordinator
 import DesignSystem
+import MembersDomain
 
 import ReactorKit
 import RxSwift
@@ -43,6 +44,6 @@ public protocol MyPageReactor: Reactor where Action == MyPageReactorAction, Muta
   init(
     coordinator: any MyPageCoordinator,
     fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
-    fetchProfileInfoUseCase: FetchProfileInfoUseCase
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase
   )
 }
