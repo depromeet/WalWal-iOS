@@ -136,11 +136,12 @@ extension MissionViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    reactor.action
-      .onNext(.loadMission)
-    
-    reactor.action
-      .onNext(.checkPermission)
+    missionStartButton.rx.tapped
+      .bind(with: self) { owner, _ in
+        owner.reactor?.action
+          .onNext(.startMission)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {

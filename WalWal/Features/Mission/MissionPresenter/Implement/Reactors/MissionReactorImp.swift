@@ -47,6 +47,13 @@ public final class MissionReactorImp: MissionReactor {
     self.initialState = State()
   }
   
+  public func transform(action: Observable<Action>) -> Observable<Action> {
+    let initialLoadAction = Observable.just(Action.loadMission)
+    let initialPermissionCheck = Observable.just(Action.checkPermission)
+    
+    return Observable.merge(action, initialLoadAction, initialPermissionCheck)
+  }
+  
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .loadMissionInfo:
