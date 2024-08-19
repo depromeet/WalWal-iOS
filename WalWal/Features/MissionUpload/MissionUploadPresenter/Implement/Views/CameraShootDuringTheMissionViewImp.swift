@@ -22,6 +22,7 @@ import RxCocoa
 public final class MissionUploadViewControllerImp<R: CameraShootDuringTheMissionReactor>: UIViewController, CameraShootDuringTheMissionViewController {
   
   private typealias Images = ResourceKitAsset.Images
+  private typealias Assets = ResourceKitAsset.Assets
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
@@ -44,9 +45,16 @@ public final class MissionUploadViewControllerImp<R: CameraShootDuringTheMission
     style: .semiFilled
   )
   
-  private var instructionLabel: UILabel!
-  private var captureButton: UIButton!
-  private var switchCameraButton: UIButton!
+  private var captureButton = WalWalTouchArea(
+    image: Assets.cameraPosSwipe.image,
+    size: 74
+  )
+  
+  private var switchCameraButton = WalWalTouchArea(
+    image: Assets.cameraCapture.image,
+    size: 48
+  )
+  
   private var previewView: UIView!
   
   private let cameraManager: CameraManager
@@ -74,7 +82,7 @@ public final class MissionUploadViewControllerImp<R: CameraShootDuringTheMission
     
   
   public func setAttribute() {
-   
+    view.backgroundColor = Colors.black.color
   }
   
   public func setLayout() {
@@ -100,18 +108,10 @@ extension MissionUploadViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    // 카메라 전환 버튼 탭 처리
-    switchCameraButton.rx.tap
-      .subscribe(onNext: { [weak self] in
-        self?.cameraManager.switchCamera()
-      })
-      .disposed(by: disposeBag)
-    
     // 닫기 버튼 탭 처리
-    closeButton.rx.tap
-      .subscribe(onNext: { [weak self] in
-        self?.dismiss(animated: true, completion: nil)
-      })
+    navigationBar.leftItems?.first!.rx.tapped
+      .map{ Reactor.Action.backButtonTapped }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
   
@@ -127,13 +127,19 @@ extension MissionUploadViewControllerImp: View {
   }
   
   public func bindEvent() {
-    // CameraManager의 사진 촬영 이벤트를 구독
-    captureButton.rx.tap
-      .subscribe(onNext: { [weak self] in
-        self?.cameraManager.capturePhoto()
+    /// CameraManager의 사진 촬영 이벤트를 구독
+    captureButton.rx.tapped
+      .subscribe(with: self,onNext: { owner, _ in
+        owner.cameraManager.capturePhoto()
       })
       .disposed(by: disposeBag)
     
+    /// 카메라 전환 버튼 탭 처리
+    switchCameraButton.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.cameraManager.switchCamera()
+      })
+      .disposed(by: disposeBag)
   }
 }
 

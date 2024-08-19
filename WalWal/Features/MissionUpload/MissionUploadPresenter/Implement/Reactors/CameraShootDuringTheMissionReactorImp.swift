@@ -31,13 +31,8 @@ public final class CameraShootDuringTheMissionReactorImp: CameraShootDuringTheMi
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .takePhotoButtonTapped:
-      return Observable.concat([
-        Observable.just(.setLoading(true)),
-        Observable.just(.setLoading(false))
-      ])
-    case .switchCamera:
-      return Observable.empty()
+    case .backButtonTapped:
+      return Observable.just(Mutation.moveToMain)
     case .photoCaptured(let image):
       return Observable.just(Mutation.setCapturedPhoto(image)) /// 촬영된 이미지를 상태에 반영
     }
@@ -50,6 +45,8 @@ public final class CameraShootDuringTheMissionReactorImp: CameraShootDuringTheMi
       newState.capturedPhoto = image
     case .setLoading(let isLoading):
       newState.isLoading = isLoading
+    case .moveToMain:
+      coordinator.requirefinish() /// Camera리엑터를 끝내고, Mission으로 복귀
     }
     return newState
   }
