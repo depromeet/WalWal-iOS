@@ -47,14 +47,7 @@ public final class MissionReactorImp: MissionReactor {
     case .loadMissionInfo:
       return Observable.concat([
         Observable.just( Mutation.setLoading(true)),
-        fetchMissionData()
-          .flatMap { mutation -> Observable<Mutation> in
-            if case let .setMission(mission) = mutation {
-              return self.checkMissionStatus(id: mission.id).startWith(mutation)
-            }
-            return Observable.just(mutation)
-          },
-        fetchMissionCount(),
+        fetchMissionDataAndCount(),
         Observable.just(Mutation.setLoading(false))
       ])
     case let .startMission(id):
@@ -82,6 +75,43 @@ public final class MissionReactorImp: MissionReactor {
     return newState
   }
   
+  private func fetchMissionDataAndCount() -> Observable<Mutation> {
+    return fetchMissionData()
+      .flatMap { mutation -> Observable<Mutation> in
+        if case let .setMission(mission) = mutation {
+          return self.checkMissionStatus(id: mission.id)
+            .map { status in
+              return Mutation.setMissionStatus(status)
+            }
+            .startWith(mutation)
+        }
+        return Observable.just(mutation)
+      }
+      .flatMap { mutation -> Observable<Mutation> in
+        return self.fetchMissionCount()
+          .startWith(mutation)
+      }
+  }
+  
+  private func fetchMissionData() -> Observable<Mutation> {
+    return todayMissionUseCase.execute()
+      .asObservable()
+      .map { mission in
+        return Mutation.setMission(mission)
+      }
+      .catch { error in
+        return Observable.just(Mutation.missionLoadFailed(error))
+      }
+  }
+  
+  private func checkMissionStatus(id: Int) -> Observable<MissionRecordStatusModel> {
+    return checkRecordStatusUseCase.execute(missionId: id)
+      .asObservable()
+      .catch { error in
+        return Observable.error(error)
+      }
+  }
+  
   private func fetchMissionCount() -> Observable<Mutation> {
     return checkCompletedTotalRecordsUseCase.execute()
       .asObservable()
@@ -89,39 +119,15 @@ public final class MissionReactorImp: MissionReactor {
         return Mutation.setMissionCount($0.totalCount)
       }
       .catch { error in
-        Observable.just(Mutation.missionLoadFailed(error))
+        return Observable.just(Mutation.missionLoadFailed(error))
       }
   }
   
-  
   private func startMission(id: Int) -> Observable<Mutation> {
-    return startRecordUseCase.execute(missionId:id)
+    return startRecordUseCase.execute(missionId: id)
       .asObservable()
       .map { _ in
         return Mutation.missionStarted
-      }
-      .catch { error in
-        return Observable.just(Mutation.missionLoadFailed(error))
-      }
-  }
-  
-  private func checkMissionStatus(id: Int) -> Observable<Mutation> {
-    return checkRecordStatusUseCase.execute(missionId: id)
-      .asObservable()
-      .map { status in
-        return Mutation.setMissionStatus(status)
-      }
-      .catch { error in
-        return Observable.just(Mutation.missionLoadFailed(error))
-      }
-  }
-  
-  
-  private func fetchMissionData() -> Observable<Mutation> {
-    return todayMissionUseCase.execute()
-      .asObservable()
-      .map { mission in
-        return Mutation.setMission(mission)
       }
       .catch { error in
         return Observable.just(Mutation.missionLoadFailed(error))
