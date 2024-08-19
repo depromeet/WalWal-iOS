@@ -23,11 +23,7 @@ public final class TodayMissionUseCaseImp: TodayMissionUseCase {
   public func execute() -> Single<MissionModel> {
     return missionDataRepository.loadMissionInfo()
       .map {
-        MissionModel(
-          id: $0.id,
-          title: $0.title,
-          imageURL: $0.illustrationURL
-        )
+        MissionModel(dto: $0)
       }
       .asObservable()
       .asSingle()

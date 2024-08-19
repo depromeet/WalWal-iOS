@@ -8,18 +8,16 @@
 
 import Foundation
 
+import MissionData
+
 public struct MissionModel {
   public let id: Int
   public let title: String
   public let imageURL: String
   
-  public init(
-    id: Int,
-    title: String,
-    imageURL: String
-  ) {
-    self.id = id
-    self.title = title
-    self.imageURL = imageURL
+  public init(dto: MissionInfoDTO) {
+    self.id = dto.id
+    self.title = dto.title
+    self.imageURL = dto.illustrationURL
   }
 }
