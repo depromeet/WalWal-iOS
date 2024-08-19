@@ -143,6 +143,8 @@ extension ProfileEditViewControllerImp: View {
     
     profileEditView.showPHPicker
       .bind(with: self) { owner, _ in
+        owner.reactor?.action
+          .onNext(.checkPhotoPermission)
         PHPickerManager.shared.presentPicker(vc: owner)
       }
       .disposed(by: disposeBag)
