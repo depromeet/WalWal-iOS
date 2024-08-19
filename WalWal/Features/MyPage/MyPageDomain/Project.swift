@@ -19,7 +19,6 @@ let project = Project.invertedDualTargetProject(
     .Feature.MyPage.Data.Interface,
     .GlobalState,
     
-    .ThirdParty.KakaoSDKAuth,
     .ThirdParty.KakaoSDKUser
   ],
   implementDependencies: [
