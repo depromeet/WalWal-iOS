@@ -163,7 +163,11 @@ extension AuthViewControllerImp: View {
       .asDriver(onErrorJustReturn: "")
       .filter { !$0.isEmpty }
       .drive(with: self) { owner, message in
-        Toast.shared.show(message)
+        WalWalToast.shared.show(
+          type: .error,
+          message: message,
+          isTabBarExist: false
+        )
       }
       .disposed(by: disposeBag)
     

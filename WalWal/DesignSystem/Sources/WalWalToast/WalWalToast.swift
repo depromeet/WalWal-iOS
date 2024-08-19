@@ -68,9 +68,8 @@ public final class WalWalToast {
     container.pin
       .horizontally(16)
       .bottom(safeAreaBottomInset+bottom)
-    
-    container.flex.layout(mode: .adjustHeight)
-    
+    container.flex
+      .layout(mode: .adjustHeight)
     container.pin
       .bottom(safeAreaBottomInset+bottom)
   }
