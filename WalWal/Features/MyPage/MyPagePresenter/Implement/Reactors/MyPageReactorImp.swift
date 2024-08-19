@@ -67,9 +67,10 @@ public final class MyPageReactorImp: MyPageReactor {
         .map { Mutation.setCalendarData($0) }
     case .loadProfileInfo:
       return fetchMemberInfoUseCase.execute()
+        .map { MemberModel(global: $0) }
         .asObservable()
         .flatMap { info -> Observable<Mutation> in
-          return .just(.profileInfo(data: .init(global: info)))
+          return .just(.profileInfo(data: info))
         }
     }
   }
