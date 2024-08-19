@@ -137,7 +137,10 @@ extension MissionViewControllerImp: View {
   
   public func bindAction(reactor: R) {
     reactor.action
-      .onNext(.loadMissionInfo)
+      .onNext(.loadMission)
+    
+    reactor.action
+      .onNext(.checkPermission)
   }
   
   public func bindState(reactor: R) {
