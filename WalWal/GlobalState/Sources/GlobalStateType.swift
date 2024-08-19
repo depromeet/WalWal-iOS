@@ -11,4 +11,5 @@ import Foundation
 public enum GlobalStateType {
   case missonRecordList
   case profile(_ image: String)
+  case feedList
 }

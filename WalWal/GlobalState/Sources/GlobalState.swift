@@ -21,6 +21,8 @@ public final class GlobalState {
   
   public private(set) var calendarRecords = BehaviorRelay<[GlobalMissonRecordListModel]>(value: [])
   public private(set) var profileInfo = BehaviorRelay<GlobalProfileModel>(value: .init(nickname: "", profileURL: "", raisePet: "DOG"))
+  public private(set) var feedList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
+  
   /// 이미지 저장소 (캐시된 이미지를 저장하는 딕셔너리)
   public private(set) var imageStore: [String: UIImage] = [:]
   
@@ -49,6 +51,15 @@ public final class GlobalState {
           return owner.preloadImages(globalState: .profile(info.profileURL))
         }
         return .empty()
+      }
+      .subscribe()
+      .disposed(by: disposeBag)
+    
+    feedList
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, feeds -> Observable<Void> in
+        return owner.preloadImages(globalState: .feedList)
       }
       .subscribe()
       .disposed(by: disposeBag)
@@ -85,6 +96,25 @@ public final class GlobalState {
     return imageStore[record.imageUrl]
   }
   
+  public func updateFeed(with newFeeds: [GlobalFeedListModel]) {
+    var currentFeeds = feedList.value
+    currentFeeds.append(contentsOf: newFeeds)
+    feedList.accept(currentFeeds)
+  }
+  
+  public func getFeeds(forDate date: String) -> [GlobalFeedListModel] {
+    return feedList.value.filter {  $0.missionDate == date  }
+  }
+  
+  public func resetFeeds() {
+    feedList.accept([])
+    imageStore.removeAll()
+  }
+  
+  public func getCachedImage(for feed: GlobalFeedListModel) -> UIImage? {
+    return imageStore[feed.imageUrl]
+  }
+  
   /// 이미지 미리 불러오기 메서드
   private func preloadImages(globalState: GlobalStateType) -> Observable<Void> {
     switch globalState {
@@ -95,6 +125,11 @@ public final class GlobalState {
       return Observable.concat(downloadTasks) /// 모든 다운로드 작업을 순차적으로 실행
     case let .profile(url):
       return downloadAndCacheImage(for: url)
+    case .feedList: /// 피드 데이터 불러오기
+      let downloadTasks = self.feedList.value.map { feed in
+        return downloadAndCacheImage(for: feed.imageUrl)
+      }
+      return Observable.concat(downloadTasks)
     }
   }
   
@@ -108,4 +143,5 @@ public final class GlobalState {
       })
       .map { _ in }
   }
+  
 }
