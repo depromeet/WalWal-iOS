@@ -10,6 +10,9 @@ import MissionUploadDomain
 import MissionUploadPresenter
 import MissionUploadCoordinator
 
+import RecordsDomain
+import ImageDomain
+
 import ReactorKit
 import RxSwift
 
@@ -21,11 +24,19 @@ public final class CameraShootDuringTheMissionReactorImp: CameraShootDuringTheMi
   
   public let initialState: State
   public let coordinator: any MissionUploadCoordinator
+  public let saveRecordUseCase: SaveRecordUseCase
+  public let uploadRecordUseCase: UploadRecordUseCase
   
   private let disposeBag = DisposeBag()
   
-  public init(coordinator: any MissionUploadCoordinator) {
+  public init(
+    coordinator: any MissionUploadCoordinator,
+    saveRecordUseCase: SaveRecordUseCase,
+    uploadRecordUseCase: UploadRecordUseCase
+  ) {
     self.coordinator = coordinator
+    self.saveRecordUseCase = saveRecordUseCase
+    self.uploadRecordUseCase = uploadRecordUseCase
     self.initialState = State()
   }
   

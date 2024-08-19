@@ -1,5 +1,5 @@
 //
-//  MissionUploadViewControllerImp.swift
+//  CameraShootDuringTheMissionViewImp.swift
 //
 //  MissionUpload
 //
@@ -19,7 +19,9 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-public final class MissionUploadViewControllerImp<R: CameraShootDuringTheMissionReactor>: UIViewController, CameraShootDuringTheMissionViewController {
+public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDuringTheMissionReactor>:
+  UIViewController,
+  CameraShootDuringTheMissionViewController {
   
   private typealias Images = ResourceKitAsset.Images
   private typealias Assets = ResourceKitAsset.Assets
@@ -28,7 +30,6 @@ public final class MissionUploadViewControllerImp<R: CameraShootDuringTheMission
   
   public var disposeBag = DisposeBag()
   public var cameraShootingDuringTheMissionReactor: R
-  
   
   private let navigationBar = WalWalNavigationBar(
     leftItems: [.close],
@@ -60,7 +61,7 @@ public final class MissionUploadViewControllerImp<R: CameraShootDuringTheMission
   private let cameraManager: CameraManager
   
   public init(
-      reactor: R
+    reactor: R
   ) {
     self.cameraShootingDuringTheMissionReactor = reactor
     self.cameraManager = CameraManager()
@@ -79,7 +80,7 @@ public final class MissionUploadViewControllerImp<R: CameraShootDuringTheMission
     setLayout()
     self.reactor = self.cameraShootingDuringTheMissionReactor
   }
-    
+  
   
   public func setAttribute() {
     view.backgroundColor = Colors.black.color
@@ -91,7 +92,7 @@ public final class MissionUploadViewControllerImp<R: CameraShootDuringTheMission
   }
 }
 
-extension MissionUploadViewControllerImp: View {
+extension CameraShootDuringTheMissionViewControllerImp: View {
   
   // MARK: - Binding
   
@@ -143,7 +144,7 @@ extension MissionUploadViewControllerImp: View {
   }
 }
 
-extension MissionUploadViewControllerImp {
+extension CameraShootDuringTheMissionViewControllerImp {
   // 사진이 찍힌 후의 처리 로직 (예시로 이미지 저장 또는 표시)
   private func handleCapturedPhoto(image: UIImage) {
     let imageView = UIImageView(image: image)

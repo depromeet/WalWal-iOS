@@ -10,6 +10,9 @@ import UIKit
 import MissionUploadDomain
 import MissionUploadCoordinator
 
+import RecordsDomain
+import ImageDomain
+
 import ReactorKit
 import RxSwift
 
@@ -33,14 +36,16 @@ public struct CameraShootDuringTheMissionReactorState {
   }
 }
 
-public protocol CameraShootDuringTheMissionReactor: Reactor where
-Action == CameraShootDuringTheMissionReactorAction,
-Mutation == CameraShootDuringTheMissionReactorMutation,
-State == CameraShootDuringTheMissionReactorState {
+public protocol CameraShootDuringTheMissionReactor:
+  Reactor where Action == CameraShootDuringTheMissionReactorAction,
+                Mutation == CameraShootDuringTheMissionReactorMutation,
+                State == CameraShootDuringTheMissionReactorState {
   
   var coordinator: any MissionUploadCoordinator { get }
   
   init(
-    coordinator: any MissionUploadCoordinator
+    coordinator: any MissionUploadCoordinator,
+    saveRecordUseCase: SaveRecordUseCase,
+    uploadRecordUseCase: UploadRecordUseCase
   )
 }
