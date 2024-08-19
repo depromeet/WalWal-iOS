@@ -25,6 +25,8 @@ public final class WalWalToast {
   private let fadeInDuration: TimeInterval = 0.25
   private let maintenanceTime: TimeInterval = 2
   private let fadeOutDutaion: TimeInterval = 0.5
+  private let tabbarHeight: CGFloat = 68
+  private let bottomMargin: CGFloat = 13
   
   // MARK: - UI
   
@@ -46,7 +48,7 @@ public final class WalWalToast {
   
   // MARK: - Layout
   
-  private func configureLayout(bottom: CGFloat = 13) {
+  private func configureLayout(bottom: CGFloat) {
     guard let window = UIWindow.key else { return }
     let safeAreaBottomInset = window.safeAreaInsets.bottom
     
@@ -73,20 +75,30 @@ public final class WalWalToast {
       .bottom(safeAreaBottomInset+bottom)
   }
   
-  public func show(_ message: String, completion: (() -> Void)? = nil) {
+  /// 토스트 메세지 띄우는 메서드
+  ///
+  /// - Parameters:
+  ///   - type: 토스트 메세지 타입(타입에 따라 아이콘이 달라짐)
+  ///   - message: 토스트 메세지 내용, nil일 경우 ToastType에 지정된 기본 메세지 출력
+  ///   - tabBarShown: default value: `false`, 토스트 메세지를 띄울 뷰에 탭바 존재 여부(하단 여백이 다름)
+  public func show(
+    type: ToastType,
+    message: String? = nil,
+    isTabBarExist: Bool = true
+  ) {
     guard let window = UIWindow.key else { return }
     
-    self.messageLabel.text = message
-    self.iconImage.image = Images.check.image
+    self.messageLabel.text = message ?? type.message
+    self.iconImage.image = type.icon
     
     window.addSubview(container)
-    configureLayout(bottom: 13)
+    configureLayout(bottom: isTabBarExist ? bottomMargin+tabbarHeight : bottomMargin)
     window.bringSubviewToFront(container)
     
-    render(completion: completion)
+    render()
   }
   
-  private func render(completion: (() -> Void)?) {
+  private func render() {
     UIView.animate(
       withDuration: self.fadeInDuration,
       delay: 0,
@@ -110,7 +122,6 @@ public final class WalWalToast {
           },
           completion: { _ in
             self.container.removeFromSuperview()
-            completion?()
           }
         )
       }

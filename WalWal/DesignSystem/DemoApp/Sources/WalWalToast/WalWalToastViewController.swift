@@ -18,7 +18,7 @@ public final class WalWalToastViewController: UIViewController {
   }
   
   public override func viewDidAppear(_ animated: Bool) {
-    WalWalToast.shared.show("테스트토스트입니다")
+    WalWalToast.shared.show(type: .boost,  message: "테스트토스트", isTabBarExist: false)
   }
   
 }
