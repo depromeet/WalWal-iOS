@@ -188,7 +188,8 @@ extension AppCoordinatorImp {
       navigationController: navigationController,
       parentCoordinator: self,
       fcmDependencyFactory: fcmDependencyFactory,
-      recordsDependencyFactory: recordsDependencyFactory
+      recordsDependencyFactory: recordsDependencyFactory,
+      membersDependencyFactory: memberDependencyFactory
     )
     childCoordinator = authCoordinator
     authCoordinator.start()
@@ -204,7 +205,8 @@ extension AppCoordinatorImp {
       feedDependencyFactory: feedDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
-      recordDependencyFactory: recordsDependencyFactory
+      recordDependencyFactory: recordsDependencyFactory,
+      membersDependencyFactory: memberDependencyFactory
     )
     childCoordinator = walwalTabBarCoordinator
     walwalTabBarCoordinator.start()

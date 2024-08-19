@@ -14,6 +14,7 @@ import GlobalState
 
 import FCMDomain
 import RecordsDomain
+import MembersDomain
 
 import ReactorKit
 import RxSwift
@@ -31,6 +32,7 @@ public final class AuthReactorImp: AuthReactor {
   private let kakaoLoginUseCase: KakaoLoginUseCase
   private let checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
   private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
+  private let memberInfoUseCase: MemberInfoUseCase
   
   public init(
     coordinator: any AuthCoordinator,
@@ -39,7 +41,8 @@ public final class AuthReactorImp: AuthReactor {
     userTokensSaveUseCase: UserTokensSaveUseCase,
     kakaoLoginUseCase: KakaoLoginUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
@@ -49,6 +52,7 @@ public final class AuthReactorImp: AuthReactor {
     self.kakaoLoginUseCase = kakaoLoginUseCase
     self.checkRecordCalendarUseCase = checkRecordCalendarUseCase
     self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
+    self.memberInfoUseCase = memberInfoUseCase
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -117,12 +121,16 @@ extension AuthReactorImp {
   private func loginCompleteTask() -> Observable<Mutation> {
     return saveFCMToken()
       .withUnretained(self)
-      .flatMap { owner, _ -> Observable<Void> in
+      .flatMap { owner, _ in
         owner.checkRecordCalendar()
       }
       .withUnretained(self)
+      .flatMap { owner, _ in
+        owner.fetchProfileInfo()
+      }
+      .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
-        owner.coordinator.startMission()
+        self.coordinator.startMission()
         return .just(.showIndicator(show: false))
       }
       .catch { [weak self] error -> Observable<Mutation> in
@@ -156,5 +164,11 @@ extension AuthReactorImp {
         }
       }
       .catch { error in return .just(Void()) }
+  }
+  
+  private func fetchProfileInfo() -> Observable<Void> {
+    return memberInfoUseCase.execute()
+      .asObservable()
+      .map { _ in Void() }
   }
 }

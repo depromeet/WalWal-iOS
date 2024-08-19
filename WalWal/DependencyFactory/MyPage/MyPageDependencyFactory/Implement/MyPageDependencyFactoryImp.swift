@@ -60,14 +60,6 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     return FetchWalWalCalendarModelsUseCaseImp()
   }
   
-  public func injectProfileInfoUseCase() -> ProfileInfoUseCase {
-    return ProfileInfoUseCaseImp(mypageRepository: injectMyPageRepository())
-  }
-  
-  public func injectFetchProfileInfoUseCase() -> FetchProfileInfoUseCase {
-    return FetchProfileInfoUseCaseImp()
-  }
-  
   public func injectMyPageReactor<T: MyPageCoordinator>(
     coordinator: T,
     fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,

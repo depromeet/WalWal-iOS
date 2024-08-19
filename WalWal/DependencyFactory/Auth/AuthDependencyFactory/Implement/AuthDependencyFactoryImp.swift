@@ -10,6 +10,7 @@ import UIKit
 import AuthDependencyFactory
 import FCMDependencyFactory
 import RecordsDependencyFactory
+import MembersDependencyFactory
 
 import WalWalNetwork
 
@@ -26,6 +27,7 @@ import AuthPresenterImp
 
 import FCMDomain
 import RecordsDomain
+import MembersDomain
 
 public class AuthDependencyFactoryImp: AuthDependencyFactory {
   
@@ -35,14 +37,16 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     fcmDependencyFactory: FCMDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   ) -> any AuthCoordinator {
     return AuthCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       authDependencyFactory: self,
       fcmDependencyFactory: fcmDependencyFactory,
-      recordsDependencyFactory: recordsDependencyFactory
+      recordsDependencyFactory: recordsDependencyFactory,
+      membersDependencyFactory: membersDependencyFactory
     )
   }
   
@@ -89,7 +93,8 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     userTokensSaveUseCase: UserTokensSaveUseCase,
     kakaoLoginUseCase: KakaoLoginUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   ) -> any AuthReactor {
     return AuthReactorImp(
       coordinator: coordinator,
@@ -98,7 +103,8 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
       userTokensSaveUseCase: userTokensSaveUseCase,
       kakaoLoginUseCase: kakaoLoginUseCase,
       checkRecordCalendarUseCase: checkRecordCalendarUseCase,
-      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase
+      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
+      memberInfoUseCase: memberInfoUseCase
     )
   }
   
