@@ -33,12 +33,12 @@ public final class NetworkService: NetworkServiceProtocol {
         print(error.localizedDescription)
         guard let afError = error.asAFError, let responseCode = afError.responseCode else {
           let walwalError = WalWalNetworkError.unknown(error)
-          self.responseError(endpoint, result: walwalError)
+          self.responseError(endpoint, statusCode: -1, result: walwalError)
           return .error(walwalError)
         }
         
-        let walwalError = WalWalNetworkError.networkError(responseCode)
-        self.responseError(endpoint, result: walwalError)
+        let walwalError = WalWalNetworkError.networkError(message: nil)
+        self.responseError(endpoint, statusCode: responseCode, result: walwalError)
         return .error(walwalError)
       })
       .withUnretained(self)
@@ -78,7 +78,7 @@ public final class NetworkService: NetworkServiceProtocol {
           case .success(_):
             single(.success(true))
           case .failure(let fail):
-            let error = WalWalNetworkError.networkError(fail.responseCode ?? 0)
+            let error = WalWalNetworkError.networkError(message: nil)
             single(.failure(error))
           }
         }
@@ -98,16 +98,20 @@ extension NetworkService {
   ) -> Result<T?, Error> {
     let statusCode = response.statusCode
     if !(200...299).contains(statusCode) {
-      var error = WalWalNetworkError.serverError(statusCode: statusCode)
-      switch statusCode {
-      case 400...499:
-        error = WalWalNetworkError.networkError(statusCode)
-      case 500...599:
-        error = WalWalNetworkError.serverError(statusCode: statusCode)
-      default:
-        error = WalWalNetworkError.networkError(statusCode)
-      }
-      responseError(endpoint, result: error)
+      var error = WalWalNetworkError.serverError(message: nil)
+      do {
+        let errorResponse = try JSONDecoder().decode(BaseResponse<ErrorResponse>.self, from: data)
+        switch statusCode {
+        case 400...499:
+          error = WalWalNetworkError.networkError(message: errorResponse.data?.message)
+        case 500...599:
+          error = WalWalNetworkError.serverError(message: errorResponse.data?.message)
+        default:
+          error = WalWalNetworkError.networkError(message: nil)
+        }
+      } catch { }
+     
+      responseError(endpoint, statusCode: statusCode, result: error)
       return .failure(error)
     }
     do {
@@ -116,13 +120,13 @@ extension NetworkService {
         responseSuccess(endpoint, result: responseModel)
         return .success(responseModel.data)
       } else {
-        let error = WalWalNetworkError.networkError(statusCode)
-        responseError(endpoint, result: error)
+        let error = WalWalNetworkError.networkError(message: nil)
+        responseError(endpoint, statusCode: statusCode, result: error)
         return .failure(error)
       }
     } catch {
       let decodingError = WalWalNetworkError.decodingError(error)
-      responseError(endpoint, result: decodingError)
+      responseError(endpoint, statusCode: statusCode, result: decodingError)
       return .failure(decodingError)
     }
   }
@@ -149,12 +153,13 @@ extension NetworkService {
           """)
   }
   
-  private func responseError(_ endpoint: any APIEndpoint, result error: WalWalNetworkError) {
+  private func responseError(_ endpoint: any APIEndpoint, statusCode: Int , result error: WalWalNetworkError) {
     print("""
               ======================== 📥 Response <========================
               ========================= ❌ Error.. =========================
               ❗️ URL: \(endpoint.baseURL.absoluteString + endpoint.path)
               ❗️ Header: \(endpoint.headers)
+              ❗️ StatusCode: \(statusCode)
               ❗️ Error_Data: \(error.errorDescription ?? "Unknown Error Occured")
               ==============================================================
           """)
