@@ -24,16 +24,35 @@ public final class WalWalAlert {
   private typealias FontsKR = ResourceKitFontFamily.KR
   
   private let disposeBag = DisposeBag()
+  public static let shared = WalWalAlert()
+  private init() {
+    bind()
+  }
   
   /// 얼럿 버튼 탭 시 어떤 버튼이 눌렸는지에 대한 값을 리턴
   ///
+  /// ### 사용 예시
+  /// ```swift
+  /// WalWalAlert.shared.resultRelay
+  ///  .bind(with: self) { owner, result in
+  ///    switch result {
+  ///    case .cancel:
+  ///      print("cancel")
+  ///      WalWalAlert.shared.closeAlert.accept(())
+  ///    case .ok:
+  ///      print("ok")
+  ///      WalWalAlert.shared.closeAlert.accept(())
+  ///    }
+  ///  }
+  ///  .disposed(by: disposeBag)
+  /// ```
   /// - Returns: .cancel 또는 .ok
   public let resultRelay = PublishRelay<AlertResultType>()
   
   /// 얼럿 화면을 닫기 위한 이벤트
   ///
   /// ### 사용 예시
-  /// `alertView.closeAlert.accept(())`
+  /// `WalWalAlert.shared.closeAlert.accept(())`
   public let closeAlert = PublishRelay<Void>()
   
   // MARK: - UI
@@ -73,12 +92,22 @@ public final class WalWalAlert {
     title: ""
   )
   
+  /// 얼럿 뷰를 보여주기 위한 메서드
+  /// ### 사용예시
+  /// ```swift
+  ///   WalWalAlert.shared.show(
+  ///     title: "회원 탈퇴",
+  ///     bodyMessage: "회원 탈퇴 시, 계정은 삭제되며 기록된 내용은 복구되지 않습니다.",
+  ///     cancelTitle: "계속 이용하기",
+  ///     okTitle: "회원 탈퇴"
+  ///   )
+  /// ```
   /// - Parameters:
   ///   - title: 상단 얼럿 제목
   ///   - bodyMessage: 얼럿에 대한 내용
   ///   - cancelTitle: 얼럿 내용에 대한 취소 버튼 타이틀
   ///   - okTitle:얼럿 내용에 대한 확인 버튼 타이틀
-  public init(
+  public func show(
     title: String,
     bodyMessage: String,
     cancelTitle: String,
@@ -88,11 +117,7 @@ public final class WalWalAlert {
     bodyLabel.text = bodyMessage
     cancelButton.title = cancelTitle
     okButton.title = okTitle
-    bind()
-  }
-  
-  /// 얼럿 뷰를 화면에 보여주기 위한 메서드
-  public func show() {
+    
     guard let window = UIWindow.key else { return }
     window.addSubview(rootContainer)
     configureLayout()
