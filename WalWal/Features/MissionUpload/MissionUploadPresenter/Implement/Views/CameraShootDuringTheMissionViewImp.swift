@@ -31,13 +31,18 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
   public var disposeBag = DisposeBag()
   public var cameraShootingDuringTheMissionReactor: R
   
-  private let navigationBar = WalWalNavigationBar(
-    leftItems: [.close],
-    title: nil,
-    rightItems: []
+  private let rootFlexContainer = UIView()
+  private let navigationContainer = UIView()
+  private let shotContainerView = UIView()
+  
+  private let closeButton = WalWalTouchArea(
+    image: Images.closeL.image,
+    size: 40
   )
   
   private let cameraPreviewView = UIView()
+  
+  private let previewView = UIView()
   
   private let noticeLabelChip = WalWalChip(
     text: "반려동물과 함께 산책한 사진을 찍어요!",
@@ -55,8 +60,6 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
     image: Assets.cameraCapture.image,
     size: 48
   )
-  
-  private var previewView: UIView!
   
   private let cameraManager: CameraManager
   
@@ -76,19 +79,76 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    setAttribute()
-    setLayout()
+    configureAttribute()
+    configureLayout()
     self.reactor = self.cameraShootingDuringTheMissionReactor
-  }
-  
-  
-  public func setAttribute() {
-    view.backgroundColor = Colors.black.color
-  }
-  
-  public func setLayout() {
     
-    cameraManager.attachPreview(to: previewView)
+    cameraManager.attachPreview(to: previewView) // previewView에 카메라 프리뷰 연결
+    cameraManager.startSession() // 카메라 세션 시작
+  }
+  
+  public override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    
+    rootFlexContainer.pin
+      .all(view.pin.safeArea)
+    rootFlexContainer.flex
+      .layout()
+  }
+  
+  // MARK: - Methods
+  
+  public func configureAttribute() {
+    view.backgroundColor = Colors.black.color
+    
+    view.addSubview(rootFlexContainer)
+    [navigationContainer, cameraPreviewView, noticeLabelChip, shotContainerView].forEach {
+      rootFlexContainer.addSubview($0)
+    }
+    
+    cameraPreviewView.addSubview(previewView)
+    previewView.frame = cameraPreviewView.bounds
+    previewView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+  }
+  
+  public func configureLayout() {
+    
+    rootFlexContainer.flex
+      .direction(.column)
+      .justifyContent(.center)
+    
+    navigationContainer.flex
+      .direction(.row)
+      .justifyContent(.start)
+      .define { flex in
+        flex.addItem(closeButton)
+          .margin(26, 10, 0, 0)
+          .size(40)
+      }
+    
+    let cameraSize = UIScreen.main.bounds.width - 16
+    cameraPreviewView.flex
+      .size(cameraSize)
+      .alignItems(.center)
+      .marginTop(70)
+    
+    noticeLabelChip.flex
+      .marginTop(20)
+      .alignItems(.center)
+    
+    shotContainerView.flex
+      .direction(.row)
+      .justifyContent(.spaceEvenly)
+      .marginBottom(36)
+      .define { flex in
+        flex.addItem()
+          .size(48)
+        flex.addItem(captureButton)
+          .margin(0, 10, 0, 0)
+          .size(74)
+        flex.addItem(switchCameraButton)
+          .size(48)
+      }
   }
 }
 
@@ -110,7 +170,7 @@ extension CameraShootDuringTheMissionViewControllerImp: View {
       .disposed(by: disposeBag)
     
     // 닫기 버튼 탭 처리
-    navigationBar.leftItems?.first!.rx.tapped
+    closeButton.rx.tapped
       .map{ Reactor.Action.backButtonTapped }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
