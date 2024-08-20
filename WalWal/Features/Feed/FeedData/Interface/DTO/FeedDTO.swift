@@ -17,7 +17,7 @@ public struct FeedDTO: Codable {
 // MARK: - List
 public struct FeedListDTO: Codable {
   public let missionID: Int
-  public  let missionTitle: String
+  public let missionTitle: String
   public let missionRecordID, authorID: Int
   public let authorProfileNickname, authorProfileImageURL, createdDate: String
   public let missionRecordImageURL: String?

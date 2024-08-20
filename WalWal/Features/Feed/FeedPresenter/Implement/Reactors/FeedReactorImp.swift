@@ -18,7 +18,7 @@ import ReactorKit
 import RxSwift
 
 public final class FeedReactorImp: FeedReactor {
-
+  
   
   public typealias Action = FeedReactorAction
   public typealias Mutation = FeedReactorMutation
@@ -40,7 +40,7 @@ public final class FeedReactorImp: FeedReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .loadFeedData(let cursor, let limit):
-      return fetchFeedUseCase.excute(cursor: cursor, limit: limit)
+      return fetchFeedUseCase.execute(cursor: cursor, limit: limit)
         .asObservable()
         .map { feed -> [WalWalFeedModel] in
           self.convertFeedModel(feedList: feed.list)
@@ -65,8 +65,8 @@ public final class FeedReactorImp: FeedReactor {
     return feedList.compactMap { feed in
       let image = GlobalState.shared.imageStore[feed.missionRecordImageURL]
       let formattedMissionTitle = feed.missionTitle
-                  .replacingOccurrences(of: "\n", with: " ")
-                  .trimmingCharacters(in: .whitespaces)
+        .replacingOccurrences(of: "\n", with: " ")
+        .trimmingCharacters(in: .whitespaces)
       return WalWalFeedModel(
         id: feed.missionRecordID,
         date: feed.createdDate,

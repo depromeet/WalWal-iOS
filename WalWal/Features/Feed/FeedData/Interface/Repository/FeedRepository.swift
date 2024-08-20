@@ -13,4 +13,3 @@ import RxSwift
 public protocol FeedRepository {
   func fetchFeedData(cursor: String, limit: Int) -> Single<FeedDTO>
 }
-
