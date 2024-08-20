@@ -137,6 +137,11 @@ extension MissionViewControllerImp: View {
   
   public func bindAction(reactor: R) {
       missionStartButton.rx.tapped
+      .map{ Reactor.Action.moveToMissionUpload }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+      
+      missionStartButton.rx.tapped
         .map { [weak self] in
           return Reactor.Action.startMission(self?.missionId ?? 0)
         }

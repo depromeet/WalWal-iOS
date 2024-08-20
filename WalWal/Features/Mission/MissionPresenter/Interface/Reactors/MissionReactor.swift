@@ -18,6 +18,7 @@ public enum MissionReactorAction {
   case loadMissionInfo
   case startMission(Int)
   case startTimer
+  case moveToMissionUpload
   case checkPermission
 }
 
@@ -31,6 +32,7 @@ public enum MissionReactorMutation {
   case setButtionText(String)
   case setNotiPermission(Bool)
   case setCamPermission(Bool)
+  case startMissionUpload
 }
 
 

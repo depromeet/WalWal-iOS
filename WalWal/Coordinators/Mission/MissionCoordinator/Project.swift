@@ -16,9 +16,10 @@ let project = Project.invertedDualTargetProject(
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
     .Coordinator.Base.Interface,
+    .DependencyFactory.Records.Interface,
+    .DependencyFactory.Image.Interface,
   ],
   implementDependencies: [
     .DependencyFactory.Mission.Interface,
-    .DependencyFactory.Records.Interface
   ]
 )

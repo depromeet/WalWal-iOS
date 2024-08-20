@@ -70,6 +70,8 @@ public final class MissionReactorImp: MissionReactor {
       return startMission(id: id)
     case .startTimer:
       return startMissionTimer()
+    case .moveToMissionUpload:
+      return Observable.just(Mutation.startMissionUpload)
     }
   }
   
@@ -103,6 +105,8 @@ public final class MissionReactorImp: MissionReactor {
       newState.isAllowNoti = isAllow
     case .setCamPermission(let isAllow):
       newState.isAllowCamera = isAllow
+    case .startMissionUpload:
+      coordinator.destination.accept(.startMissionUpload)
     }
     return newState
   }
