@@ -11,6 +11,8 @@ import MyPagePresenter
 import MyPageCoordinator
 import Utility
 
+import MembersDomain
+
 import ReactorKit
 import RxSwift
 
@@ -22,11 +24,16 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
   
   public let initialState: State
   public let coordinator: any MyPageCoordinator
+  private let editProfileUseCase: EditProfileUseCase
+  private let checkNicknameUseCase: CheckNicknameUseCase
   
   public init(
-    coordinator: any MyPageCoordinator
+    coordinator: any MyPageCoordinator,
+    editProfileUseCase: EditProfileUseCase,
+    checkNicknameUseCase: CheckNicknameUseCase
   ) {
-    
+    self.editProfileUseCase = editProfileUseCase
+    self.checkNicknameUseCase = checkNicknameUseCase
     self.initialState = State()
     self.coordinator = coordinator
   }

@@ -9,6 +9,8 @@
 import MyPageDomain
 import MyPageCoordinator
 
+import MembersDomain
+
 import ReactorKit
 import RxSwift
 
@@ -43,6 +45,8 @@ public protocol ProfileEditReactor: Reactor where Action == ProfileEditReactorAc
   var coordinator: any MyPageCoordinator { get }
   
   init(
-    coordinator: any MyPageCoordinator
+    coordinator: any MyPageCoordinator,
+    editProfileUseCase: EditProfileUseCase,
+    checkNicknameUseCase: CheckNicknameUseCase
   )
 }

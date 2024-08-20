@@ -31,4 +31,7 @@ public class MembersDependencyFactoryImp: MembersDependencyFactory {
   public func injectCheckNicknameUseCase() -> CheckNicknameUseCase {
     return CheckNicknameUseCaseImp(membersRepository: injectMembersRepository())
   }
+  public func injectEditProfileUseCase() -> EditProfileUseCase {
+    return EditProfileUseCaseImp(membersRepository: injectMembersRepository())
+  }
 }

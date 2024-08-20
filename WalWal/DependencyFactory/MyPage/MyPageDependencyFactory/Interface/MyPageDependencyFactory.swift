@@ -44,7 +44,11 @@ public protocol MyPageDependencyFactory {
   func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
   func injectRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor
   func injectRecordDetailViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController
-  func injectProfileEditReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileEditReactor
+  func injectProfileEditReactor<T: MyPageCoordinator>(
+    coordinator: T,
+    editProfileUseCase: EditProfileUseCase,
+    checkNicknameUseCase: CheckNicknameUseCase
+  ) -> any ProfileEditReactor
   func injectProfileEditViewController<T: ProfileEditReactor>(reactor: T) -> any ProfileEditViewController
   func injectProfileSettingReactor<T: MyPageCoordinator>(
     coordinator: T,

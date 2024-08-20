@@ -38,4 +38,11 @@ public final class MembersRepositoryImp: MembersRepository {
       isNeedInterceptor: !isTemporaryUser)
     .map { _ in return () }
   }
+  
+  public func editProfile(nickname: String, profileImage: String) -> Single<Void> {
+    let body = EditProfileBody(nickname: nickname, profileImageUrl: profileImage)
+    let endpoint = MembersEndPoint<EmptyResponse>.editProfile(body: body)
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
+      .map { _ in return Void() }
+  }
 }

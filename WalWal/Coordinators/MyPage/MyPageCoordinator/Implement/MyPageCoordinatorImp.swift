@@ -134,7 +134,13 @@ extension MyPageCoordinatorImp {
   
   /// 프로필 변경뷰
   fileprivate func showProfileEditVC() {
-    let reactor = myPageDependencyFactory.injectProfileEditReactor(coordinator: self)
+    let editProfileUseCase = membersDependencyFactory.injectEditProfileUseCase()
+    let checkNicknameUseCase = membersDependencyFactory.injectCheckNicknameUseCase()
+    let reactor = myPageDependencyFactory.injectProfileEditReactor(
+      coordinator: self,
+      editProfileUseCase: editProfileUseCase,
+      checkNicknameUseCase: checkNicknameUseCase
+    )
     let ProfileEditVC = myPageDependencyFactory.injectProfileEditViewController(reactor: reactor)
     self.pushViewController(viewController: ProfileEditVC, animated: false)
   }

@@ -16,6 +16,7 @@ enum MembersEndPoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
   case myInfo
   case checkNickname(body: NicknameCheckBody)
+  case editProfile(body: EditProfileBody)
 }
 
 extension MembersEndPoint {
@@ -25,7 +26,7 @@ extension MembersEndPoint {
   
   var path: String {
     switch self {
-    case .myInfo:
+    case .myInfo, .editProfile:
       return "/members/me"
     case .checkNickname:
       return "/members/check-nickname"
@@ -37,6 +38,8 @@ extension MembersEndPoint {
       return .get
     case .checkNickname:
       return .post
+    case .editProfile:
+      return .put
     }
   }
   
@@ -46,12 +49,14 @@ extension MembersEndPoint {
       return .requestPlain
     case let .checkNickname(body):
       return .requestWithbody(body)
+    case let .editProfile(body):
+      return .requestWithbody(body)
     }
   }
   
   var headerType: HTTPHeaderType {
     switch self {
-    case .myInfo:
+    case .myInfo, .editProfile:
       if let accessToken = KeychainWrapper.shared.accessToken {
         return .authorization(accessToken)
       } else{
