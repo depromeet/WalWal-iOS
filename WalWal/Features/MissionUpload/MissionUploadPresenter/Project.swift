@@ -19,6 +19,8 @@ let project = Project.invertedPresenterWithDemoApp(
     .Utility,
     
     .Feature.MissionUpload.Domain.Interface,
+    
+    .Coordinator.MissionUpload.Interface,
   ],
   implementDependencies: [
     .DependencyFactory.MissionUpload.Interface,

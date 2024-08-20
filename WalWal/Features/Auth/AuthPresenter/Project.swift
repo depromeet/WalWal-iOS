@@ -17,7 +17,9 @@ let project = Project.invertedPresenterWithDemoApp(
   interfaceDependencies: [
     .ThirdParty.ReactorKit,
     
-    .Feature.Auth.Domain.Interface
+    .Feature.Auth.Domain.Interface,
+    
+    .Coordinator.Auth.Interface,
   ],
   implementDependencies: [
     .ThirdParty.KakaoSDKAuth,
