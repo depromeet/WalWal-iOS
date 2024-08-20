@@ -94,6 +94,9 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
       .all(view.pin.safeArea)
     rootFlexContainer.flex
       .layout()
+    
+    noticeLabelChip.flex
+      .markDirty()
   }
   
   // MARK: - Methods
@@ -115,39 +118,38 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
     
     rootFlexContainer.flex
       .direction(.column)
-      .justifyContent(.center)
-    
-    navigationContainer.flex
-      .direction(.row)
-      .justifyContent(.start)
+      .justifyContent(.spaceBetween)
       .define { flex in
-        flex.addItem(closeButton)
-          .margin(26, 10, 0, 0)
-          .size(40)
-      }
-    
-    let cameraSize = UIScreen.main.bounds.width - 16
-    cameraPreviewView.flex
-      .size(cameraSize)
-      .alignItems(.center)
-      .marginTop(70)
-    
-    noticeLabelChip.flex
-      .marginTop(20)
-      .alignItems(.center)
-    
-    shotContainerView.flex
-      .direction(.row)
-      .justifyContent(.spaceEvenly)
-      .marginBottom(36)
-      .define { flex in
-        flex.addItem()
-          .size(48)
-        flex.addItem(captureButton)
-          .margin(0, 10, 0, 0)
-          .size(74)
-        flex.addItem(switchCameraButton)
-          .size(48)
+        flex.addItem(navigationContainer)
+          .direction(.row)
+          .justifyContent(.start)
+          .marginTop(26)
+          .marginHorizontal(10)
+          .define { flex in
+            flex.addItem(closeButton).size(40)
+          }
+        
+        flex.addItem(cameraPreviewView)
+          .alignSelf(.center)
+          .aspectRatio(1)
+          .width(100%)
+          .maxWidth(UIScreen.main.bounds.width - 16)
+        
+        flex.addItem(noticeLabelChip)
+          .alignSelf(.center)
+          .marginTop(20)
+        
+        flex.addItem(shotContainerView)
+          .direction(.row)
+          .justifyContent(.spaceBetween)
+          .alignItems(.center)
+          .marginBottom(36)
+          .marginHorizontal(40)
+          .define { flex in
+            flex.addItem().size(48)
+            flex.addItem(captureButton).size(74)
+            flex.addItem(switchCameraButton).size(48)
+          }
       }
   }
 }

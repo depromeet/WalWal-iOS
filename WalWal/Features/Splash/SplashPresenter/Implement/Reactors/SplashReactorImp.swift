@@ -114,7 +114,7 @@ extension SplashReactorImp {
     return removeGlobalCalendarRecordsUseCase.execute()
       .asObservable()
       .withUnretained(self)
-      .flatMap { owner, _ in owner.fetchCalendarRecords(cursor: "2024-01-01", limit: 10) }
+      .flatMap { owner, _ in owner.fetchCalendarRecords(cursor: "2024-01-01", limit: 30) }
   }
   
   private func fetchCalendarRecords(cursor: String, limit: Int) -> Observable<Void> {
