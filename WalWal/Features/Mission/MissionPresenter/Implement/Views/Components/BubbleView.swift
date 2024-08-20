@@ -66,6 +66,11 @@ public final class BubbleView: UIView {
   
   // MARK: - Method
   
+  override public func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+    return false 
+  }
+  
+  
   private func configureAttribute() {
     self.addSubview(containerView)
     containerView.pin
