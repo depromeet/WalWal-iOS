@@ -71,6 +71,7 @@ let project = Project(
         .DependencyFactory.Splash.Implement,
         .DependencyFactory.WalWalTabBar.Implement,
         .DependencyFactory.Mission.Implement,
+        .DependencyFactory.MissionUpload.Implement,
         .DependencyFactory.MyPage.Implement,
         .DependencyFactory.FCM.Implement,
         .DependencyFactory.Image.Implement,
