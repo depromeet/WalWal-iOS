@@ -137,10 +137,8 @@ extension MissionViewControllerImp: View {
   
   public func bindAction(reactor: R) {
     missionStartButton.rx.tapped
-      .bind(with: self) { owner, _ in
-        owner.reactor?.action
-          .onNext(.startMission)
-      }
+      .map{ Reactor.Action.startMission }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
   
