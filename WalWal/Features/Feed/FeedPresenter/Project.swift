@@ -18,6 +18,8 @@ let project = Project.invertedPresenterWithDemoApp(
     .ThirdParty.ReactorKit,
     
     .Feature.Feed.Domain.Interface,
+    
+    .Coordinator.Feed.Interface,
   ],
   implementDependencies: [
     .DesignSystem,
