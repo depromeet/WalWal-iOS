@@ -23,7 +23,7 @@ public enum ProfileEditReactorMutation {
   case invaildNickname(message: String)
   case buttonEnable(isEnable: Bool)
   case showIndicator(show: Bool)
-  case setPhotoPermission(isAllow: Bool)
+  case setPhotoPermission(Bool)
   case moveToBack
 }
 
