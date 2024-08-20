@@ -10,7 +10,9 @@ import UIKit
 import BaseCoordinator
 import MissionCoordinator
 
+import MissionUploadDependencyFactory
 import RecordsDependencyFactory
+import ImageDependencyFactory
 
 import MissionData
 import MissionDomain
@@ -25,7 +27,9 @@ public protocol MissionDependencyFactory {
   func injectMissionCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    recordDependencyFactory: RecordsDependencyFactory
+    missionUploadDependencyFactory: MissionUploadDependencyFactory,
+    recordDependencyFactory: RecordsDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory
   ) -> any MissionCoordinator
   func injectMissionReactor<T: MissionCoordinator>(
     coordinator: T,
