@@ -48,7 +48,7 @@ public final class MissionReactorImp: MissionReactor {
   }
   
   public func transform(action: Observable<Action>) -> Observable<Action> {
-    let initialLoadAction = Observable.just(Action.loadMission)
+    let initialLoadAction = Observable.just(Action.loadMissionInfo)
     let initialPermissionCheck = Observable.just(Action.checkPermission)
     
     return Observable.merge(action, initialLoadAction, initialPermissionCheck)
