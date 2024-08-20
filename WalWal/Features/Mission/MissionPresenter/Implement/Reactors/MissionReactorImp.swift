@@ -10,6 +10,7 @@ import UIKit
 import MissionPresenter
 import MissionCoordinator
 import MissionDomain
+import RecordsDomain
 
 import ReactorKit
 import RxSwift
@@ -19,31 +20,42 @@ public final class MissionReactorImp: MissionReactor {
   public typealias Mutation = MissionReactorMutation
   public typealias State = MissionReactorState
   
+  private var timerDisposeBag = DisposeBag()
+  
   public let initialState: State
   public let coordinator: any MissionCoordinator
+  public let todayMissionUseCase: TodayMissionUseCase
+  public let checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase
+  public let checkRecordStatusUseCase: CheckRecordStatusUseCase
+  public let startRecordUseCase: StartRecordUseCase
   
   public init(
-    coordinator: any MissionCoordinator
+    coordinator: any MissionCoordinator,
+    todayMissionUseCase: TodayMissionUseCase,
+    checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
+    checkRecordStatusUseCase: CheckRecordStatusUseCase,
+    startRecordUseCase: StartRecordUseCase
   ) {
     self.coordinator = coordinator
+    self.todayMissionUseCase = todayMissionUseCase
+    self.checkCompletedTotalRecordsUseCase = checkCompletedTotalRecordsUseCase
+    self.checkRecordStatusUseCase = checkRecordStatusUseCase
+    self.startRecordUseCase = startRecordUseCase
     self.initialState = State()
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .loadMission:
+    case .loadMissionInfo:
       return Observable.concat([
-        Observable.just(Mutation.setLoading(true)),
-        fetchMissionData()
-          .map {
-            Mutation.setMission($0)
-          },
+        Observable.just( Mutation.setLoading(true)),
+        fetchMissionDataAndCount(),
         Observable.just(Mutation.setLoading(false))
       ])
-      
-    case .startMission:
-      // Mission 시작 로직을 추가
-      return Observable.empty()
+    case let .startMission(id):
+      return startMission(id: id)
+    case .startTimer:
+      return startMissionTimer()
     }
   }
   
@@ -54,19 +66,126 @@ public final class MissionReactorImp: MissionReactor {
       newState.mission = mission
     case .setLoading(let isLoading):
       newState.isLoading = isLoading
+    case .missionStarted:
+      newState.isMissionStarted = true
+    case .setMissionStatus(let status):
+      newState.isMissionStarted = status.statusMessage == .inProgress || status.statusMessage == .completed
+      newState.missionStatus = status
+      switch status.statusMessage {
+      case .notCompleted:
+        newState.buttonText = "미션 시작하기"
+      case .inProgress:
+        startTimerObservable()
+      case .completed:
+        newState.buttonText = "내 미션 기록 보기"
+      }
+    case .setMissionCount(let count):
+      newState.totalMissionCount = count
+    case .missionLoadFailed:
+      newState.isLoading = false
+    case .setButtionText(let text):
+      newState.buttonText = text
     }
     return newState
   }
   
-  private func fetchMissionData() -> Observable<MissionModel> {
-    /// 더미데이터
-    let mission = MissionModel(
-      title: "반려동물과 함께\n산책한 사진을 찍어요",
-      isStartMission: false,
-      imageURL: "",
-      date: 123,
-      backgroundColorCode: "FFDD77"
-    )
-    return Observable.just(mission).delay(.seconds(1), scheduler: MainScheduler.instance)
+  private func fetchMissionDataAndCount() -> Observable<Mutation> {
+    return fetchMissionData()
+      .flatMap { mutation -> Observable<Mutation> in
+        if case let .setMission(mission) = mutation {
+          return self.checkMissionStatus(id: mission.id)
+            .map { status in
+              return Mutation.setMissionStatus(status)
+            }
+            .startWith(mutation)
+        }
+        return Observable.just(mutation)
+      }
+      .flatMap { mutation -> Observable<Mutation> in
+        return self.fetchMissionCount()
+          .startWith(mutation)
+      }
   }
+  
+  private func fetchMissionData() -> Observable<Mutation> {
+    return todayMissionUseCase.execute()
+      .asObservable()
+      .map { mission in
+        return Mutation.setMission(mission)
+      }
+      .catch { error in
+        return Observable.just(Mutation.missionLoadFailed(error))
+      }
+  }
+  
+  private func checkMissionStatus(id: Int) -> Observable<MissionRecordStatusModel> {
+    return checkRecordStatusUseCase.execute(missionId: id)
+      .asObservable()
+      .catch { error in
+        return Observable.error(error)
+      }
+  }
+  
+  private func fetchMissionCount() -> Observable<Mutation> {
+    return checkCompletedTotalRecordsUseCase.execute()
+      .asObservable()
+      .map {
+        return Mutation.setMissionCount($0.totalCount)
+      }
+      .catch { error in
+        return Observable.just(Mutation.missionLoadFailed(error))
+      }
+  }
+  
+  private func startMission(id: Int) -> Observable<Mutation> {
+    return startRecordUseCase.execute(missionId: id)
+      .asObservable()
+      .map { _ in
+        return Mutation.missionStarted
+      }
+      .catch { error in
+        return Observable.just(Mutation.missionLoadFailed(error))
+      }
+  }
+  
+  // MARK: - MissionTimer
+  private func calculateTimeRemainingUntilMidnight() -> String {
+    let calendar = Calendar.current
+    let now = Date()
+    let midnight = calendar.startOfDay(for: now).addingTimeInterval(86400)
+    
+    let components = calendar.dateComponents([.hour, .minute, .second], from: now, to: midnight)
+    
+    guard let hour = components.hour, let minute = components.minute, let second = components.second else {
+      return "남은 시간 계산 실패"
+    }
+    
+    return String(format: "%02d:%02d:%02d 남았어요!", hour, minute, second)
+  }
+  
+  
+  private func startMissionTimer() -> Observable<Mutation> {
+    let timerObservable = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+      .startWith(0)
+      .map { _ in return self.calculateTimeRemainingUntilMidnight() }
+      .flatMap { time -> Observable<Mutation> in
+        return Observable.from([Mutation.setButtionText(time)])
+      }
+    return timerObservable
+  }
+  private func startTimerObservable() {
+    timerDisposeBag = DisposeBag()
+    
+    Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+      .startWith(0)
+      .map { [weak self] _ in
+        self?.calculateTimeRemainingUntilMidnight() ?? "00:00:00"
+      }
+      .map { Mutation.setButtionText($0) }
+      .subscribe(with: self, onNext: { owner, mutation in
+        owner.action.onNext(.startTimer)
+      })
+      .disposed(by: timerDisposeBag)
+  }
+  
 }

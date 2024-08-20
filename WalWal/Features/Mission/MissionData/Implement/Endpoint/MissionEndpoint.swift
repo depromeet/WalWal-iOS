@@ -8,6 +8,7 @@
 
 import Foundation
 import WalWalNetwork
+import LocalStorage
 
 import Alamofire
 
@@ -25,7 +26,7 @@ extension MissionEndpoint {
   var path: String {
     switch self {
     case .loadMissionInfo:
-      return ""
+      return "/missions/today"
     }
   }
   
@@ -46,7 +47,10 @@ extension MissionEndpoint {
   var headerType: HTTPHeaderType {
     switch self {
     case .loadMissionInfo:
-      return.plain
+      if let accessToken = KeychainWrapper.shared.accessToken {
+        return .authorization(accessToken)
+      }
+      return .authorization("")
     }
   }
 }

@@ -12,7 +12,7 @@ import MissionDomain
 
 import RxSwift
 
-public final class MissionUseCaseImp: MissionUseCase {
+public final class TodayMissionUseCaseImp: TodayMissionUseCase {
   
   private let missionDataRepository: MissionRepository
   
@@ -20,16 +20,10 @@ public final class MissionUseCaseImp: MissionUseCase {
     self.missionDataRepository = missionDataRepository
   }
   
-  public func excute() -> Single<MissionModel> {
+  public func execute() -> Single<MissionModel> {
     return missionDataRepository.loadMissionInfo()
       .map {
-        MissionModel(
-          title: $0.title,
-          isStartMission: $0.isStartMission,
-          imageURL: $0.missionImageURL,
-          date: $0.date,
-          backgroundColorCode: $0.backgroundColorCode
-        )
+        MissionModel(dto: $0)
       }
       .asObservable()
       .asSingle()

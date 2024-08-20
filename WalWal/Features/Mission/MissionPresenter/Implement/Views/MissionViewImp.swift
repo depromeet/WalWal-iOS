@@ -35,11 +35,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     missionTitle: "반려동물과 함께\n산책한 사진을 찍어요",
     missionImage: ResourceKitAsset.Sample.missionSample.image
   )
-  private lazy var missionCountBubbleView = BubbleView(
-    color: Colors.gray150.color,
-    image: Images.missionStartIcon.image,
-    text: "\(missionCount)번째 미션을 수행해볼까요?"
-  )
+  private lazy var missionCountBubbleView = BubbleView()
   private let missionStartButton = WalWalButton_Icon(
     type: .active,
     title: "미션 시작하기",
@@ -48,7 +44,10 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   // MARK: - Properties
   
-  private let missionCount = 0
+  private var missionCount: Int = 0
+  private var missionId: Int = 0
+  private var isMissionCompleted: Bool = false
+  private var recordImageURL: String = ""
   
   public var disposeBag = DisposeBag()
   public var missionReactor: R
@@ -66,11 +65,18 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   // MARK: - Lifecycle
   
+  public override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    
+    missionCountBubbleView.startFloatingAnimation()
+  }
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
-    missionCountBubbleView.startFloatingAnimation()
     configureAttribute()
     configureLayout()
+    
+    missionCountBubbleView.startFloatingAnimation()
     self.reactor = missionReactor
   }
   
@@ -102,7 +108,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
             $0.addItem(missionStartButton)
               .marginHorizontal(20.adjusted)
             $0.addItem(missionCountBubbleView)
-              .marginBottom(-20.adjusted)
+              .marginBottom(-8.adjusted)
               .alignSelf(.center)
           }
       }
@@ -111,7 +117,11 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   // MARK: - Method
   
   private func setMissionData(_ model: MissionModel) {
-    // 미션 데이터 세팅
+    self.missionStartView.configureStartView(title: model.title, missionImageURL: model.imageURL)
+  }
+  
+  private func configureMissionCompleteView(missionImageURL: String) {
+    // 미션 완료뷰 이미지 넣기
   }
 }
 
@@ -127,21 +137,63 @@ extension MissionViewControllerImp: View {
   
   public func bindAction(reactor: R) {
     reactor.action
-      .onNext(.loadMission)
+      .onNext(.loadMissionInfo)
   }
   
   public func bindState(reactor: R) {
     reactor.state
-      .map { $0.mission }
-      .subscribe(with: self, onNext: { owner, mission in
-        if let mission = mission {
-          owner.setMissionData(mission)
+      .map {  $0.totalMissionCount  }
+      .subscribe(with: self) { owner, count in
+        owner.missionCount = count
+        owner.missionCountBubbleView.missionCount.accept(count)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0 }
+      .subscribe(with: self, onNext: { owner, state in
+        
+        owner.isMissionCompleted = state.isMissionStarted
+        owner.missionCountBubbleView.isCompleted.accept(state.missionStatus?.statusMessage == .completed)
+        
+        owner.missionStartButton.title = state.buttonText
+        if let status = state.missionStatus {
+          owner.recordImageURL = status.imageUrl
+          switch status.statusMessage {
+          case .notCompleted:
+            owner.isMissionCompleted = false
+          case .inProgress:
+            owner.missionStartButton.icon = Images.watchL.image
+          case .completed:
+            owner.isMissionCompleted = true
+            owner.missionStartButton.icon = Images.calendarL.image
+          }
         }
       })
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.mission }
+      .subscribe(with: self) { owner, mission in
+        
+        if let mission {
+          owner.missionId = mission.id
+          owner.setMissionData(mission)
+        }
+      }
+      .disposed(by: disposeBag)
+    
+    
+    
   }
   
   public func bindEvent() {
-    
+    missionStartButton.rx.tapped
+      .subscribe(with: self) { owner, _ in
+        owner.reactor?.action
+          .onNext(.startMission(owner.missionId))
+        print("미션 시작")
+      }
+      .disposed(by: disposeBag)
   }
 }

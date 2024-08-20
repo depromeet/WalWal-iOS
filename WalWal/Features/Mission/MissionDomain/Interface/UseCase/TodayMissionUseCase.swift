@@ -10,7 +10,7 @@ import Foundation
 
 import RxSwift
 
-public protocol MissionUseCase {
+public protocol TodayMissionUseCase {
   /// 미션 정보 받아오기
-  func excute() -> Single<MissionModel>
+  func execute() -> Single<MissionModel>
 }

@@ -8,23 +8,36 @@
 
 import MissionCoordinator
 
+import MissionDomain
+import RecordsDomain
+
 import ReactorKit
 import RxSwift
-import MissionDomain
 
 public enum MissionReactorAction {
-  case loadMission
-  case startMission
+  case loadMissionInfo
+  case startMission(Int)
+  case startTimer
 }
 
 public enum MissionReactorMutation {
   case setMission(MissionModel)
   case setLoading(Bool)
+  case missionLoadFailed(Error)
+  case missionStarted
+  case setMissionStatus(MissionRecordStatusModel)
+  case setMissionCount(Int)
+  case setButtionText(String)
 }
+
 
 public struct MissionReactorState {
   public var mission: MissionModel?
   public var isLoading: Bool = false
+  public var isMissionStarted: Bool = false
+  public var missionStatus: MissionRecordStatusModel?
+  public var totalMissionCount : Int = 0
+  public var buttonText: String = "미션 시작하기" // 초기값
   
   public init() {
     
@@ -36,6 +49,10 @@ public protocol MissionReactor: Reactor where Action == MissionReactorAction, Mu
   var coordinator: any MissionCoordinator { get }
   
   init(
-    coordinator: any MissionCoordinator
-  )
+    coordinator: any MissionCoordinator,
+    todayMissionUseCase: any TodayMissionUseCase,
+    checkCompletedTotalRecordsUseCase: any CheckCompletedTotalRecordsUseCase,
+    checkRecordStatusUseCase: any CheckRecordStatusUseCase,
+    startRecordUseCase: any StartRecordUseCase
+  ) 
 }

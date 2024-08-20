@@ -11,8 +11,10 @@ import Foundation
 public struct MissionInfoDTO: Decodable {
   public let id: Int
   public let title: String
-  public let missionImageURL: String
-  public let isStartMission: Bool
-  public let date: Int
-  public let backgroundColorCode: String
+  public let illustrationURL: String
+  
+  enum CodingKeys: String, CodingKey {
+    case id, title
+    case illustrationURL = "illustrationUrl"
+  }
 }
