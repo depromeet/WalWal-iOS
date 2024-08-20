@@ -15,11 +15,14 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .Coordinator.MyPage.Interface,
-    .DependencyFactory.FCM.Interface,
+    /// .DependencyFactory.FCM.Interface,
     .DependencyFactory.Auth.Interface,
     .DependencyFactory.Members.Interface,
     
+    ///.Coordinator.MyPage.Interface,
+    
+    ///.Feature.MyPage.Data.Interface,
+    ///.Feature.MyPage.Domain.Interface,
     .Feature.MyPage.Presenter.Interface
   ],
   implementDependencies: [
