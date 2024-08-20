@@ -133,6 +133,10 @@ extension ProfileEditViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
+    navigationBarView.rightItems?.first?.rx.tapped
+      .map { Reactor.Action.tapCancelButton }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -150,11 +154,6 @@ extension ProfileEditViewControllerImp: View {
   }
   
   public func bindEvent() {
-    navigationBarView.rightItems?.first?.rx.tapped
-      .asDriver()
-      .drive(with: self) { owner, _ in
-        owner.navigationController?.popViewController(animated: true)
-      }
-      .disposed(by: disposeBag)
+
   }
 }

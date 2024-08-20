@@ -16,6 +16,7 @@ public enum ProfileEditReactorAction {
   case editProfile(nickname: String, profileURL: String)
   case checkCondition(nickname: String)
   case checkPhotoPermission
+  case tapCancelButton
 }
 
 public enum ProfileEditReactorMutation {
@@ -23,6 +24,7 @@ public enum ProfileEditReactorMutation {
   case buttonEnable(isEnable: Bool)
   case showIndicator(show: Bool)
   case setPhotoPermission(isAllow: Bool)
+  case moveToBack
 }
 
 public struct ProfileEditReactorState {

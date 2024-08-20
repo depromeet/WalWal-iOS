@@ -44,6 +44,8 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
     case .checkPhotoPermission:
       return checkPhotoPermission()
         .map{ Mutation.setPhotoPermission(isAllow: $0) }
+    case .tapCancelButton:
+      return .just(.moveToBack)
     }
   }
   
@@ -58,6 +60,8 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
       newState.showIndicator = show
     case let .setPhotoPermission(isAllow: isAllow):
       newState.isGrantedPhoto = isAllow
+    case .moveToBack:
+      coordinator.popViewController(animated: true)
     }
     return newState
   }
