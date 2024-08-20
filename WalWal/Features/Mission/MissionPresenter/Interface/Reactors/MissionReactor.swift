@@ -18,6 +18,7 @@ public enum MissionReactorAction {
   case loadMissionInfo
   case startMission(Int)
   case startTimer
+  case checkPermission
 }
 
 public enum MissionReactorMutation {
@@ -28,6 +29,8 @@ public enum MissionReactorMutation {
   case setMissionStatus(MissionRecordStatusModel)
   case setMissionCount(Int)
   case setButtionText(String)
+  case setNotiPermission(Bool)
+  case setCamPermission(Bool)
 }
 
 
@@ -38,6 +41,8 @@ public struct MissionReactorState {
   public var missionStatus: MissionRecordStatusModel?
   public var totalMissionCount : Int = 0
   public var buttonText: String = "미션 시작하기" // 초기값
+  public var isAllowNoti: Bool = false
+  public var isAllowCamera: Bool = false
   
   public init() {
     

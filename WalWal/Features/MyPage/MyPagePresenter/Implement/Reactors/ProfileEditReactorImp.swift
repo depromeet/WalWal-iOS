@@ -9,6 +9,7 @@
 import MyPageDomain
 import MyPagePresenter
 import MyPageCoordinator
+import Utility
 
 import ReactorKit
 import RxSwift
@@ -40,6 +41,11 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
       return .concat([
         .just(.showIndicator(show: true)),
       ])
+    case .checkPhotoPermission:
+      return checkPhotoPermission()
+        .map{ Mutation.setPhotoPermission($0) }
+    case .tapCancelButton:
+      return .just(.moveToBack)
     }
   }
   
@@ -52,6 +58,10 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
       newState.invaildMessage = message
     case let .showIndicator(show):
       newState.showIndicator = show
+    case let .setPhotoPermission(isAllow):
+      newState.isGrantedPhoto = isAllow
+    case .moveToBack:
+      coordinator.popViewController(animated: true)
     }
     return newState
   }
@@ -59,5 +69,15 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
   
   private func checkNickname(nickname: String) {
     
+  }
+  
+  private func checkPhotoPermission() -> Observable<Bool> {
+    return PermissionManager.shared.checkPermission(for: .photo)
+      .flatMap { isGranted in
+        if !isGranted {
+          return PermissionManager.shared.requestPhotoPermission()
+        }
+        return Observable.just(isGranted)
+      }
   }
 }

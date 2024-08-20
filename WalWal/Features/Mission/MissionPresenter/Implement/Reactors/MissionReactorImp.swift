@@ -11,6 +11,7 @@ import MissionPresenter
 import MissionCoordinator
 import MissionDomain
 import RecordsDomain
+import Utility
 
 import ReactorKit
 import RxSwift
@@ -29,6 +30,8 @@ public final class MissionReactorImp: MissionReactor {
   public let checkRecordStatusUseCase: CheckRecordStatusUseCase
   public let startRecordUseCase: StartRecordUseCase
   
+  private let disposeBag = DisposeBag()
+  
   public init(
     coordinator: any MissionCoordinator,
     todayMissionUseCase: TodayMissionUseCase,
@@ -44,6 +47,13 @@ public final class MissionReactorImp: MissionReactor {
     self.initialState = State()
   }
   
+  public func transform(action: Observable<Action>) -> Observable<Action> {
+    let initialLoadAction = Observable.just(Action.loadMissionInfo)
+    let initialPermissionCheck = Observable.just(Action.checkPermission)
+    
+    return Observable.merge(action, initialLoadAction, initialPermissionCheck)
+  }
+  
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .loadMissionInfo:
@@ -52,7 +62,11 @@ public final class MissionReactorImp: MissionReactor {
         fetchMissionDataAndCount(),
         Observable.just(Mutation.setLoading(false))
       ])
+    case .checkPermission:
+      return checkNotificationPermission()
+        .map { Mutation.setNotiPermission($0) }
     case let .startMission(id):
+      startMission()
       return startMission(id: id)
     case .startTimer:
       return startMissionTimer()
@@ -85,6 +99,10 @@ public final class MissionReactorImp: MissionReactor {
       newState.isLoading = false
     case .setButtionText(let text):
       newState.buttonText = text
+    case .setNotiPermission(let isAllow):
+      newState.isAllowNoti = isAllow
+    case .setCamPermission(let isAllow):
+      newState.isAllowCamera = isAllow
     }
     return newState
   }
@@ -188,4 +206,36 @@ public final class MissionReactorImp: MissionReactor {
       .disposed(by: timerDisposeBag)
   }
   
+  
+  /// 알림 권한 확인
+  private func checkNotificationPermission() -> Observable<Bool> {
+    return PermissionManager.shared.checkPermission(for: .notification)
+      .flatMap { isGranted in
+        if !isGranted {
+          return PermissionManager.shared.requestNotificationPermission()
+        }
+        return Observable.just(isGranted)
+      }
+  }
+  
+  /// 미션 시작 전 카메라 권한 확인
+  private func startMission() {
+    PermissionManager.shared.checkPermission(for: .camera)
+      .subscribe(with: self, onNext: { owner, isGranted in
+        if isGranted {
+          // 미션 시작
+        } else {
+          PermissionManager.shared.requestCameraPermission()
+            .subscribe(with: self, onNext: { owner, granted in
+              if granted {
+                // 미션 시작
+              } else {
+                // 권한 없음 -> 토스트 메시지로 권한 요청?
+              }
+            })
+            .disposed(by: owner.disposeBag)
+        }
+      })
+      .disposed(by: disposeBag)
+  }
 }

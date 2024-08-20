@@ -15,18 +15,23 @@ import RxSwift
 public enum ProfileEditReactorAction {
   case editProfile(nickname: String, profileURL: String)
   case checkCondition(nickname: String)
+  case checkPhotoPermission
+  case tapCancelButton
 }
 
 public enum ProfileEditReactorMutation {
   case invaildNickname(message: String)
   case buttonEnable(isEnable: Bool)
   case showIndicator(show: Bool)
+  case setPhotoPermission(Bool)
+  case moveToBack
 }
 
 public struct ProfileEditReactorState {
   public init() { }
   public var buttonEnable: Bool = false
   public var showIndicator: Bool = false
+  public var isGrantedPhoto: Bool = false
   @Pulse public var invaildMessage: String = ""
 }
 
