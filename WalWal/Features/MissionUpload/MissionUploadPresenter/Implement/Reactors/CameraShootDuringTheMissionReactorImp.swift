@@ -13,6 +13,8 @@ import MissionUploadCoordinator
 import RecordsDomain
 import ImageDomain
 
+import DesignSystem
+
 import ReactorKit
 import RxSwift
 
@@ -58,6 +60,10 @@ public final class CameraShootDuringTheMissionReactorImp: CameraShootDuringTheMi
       newState.isLoading = isLoading
     case .moveToMain:
       coordinator.requirefinish() /// Camera리엑터를 끝내고, Mission으로 복귀
+      guard let tabBarViewController = coordinator.navigationController.tabBarController as? WalWalTabBarViewController else {
+        return state
+      }
+      tabBarViewController.showCustomTabBar()
     }
     return newState
   }
