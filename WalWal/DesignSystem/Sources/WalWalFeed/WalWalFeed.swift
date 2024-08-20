@@ -19,6 +19,8 @@ import Lottie
 public final class WalWalFeed: UIView {
   
   private typealias Colors = ResourceKitAsset.Colors
+  let walwalIndicator = WalWalLoadingIndicator(frame: .zero)
+  let refreshLoading = PublishRelay<Bool>()
   
   // MARK: - UI
   
@@ -44,10 +46,6 @@ public final class WalWalFeed: UIView {
     
   }
   
-  private let lottieView = LottieAnimationView(animation: AnimationAsset.refersh.animation).then {
-    $0.loopMode = .loop
-    $0.isHidden = true
-  }
   
   
   // MARK: - Property
@@ -110,8 +108,6 @@ public final class WalWalFeed: UIView {
     self.headerHeight = isFeed ? 71 : 0
     super.init(frame: .zero)
     
-    
-    lottieView.isHidden = true
     configureView()
     self.feedData.accept(feedData)
   }
@@ -143,23 +139,39 @@ public final class WalWalFeed: UIView {
   }
   
   private func setupView() {
-    addSubview(lottieView)
     addSubview(collectionView)
     collectionView.dataSource = self
     collectionView.delegate = self
     
-    lottieView.frame = CGRect(x: 0, y: -100, width: self.bounds.width, height: 100) // 상단에 위치
+    walwalIndicator.endRefreshing()
+    collectionView.refreshControl = walwalIndicator
   }
   
   private func setupBindings() {
     feedData
       .asDriver(onErrorJustReturn: [])
-      .drive(with: self, onNext: { owner, feedData in
-        owner.currentFeedData = feedData
+      .drive(with: self) { owner, feedData in
+        self.currentFeedData = feedData
         owner.collectionView.reloadData()
+        owner.walwalIndicator.endRefreshing()
+      }
+      .disposed(by: disposeBag)
+    
+    refreshLoading
+      .distinctUntilChanged()
+      .bind(to: walwalIndicator.rx.isRefreshing)
+      .disposed(by: disposeBag)
+    
+    walwalIndicator.rx.controlEvent(.valueChanged)
+      .bind { [weak self] _ in
+        self?.refreshLoading.accept(true)
         
-        owner.stopLoadingAnimation()
-      })
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+          // 여기에 데이터 로드 완료 시 호출할 로직 추가
+          self?.feedData.accept(self?.feedData.value ?? [])
+          self?.refreshLoading.accept(false)
+        }
+      }
       .disposed(by: disposeBag)
     
     walwalBoostGenerater.boostFinished
@@ -180,27 +192,6 @@ public final class WalWalFeed: UIView {
     flex.define {
       $0.addItem(collectionView)
         .grow(1)
-    }
-  }
-  
-  private func startLoadingAnimation() {
-      lottieView.isHidden = false
-      lottieView.play()
-      collectionView.isScrollEnabled = false
-    }
-    
-    private func stopLoadingAnimation() {
-      lottieView.stop()
-      lottieView.isHidden = true
-      collectionView.isScrollEnabled = true
-    }
-  
-  
-  private func loadMoreData() {
-    // 데이터 로드 로직
-    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-      // 여기에 데이터 로드 완료 시 호출할 로직 추가
-      self?.feedData.accept(self?.feedData.value ?? [])
     }
   }
   
@@ -271,16 +262,5 @@ extension WalWalFeed: UICollectionViewDataSource {
 extension WalWalFeed: UICollectionViewDelegateFlowLayout {
   public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
     return CGSize(width: collectionView.bounds.width, height: headerHeight)
-  }
-}
-
-// MARK: - UIScrollViewDelegate
-
-extension WalWalFeed: UIScrollViewDelegate {
-  public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    if scrollView.contentOffset.y <= -100 {
-      startLoadingAnimation()
-      loadMoreData()
-    }
   }
 }
