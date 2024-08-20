@@ -51,7 +51,6 @@ public final class WalWalTabBarViewController: UITabBarController {
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    additionalSafeAreaInsets.bottom = 68
     containerView.pin
       .bottom()
       .left()
@@ -67,11 +66,13 @@ public final class WalWalTabBarViewController: UITabBarController {
   public func hideCustomTabBar() {
     self.tabBar.isHidden = true
     customTabBar.isHidden = true
+    additionalSafeAreaInsets.bottom = 0
   }
   
   public func showCustomTabBar() {
     self.tabBar.isHidden = true
     customTabBar.isHidden = false
+    additionalSafeAreaInsets.bottom = 68
   }
 }
 
