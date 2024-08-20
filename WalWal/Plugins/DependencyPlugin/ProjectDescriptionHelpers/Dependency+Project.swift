@@ -186,6 +186,7 @@ extension TargetDependency {
     public struct MissionUpload: WalWalDependency {
       public struct Domain: WalWalDependency {}
       public struct Presenter: WalWalDependency {}
+
     public struct Members: WalWalDependency {
       public struct Data: WalWalDependency { }
       public struct Domain: WalWalDependency { }
@@ -248,6 +249,7 @@ public extension TargetDependency.DependencyFactory.Feed {
 public extension TargetDependency.DependencyFactory.MissionUpload {
   static let Interface = Self.project(dependencyName: .missionUpload, isInterface: true)
   static let Implement = Self.project(dependencyName: .missionUpload, isInterface: false)
+
 public extension TargetDependency.DependencyFactory.Members {
   static let Interface = Self.project(dependencyName: .members, isInterface: true)
   static let Implement = Self.project(dependencyName: .members, isInterface: false)
