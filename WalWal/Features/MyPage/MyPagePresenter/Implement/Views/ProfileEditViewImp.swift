@@ -128,24 +128,32 @@ extension ProfileEditViewControllerImp: View {
     
     let input = Observable.combineLatest(nicknameObservable, profileEditView.curProfileItems)
     
+    profileEditView.showPHPicker
+      .map { Reactor.Action.checkPhotoPermission }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
     
   }
   
-  public func bindState(reactor: R) {  }
+  public func bindState(reactor: R) {
+    reactor.state
+      .map { $0.isGrantedPhoto }
+      .distinctUntilChanged()
+      .bind(with: self, onNext: { owner, isAllowed in
+        if isAllowed {
+          PHPickerManager.shared.presentPicker(vc: owner)
+        } else {
+          // 권한 요청 - Alert
+        }
+      })
+      .disposed(by: disposeBag)
+  }
   
   public func bindEvent() {
     navigationBarView.rightItems?.first?.rx.tapped
       .asDriver()
       .drive(with: self) { owner, _ in
         owner.navigationController?.popViewController(animated: true)
-      }
-      .disposed(by: disposeBag)
-    
-    profileEditView.showPHPicker
-      .bind(with: self) { owner, _ in
-        owner.reactor?.action
-          .onNext(.checkPhotoPermission)
-        PHPickerManager.shared.presentPicker(vc: owner)
       }
       .disposed(by: disposeBag)
   }
