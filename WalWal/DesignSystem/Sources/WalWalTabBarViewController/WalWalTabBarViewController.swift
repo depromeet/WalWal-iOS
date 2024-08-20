@@ -65,13 +65,13 @@ public final class WalWalTabBarViewController: UITabBarController {
 
   public func hideCustomTabBar() {
     self.tabBar.isHidden = true
-    customTabBar.isHidden = true
+    containerView.isHidden = true
     additionalSafeAreaInsets.bottom = 0
   }
   
   public func showCustomTabBar() {
     self.tabBar.isHidden = true
-    customTabBar.isHidden = false
+    containerView.isHidden = false
     additionalSafeAreaInsets.bottom = 68
   }
 }
