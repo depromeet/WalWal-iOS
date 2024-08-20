@@ -15,6 +15,7 @@ import FeedDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
 import RecordsDependencyFactory
+import MembersDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -47,6 +48,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   public var feedDependencyFactory: FeedDependencyFactory
   private var fcmDependencyFactory: FCMDependencyFactory
   private var authDependencyFactory: AuthDependencyFactory
+  private var membersDependencyFactory: MembersDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
@@ -57,7 +59,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     feedDependencyFactory: FeedDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
-    recordDependencyFactory: RecordsDependencyFactory
+    recordDependencyFactory: RecordsDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -69,6 +72,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     self.authDependencyFactory = authDependencyFactory
     self.recordDependencyFactory = recordDependencyFactory
     self.tabBarController = WalWalTabBarViewController()
+    self.membersDependencyFactory = membersDependencyFactory
     
     bindChildToParentAction()
     bindState()
@@ -173,7 +177,8 @@ extension WalWalTabBarCoordinatorImp {
       navigationController: navigationController,
       parentCoordinator: self,
       fcmDependencyFactory: fcmDependencyFactory,
-      authDependencyFactory: authDependencyFactory
+      authDependencyFactory: authDependencyFactory,
+      membersDependencyFactory: membersDependencyFactory
     )
     myPageCoordinator.start()
     return myPageCoordinator

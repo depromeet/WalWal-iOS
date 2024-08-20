@@ -14,7 +14,6 @@ import Alamofire
 
 enum MyPageEndPoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
-  case myInfo
 }
 
 extension MyPageEndPoint {
@@ -23,33 +22,17 @@ extension MyPageEndPoint {
   }
   
   var path: String {
-    switch self {
-    case .myInfo:
-      return "/members/me"
-    }
+    return ""
   }
   var method: HTTPMethod {
-    switch self {
-    case .myInfo:
-      return .get
-    }
+    return .get
   }
   
   var parameters: RequestParams {
-    switch self {
-    case .myInfo:
-      return .requestPlain
-    }
+    return .requestPlain
   }
   
   var headerType: HTTPHeaderType {
-    switch self {
-    case .myInfo:
-      if let accessToken = KeychainWrapper.shared.accessToken {
-        return .authorization(accessToken)
-      } else{
-        return .plain
-      }
-    }
+    return .plain
   }
 }

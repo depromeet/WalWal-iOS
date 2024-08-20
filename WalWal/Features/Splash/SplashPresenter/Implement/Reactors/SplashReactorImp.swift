@@ -10,7 +10,7 @@ import SplashDomain
 import SplashPresenter
 import FCMDomain
 import RecordsDomain
-import MyPageDomain
+import MembersDomain
 import AppCoordinator
 
 import ReactorKit
@@ -29,7 +29,7 @@ public final class SplashReactorImp: SplashReactor {
   private let fcmSaveUseCase: FCMSaveUseCase
   private let checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
   private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
-  private let profileInfoUseCase: ProfileInfoUseCase
+  private let memberInfoUseCase: MemberInfoUseCase
   private let disposeBag = DisposeBag()
   
   public init(
@@ -39,7 +39,7 @@ public final class SplashReactorImp: SplashReactor {
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
-    profileInfoUseCase: ProfileInfoUseCase
+    memberInfoUseCase: MemberInfoUseCase
   ) {
     self.coordinator = coordinator
     self.checkTokenUseCase = checkTokenUseCase
@@ -47,7 +47,7 @@ public final class SplashReactorImp: SplashReactor {
     self.fcmSaveUseCase = fcmSaveUseCase
     self.checkRecordCalendarUseCase = checkRecordCalendarUseCase
     self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
-    self.profileInfoUseCase = profileInfoUseCase
+    self.memberInfoUseCase = memberInfoUseCase
     self.initialState = State()
   }
   
@@ -93,7 +93,7 @@ extension SplashReactorImp {
   }
   
   private func performPostAuthenticationTasks() -> Observable<Mutation> {
-    // FCM 토큰 저장, 기록 캘린더 확인을 순차적으로 처리
+    // FCM 토큰 저장, 기록 캘린더 확인, 프로필 정보 조회를 순차적으로 처리
     return saveFCMToken()
       .flatMap { _ in self.checkRecordCalendar() }
       .flatMap { _ in self.fetchProfileInfo() }
@@ -131,7 +131,7 @@ extension SplashReactorImp {
   }
   
   private func fetchProfileInfo() -> Observable<Void> {
-    return profileInfoUseCase.execute()
+    return memberInfoUseCase.execute()
       .asObservable()
       .map { _ in Void() }
   }

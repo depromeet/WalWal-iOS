@@ -28,6 +28,7 @@ enum DependencyFactoryStr: String {
   case fcm = "FCM"
   case records = "Records"
   case image = "Image"
+  case members = "Members"
 }
 
 enum CoordinatorStr: String {
@@ -51,6 +52,7 @@ enum FeatureStr: String {
   case records = "Records"
   case image = "Image"
   case feed = "Feed"
+  case members = "Members"
 }
 
 protocol WalWalDependency {
@@ -110,6 +112,7 @@ extension TargetDependency {
     public struct Records: WalWalDependency { }
     public struct Image: WalWalDependency { }
     public struct Feed: WalWalDependency { }
+    public struct Members: WalWalDependency { }
   }
   
   public struct Coordinator {
@@ -174,6 +177,11 @@ extension TargetDependency {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
     }
+    
+    public struct Members: WalWalDependency {
+      public struct Data: WalWalDependency { }
+      public struct Domain: WalWalDependency { }
+    }
   }
 }
 
@@ -227,6 +235,11 @@ public extension TargetDependency.DependencyFactory.Image {
 public extension TargetDependency.DependencyFactory.Feed {
   static let Interface = Self.project(dependencyName: .feed, isInterface: true)
   static let Implement = Self.project(dependencyName: .feed, isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.Members {
+  static let Interface = Self.project(dependencyName: .members, isInterface: true)
+  static let Implement = Self.project(dependencyName: .members, isInterface: false)
 }
 
 //MARK: - 여기서부터는, Feature별로 Dependency를 주입시키기 위한 준비
@@ -349,6 +362,16 @@ public extension TargetDependency.Feature.Image.Domain {
 public extension TargetDependency.Feature.Image.Data {
   static let Interface = Self.project(name: .image, layer: .data, isInterface: true)
   static let Implement = Self.project(name: .image, layer: .data, isInterface: false)
+}
+
+public extension TargetDependency.Feature.Members.Domain {
+  static let Interface = Self.project(name: .members, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .members, layer: .domain, isInterface: false)
+}
+
+public extension TargetDependency.Feature.Members.Data {
+  static let Interface = Self.project(name: .members, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .members, layer: .data, isInterface: false)
 }
  
 // MARK: - 여기서부터는, Coordinator별로 Dependency를 주입시키기 위한 준비

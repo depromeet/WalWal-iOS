@@ -11,6 +11,7 @@ import OnboardingDependencyFactory
 import FCMDependencyFactory
 import ImageDependencyFactory
 import AuthDependencyFactory
+import MembersDependencyFactory
 
 import BaseCoordinator
 import OnboardingCoordinator
@@ -35,6 +36,7 @@ public final class OnboardingCoordinatorImp: OnboardingCoordinator {
   private var fcmDependencyFactory: FCMDependencyFactory
   private var imageDependencyFactory: ImageDependencyFactory
   private var authDependencyFactory: AuthDependencyFactory
+  private var membersDependencyFactory: MembersDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
@@ -42,7 +44,8 @@ public final class OnboardingCoordinatorImp: OnboardingCoordinator {
     onboardingDependencyFactory: OnboardingDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     imageDependecyFactory: ImageDependencyFactory,
-    authDependencyFactory: AuthDependencyFactory
+    authDependencyFactory: AuthDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -50,6 +53,7 @@ public final class OnboardingCoordinatorImp: OnboardingCoordinator {
     self.fcmDependencyFactory = fcmDependencyFactory
     self.imageDependencyFactory = imageDependecyFactory
     self.authDependencyFactory = authDependencyFactory
+    self.membersDependencyFactory = membersDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -101,12 +105,20 @@ extension OnboardingCoordinatorImp {
   }
   
   func showOnboardingProfile(_ petType: String) {
+    
+    let fcmSaveUseCase = fcmDependencyFactory.injectFCMSaveUseCase()
+    let uploadMemberUseCase = imageDependencyFactory.injectUploadMemberUseCase()
+    let registerUseCase = authDependencyFactory.injectRegisterUseCase()
+    let userTokensUseCase = authDependencyFactory.injectUserTokensUseCase()
+    let memberInfoUseCase = membersDependencyFactory.injectMemberInfoUseCase()
+    
     let reactor = onboardingDependencyFactory.injectOnboardingProfileReactor(
       coordinator: self,
-      fcmSaveUseCase: fcmDependencyFactory.injectFCMSaveUseCase(),
-      uploadMemberUseCase: imageDependencyFactory.injectUploadMemberUseCase(),
-      registerUseCase: authDependencyFactory.injectRegisterUseCase(),
-      userTokensUseCase: authDependencyFactory.injectUserTokensUseCase()
+      fcmSaveUseCase: fcmSaveUseCase,
+      uploadMemberUseCase: uploadMemberUseCase,
+      registerUseCase: registerUseCase,
+      userTokensUseCase: userTokensUseCase,
+      memberInfoUseCase: memberInfoUseCase
     )
     let vc = onboardingDependencyFactory.injectOnboardingProfileViewController(reactor: reactor, petType: petType)
     self.pushViewController(viewController: vc, animated: true)

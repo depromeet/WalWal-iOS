@@ -13,6 +13,7 @@ import FeedDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
 import RecordsDependencyFactory
+import MembersDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -26,6 +27,7 @@ public protocol WalWalTabBarDependencyFactory {
     feedDependencyFactory: FeedDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
-    recordDependencyFactory: RecordsDependencyFactory
+    recordDependencyFactory: RecordsDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   ) -> any WalWalTabBarCoordinator
 }

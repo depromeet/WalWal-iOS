@@ -1,17 +1,17 @@
 //
 //  ProfileInfo.swift
-//  MyPageDomain
+//  MembersDomain
 //
-//  Created by Jiyeon on 8/19/24.
+//  Created by Jiyeon on 8/20/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
 import UIKit
-import MyPageData
+import MembersData
 import GlobalState
 import ResourceKit
 
-public struct ProfileInfo {
+public struct MemeberInfo {
   public let nickname: String
   public let profileURL: String
   public let raisePet: String
@@ -29,8 +29,8 @@ public struct ProfileInfo {
   }
   
   public init(dto: MemberDTO) {
-    self.nickname = dto.profile.nickname
-    self.profileURL = dto.profile.profileImageUrl
+    self.nickname = dto.nickname
+    self.profileURL = dto.profileImageUrl
     self.raisePet = dto.raisePet
   }
   

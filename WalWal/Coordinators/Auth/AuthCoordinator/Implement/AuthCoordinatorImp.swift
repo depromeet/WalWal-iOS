@@ -9,6 +9,8 @@
 import UIKit
 import AuthDependencyFactory
 import FCMDependencyFactory
+import RecordsDependencyFactory
+import MembersDependencyFactory
 import BaseCoordinator
 import AuthCoordinator
 
@@ -30,17 +32,23 @@ public final class AuthCoordinatorImp: AuthCoordinator {
   
   private let authDependencyFactory: AuthDependencyFactory
   private let fcmDependencyFactory: FCMDependencyFactory
+  private let recordsDependencyFactory: RecordsDependencyFactory
+  private let membersDependencyFactory: MembersDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     authDependencyFactory: AuthDependencyFactory,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    recordsDependencyFactory: RecordsDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.authDependencyFactory = authDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
+    self.recordsDependencyFactory = recordsDependencyFactory
+    self.membersDependencyFactory = membersDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -54,12 +62,24 @@ public final class AuthCoordinatorImp: AuthCoordinator {
   }
   
   public func start() {
+    
+    let socialLoginUseCase = authDependencyFactory.injectSocialLoginUseCase()
+    let fcmSaveUseCase = fcmDependencyFactory.injectFCMSaveUseCase()
+    let userTokensSaveUseCase = authDependencyFactory.injectUserTokensUseCase()
+    let kakaoLoginUseCase = authDependencyFactory.injectKakaoLoginUseCase()
+    let checkRecordCalendarUseCase = recordsDependencyFactory.injectCheckCalendarRecordsUseCase()
+    let removeGlobalCalendarRecordsUseCase = recordsDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase()
+    let memberInfoUseCase = membersDependencyFactory.injectMemberInfoUseCase()
+    
     let reactor = authDependencyFactory.injectAuthReactor(
       coordinator: self,
-      socialLoginUseCase: authDependencyFactory.injectSocialLoginUseCase(),
-      fcmSaveUseCase: fcmDependencyFactory.injectFCMSaveUseCase(),
-      userTokensSaveUseCase: authDependencyFactory.injectUserTokensUseCase(),
-      kakaoLoginUseCase: authDependencyFactory.injectKakaoLoginUseCase()
+      socialLoginUseCase: socialLoginUseCase,
+      fcmSaveUseCase: fcmSaveUseCase,
+      userTokensSaveUseCase: userTokensSaveUseCase,
+      kakaoLoginUseCase: kakaoLoginUseCase,
+      checkRecordCalendarUseCase: checkRecordCalendarUseCase,
+      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
+      memberInfoUseCase: memberInfoUseCase
     )
     let authVC = authDependencyFactory.injectAuthViewController(reactor: reactor)
     self.baseViewController = authVC

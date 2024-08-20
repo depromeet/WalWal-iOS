@@ -76,7 +76,8 @@ let project = Project(
         .DependencyFactory.Image.Implement,
         .DependencyFactory.Onboarding.Implement,
         .DependencyFactory.Records.Implement,
-        .DependencyFactory.Feed.Implement
+        .DependencyFactory.Feed.Implement,
+        .DependencyFactory.Members.Implement
       ],
       settings: .settings(
         base: [

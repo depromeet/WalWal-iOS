@@ -10,8 +10,11 @@ import Foundation
 import AuthDomain
 import AuthPresenter
 import AuthCoordinator
+import GlobalState
 
 import FCMDomain
+import RecordsDomain
+import MembersDomain
 
 import ReactorKit
 import RxSwift
@@ -27,13 +30,19 @@ public final class AuthReactorImp: AuthReactor {
   private let fcmSaveUseCase: FCMSaveUseCase
   private let userTokensSaveUseCase: UserTokensSaveUseCase
   private let kakaoLoginUseCase: KakaoLoginUseCase
+  private let checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
+  private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
+  private let memberInfoUseCase: MemberInfoUseCase
   
   public init(
     coordinator: any AuthCoordinator,
     socialLoginUseCase: SocialLoginUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase,
-    kakaoLoginUseCase: KakaoLoginUseCase
+    kakaoLoginUseCase: KakaoLoginUseCase,
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
@@ -41,6 +50,9 @@ public final class AuthReactorImp: AuthReactor {
     self.fcmSaveUseCase = fcmSaveUseCase
     self.userTokensSaveUseCase = userTokensSaveUseCase
     self.kakaoLoginUseCase = kakaoLoginUseCase
+    self.checkRecordCalendarUseCase = checkRecordCalendarUseCase
+    self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
+    self.memberInfoUseCase = memberInfoUseCase
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -95,7 +107,7 @@ extension AuthReactorImp {
           owner.coordinator.startOnboarding()
           return .just(.showIndicator(show: false))
         } else {
-          return owner.fcmTokenSave()
+          return owner.loginCompleteTask()
         }
       }
       .catch { error -> Observable<Mutation> in
@@ -106,18 +118,57 @@ extension AuthReactorImp {
       }
   }
   
-  private func fcmTokenSave() -> Observable<Mutation> {
-    return fcmSaveUseCase.execute()
-      .asObservable()
+  private func loginCompleteTask() -> Observable<Mutation> {
+    return saveFCMToken()
+      .withUnretained(self)
+      .flatMap { owner, _ in
+        owner.checkRecordCalendar()
+      }
+      .withUnretained(self)
+      .flatMap { owner, _ in
+        owner.fetchProfileInfo()
+      }
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
-        owner.coordinator.startMission()
-        return .just(.showIndicator(show: false))
-      }
-      .catch { _ -> Observable<Mutation> in
-        print("FCM 토큰 저장 오류")
         self.coordinator.startMission()
         return .just(.showIndicator(show: false))
       }
+      .catch { [weak self] error -> Observable<Mutation> in
+        print(error.localizedDescription)
+        self?.coordinator.startMission()
+        return .just(.showIndicator(show: false))
+      }
+  }
+  
+  private func saveFCMToken() -> Observable<Void> {
+    return fcmSaveUseCase.execute()
+      .asObservable()
+  }
+  
+  private func checkRecordCalendar() -> Observable<Void> {
+    return removeGlobalCalendarRecordsUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ in owner.fetchCalendarRecords(cursor: "2024-01-01", limit: 10) }
+  }
+  
+  private func fetchCalendarRecords(cursor: String, limit: Int) -> Observable<Void> {
+    return checkRecordCalendarUseCase.execute(cursor: cursor, limit: limit)
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, calendarModel -> Observable<Void> in
+        if let nextCursor = calendarModel.nextCursor.nextCursor {
+          return owner.fetchCalendarRecords(cursor: nextCursor, limit: limit)
+        } else {
+          return .just(Void())
+        }
+      }
+      .catch { error in return .just(Void()) }
+  }
+  
+  private func fetchProfileInfo() -> Observable<Void> {
+    return memberInfoUseCase.execute()
+      .asObservable()
+      .map { _ in Void() }
   }
 }

@@ -1,18 +1,18 @@
 //
-//  FetchProfileInfoUseCaseImp.swift
-//  MyPageDomainImp
+//  FetchMemberInfoUseCaseImp.swift
+//  MembersDomainImp
 //
-//  Created by Jiyeon on 8/19/24.
+//  Created by Jiyeon on 8/20/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
 import Foundation
 import GlobalState
-import MyPageDomain
+import MembersDomain
 
 import RxSwift
 
-public final class FetchProfileInfoUseCaseImp: FetchProfileInfoUseCase {
+public final class FetchMemberInfoUseCaseImp: FetchMemberInfoUseCase {
   private let globalState: GlobalState
   
   public init(globalState: GlobalState = .shared) {

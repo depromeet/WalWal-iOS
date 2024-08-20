@@ -11,6 +11,7 @@ import MyPagePresenter
 import MyPageCoordinator
 import GlobalState
 import DesignSystem
+import MembersDomain
 
 import ReactorKit
 import RxSwift
@@ -24,16 +25,16 @@ public final class MyPageReactorImp: MyPageReactor {
   public let coordinator: any MyPageCoordinator
   
   private let fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase
-  private let fetchProfileInfoUseCase: FetchProfileInfoUseCase
+  private let fetchMemberInfoUseCase: FetchMemberInfoUseCase
   
   public init(
     coordinator: any MyPageCoordinator,
     fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
-    fetchProfileInfoUseCase: FetchProfileInfoUseCase
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase
   ) {
     self.coordinator = coordinator
     self.fetchWalWalCalendarModelsUseCase = fetchWalWalCalendarModelsUseCase
-    self.fetchProfileInfoUseCase = fetchProfileInfoUseCase
+    self.fetchMemberInfoUseCase = fetchMemberInfoUseCase
     self.initialState = State()
   }
   
@@ -65,10 +66,11 @@ public final class MyPageReactorImp: MyPageReactor {
         }
         .map { Mutation.setCalendarData($0) }
     case .loadProfileInfo:
-      return fetchProfileInfoUseCase.execute()
+      return fetchMemberInfoUseCase.execute()
+        .map { MemberModel(global: $0) }
         .asObservable()
         .flatMap { info -> Observable<Mutation> in
-          return .just(.profileInfo(data: .init(global: info)))
+          return .just(.profileInfo(data: info))
         }
     }
   }

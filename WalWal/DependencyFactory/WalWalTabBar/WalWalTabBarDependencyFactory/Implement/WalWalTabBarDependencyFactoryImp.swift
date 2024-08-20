@@ -14,6 +14,7 @@ import FeedDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
 import RecordsDependencyFactory
+import MembersDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -33,7 +34,8 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
     feedDependencyFactory: FeedDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
-    recordDependencyFactory: RecordsDependencyFactory
+    recordDependencyFactory: RecordsDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   ) -> any WalWalTabBarCoordinator {
     return WalWalTabBarCoordinatorImp(
       navigationController: navigationController,
@@ -44,7 +46,8 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
       feedDependencyFactory: feedDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
-      recordDependencyFactory: recordDependencyFactory
+      recordDependencyFactory: recordDependencyFactory,
+      membersDependencyFactory: membersDependencyFactory
     )
   }
   

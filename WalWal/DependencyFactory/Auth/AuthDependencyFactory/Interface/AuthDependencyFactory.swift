@@ -10,19 +10,24 @@ import UIKit
 import BaseCoordinator
 import AuthCoordinator
 import FCMDependencyFactory
-
+import RecordsDependencyFactory
+import MembersDependencyFactory
 import AuthData
 import AuthDomain
 import AuthPresenter
 
 import FCMDomain
+import RecordsDomain
+import MembersDomain
 
 public protocol AuthDependencyFactory {
   
   func injectAuthCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
-    fcmDependencyFactory: FCMDependencyFactory
+    fcmDependencyFactory: FCMDependencyFactory,
+    recordsDependencyFactory: RecordsDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   ) -> any AuthCoordinator
   
   func injectAuthRepository() -> AuthRepository
@@ -40,7 +45,10 @@ public protocol AuthDependencyFactory {
     socialLoginUseCase: SocialLoginUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase,
-    kakaoLoginUseCase: KakaoLoginUseCase
+    kakaoLoginUseCase: KakaoLoginUseCase,
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   ) -> any AuthReactor
   func injectAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
   

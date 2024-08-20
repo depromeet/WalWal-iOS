@@ -20,22 +20,26 @@ import FCMDomain
 import AuthDependencyFactory
 import AuthDomain
 
+import MembersDependencyFactory
+import MembersDomain
+
+
 public protocol MyPageDependencyFactory {
   
   func makeMyPageCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     fcmDependencyFactory: FCMDependencyFactory,
-    authDependencyFactory: AuthDependencyFactory
+    authDependencyFactory: AuthDependencyFactory,
+    membersDependencyFactory: MembersDependencyFactory
   ) -> any MyPageCoordinator
   func injectMyPageRepository() -> MyPageRepository
   func injectFetchWalWalCalendarModelsUseCase() -> FetchWalWalCalendarModelsUseCase
-  func injectProfileInfoUseCase() -> ProfileInfoUseCase
-  func injectFetchProfileInfoUseCase() -> FetchProfileInfoUseCase
+  
   func injectMyPageReactor<T: MyPageCoordinator>(
     coordinator: T,
     fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
-    fetchProfileInfoUseCase: FetchProfileInfoUseCase
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase
   ) -> any MyPageReactor
   func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
   func injectRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor

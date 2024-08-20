@@ -1,8 +1,7 @@
-
 //
-//  AuthDomainProject.swift
+//  MembersDependencyFactoryProject.swift
 //
-//  Auth
+//  Members
 //
 //  Created by Jiyeon
 //
@@ -12,18 +11,15 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.invertedDualTargetProject(
-  name: "AuthDomain",
+  name: "MembersDependencyFactory",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .GlobalState,
-    .ThirdParty.KakaoSDKUser,
-    
-    .Feature.Auth.Data.Interface
+    .Feature.Members.Domain.Interface,
+    .Feature.Members.Data.Interface
   ],
   implementDependencies: [
-    .DependencyFactory.Auth.Interface
+    .Feature.Members.Data.Implement,
+    .Feature.Members.Domain.Implement
   ]
 )
-
-
