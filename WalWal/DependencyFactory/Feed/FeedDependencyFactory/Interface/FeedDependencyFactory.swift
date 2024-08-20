@@ -20,6 +20,6 @@ public protocol FeedDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator
   ) -> any FeedCoordinator
-  func makeFeedReactor<T: FeedCoordinator>(coordinator: T) -> any FeedReactor
+  func makeFeedReactor<T>(coordinator: T, fetchFeedUseCase: FetchFeedUseCase) -> any FeedReactor
   func makeFeedViewController<T: FeedReactor>(reactor: T) -> any FeedViewController
 }

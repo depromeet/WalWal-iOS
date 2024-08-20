@@ -42,14 +42,14 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     )
   }
   
-  public func makeFeedReactor<T>(coordinator: T) -> any FeedPresenter.FeedReactor where T : FeedCoordinator {
+  public func makeFeedReactor<T>(coordinator: T, fetchFeedUseCase: FetchFeedUseCase) -> any FeedReactor where T : FeedCoordinator {
     return FeedReactorImp(
       coordinator: coordinator,
-      fetchFeedUseCase: injectFetchFeedUseCase()
+      fetchFeedUseCase: fetchFeedUseCase
     )
   }
   
-  public func makeFeedViewController<T>(reactor: T) -> any FeedPresenter.FeedViewController where T : FeedPresenter.FeedReactor {
+  public func makeFeedViewController<T>(reactor: T) -> any FeedPresenter.FeedViewController where T : FeedReactor {
     return FeedViewControllerImp(reactor: reactor)
   }
   
