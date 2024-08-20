@@ -17,6 +17,12 @@ public enum WalWalButtonType {
   case active
   case disabled
   case dark
+  case custom(
+    backgroundColor: UIColor,
+    titleColor: UIColor,
+    font: UIFont,
+    isEnable: Bool
+  )
   
   var configuration: WalWalButton.Configuration {
     switch self {
@@ -34,6 +40,18 @@ public enum WalWalButtonType {
       return .init(
         backgroundColor: Colors.black.color,
         isEnabled: true
+      )
+    case let .custom(
+      backgroundColor, 
+      titleColor,
+      font,
+      isEnable
+    ):
+      return .init(
+        backgroundColor: backgroundColor,
+        titleColor: titleColor,
+        font: font,
+        isEnabled: isEnable
       )
     }
   }
