@@ -99,7 +99,8 @@ public final class WalWalAlert {
   }
   
   private func configureLayout() {
-    rootContainer.pin.all()
+    rootContainer.pin
+      .all()
     rootContainer.addSubview(alertView)
     
     
