@@ -83,7 +83,7 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
     )
     let cameraShootDuringTheMissionViewController = missionUploadDependencyFactory.injectCameraShootDuringTheMissionViewController(reactor: reactor)
     self.baseViewController = cameraShootDuringTheMissionViewController
-    self.pushViewController(viewController: cameraShootDuringTheMissionViewController, animated: false)
+    self.pushViewController(viewController: cameraShootDuringTheMissionViewController, animated: true)
   }
 }
 

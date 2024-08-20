@@ -18,6 +18,7 @@ public enum MissionReactorAction {
   case loadMissionInfo
   case startMission(Int)
   case startTimer
+  case moveToMissionUpload
 }
 
 public enum MissionReactorMutation {
@@ -28,6 +29,8 @@ public enum MissionReactorMutation {
   case setMissionStatus(MissionRecordStatusModel)
   case setMissionCount(Int)
   case setButtionText(String)
+  
+  case startMissionUpload
 }
 
 

@@ -56,6 +56,8 @@ public final class MissionReactorImp: MissionReactor {
       return startMission(id: id)
     case .startTimer:
       return startMissionTimer()
+    case .moveToMissionUpload:
+      return Observable.just(Mutation.startMissionUpload)
     }
   }
   
@@ -85,6 +87,8 @@ public final class MissionReactorImp: MissionReactor {
       newState.isLoading = false
     case .setButtionText(let text):
       newState.buttonText = text
+    case .startMissionUpload:
+      coordinator.destination.accept(.startMissionUpload)
     }
     return newState
   }

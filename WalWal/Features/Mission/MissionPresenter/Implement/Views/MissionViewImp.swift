@@ -138,6 +138,11 @@ extension MissionViewControllerImp: View {
   public func bindAction(reactor: R) {
     reactor.action
       .onNext(.loadMissionInfo)
+    
+    missionStartButton.rx.tapped
+      .map{ Reactor.Action.moveToMissionUpload }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -188,12 +193,13 @@ extension MissionViewControllerImp: View {
   }
   
   public func bindEvent() {
-    missionStartButton.rx.tapped
-      .subscribe(with: self) { owner, _ in
-        owner.reactor?.action
-          .onNext(.startMission(owner.missionId))
-        print("미션 시작")
-      }
-      .disposed(by: disposeBag)
+//    missionStartButton.rx.tapped
+//      .subscribe(with: self) { owner, _ in
+//        owner.reactor?.action
+//          .onNext(.startMission(owner.missionId))
+//        print("미션 시작")
+//      }
+//      .disposed(by: disposeBag)
+    
   }
 }

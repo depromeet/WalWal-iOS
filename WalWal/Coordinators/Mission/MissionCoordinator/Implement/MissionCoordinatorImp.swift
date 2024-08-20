@@ -12,6 +12,7 @@ import MissionCoordinator
 
 import MissionDomain
 
+import MissionUploadDependencyFactory
 import MissionDependencyFactory
 import RecordsDependencyFactory
 import ImageDependencyFactory
@@ -33,18 +34,24 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   public var baseViewController: UIViewController?
   
   public var missionDependencyFactory: MissionDependencyFactory
+  public var missionUploadDependencyFactory: MissionUploadDependencyFactory
   public var recordDependencyFactory: RecordsDependencyFactory
+  public var imageDependencyFactory: ImageDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     missionDependencyFactory: MissionDependencyFactory,
-    recordDependencyFactory: RecordsDependencyFactory
+    missionUploadDependencyFactory: MissionUploadDependencyFactory,
+    recordDependencyFactory: RecordsDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.missionDependencyFactory = missionDependencyFactory
+    self.missionUploadDependencyFactory = missionUploadDependencyFactory
     self.recordDependencyFactory = recordDependencyFactory
+    self.imageDependencyFactory = imageDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -52,7 +59,10 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   public func bindState() {
     destination
       .subscribe(with: self, onNext: { owner, flow in
-        switch flow { }
+        switch flow { 
+        case .startMissionUpload:
+          owner.startMissionUpload()
+        }
       })
       .disposed(by: disposeBag)
   }
@@ -100,6 +110,17 @@ extension MissionCoordinatorImp {
 // MARK: - Create and Start(Show) with Flow(View)
 
 extension MissionCoordinatorImp {
+  
+  fileprivate func startMissionUpload() {
+    let missionUploadCoordinator = missionUploadDependencyFactory.injectMissionUploadCoordinator(
+      navigationController: navigationController,
+      parentCoordinator: self,
+      recordsDependencyFactory: recordDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory
+    )
+    self.childCoordinator = missionUploadCoordinator
+    missionUploadCoordinator.start()
+  }
   
   //  /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
   //  fileprivate func start__() {
