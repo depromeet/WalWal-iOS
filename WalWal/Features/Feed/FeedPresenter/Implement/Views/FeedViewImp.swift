@@ -30,7 +30,6 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   
   private let rootContainer = UIView()
   private lazy var feed = WalWalFeed(feedData: dummyData, isFeed: true)
-  private let loadingView = LottieAnimationView(name: "refrech.json")
   
   // MARK: - Properties
   
