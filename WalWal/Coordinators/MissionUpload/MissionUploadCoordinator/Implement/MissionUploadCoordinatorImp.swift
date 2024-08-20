@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import DesignSystem
 import MissionUploadDependencyFactory
 import RecordsDependencyFactory
 import ImageDependencyFactory
@@ -83,6 +84,10 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
     )
     let cameraShootDuringTheMissionViewController = missionUploadDependencyFactory.injectCameraShootDuringTheMissionViewController(reactor: reactor)
     self.baseViewController = cameraShootDuringTheMissionViewController
+    guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
+      return
+    }
+    tabBarViewController.hideCustomTabBar()
     self.pushViewController(viewController: cameraShootDuringTheMissionViewController, animated: true)
   }
 }
