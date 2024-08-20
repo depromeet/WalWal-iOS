@@ -45,11 +45,11 @@ public protocol OnboardingProfileReactor:
   init(
     coordinator: any OnboardingCoordinator,
     registerUseCase: any RegisterUseCase,
-    nicknameValidUseCase: any NicknameValidUseCase,
     uploadMemberUseCase: UploadMemberUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase,
-    memberInfoUseCase: MemberInfoUseCase
+    memberInfoUseCase: MemberInfoUseCase,
+    checkNicknameUseCase: CheckNicknameUseCase
   )
 }
 

@@ -16,9 +16,7 @@ import WalWalNetwork
 
 public class MembersDependencyFactoryImp: MembersDependencyFactory {
   
-  public init() {
-    
-  }
+  public init() { }
   
   public func injectMembersRepository() -> MembersRepository {
     let networkService = NetworkService()
@@ -29,5 +27,8 @@ public class MembersDependencyFactoryImp: MembersDependencyFactory {
   }
   public func injectFetchMemberInfoUseCase() -> FetchMemberInfoUseCase {
     return FetchMemberInfoUseCaseImp()
+  }
+  public func injectCheckNicknameUseCase() -> CheckNicknameUseCase {
+    return CheckNicknameUseCaseImp(membersRepository: injectMembersRepository())
   }
 }

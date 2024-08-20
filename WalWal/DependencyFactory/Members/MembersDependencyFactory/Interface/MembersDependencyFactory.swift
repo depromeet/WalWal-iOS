@@ -16,5 +16,5 @@ public protocol MembersDependencyFactory {
   func injectMembersRepository() -> MembersRepository
   func injectMemberInfoUseCase() -> MemberInfoUseCase
   func injectFetchMemberInfoUseCase() -> FetchMemberInfoUseCase
-  
+  func injectCheckNicknameUseCase() -> CheckNicknameUseCase
 }

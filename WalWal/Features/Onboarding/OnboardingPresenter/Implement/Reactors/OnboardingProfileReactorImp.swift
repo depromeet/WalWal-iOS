@@ -31,28 +31,28 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   public let initialState: State
   public let coordinator: any OnboardingCoordinator
   private let registerUseCase: any RegisterUseCase
-  private let nicknameValidUseCase: any NicknameValidUseCase
   private let uploadMemberUseCase: any UploadMemberUseCase
   private let fcmSaveUseCase: FCMSaveUseCase
   private let userTokensSaveUseCase: UserTokensSaveUseCase
   private let memberInfoUseCase: MemberInfoUseCase
+  private let checkNicknameUseCase: CheckNicknameUseCase
   
   public init(
     coordinator: any OnboardingCoordinator,
     registerUseCase: any RegisterUseCase,
-    nicknameValidUseCase: any NicknameValidUseCase,
     uploadMemberUseCase: any UploadMemberUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase,
-    memberInfoUseCase: MemberInfoUseCase
+    memberInfoUseCase: MemberInfoUseCase,
+    checkNicknameUseCase: CheckNicknameUseCase
   ) {
     self.coordinator = coordinator
     self.registerUseCase = registerUseCase
-    self.nicknameValidUseCase = nicknameValidUseCase
     self.uploadMemberUseCase = uploadMemberUseCase
     self.fcmSaveUseCase = fcmSaveUseCase
     self.userTokensSaveUseCase = userTokensSaveUseCase
     self.memberInfoUseCase = memberInfoUseCase
+    self.checkNicknameUseCase = checkNicknameUseCase
     self.initialState = State()
   }
   
@@ -89,7 +89,7 @@ extension OnboardingProfileReactorImp {
   
   /// 닉네임 중복 여부 체크 메서드
   private func checkNickname(nickname: String, profile: WalWalProfileModel, petType: String) -> Observable<Mutation> {
-    return nicknameValidUseCase.execute(nickname: nickname)
+    return checkNicknameUseCase.execute(nickname: nickname)
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in

@@ -13,44 +13,27 @@ import Alamofire
 
 enum OnboardingEndPoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
-  case checkNickname(body: NicknameCheckBody)
 }
 
 extension OnboardingEndPoint {
   var baseURLType: URLType {
-    switch self {
-    case .checkNickname:
-      return .walWalBaseURL
-    }
+    return .walWalBaseURL
   }
   
   var path: String {
-    switch self {
-    case .checkNickname:
-      return "/members/check-nickname"
-    }
+    return ""
   }
   
   var method: HTTPMethod {
-    switch self {
-    case .checkNickname:
-      return .post
-    }
+    return .get
   }
   
   var parameters: RequestParams {
-    switch self {
-    case let .checkNickname(body):
-      return .requestWithbody(body)
-    }
+    return .requestPlain
   }
   
   var headerType: HTTPHeaderType {
-    switch self {
-    case .checkNickname:
-      return .authorization(
-        UserDefaults.string(forUserDefaultsKey: .temporaryToken)
-      )
-    }
+    return .plain
+    
   }
 }
