@@ -23,6 +23,7 @@ import FeedPresenter
 import FeedPresenterImp
 
 public class FeedDependencyFactoryImp: FeedDependencyFactory {
+  
   public init() { }
   
   public func injectFeedRepository() -> FeedRepository {
@@ -30,7 +31,7 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     return FeedRepositoryImp(networkService: networkService)
   }
   
-  public func injectFetchFeedUseCase() -> any FetchFeedUseCase {
+  public func injectFetchFeedUseCase() -> FetchFeedUseCase {
     return FetchFeedUseCaseImp(feedRepository: injectFeedRepository())
   }
   
@@ -41,7 +42,6 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
       feedDependencyFactory: self
     )
   }
-  
   public func makeFeedReactor<T>(coordinator: T, fetchFeedUseCase: FetchFeedUseCase) -> any FeedReactor where T : FeedCoordinator {
     return FeedReactorImp(
       coordinator: coordinator,
