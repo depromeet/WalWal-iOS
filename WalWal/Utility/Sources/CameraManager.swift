@@ -23,14 +23,16 @@ public final class CameraManager: NSObject {
     self.currentCameraPosition = .back
     self.photoOutput = AVCapturePhotoOutput()
     super.init()
+    setupCamera()
   }
   
   // 카메라 세션 설정
-  public func setupCamera() {
+  private func setupCamera() {
     captureSession.beginConfiguration()
     
     guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentCameraPosition),
           let input = try? AVCaptureDeviceInput(device: camera) else {
+      captureSession.commitConfiguration()
       return
     }
     
@@ -51,7 +53,7 @@ public final class CameraManager: NSObject {
     captureSession.stopRunning()
     currentCameraPosition = currentCameraPosition == .back ? .front : .back
     setupCamera()
-    captureSession.startRunning()
+    startSession()
   }
   
   // 사진 촬영
@@ -63,7 +65,9 @@ public final class CameraManager: NSObject {
   // 카메라 세션 시작
   public func startSession() {
     if !captureSession.isRunning {
-      captureSession.startRunning()
+      DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+        self?.captureSession.startRunning()
+      }
     }
   }
   
@@ -76,10 +80,12 @@ public final class CameraManager: NSObject {
   
   // 카메라 프리뷰 설정
   public func attachPreview(to view: UIView) {
-    let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-    previewLayer.frame = view.bounds
-    previewLayer.videoGravity = .resizeAspectFill
-    view.layer.addSublayer(previewLayer)
+    DispatchQueue.main.async {
+      let previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
+      previewLayer.frame = view.bounds
+      previewLayer.videoGravity = .resizeAspectFill
+      view.layer.addSublayer(previewLayer)
+    }
   }
 }
 
