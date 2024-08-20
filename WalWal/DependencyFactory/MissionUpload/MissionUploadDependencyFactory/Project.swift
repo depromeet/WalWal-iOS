@@ -15,9 +15,13 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .Coordinator.MissionUpload.Interface,
+    .DependencyFactory.Records.Interface,
+    .DependencyFactory.Image.Interface,
     
-    .Feature.MissionUpload.Presenter.Interface
+    ///.Coordinator.MissionUpload.Interface,
+    
+    .Feature.MissionUpload.Presenter.Interface,
+    ///.Feature.MissionUpload.Domain.Interface
   ],
   implementDependencies: [
     .Coordinator.MissionUpload.Implement,

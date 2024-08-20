@@ -15,17 +15,19 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .Coordinator.Auth.Interface,
+    .DependencyFactory.FCM.Interface,
     
-    .Feature.Auth.Presenter.Interface,
-    .Feature.FCM.Domain.Interface
+    ///.Coordinator.Auth.Interface,
+    
+    ///.Feature.Auth.Data.Interface,
+    ///.Feature.Auth.Domain.Interface,
+    .Feature.Auth.Presenter.Interface
   ],
   implementDependencies: [
     .Coordinator.Auth.Implement,
     
     .Feature.Auth.Data.Implement,
     .Feature.Auth.Domain.Implement,
-    .Feature.Auth.Presenter.Implement,
-    
+    .Feature.Auth.Presenter.Implement
   ]
 )

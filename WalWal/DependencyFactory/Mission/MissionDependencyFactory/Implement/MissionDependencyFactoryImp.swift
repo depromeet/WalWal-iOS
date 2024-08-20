@@ -8,6 +8,7 @@
 
 import UIKit
 import MissionDependencyFactory
+import MissionUploadDependencyFactory
 import RecordsDependencyFactory
 
 import WalWalNetwork
@@ -44,13 +45,17 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
   public func injectMissionCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    recordDependencyFactory: RecordsDependencyFactory
+    missionUploadDependencyFactory: MissionUploadDependencyFactory,
+    recordDependencyFactory: RecordsDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory
   ) -> any MissionCoordinator {
     return MissionCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       missionDependencyFactory: self,
-      recordDependencyFactory: recordDependencyFactory
+      missionUploadDependencyFactory: missionUploadDependencyFactory,
+      recordDependencyFactory: recordDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory
     )
   }
   

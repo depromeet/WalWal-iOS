@@ -15,11 +15,12 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .Coordinator.WalWalTabBar.Interface,
     .DependencyFactory.Mission.Interface,
     .DependencyFactory.Feed.Interface,
     .DependencyFactory.MyPage.Interface,
-    .DependencyFactory.FCM.Interface
+    ///.DependencyFactory.FCM.Interface,
+    
+    .Coordinator.WalWalTabBar.Interface,
   ],
   implementDependencies: [
     .Coordinator.WalWalTabBar.Implement

@@ -16,7 +16,7 @@ let project = Project.invertedDualTargetProject(
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
     .Feature.Image.Domain.Interface,
-    .Feature.Image.Data.Interface
+    ///.Feature.Image.Data.Interface
   ],
   implementDependencies: [
     .Feature.Image.Data.Implement,

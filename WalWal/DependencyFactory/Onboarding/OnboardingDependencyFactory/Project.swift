@@ -15,17 +15,19 @@ let project = Project.invertedDualTargetProject(
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
-    .Coordinator.Onboarding.Interface,
-    .DependencyFactory.FCM.Interface,
+    /// .DependencyFactory.FCM.Interface,
     .DependencyFactory.Auth.Interface,
     .DependencyFactory.Image.Interface,
     
+    ///.Coordinator.Onboarding.Interface,
+    
+    ///.Feature.Onboarding.Data.Interface,
+    ///.Feature.Onboarding.Domain.Interface,
     .Feature.Onboarding.Presenter.Interface
   ],
   implementDependencies: [
     .Coordinator.Onboarding.Implement,
     
-    .Feature.Auth.Data.Implement,
     .Feature.Onboarding.Data.Implement,
     .Feature.Onboarding.Domain.Implement,
     .Feature.Onboarding.Presenter.Implement
