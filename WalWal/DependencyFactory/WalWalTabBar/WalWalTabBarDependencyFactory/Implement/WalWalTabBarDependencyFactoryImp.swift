@@ -9,11 +9,13 @@
 import UIKit
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
+import MissionUploadDependencyFactory
 import MyPageDependencyFactory
 import FeedDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
 import RecordsDependencyFactory
+import ImageDependencyFactory
 import MembersDependencyFactory
 
 import BaseCoordinator
@@ -30,11 +32,13 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     missionDependencyFactory: MissionDependencyFactory,
+    missionUploadDependencyFactory: MissionUploadDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory
     membersDependencyFactory: MembersDependencyFactory
   ) -> any WalWalTabBarCoordinator {
     return WalWalTabBarCoordinatorImp(

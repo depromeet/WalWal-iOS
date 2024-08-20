@@ -10,6 +10,7 @@ import UIKit
 import MissionDependencyFactory
 import MissionUploadDependencyFactory
 import RecordsDependencyFactory
+import ImageDependencyFactory
 
 import WalWalNetwork
 
