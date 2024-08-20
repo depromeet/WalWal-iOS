@@ -15,7 +15,9 @@ let project = Project.invertedDualTargetProject(
   name: "MissionUploadDomain",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
-  interfaceDependencies: [],
+  interfaceDependencies: [
+    .ThirdParty.RxSwift
+  ],
   implementDependencies: [
     .DependencyFactory.MissionUpload.Interface
   ]

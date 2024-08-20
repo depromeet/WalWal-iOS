@@ -11,6 +11,7 @@ import SplashDependencyFactory
 import AuthDependencyFactory
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
+import MissionUploadDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
 import ImageDependencyFactory
@@ -46,6 +47,7 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     authDependencyFactory: AuthDependencyFactory,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
     missionDependencyFactory: MissionDependencyFactory,
+    missionUploadDependencyFactory: MissionUploadDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
@@ -58,7 +60,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       appDependencyFactory: self,
       authDependencyFactory: authDependencyFactory,
       walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
-      missionDependencyFactory: missionDependencyFactory,
+      missionDependencyFactory: missionDependencyFactory, 
+      missionUploadDependencyFactory: missionUploadDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,

@@ -11,6 +11,7 @@ import UIKit
 import AuthDependencyFactory
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
+import MissionUploadDependencyFactory
 import MyPageDependencyFactory
 import FCMDependencyFactory
 import ImageDependencyFactory
@@ -35,6 +36,7 @@ public protocol SplashDependencyFactory {
     authDependencyFactory: AuthDependencyFactory,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
     missionDependencyFactory: MissionDependencyFactory,
+    missionUploadDependencyFactory: MissionUploadDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,

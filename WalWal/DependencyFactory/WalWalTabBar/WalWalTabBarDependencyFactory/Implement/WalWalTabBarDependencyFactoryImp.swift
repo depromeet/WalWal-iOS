@@ -44,11 +44,13 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
       parentCoordinator: parentCoordinator,
       walwalTabBarDependencyFactory: self,
       missionDependencyFactory: missionDependencyFactory,
+      missionUploadDependencyFactory: missionUploadDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
-      recordDependencyFactory: recordDependencyFactory
+      recordDependencyFactory: recordDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory
     )
   }
   
