@@ -95,7 +95,7 @@ extension WalWalDependency {
 }
 
 extension TargetDependency {
-  public static let Utility =  TargetDependency.project(target: "Utility", path: .relativeToRoot("Utility"))
+  public static let Utility = TargetDependency.project(target: "Utility", path: .relativeToRoot("Utility"))
   public static let LocalStorage = TargetDependency.project(target: "LocalStorage", path: .relativeToRoot("LocalStorage"))
   public static let GlobalState = TargetDependency.project(target: "GlobalState", path: .relativeToRoot("GlobalState"))
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
@@ -186,7 +186,8 @@ extension TargetDependency {
     public struct MissionUpload: WalWalDependency {
       public struct Domain: WalWalDependency {}
       public struct Presenter: WalWalDependency {}
-
+    }
+    
     public struct Members: WalWalDependency {
       public struct Data: WalWalDependency { }
       public struct Domain: WalWalDependency { }
@@ -249,6 +250,7 @@ public extension TargetDependency.DependencyFactory.Feed {
 public extension TargetDependency.DependencyFactory.MissionUpload {
   static let Interface = Self.project(dependencyName: .missionUpload, isInterface: true)
   static let Implement = Self.project(dependencyName: .missionUpload, isInterface: false)
+}
 
 public extension TargetDependency.DependencyFactory.Members {
   static let Interface = Self.project(dependencyName: .members, isInterface: true)
@@ -333,18 +335,18 @@ public extension TargetDependency.Feature.MyPage.Data {
 }
 
 public extension TargetDependency.Feature.Feed.Presenter {
-static let Interface = Self.project(name: .feed, layer: .presenter, isInterface: true)
-static let Implement = Self.project(name: .feed, layer: .presenter, isInterface: false)
+  static let Interface = Self.project(name: .feed, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .feed, layer: .presenter, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Feed.Domain {
-static let Interface = Self.project(name: .feed, layer: .domain, isInterface: true)
-static let Implement = Self.project(name: .feed, layer: .domain, isInterface: false)
+  static let Interface = Self.project(name: .feed, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .feed, layer: .domain, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Feed.Data {
-static let Interface = Self.project(name: .feed, layer: .data, isInterface: true)
-static let Implement = Self.project(name: .feed, layer: .data, isInterface: false)
+  static let Interface = Self.project(name: .feed, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .feed, layer: .data, isInterface: false)
 }
 
 public extension TargetDependency.Feature.FCM.Domain {
