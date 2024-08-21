@@ -121,46 +121,40 @@ public final class WalWalAlert {
     guard let window = UIWindow.key else { return }
     window.addSubview(rootContainer)
     configureLayout()
+    
   }
   
   private func configureLayout() {
-    rootContainer.pin
-      .all()
     rootContainer.addSubview(alertView)
     
+    rootContainer.pin
+      .all()
     
+    alertView.flex
+      .width(315.adjusted)
+      .define {
+        $0.addItem(titleLabel)
+          .marginTop(44)
+          .marginHorizontal(30)
+        $0.addItem(bodyLabel)
+          .marginTop(6)
+          .marginHorizontal(30)
+        $0.addItem(cancelButton)
+          .marginTop(30)
+          .marginHorizontal(20)
+        $0.addItem(okButton)
+          .marginTop(8)
+          .marginBottom(20)
+          .marginHorizontal(20)
+        
+      }
     rootContainer.flex
       .justifyContent(.center)
-      .alignItems(.stretch)
-    
-    alertView.flex
-      .marginHorizontal(30)
-      .paddingBottom(20)
-      .paddingTop(44)
-      .define {
-        $0.addItem()
-          .marginHorizontal(30)
-          .define {
-            $0.addItem(titleLabel)
-            $0.addItem(bodyLabel)
-              .marginTop(6)
-          }
-        $0.addItem()
-          .grow(1)
-          .marginTop(30)
-          .paddingHorizontal(20)
-          .define {
-            $0.addItem(cancelButton)
-              .height(56)
-            $0.addItem(okButton)
-              .marginTop(8)
-              .height(56)
-          }
-      }
-    alertView.flex
-      .layout(mode: .adjustHeight)
     rootContainer.flex
       .layout()
+    alertView.pin
+      .center()
+
   }
   
   private func bind() {
