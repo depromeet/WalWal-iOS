@@ -56,7 +56,7 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
       .subscribe(with: self, onNext: { owner, flow in
         switch flow { 
         case let .showWriteContent(capturedImage):
-          owner.showWriteContent(capturedImage: capturedImage)
+          owner.showWriteContent(capturedImage)
         }
       })
       .disposed(by: disposeBag)
@@ -111,7 +111,7 @@ extension MissionUploadCoordinatorImp {
 extension MissionUploadCoordinatorImp {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
-  fileprivate func showWriteContent(capturedImage: UIImage) {
+  fileprivate func showWriteContent(_ capturedImage: UIImage) {
     /// let reactor = dependencyFactory.make__Reactor(coordinator: self)
     /// let __VC = dependencyFactory.make__ViewController(reactor: reactor)
     /// self.pushViewController(viewController: __VC, animated: false)

@@ -14,7 +14,7 @@ public enum MissionUploadCoordinatorAction: ParentAction {
 }
 
 public enum MissionUploadCoordinatorFlow: CoordinatorFlow {
-  case showWriteContent(capturedImage: UIImage)
+  case showWriteContent(_ capturedImage: UIImage)
 }
 
 public protocol MissionUploadCoordinator: BaseCoordinator 

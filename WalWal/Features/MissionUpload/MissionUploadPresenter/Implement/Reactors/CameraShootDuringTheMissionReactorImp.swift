@@ -47,15 +47,15 @@ public final class CameraShootDuringTheMissionReactorImp: CameraShootDuringTheMi
     case .backButtonTapped:
       return Observable.just(Mutation.moveToMain)
     case .photoCaptured(let image):
-      return Observable.just(Mutation.setCapturedPhoto(image)) /// 촬영된 이미지를 상태에 반영
+      return Observable.just(Mutation.moveToContent(image)) /// 촬영된 이미지를 상태에 반영
     }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
-    case .setCapturedPhoto(let image):
-      newState.capturedPhoto = image
+    case .moveToContent(let image):
+      coordinator.destination.accept(.showWriteContent(image))
     case .setLoading(let isLoading):
       newState.isLoading = isLoading
     case .moveToMain:

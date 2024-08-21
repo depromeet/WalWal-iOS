@@ -22,13 +22,12 @@ public enum CameraShootDuringTheMissionReactorAction {
 }
 
 public enum CameraShootDuringTheMissionReactorMutation {
-  case setCapturedPhoto(UIImage)
+  case moveToContent(UIImage)
   case setLoading(Bool)
   case moveToMain
 }
 
 public struct CameraShootDuringTheMissionReactorState {
-  public var capturedPhoto: UIImage? = nil
   public var isLoading: Bool = false
   
   public init() {
