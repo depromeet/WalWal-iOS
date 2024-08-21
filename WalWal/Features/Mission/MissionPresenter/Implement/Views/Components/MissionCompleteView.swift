@@ -1,0 +1,96 @@
+//
+//  MissionCompleteView.swift
+//  MissionPresenterImp
+//
+//  Created by 이지희 on 8/22/24.
+//  Copyright © 2024 olderStoneBed.io. All rights reserved.
+//
+
+import UIKit
+import Utility
+import ResourceKit
+
+import Then
+import FlexLayout
+import PinLayout
+
+final class MissionCompleteView: UIView {
+  
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
+  // MARK: - UI
+  
+  private let rootContainer = UIView()
+  
+  private let recordImageView = UIImageView().then {
+    $0.contentMode = .scaleAspectFill
+    $0.clipsToBounds = true
+    $0.layer.borderColor = Colors.walwalOrange.color.cgColor
+    $0.layer.borderWidth = 6
+  }
+  private let SucessIconImageView = UIImageView().then {
+    $0.image = Images.succes.image
+  }
+  private let missionCompletedLabel = UILabel().then {
+    $0.text = "소중한 추억을\n쌓아가고 있어요!"
+    $0.font = Fonts.KR.H2
+    $0.textColor = Colors.black.color
+  }
+  
+  private let guideLabel = UILabel().then {
+    $0.text = "미션 기록에서 그 동안 쌓은 추억을 확인해보세요."
+    $0.font = Fonts.KR.H7.M
+    $0.textColor = Colors.gray700.color
+  }
+  
+  override init(frame: CGRect) {
+    super.init(frame: .zero)
+    
+  }
+  
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  private func setUpview() {
+    configureAttribute()
+    configureLayout()
+  }
+  
+  private func configureAttribute() {
+    addSubview(rootContainer)
+    
+    recordImageView.roundCorners(cornerRadius: recordImageView.bounds.height / 2)
+    
+    rootContainer.pin
+      .all()
+    rootContainer.flex
+      .layout()
+  }
+  
+  private func configureLayout() {
+    rootContainer.flex
+      .define {
+        $0.addItem(recordImageView)
+          .marginTop(10.adjusted)
+          .size(260.adjusted)
+          .alignSelf(.center)
+        $0.addItem(SucessIconImageView)
+          .alignSelf(.center)
+          .marginTop(-30.adjusted)
+        $0.addItem(missionCompletedLabel)
+          .marginVertical(20.adjusted)
+          .marginTop(24)
+        $0.addItem(guideLabel)
+          .marginVertical(20.adjusted)
+          .marginTop(4)
+      }
+  }
+  
+  func configureStartView(recordImageURL: String) {
+    self.recordImageView.kf.setImage(with: URL(string: recordImageURL))
+  }
+  
+}
