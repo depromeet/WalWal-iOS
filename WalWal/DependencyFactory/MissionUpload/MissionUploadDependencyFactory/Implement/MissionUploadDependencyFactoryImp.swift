@@ -59,12 +59,14 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
   public func injectWriteContentDuringTheMissionReactor<T: MissionUploadCoordinator>(
     coordinator: T,
     saveRecordUseCase: SaveRecordUseCase,
-    uploadRecordUseCase: UploadRecordUseCase
+    uploadRecordUseCase: UploadRecordUseCase,
+    recordId: Int
   ) -> any WriteContentDuringTheMissionReactor {
     return WriteContentDuringTheMissionReactorImp(
       coordinator: coordinator,
       saveRecordUseCase: saveRecordUseCase,
-      uploadRecordUseCase: uploadRecordUseCase
+      uploadRecordUseCase: uploadRecordUseCase,
+      recordId: recordId
     )
   }
   

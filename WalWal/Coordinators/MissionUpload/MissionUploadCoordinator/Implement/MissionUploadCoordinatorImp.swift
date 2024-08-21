@@ -117,7 +117,8 @@ extension MissionUploadCoordinatorImp {
     let reactor = missionUploadDependencyFactory.injectWriteContentDuringTheMissionReactor(
       coordinator: self,
       saveRecordUseCase: saveRecordUseCase,
-      uploadRecordUseCase: uploadRecordUseCase
+      uploadRecordUseCase: uploadRecordUseCase,
+      recordId: recordId
     )
     let writeContentDuringTheMissionViewController = missionUploadDependencyFactory.injectWriteContentDuringTheMissionViewController(
       reactor: reactor,

@@ -37,7 +37,8 @@ public protocol MissionUploadDependencyFactory {
   func injectWriteContentDuringTheMissionReactor<T: MissionUploadCoordinator>(
     coordinator: T,
     saveRecordUseCase: SaveRecordUseCase,
-    uploadRecordUseCase: UploadRecordUseCase
+    uploadRecordUseCase: UploadRecordUseCase,
+    recordId: Int
   ) -> any WriteContentDuringTheMissionReactor
   
   func injectCameraShootDuringTheMissionViewController<T: CameraShootDuringTheMissionReactor>(
