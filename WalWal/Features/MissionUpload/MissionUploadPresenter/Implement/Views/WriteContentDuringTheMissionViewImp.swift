@@ -28,13 +28,42 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
+  private let backButton = WalWalTouchArea(
+    image: Images.backL.image,
+    size: 40
+  )
+  
+  private lazy var previewImageView = UIImageView().then {
+    $0.image = capturedImage
+    $0.contentMode = .scaleAspectFill
+    $0.clipsToBounds = true
+    $0.layer.cornerRadius = 20
+  }
+  
+  private lazy var contentTextView = StyledTextInputView(
+    placeholderText: "오늘의 산책은 어땠나요?",
+    maxCharacterCount: 80
+  ).then {
+    $0.layer.cornerRadius = 20
+  }
+  
+  private let uploadButton = UIButton().then {
+    $0.setTitle("업로드", for: .normal)
+    $0.setTitleColor(Colors.white.color, for: .normal)
+    $0.backgroundColor = Colors.blue.color
+    $0.layer.cornerRadius = 10
+  }
   public var disposeBag = DisposeBag()
   public var writeContentDuringTheMissionReactor: R
   
+  private let capturedImage: UIImage
+  
   public init(
-    reactor: R
+    reactor: R,
+    capturedImage: UIImage
   ) {
     self.writeContentDuringTheMissionReactor = reactor
+    self.capturedImage = capturedImage
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -58,12 +87,37 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   // MARK: - Methods
   
   public func configureAttribute() {
-    
+    view.backgroundColor = Colors.black.color
   }
   
   public func configureLayout() {
-    
+    [backButton, previewImageView, contentTextView, uploadButton].forEach {
+      view.addSubview($0)
+    }
   }
+  
+  private func layoutView() {
+    backButton.pin
+      .top(view.safeAreaInsets.top + 16)
+      .left(16)
+      .size(40)
+    
+    previewImageView.pin
+      .below(of: backButton).marginTop(16)
+      .horizontally(16)
+      .height(200)
+    
+    contentTextView.pin
+      .below(of: previewImageView).marginTop(16)
+      .horizontally(16)
+      .height(150)
+    
+    uploadButton.pin
+      .below(of: contentTextView).marginTop(16)
+      .horizontally(16)
+      .height(50)
+  }
+  
 }
 
 extension WriteContentDuringTheMissionViewControllerImp: View {
@@ -77,7 +131,22 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
+    backButton.rx.tapped
+      .map { Reactor.Action.backButtonTapped }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
     
+    uploadButton.rx.tap
+      .withLatestFrom(contentTextView.rx.text)
+      .withUnretained(self)
+      .map { owner, content in
+        Reactor.Action.uploadButtonTapped(
+          capturedImage: owner.capturedImage,
+          content: content
+        )
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
