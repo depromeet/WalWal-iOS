@@ -88,7 +88,6 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
 extension WriteContentDuringTheMissionReactorImp {
   
   private func passFlagAndMoveToMission() {
-    print("이게 안들어오니?")
     guard let tabBarViewController = coordinator.navigationController.tabBarController as? WalWalTabBarViewController else {
       return
     }
