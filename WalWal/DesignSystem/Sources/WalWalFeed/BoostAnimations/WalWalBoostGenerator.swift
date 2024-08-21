@@ -197,6 +197,7 @@ extension WalWalBoostGenerator {
     /// DetailView가 작아진 후 다시 커지기 시작할 때 다른 애니메이션 시작
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
       guard let self = self else { return }
+      if isEndedLongPress { return }
       self.addTiltAnimation(to: detailView)
       self.setupBoostAnimationComponents(in: detailView, window: window)
     }
@@ -210,7 +211,10 @@ extension WalWalBoostGenerator {
       with: WalWalBurstString.normalText,
       in: detailView,
       window: window
-    )
+    ) { [weak self] in
+      guard let self = self else { return }
+      self.walwalBoostCenterLabel.disappearLabels()
+    }
     
     walwalBoostCounter.setupCountLabel(in: window, detailView: detailView)
     walwalBoostCounter.startCountTimer(
@@ -265,33 +269,35 @@ extension WalWalBoostGenerator {
     }
     
     switch count {
-    case 20:
-      walwalBoostCenterLabel.disappearLabels()
-    case 100:
+    case 40:
       walwalBoostBorder.startBorderAnimation(borderColor: .clear, isRainbow: true)
+    case 100:
       walwalBoostCenterLabel.updateCenterLabels(
         with: WalWalBurstString.goodText,
         in: detailView,
         window: window
-      )
-    case 120:
-      walwalBoostCenterLabel.disappearLabels()
+      ) { [weak self] in
+        guard let self = self else { return }
+        self.walwalBoostCenterLabel.disappearLabels()
+      }
     case 250:
       walwalBoostCenterLabel.updateCenterLabels(
         with: WalWalBurstString.greatText,
         in: detailView,
         window: window
-      )
-    case 270:
-      walwalBoostCenterLabel.disappearLabels()
+      ) { [weak self] in
+        guard let self = self else { return }
+        self.walwalBoostCenterLabel.disappearLabels()
+      }
     case 500:
       walwalBoostCenterLabel.updateCenterLabels(
         with: WalWalBurstString.wonderfulText,
         in: detailView,
         window: window
-      )
-    case 520:
-      walwalBoostCenterLabel.disappearLabels()
+      ) { [weak self] in
+        guard let self = self else { return }
+        self.walwalBoostCenterLabel.disappearLabels()
+      }
     default:
       break
     }
