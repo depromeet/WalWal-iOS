@@ -185,14 +185,7 @@ extension CameraShootDuringTheMissionViewControllerImp: View {
   }
   
   public func bindState(reactor: R) {
-    reactor.state
-      .map { $0.capturedPhoto }
-      .distinctUntilChanged()
-      .compactMap { $0 }
-      .subscribe(onNext: { [weak self] image in
-        self?.handleCapturedPhoto(image: image)
-      })
-      .disposed(by: disposeBag)
+    
   }
   
   public func bindEvent() {
@@ -209,14 +202,5 @@ extension CameraShootDuringTheMissionViewControllerImp: View {
         owner.cameraManager.switchCamera()
       })
       .disposed(by: disposeBag)
-  }
-}
-
-extension CameraShootDuringTheMissionViewControllerImp {
-  // 사진이 찍힌 후의 처리 로직 (예시로 이미지 저장 또는 표시)
-  private func handleCapturedPhoto(image: UIImage) {
-    let imageView = UIImageView(image: image)
-    imageView.frame = view.bounds
-    view.addSubview(imageView)
   }
 }
