@@ -28,6 +28,10 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
+  private let rootFlexContainer = UIView()
+  private let navigationContainer = UIView()
+  private let uploadContainer = UIView()
+  
   private let backButton = WalWalTouchArea(
     image: Images.backL.image,
     size: 40
@@ -47,16 +51,25 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
     $0.layer.cornerRadius = 20
   }
   
-  private let uploadButton = UIButton().then {
-    $0.setTitle("업로드", for: .normal)
-    $0.setTitleColor(Colors.white.color, for: .normal)
-    $0.backgroundColor = Colors.blue.color
-    $0.layer.cornerRadius = 10
+  private let uploadButtonLabel = UILabel().then {
+    $0.text = "피드에 자랑하기"
+    $0.font = Fonts.KR.H3
+    $0.textColor = Colors.white.color
   }
+  
+  private let uploadButton = WalWalTouchArea(
+    image: Images.arrow.image,
+    size: 40
+  )
+  
+  // MARK: - Properties
+  
   public var disposeBag = DisposeBag()
   public var writeContentDuringTheMissionReactor: R
   
   private let capturedImage: UIImage
+  fileprivate var keyboardHeight: CGFloat = 0
+  private var isFirstAppearance = true
   
   public init(
     reactor: R,
@@ -80,8 +93,18 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
     self.reactor = self.writeContentDuringTheMissionReactor
   }
   
+  public override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    if isFirstAppearance {
+      contentTextView.textView.becomeFirstResponder()
+      isFirstAppearance = false
+    }
+  }
+  
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    
+    updateLayout()
   }
   
   // MARK: - Methods
@@ -91,33 +114,96 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   }
   
   public func configureLayout() {
-    [backButton, previewImageView, contentTextView, uploadButton].forEach {
+    
+    [rootFlexContainer, uploadContainer].forEach {
       view.addSubview($0)
     }
+    
+    [navigationContainer, previewImageView, contentTextView].forEach {
+      rootFlexContainer.addSubview($0)
+    }
+    
+    [uploadButtonLabel, uploadButton].forEach {
+      uploadContainer.addSubview($0)
+    }
+    
+    layoutView()
   }
   
   private func layoutView() {
-    backButton.pin
-      .top(view.safeAreaInsets.top + 16)
-      .left(16)
-      .size(40)
+    rootFlexContainer.pin
+      .all(view.pin.safeArea)
     
-    previewImageView.pin
-      .below(of: backButton).marginTop(16)
-      .horizontally(16)
-      .height(200)
+    let isKeyboardVisible = keyboardHeight > 0
+    let previewImageHeight: CGFloat = isKeyboardVisible ? 160 : 240
     
-    contentTextView.pin
-      .below(of: previewImageView).marginTop(16)
-      .horizontally(16)
-      .height(150)
+    rootFlexContainer.flex
+      .direction(.column)
+      .define { flex in
+        flex.addItem(navigationContainer)
+          .direction(.row)
+          .justifyContent(.start)
+          .marginTop(26)
+          .marginHorizontal(10)
+          .define { flex in
+            flex.addItem(backButton)
+              .size(40)
+          }
+        
+        flex.addItem(previewImageView)
+          .alignSelf(.center)
+          .marginTop(20)
+          .marginHorizontal(10)
+          .aspectRatio(1)
+          .width(previewImageHeight)
+        
+        flex.addItem(contentTextView)
+          .marginTop(20)
+          .marginHorizontal(10)
+          .height(170)
+      }
     
-    uploadButton.pin
-      .below(of: contentTextView).marginTop(16)
-      .horizontally(16)
+    uploadContainer.pin
+      .bottomCenter(view.pin.safeArea.bottom + 30)
+      .width(190)
       .height(50)
+    
+    uploadContainer.flex
+      .direction(.row)
+      .justifyContent(.center)
+      .alignItems(.center)
+      .define { flex in
+        flex.addItem(uploadButtonLabel)
+        flex.addItem(uploadButton)
+          .size(40)
+      }
+    
+    rootFlexContainer.flex
+      .layout()
+    uploadContainer.flex
+      .layout()
   }
   
+  private func updateLayout() {
+    UIView.animate(withDuration: 0.3) {
+      self.layoutView()
+      self.view.layoutIfNeeded()
+    }
+  }
+  
+  public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    super.touchesBegan(touches, with: event)
+    
+    guard let touch = touches.first else { return }
+    let location = touch.location(in: view)
+    
+    let inputBoxes = [contentTextView]
+    let touchedOutside = inputBoxes.allSatisfy { !$0.frame.contains(location) }
+    
+    if touchedOutside {
+      view.endEditing(true)
+    }
+  }
 }
 
 extension WriteContentDuringTheMissionViewControllerImp: View {
@@ -136,7 +222,7 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    uploadButton.rx.tap
+    uploadContainer.rx.tapped
       .withLatestFrom(contentTextView.rx.text)
       .withUnretained(self)
       .map { owner, content in
@@ -154,6 +240,18 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
   }
   
   public func bindEvent() {
-   
+    NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
+      .bind(with: self) { owner, _ in
+        owner.keyboardHeight = 1
+        owner.updateLayout()
+      }
+      .disposed(by: disposeBag)
+    
+    NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
+      .bind(with: self) { owner, _ in
+        owner.keyboardHeight = 0
+        owner.updateLayout()
+      }
+      .disposed(by: disposeBag)
   }
 }
