@@ -17,18 +17,18 @@ import ReactorKit
 import RxSwift
 
 public enum WriteContentDuringTheMissionReactorAction {
-  
+  case backButtonTapped
+  case uploadButtonTapped(capturedImage: UIImage, content: String)
 }
 
 public enum WriteContentDuringTheMissionReactorMutation {
-  
+  case showCompletedLottie(show: Bool)
 }
 
 public struct WriteContentDuringTheMissionReactorState {
+  public var showCompletedLottie: Bool = false
   
-  public init() {
-    
-  }
+  public init() {}
 }
 
 public protocol WriteContentDuringTheMissionReactor:
@@ -41,6 +41,7 @@ public protocol WriteContentDuringTheMissionReactor:
   init(
     coordinator: any MissionUploadCoordinator,
     saveRecordUseCase: SaveRecordUseCase,
-    uploadRecordUseCase: UploadRecordUseCase
+    uploadRecordUseCase: UploadRecordUseCase,
+    recordId: Int
   )
 }
