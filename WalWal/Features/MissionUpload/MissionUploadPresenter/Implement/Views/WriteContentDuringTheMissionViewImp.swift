@@ -204,6 +204,14 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
       view.endEditing(true)
     }
   }
+  
+  fileprivate func showLottie() {
+    print("로띠를 띄워봐용~")
+  }
+  
+  fileprivate func hideLottie() {
+    print("로띠를 지워봐용~")
+  }
 }
 
 extension WriteContentDuringTheMissionViewControllerImp: View {
@@ -233,10 +241,62 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    WalWalAlert.shared.resultRelay
+      .map {
+        $0 == .ok
+        ? Reactor.Action.deleteThisContent
+        : Reactor.Action.keepThisContent
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
+    reactor.state
+      .map { $0.isAlertWillPresent }
+      .distinctUntilChanged()
+      .subscribe(onNext: { isAlertWillPresent in
+        if isAlertWillPresent {
+          WalWalAlert.shared.show(
+            title: "기록을 삭제하시겠어요?",
+            bodyMessage: "지금 돌아가면 입력하신 내용이 모두\n삭제됩니다.",
+            cancelTitle: "계속 작성하기",
+            okTitle: "삭제하기"
+          )
+        } else {
+          WalWalAlert.shared.closeAlert.accept(())
+        }
+      })
+      .disposed(by: disposeBag)
     
+    reactor.state
+      .map { $0.showCompletedLottie }
+      .distinctUntilChanged()
+      .subscribe(with: self, onNext: { owner, isShow in
+        isShow ? owner.showLottie() : owner.hideLottie()
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.pulse(\.$uploadErrorMessage)
+      .asDriver(onErrorJustReturn: "")
+      .drive(onNext: { errorMessage in
+        WalWalToast.shared.show(
+          type: .error,
+          message: errorMessage,
+          isTabBarExist: false
+        )
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map{ $0.isCompletedUpload}
+      .distinctUntilChanged()
+      .filter { $0 }
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.showLottie()
+      })
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

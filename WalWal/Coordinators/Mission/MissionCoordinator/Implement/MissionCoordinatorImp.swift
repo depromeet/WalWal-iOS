@@ -9,8 +9,10 @@
 import UIKit
 import BaseCoordinator
 import MissionCoordinator
+import MissionUploadCoordinator
 
 import MissionDomain
+import MissionPresenter
 
 import MissionUploadDependencyFactory
 import MissionDependencyFactory
@@ -32,6 +34,7 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   public weak var parentCoordinator: (any BaseCoordinator)?
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
+  public var baseReactor: (any MissionReactor)?
   
   public var missionDependencyFactory: MissionDependencyFactory
   public var missionUploadDependencyFactory: MissionUploadDependencyFactory
@@ -70,11 +73,9 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
   /// 여기도, Mission이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   public func handleChildEvent<T: ParentAction>(_ event: T) {
-    //    if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
-    //      handle__Event(__Event)
-    //    } else if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
-    //      handle__Event(__Event)
-    //    }
+    if let missionUploadEvent = event as? MissionUploadCoordinatorAction {
+      handleMissionUploadEvent(.requireParentAction(missionUploadEvent))
+    }
   }
   
   public func start() {
@@ -89,6 +90,7 @@ public final class MissionCoordinatorImp: MissionCoordinator {
     )
     let missionVC = missionDependencyFactory.injectMissionViewController(reactor: reactor)
     self.baseViewController = missionVC
+    self.baseReactor = reactor
     self.pushViewController(viewController: missionVC, animated: false)
   }
 }
@@ -97,14 +99,21 @@ public final class MissionCoordinatorImp: MissionCoordinator {
 
 extension MissionCoordinatorImp {
   
-  //  fileprivate func handle__Event(_ event: CoordinatorEvent<__CoordinatorAction>) {
-  //    switch event {
-  //    case .finished:
-  //      childCoordinator = nil
-  //    case .requireParentAction(let action):
-  //      switch action { }
-  //    }
-  //  }
+    fileprivate func handleMissionUploadEvent(_ event: CoordinatorEvent<MissionUploadCoordinatorAction>) {
+      switch event {
+      case .finished:
+        childCoordinator = nil
+      case .requireParentAction(let action):
+        switch action {
+        case .willFetchMissionData:
+          /// Mission Data를 Fetch하는 로직 reactor에 호출
+          popViewController(animated: true)
+          childCoordinator = nil
+          baseReactor?.action.onNext(.loadMissionInfo)
+          print("Fetch메서드 재호출")
+        }
+      }
+    }
 }
 
 // MARK: - Create and Start(Show) with Flow(View)

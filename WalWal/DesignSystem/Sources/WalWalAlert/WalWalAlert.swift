@@ -158,7 +158,7 @@ public final class WalWalAlert {
           }
       }
     alertView.flex
-      .layout()
+      .layout(mode: .adjustHeight)
     rootContainer.flex
       .layout()
   }

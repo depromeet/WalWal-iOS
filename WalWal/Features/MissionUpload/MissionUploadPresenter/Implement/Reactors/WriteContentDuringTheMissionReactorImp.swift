@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import DesignSystem
 
 import MissionUploadDomain
 import MissionUploadPresenter
@@ -51,24 +52,33 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .backButtonTapped:
-      /// 얼럿 띄우기
-      coordinator.requirefinish()
-      return .empty()
-    case .uploadButtonTapped(let image, let content):
+    case .backButtonTapped: /// 뒤로가기 버튼을 눌렀어
+      return .just(Mutation.showMeTheAlert(show: true))
+    case .deleteThisContent: /// 얼럿에서 삭제하기 눌렀어
       return .concat([
-        .just(.showCompletedLottie(show: true)),
-        uploadContent(content),
-        uploadImage(image)
+        .just(Mutation.showMeTheAlert(show: false)),
+        .just(Mutation.moveToMain)
       ])
+    case .keepThisContent: /// 얼럿에서 취소하기 눌렀어
+      return .just(Mutation.showMeTheAlert(show: false))
+    case .uploadButtonTapped(let image, let content): /// 피드 공유하기 버튼 눌렀어
+      return uploadProcess(content, image)
     }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
-    case .showCompletedLottie(let isShow):
-      newState.showCompletedLottie = isShow
+    case .showMeTheAlert(let isShow):
+      newState.isAlertWillPresent = isShow
+    case .uploadFailed(message: let message):
+      newState.uploadErrorMessage = message
+      newState.isCompletedUpload = false
+    case .uploadProcessEnded:
+      newState.isCompletedUpload = true
+      passFlagAndMoveToMission()
+    case .moveToMain:
+      justMoveToMission()
     }
     return newState
   }
@@ -77,15 +87,32 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
 // MARK: - Private Method
 extension WriteContentDuringTheMissionReactorImp {
   
-  private func uploadContent(_ content: String) -> Observable<Mutation> {
+  private func passFlagAndMoveToMission() {
+    print("이게 안들어오니?")
+    guard let tabBarViewController = coordinator.navigationController.tabBarController as? WalWalTabBarViewController else {
+      return
+    }
+    tabBarViewController.showCustomTabBar()
+    coordinator.fetchMissionData()
+  }
+  
+  private func justMoveToMission() {
+    guard let tabBarViewController = coordinator.navigationController.tabBarController as? WalWalTabBarViewController else {
+      return 
+    }
+    tabBarViewController.showCustomTabBar()
+    coordinator.requirefinish()
+  }
+  
+  private func uploadProcess(_ content: String, _ image: UIImage) -> Observable<Mutation> {
     return saveRecordUseCase.execute(missionId: missionId, content: content)
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
-        return .just(.showCompletedLottie(show: false))
+        return owner.uploadImage(image)
       }
       .catch { error -> Observable<Mutation> in
-        return .just(.showCompletedLottie(show: false))
+        return .just(.uploadFailed(message: error.localizedDescription))
       }
   }
   
@@ -95,11 +122,10 @@ extension WriteContentDuringTheMissionReactorImp {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
-        owner.coordinator.requirefinish()
-        return .just(.showCompletedLottie(show: false))
+        return .just(.uploadProcessEnded)
       }
       .catch { error -> Observable<Mutation> in
-        return .just(.showCompletedLottie(show: false))
+        return .just(.uploadFailed(message: error.localizedDescription))
       }
   }
 }

@@ -113,7 +113,7 @@ public final class MissionReactorImp: MissionReactor {
     return newState
   }
   
-  private func fetchMissionDataAndCount() -> Observable<Mutation> {
+  public func fetchMissionDataAndCount() -> Observable<Mutation> {
     return fetchMissionData()
       .flatMap { mutation -> Observable<Mutation> in
         if case let .setMission(mission) = mutation {

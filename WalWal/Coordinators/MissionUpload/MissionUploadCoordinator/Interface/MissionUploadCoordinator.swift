@@ -10,7 +10,8 @@ import UIKit
 import BaseCoordinator
 
 public enum MissionUploadCoordinatorAction: ParentAction {
-  case completedUploadMissionData /// 미션 데이터 업로드를 마치고, 다시 미션으로 복귀해야햄
+  /// 미션으로 복귀하면서, fetchData한번 더 하시오
+  case willFetchMissionData
 }
 
 public enum MissionUploadCoordinatorFlow: CoordinatorFlow {
@@ -21,5 +22,5 @@ public protocol MissionUploadCoordinator: BaseCoordinator
 where Flow == MissionUploadCoordinatorFlow,
       Action == MissionUploadCoordinatorAction
 {
- 
+ func fetchMissionData()
 }
