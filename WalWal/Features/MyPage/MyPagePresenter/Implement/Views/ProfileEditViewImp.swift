@@ -170,12 +170,6 @@ extension ProfileEditViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    profileEditView.curProfileItems
-      .bind(with: self) { owner, items in
-        dump(items)
-      }
-      .disposed(by: disposeBag)
-    
     profileEditView.showPHPicker
       .map { Reactor.Action.checkPhotoPermission }
       .bind(to: reactor.action)

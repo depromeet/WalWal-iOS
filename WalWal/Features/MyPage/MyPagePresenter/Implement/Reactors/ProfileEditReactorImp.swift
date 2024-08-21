@@ -58,9 +58,11 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
     switch action {
     case let .checkCondition(nickname, profile):
       return checkValidForm(nickname: nickname, profile: profile)
-    case .editProfile:
+    case let .editProfile(nickname, profile):
+      
       return .concat([
         .just(.showIndicator(show: true)),
+        editProfile(nickname: nickname, profile: profile)
       ])
     case .checkPhotoPermission:
       return checkPhotoPermission()
@@ -94,6 +96,46 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
 }
 
 extension ProfileEditReactorImp {
+  
+  private func editProfile(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
+    if nickname != initNickname { // 닉네임 수정 -> 체크 필요
+      return checkNicknameUseCase.execute(nickname: nickname)
+        .asObservable()
+        .flatMap { _ -> Observable<Mutation> in
+          return self.uploadImage(nickname: nickname, profile: profile)
+        } .catch { error  -> Observable<Mutation> in
+          return .just(.invalidNickname(message: error.localizedDescription))
+        }
+    } else { // 닉네임 수정하지 않았음
+      return self.uploadImage(nickname: nickname, profile: profile)
+    }
+  }
+  
+  private func uploadImage(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
+    
+    if profile.profileType == .defaultImage {
+      // TODO: - 기본 이미지 타입 전송
+      return .never()
+    }
+    guard let image = profile.selectImage else { // 이미지가 변경되지 않음
+      // TODO: - 기존 이미지 url 전달
+      return .never()
+    }
+    guard let imagedata = image.jpegData(compressionQuality: 0.8) else {
+      return .never() // TODO: - 에러핸들링 -> "이미지 변경 실패했어요"
+    }
+    return uploadMemberUseCase.execute(nickname: nickname, type: "JPEG", image: imagedata)
+      .asObservable()
+      .flatMap { result -> Observable<Mutation> in
+        // TODO: - 수정 api 요청 (url도 함께)
+        return .never()
+      }
+      .catch { _ -> Observable<Mutation> in
+        return .just(.showIndicator(show: false)) // TODO: - toast로 에러 메세지?
+      }
+    
+  }
+  
   private func fetchProfile() -> Observable<Mutation> {
     return fetchMemberInfoUseCase.execute()
       .map { MemberModel(global: $0) }
