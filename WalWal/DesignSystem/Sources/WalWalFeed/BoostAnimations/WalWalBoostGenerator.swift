@@ -25,7 +25,6 @@ final class WalWalBoostGenerator {
   
   private weak var feed: WalWalFeed?
   private var currentDetailView: UIView?
-  private var currentBackgroundView: UIView?
   private var currentBlackOverlayView: UIView?
   private var currentIndexPath: IndexPath?
   
@@ -67,40 +66,33 @@ final class WalWalBoostGenerator {
     currentIndexPath = indexPath
     
     let detailView = createAndConfigureDetailView(from: cell, with: feedModel)
-    let backgroundView = createBackgroundView(frame: window.bounds)
     let overlayView = createOverlayView(frame: detailView.frame)
     
     addViewsToWindow(
       detailView: detailView,
-      backgroundView: backgroundView,
       overlayView: overlayView,
       window: window
     )
     
     animateDetailViewAppearance(
       detailView,
-      backgroundView: backgroundView,
       window: window
     )
     
     currentDetailView = detailView
-    currentBackgroundView = backgroundView
     currentBlackOverlayView = overlayView
   }
   
   /// 부스트 애니메이션 종료
   func stopBoostAnimation() {
     guard let detailView = currentDetailView,
-          let backgroundView = currentBackgroundView,
           let overlayView = currentBlackOverlayView,
           let indexPath = currentIndexPath else { return }
     
     UIView.animate(withDuration: 0.3, animations: {
-      backgroundView.alpha = 0
       detailView.alpha = 0
       overlayView.alpha = 0
     }) { _ in
-      backgroundView.removeFromSuperview()
       detailView.removeFromSuperview()
       overlayView.removeFromSuperview()
     }
@@ -109,7 +101,6 @@ final class WalWalBoostGenerator {
     walwalBoostCounter.stopCountTimer()
     walwalBoostBorder.stopBorderAnimation()
     currentDetailView = nil
-    currentBackgroundView = nil
     currentBlackOverlayView = nil
     walwalEmitter.stopEmitting()
     
@@ -157,31 +148,23 @@ extension WalWalBoostGenerator {
   
   private func addViewsToWindow(
     detailView: UIView,
-    backgroundView: UIView,
     overlayView: UIView,
     window: UIWindow
   ) {
     window.addSubview(overlayView)
-    window.addSubview(backgroundView)
     window.addSubview(detailView)
   }
   
   private func animateDetailViewAppearance(
     _ detailView: UIView,
-    backgroundView: UIView,
     window: UIWindow
   ) {
     detailView.transform = .identity
-    backgroundView.alpha = 0
     UIView.animateKeyframes(
       withDuration: 0.5,
       delay: 0,
       options: [],
       animations: {
-        UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1) {
-          backgroundView.alpha = 1
-        }
-        
         UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
           detailView.transform = CGAffineTransform(scaleX: 0.98, y: 0.98).translatedBy(x: 0, y: 2)
         }
