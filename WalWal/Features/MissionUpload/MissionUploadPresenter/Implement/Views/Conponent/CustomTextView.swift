@@ -177,3 +177,10 @@ extension String {
     return ranges
   }
 }
+
+
+extension Reactive where Base: StyledTextInputView {
+  var text: Observable<String> {
+    return base.textRelay.asObservable()
+  }
+}
