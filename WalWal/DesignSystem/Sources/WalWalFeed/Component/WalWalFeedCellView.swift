@@ -35,6 +35,7 @@ final class WalWalFeedCellView: UIView {
   
   private let profileImageView = UIImageView().then {
     $0.layer.cornerRadius = 20
+    $0.contentMode = .scaleAspectFill
     $0.clipsToBounds = true
   }
   
@@ -48,7 +49,10 @@ final class WalWalFeedCellView: UIView {
     $0.textColor = Colors.gray700.color
   }
   
-  private let missionImageView = UIImageView()
+  private let missionImageView = UIImageView().then {
+    $0.contentMode = .scaleAspectFill
+    $0.clipsToBounds = true
+  }
   
   private let boostIconImageView = UIImageView().then {
     $0.image = Images.fireDef.image
