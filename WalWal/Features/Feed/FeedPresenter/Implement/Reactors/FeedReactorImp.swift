@@ -46,7 +46,7 @@ public final class FeedReactorImp: FeedReactor {
       Action.loadFeedData(cursor: nil)
     )
     /// 기존 액션 스트림과 초기 액션 스트림을 병합
-    return Observable.merge(action, initialLoadAction)
+    return Observable.merge(initialLoadAction, action)
   }
 
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -105,8 +105,9 @@ public final class FeedReactorImp: FeedReactor {
   
   private func convertFeedModel(feedList: [GlobalFeedListModel]) -> [WalWalFeedModel]{
     return feedList.compactMap { feed in
-      let profileImage = convertImage(imageURL: feed.profileImage) ?? ResourceKitAsset.Assets.yellowDog.image
       let missionImage = convertImage(imageURL: feed.missionImage)
+      
+      let profileImage = convertImage(imageURL: feed.profileImage) ?? ResourceKitAsset.Assets.yellowDog.image
       return WalWalFeedModel(
         id: feed.recordID,
         date: feed.createdDate,

@@ -24,9 +24,9 @@ public final class WalWalFeed: UIView {
   public let scrollEndReached = PublishRelay<Bool>()
   
   private var isNearBottomEdge: Bool {
-      return collectionView.contentOffset.y + collectionView.frame.size.height + 20 >= collectionView.contentSize.height
+    return collectionView.contentOffset.y + collectionView.frame.size.height + 20 >= collectionView.contentSize.height
   }
-
+  
   
   // MARK: - UI
   
@@ -51,19 +51,6 @@ public final class WalWalFeed: UIView {
     $0.alwaysBounceVertical = true
     
   }
-  
-  private func setupScrollEndDetection() {
-      collectionView.rx.contentOffset
-          .observe(on: MainScheduler.instance)
-          .map { [weak self] _ in
-              return self?.isNearBottomEdge ?? false
-          }
-          .distinctUntilChanged()
-          .filter { $0 }
-          .bind(to: scrollEndReached)
-          .disposed(by: disposeBag)
-  }
-  
   
   // MARK: - Property
   
@@ -202,6 +189,17 @@ public final class WalWalFeed: UIView {
         return updatedFeedData
       }
       .bind(to: feedData)
+      .disposed(by: disposeBag)
+    
+    
+    collectionView.rx.didEndDragging
+      .observe(on: MainScheduler.instance)
+      .distinctUntilChanged()
+      .map { [weak self] _ in
+        return self?.isNearBottomEdge ?? false
+      }
+      .filter { $0 }
+      .bind(to: scrollEndReached)
       .disposed(by: disposeBag)
   }
   
