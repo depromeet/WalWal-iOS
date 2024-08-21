@@ -24,7 +24,7 @@ public final class WalWalFeed: UIView {
   
   // MARK: - UI
   
-  private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
+  public private(set) var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
     let flowLayout = UICollectionViewFlowLayout()
     flowLayout.itemSize = CGSize(width: 342, height: 470)
     flowLayout.minimumLineSpacing = 14
