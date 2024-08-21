@@ -23,16 +23,17 @@ final class StyledTextInputView: UIView {
   
   // MARK: - UI Components
   
-  private let textView = UITextView().then {
+  public private(set) var textView = UITextView().then {
     $0.backgroundColor = .clear
     $0.font = Fonts.KR.H6.B
     $0.isEditable = true
     $0.isScrollEnabled = true
   }
   
-  private let characterCountLabel = UILabel().then {
+  private lazy var characterCountLabel = UILabel().then {
     $0.font = Fonts.EN.Caption
     $0.textColor = Colors.white.color.withAlphaComponent(0.2)
+    $0.text = "0/\(maxCharacterCount)"
   }
   
   // MARK: - Properties
@@ -70,6 +71,7 @@ final class StyledTextInputView: UIView {
     flex.define { flex in
       flex.addItem(textView).grow(1)
       flex.addItem(characterCountLabel)
+        .width(40)
         .alignSelf(.end)
         .marginTop(4)
     }
@@ -113,6 +115,15 @@ final class StyledTextInputView: UIView {
         return "\(text.count)/\(self.maxCharacterCount)"
       }
       .bind(to: characterCountLabel.rx.text)
+      .disposed(by: disposeBag)
+    
+    textView.rx.text.orEmpty
+      .asDriver()
+      .drive(with: self) { owner, text in
+        if text.count > owner.maxCharacterCount {
+          owner.cutText(length: owner.maxCharacterCount, text: text)
+        }
+      }
       .disposed(by: disposeBag)
     
     /// 입력 시작되고, 플레이스 홀더가 나와있다면 플레이스 홀더 제거
@@ -165,6 +176,13 @@ final class StyledTextInputView: UIView {
     }
     
     return attributedText
+  }
+  
+  public func cutText(length: Int, text: String) {
+    let maxIndex = text.index(text.startIndex, offsetBy: length-1)
+    let startIndex = text.startIndex
+    let cutting = String(text[startIndex...maxIndex])
+    textView.text = cutting
   }
 }
 
