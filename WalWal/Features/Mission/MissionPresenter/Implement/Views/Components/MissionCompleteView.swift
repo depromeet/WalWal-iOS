@@ -83,11 +83,12 @@ final class MissionCompleteView: UIView {
           .size(.init(width: 54.adjusted, height: 56.adjusted))
           .marginTop(-30.adjusted)
         $0.addItem(missionCompletedLabel)
-          .marginVertical(20.adjusted)
+          .marginHorizontal(20.adjusted)
           .marginTop(24.adjusted)
         $0.addItem(guideLabel)
-          .marginVertical(20.adjusted)
+          .marginHorizontal(20.adjusted)
           .marginTop(4.adjusted)
+          .marginBottom(35.adjusted)
       }
   }
   
