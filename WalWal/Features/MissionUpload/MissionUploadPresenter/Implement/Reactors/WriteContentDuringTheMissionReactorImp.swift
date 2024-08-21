@@ -28,7 +28,9 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
   public let coordinator: any MissionUploadCoordinator
   public let saveRecordUseCase: SaveRecordUseCase
   public let uploadRecordUseCase: UploadRecordUseCase
+  
   public let recordId: Int
+  public let missionId: Int
   
   private let disposeBag = DisposeBag()
   
@@ -36,12 +38,14 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
     coordinator: any MissionUploadCoordinator,
     saveRecordUseCase: SaveRecordUseCase,
     uploadRecordUseCase: UploadRecordUseCase,
-    recordId: Int
+    recordId: Int,
+    missionId: Int
   ) {
     self.coordinator = coordinator
     self.saveRecordUseCase = saveRecordUseCase
     self.uploadRecordUseCase = uploadRecordUseCase
     self.recordId = recordId
+    self.missionId = missionId
     self.initialState = State()
   }
   
@@ -54,6 +58,7 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
     case .uploadButtonTapped(let image, let content):
       return .concat([
         .just(.showCompletedLottie(show: true)),
+        uploadContent(content),
         uploadImage(image)
       ])
     }
@@ -71,6 +76,19 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
 
 // MARK: - Private Method
 extension WriteContentDuringTheMissionReactorImp {
+  
+  private func uploadContent(_ content: String) -> Observable<Mutation> {
+    return saveRecordUseCase.execute(missionId: missionId, content: content)
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, result -> Observable<Mutation> in
+        return .just(.showCompletedLottie(show: false))
+      }
+      .catch { error -> Observable<Mutation> in
+        return .just(.showCompletedLottie(show: false))
+      }
+  }
+  
   private func uploadImage(_ image: UIImage) -> Observable<Mutation> {
     guard let imageData = image.jpegData(compressionQuality: 0.8) else { return .never() }
     return uploadRecordUseCase.execute(recordId: recordId, type: "JPEG", image: imageData)

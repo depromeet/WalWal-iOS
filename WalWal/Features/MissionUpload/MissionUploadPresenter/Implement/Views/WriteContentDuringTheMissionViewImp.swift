@@ -159,7 +159,7 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
         
         flex.addItem(contentTextView)
           .marginTop(20)
-          .marginHorizontal(10)
+          .marginHorizontal(15)
           .height(170)
       }
     

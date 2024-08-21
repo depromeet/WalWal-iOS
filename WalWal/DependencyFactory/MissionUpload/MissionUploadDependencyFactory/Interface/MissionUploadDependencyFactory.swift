@@ -27,7 +27,8 @@ public protocol MissionUploadDependencyFactory {
     parentCoordinator:( any BaseCoordinator)?,
     recordsDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
-    recordId: Int
+    recordId: Int,
+    missionId: Int
   ) -> any MissionUploadCoordinator
   
   func injectCameraShootDuringTheMissionReactorReactor<T: MissionUploadCoordinator>(
@@ -38,7 +39,8 @@ public protocol MissionUploadDependencyFactory {
     coordinator: T,
     saveRecordUseCase: SaveRecordUseCase,
     uploadRecordUseCase: UploadRecordUseCase,
-    recordId: Int
+    recordId: Int,
+    missionId: Int
   ) -> any WriteContentDuringTheMissionReactor
   
   func injectCameraShootDuringTheMissionViewController<T: CameraShootDuringTheMissionReactor>(

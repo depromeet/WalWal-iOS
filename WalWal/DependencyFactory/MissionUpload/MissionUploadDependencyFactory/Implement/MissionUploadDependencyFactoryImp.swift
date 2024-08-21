@@ -36,7 +36,8 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
     parentCoordinator: (any BaseCoordinator)?,
     recordsDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
-    recordId: Int
+    recordId: Int,
+    missionId: Int
   ) -> any MissionUploadCoordinator {
     return MissionUploadCoordinatorImp(
       navigationController: navigationController,
@@ -44,7 +45,8 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
       missionUploadDependencyFactory: self,
       recordsDependencyFactory: recordsDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,
-      recordId: recordId
+      recordId: recordId,
+      missionId: missionId
     )
   }
   
@@ -60,13 +62,15 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
     coordinator: T,
     saveRecordUseCase: SaveRecordUseCase,
     uploadRecordUseCase: UploadRecordUseCase,
-    recordId: Int
+    recordId: Int,
+    missionId: Int
   ) -> any WriteContentDuringTheMissionReactor {
     return WriteContentDuringTheMissionReactorImp(
       coordinator: coordinator,
       saveRecordUseCase: saveRecordUseCase,
       uploadRecordUseCase: uploadRecordUseCase,
-      recordId: recordId
+      recordId: recordId,
+      missionId: missionId
     )
   }
   

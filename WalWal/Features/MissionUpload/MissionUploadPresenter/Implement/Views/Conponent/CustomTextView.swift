@@ -28,6 +28,8 @@ final class StyledTextInputView: UIView {
     $0.font = Fonts.KR.H6.B
     $0.isEditable = true
     $0.isScrollEnabled = true
+    $0.textContainerInset = .zero
+    $0.textContainer.lineFragmentPadding = 0
   }
   
   private lazy var characterCountLabel = UILabel().then {
@@ -59,6 +61,7 @@ final class StyledTextInputView: UIView {
     
     configureView()
     setupBindings()
+    applyLineHeightToTextView()
   }
   
   required init?(coder: NSCoder) {
@@ -69,7 +72,8 @@ final class StyledTextInputView: UIView {
   
   private func configureView() {
     flex.define { flex in
-      flex.addItem(textView).grow(1)
+      flex.addItem(textView)
+        .height(160)  // 4줄 x 40pt
       flex.addItem(characterCountLabel)
         .width(40)
         .alignSelf(.end)
@@ -184,6 +188,21 @@ final class StyledTextInputView: UIView {
     let cutting = String(text[startIndex...maxIndex])
     textView.text = cutting
   }
+  
+  private func applyLineHeightToTextView() {
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.minimumLineHeight = 40
+    paragraphStyle.maximumLineHeight = 40
+    
+    if let existingText = textView.text, !existingText.isEmpty {
+      let attributedText = NSMutableAttributedString(string: existingText)
+      attributedText.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedText.length))
+      textView.attributedText = attributedText
+    }
+    
+    textView.typingAttributes[.paragraphStyle] = paragraphStyle
+  }
+
 }
 
 extension String {

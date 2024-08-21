@@ -36,6 +36,7 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
   public let imageDependencyFactory: ImageDependencyFactory
   
   private let recordId: Int
+  private let missionId: Int
   
   public required init(
     navigationController: UINavigationController,
@@ -43,7 +44,8 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
     missionUploadDependencyFactory: MissionUploadDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
-    recordId: Int
+    recordId: Int,
+    missionId: Int
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -51,6 +53,7 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
     self.recordsDependencyFactory = recordsDependencyFactory
     self.imageDependencyFactory = imageDependencyFactory
     self.recordId = recordId
+    self.missionId = missionId
     bindChildToParentAction()
     bindState()
   }
@@ -118,7 +121,8 @@ extension MissionUploadCoordinatorImp {
       coordinator: self,
       saveRecordUseCase: saveRecordUseCase,
       uploadRecordUseCase: uploadRecordUseCase,
-      recordId: recordId
+      recordId: recordId,
+      missionId: missionId
     )
     let writeContentDuringTheMissionViewController = missionUploadDependencyFactory.injectWriteContentDuringTheMissionViewController(
       reactor: reactor,

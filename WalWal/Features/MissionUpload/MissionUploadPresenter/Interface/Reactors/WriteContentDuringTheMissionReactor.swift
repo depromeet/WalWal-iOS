@@ -42,6 +42,7 @@ public protocol WriteContentDuringTheMissionReactor:
     coordinator: any MissionUploadCoordinator,
     saveRecordUseCase: SaveRecordUseCase,
     uploadRecordUseCase: UploadRecordUseCase,
-    recordId: Int
+    recordId: Int,
+    missionId: Int
   )
 }
