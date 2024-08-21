@@ -33,8 +33,6 @@ public final class CameraShootDuringTheMissionReactorImp: CameraShootDuringTheMi
     coordinator: any MissionUploadCoordinator
   ) {
     self.coordinator = coordinator
-    self.saveRecordUseCase = saveRecordUseCase
-    self.uploadRecordUseCase = uploadRecordUseCase
     self.initialState = State()
   }
   
