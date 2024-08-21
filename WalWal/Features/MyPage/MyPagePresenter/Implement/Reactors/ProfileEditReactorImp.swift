@@ -31,8 +31,9 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
   private let checkNicknameUseCase: CheckNicknameUseCase
   private let fetchMemberInfoUseCase: FetchMemberInfoUseCase
   private let uploadMemberUseCase: any UploadMemberUseCase
-  private var initProfileData: WalWalProfileModel?
-  private var initNickname: String = ""
+  
+  private var originWalWalProfileModel: WalWalProfileModel?
+  private var profileModel: MemberModel?
   
   public init(
     coordinator: any MyPageCoordinator,
@@ -98,42 +99,59 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
 extension ProfileEditReactorImp {
   
   private func editProfile(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
-    if nickname != initNickname { // 닉네임 수정 -> 체크 필요
+    if let profileModel = profileModel, 
+        nickname != profileModel.nickname { // 닉네임 수정 -> 체크 필요
       return checkNicknameUseCase.execute(nickname: nickname)
         .asObservable()
-        .flatMap { _ -> Observable<Mutation> in
-          return self.uploadImage(nickname: nickname, profile: profile)
+        .withUnretained(self)
+        .flatMap { owner, _ -> Observable<Mutation> in
+          return owner.uploadImage(nickname: nickname, profile: profile)
         } .catch { error  -> Observable<Mutation> in
           return .just(.invalidNickname(message: error.localizedDescription))
         }
     } else { // 닉네임 수정하지 않았음
-      return self.uploadImage(nickname: nickname, profile: profile)
+      return uploadImage(nickname: nickname, profile: profile)
     }
   }
   
   private func uploadImage(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
+    guard let profileModel = profileModel else { return .never() }
     
-    if profile.profileType == .defaultImage {
-      // TODO: - 기본 이미지 타입 전송
-      return .never()
+    // 기본 이미지로 변경
+    if profile.profileType == .defaultImage,
+        let defaultImage = profile.defaultImage {
+      return editRequest(nickname: nickname, profileImage: defaultImage.rawValue)
     }
-    guard let image = profile.selectImage else { // 이미지가 변경되지 않음
-      // TODO: - 기존 이미지 url 전달
-      return .never()
+    
+    // 이미지가 변경되지 않음
+    guard let image = profile.selectImage else {
+      return editRequest(nickname: nickname, profileImage: profileModel.profileURL)
     }
     guard let imagedata = image.jpegData(compressionQuality: 0.8) else {
-      return .never() // TODO: - 에러핸들링 -> "이미지 변경 실패했어요"
+      return .never()
     }
     return uploadMemberUseCase.execute(nickname: nickname, type: "JPEG", image: imagedata)
       .asObservable()
-      .flatMap { result -> Observable<Mutation> in
-        // TODO: - 수정 api 요청 (url도 함께)
-        return .never()
+      .withUnretained(self)
+      .flatMap { owner, result -> Observable<Mutation> in
+        return owner.editRequest(nickname: nickname, profileImage: result.imageURL)
       }
       .catch { _ -> Observable<Mutation> in
         return .just(.showIndicator(show: false)) // TODO: - toast로 에러 메세지?
       }
     
+  }
+  
+  private func editRequest(nickname: String, profileImage: String) -> Observable<Mutation> {
+    return editProfileUseCase.execute(nickname: nickname, profileImage: profileImage)
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        print("수정 성공") // TODO: - pop, mypage에 반영
+        return .just(.showIndicator(show: false))
+      }.catch { _ -> Observable<Mutation> in
+        print("수정 실패")
+        return .just(.showIndicator(show: false))
+      }
   }
   
   private func fetchProfile() -> Observable<Mutation> {
@@ -151,8 +169,8 @@ extension ProfileEditReactorImp {
           selectImage: info.profileImage,
           defaultImage: defaultName
         )
-        self.initProfileData = profileModelType
-        self.initNickname = info.nickname
+        self.originWalWalProfileModel = profileModelType
+        self.profileModel = info
         return .just(.profileInfo(info: info))
       }
   }
@@ -169,9 +187,10 @@ extension ProfileEditReactorImp {
   
   private func checkValidForm(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
     
-    if let initProfileData = initProfileData,
+    if let initProfileData = originWalWalProfileModel,
+       let profileModel = profileModel,
         initProfileData == profile,
-        nickname == initNickname {
+       nickname == profileModel.nickname {
       
       return .just(.buttonEnable(isEnable: false))
     }

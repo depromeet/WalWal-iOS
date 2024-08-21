@@ -219,5 +219,13 @@ extension ProfileEditViewControllerImp: View {
         owner.navigationController?.popViewController(animated: true)
       }
       .disposed(by: disposeBag)
+    
+    PHPickerManager.shared.selectedPhoto
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, image in
+        owner.profileEditView.selectedImageData.accept(image)
+      }
+      .disposed(by: disposeBag)
   }
 }
