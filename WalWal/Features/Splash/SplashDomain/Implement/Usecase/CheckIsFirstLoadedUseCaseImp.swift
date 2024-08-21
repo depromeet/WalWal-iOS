@@ -20,7 +20,7 @@ public final class CheckIsFirstLoadedUseCaseImp: CheckIsFirstLoadedUseCase {
   
   public func execute() -> Observable<Bool> {
     let isAlreadyLoaded = UserDefaults.bool(forUserDefaultsKey: .isAlreadyLoaded)
-    if !isAlreadyLoaded {
+    if !isAlreadyLoaded, KeychainWrapper.shared.accessToken != nil {
       let _ = KeychainWrapper.shared.setAccessToken(nil)
       UserDefaults.setValue(value: true, forUserDefaultKey: .isAlreadyLoaded)
     }
