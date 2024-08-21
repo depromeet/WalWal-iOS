@@ -23,12 +23,11 @@ final class WalWalBoostCenterLabel {
   func updateCenterLabels(
     with text: String,
     in detailView: UIView,
-    window: UIWindow,
-    burstMode: WalWalBurstString
+    window: UIWindow
   ) {
     clearExistingLabels()
     
-    let labelFont = burstMode.font
+    let labelFont = WalWalBurstString.font
     let words = text.split(separator: " ")
     let availableWidth = window.bounds.width - (2 * sideMargin)
     let lines = calculateLines(for: words, with: labelFont, maxWidth: availableWidth)

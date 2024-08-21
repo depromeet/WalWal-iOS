@@ -204,33 +204,24 @@ extension WalWalBoostGenerator {
   
   private func setupBoostAnimationComponents(in detailView: UIView, window: UIWindow) {
     walwalBoostBorder.addBorderLayer(to: detailView)
-    walwalBoostBorder.startBorderAnimation(borderColor: Colors.yellow.color)
-    
-    let burstCase = [
-      WalWalBurstString.cute,
-      WalWalBurstString.cool,
-      WalWalBurstString.lovely
-    ].randomElement() ?? .cute
+    walwalBoostBorder.startBorderAnimation(borderColor: Colors.walwalOrange.color)
     
     walwalBoostCenterLabel.updateCenterLabels(
-      with: burstCase.normalText,
+      with: WalWalBurstString.normalText,
       in: detailView,
-      window: window,
-      burstMode: burstCase
+      window: window
     )
     
     walwalBoostCounter.setupCountLabel(in: window, detailView: detailView)
     walwalBoostCounter.startCountTimer(
       in: detailView,
-      window: window,
-      burstCase: burstCase
+      window: window
     ) { [weak self] count in
       guard let self = self else { return }
       self.handleCountUpdate(
         count: count,
         in: detailView,
-        window: window,
-        burstCase: burstCase
+        window: window
       )
     }
   }
@@ -259,8 +250,7 @@ extension WalWalBoostGenerator {
   private func handleCountUpdate(
     count: Int,
     in detailView: UIView,
-    window: UIWindow,
-    burstCase: WalWalBurstString
+    window: UIWindow
   ) {
     feedbackGenerator.impactOccurred()
     
@@ -275,29 +265,34 @@ extension WalWalBoostGenerator {
     }
     
     switch count {
-    case 50:
-      walwalBoostCenterLabel.disappearLabels { [weak self] in
-        guard let ss = self else { return }
-        ss.walwalBoostCenterLabel.updateCenterLabels(
-          with: burstCase.goodText,
-          in: detailView,
-          window: window,
-          burstMode: burstCase
-        )
-      }
-      walwalBoostBorder.startBorderAnimation(borderColor: Colors.walwalOrange.color)
     case 100:
       walwalBoostCenterLabel.disappearLabels { [weak self] in
         guard let ss = self else { return }
         ss.walwalBoostCenterLabel.updateCenterLabels(
-          with: burstCase.greatText,
-          in: detailView, window: window,
-          burstMode: burstCase
+          with: WalWalBurstString.goodText,
+          in: detailView,
+          window: window
         )
       }
-      walwalBoostBorder.startBorderAnimation(borderColor: .red)
-    case 150:
       walwalBoostBorder.startBorderAnimation(borderColor: .clear, isRainbow: true)
+    case 250:
+      walwalBoostCenterLabel.disappearLabels { [weak self] in
+        guard let ss = self else { return }
+        ss.walwalBoostCenterLabel.updateCenterLabels(
+          with: WalWalBurstString.greatText,
+          in: detailView,
+          window: window
+        )
+      }
+    case 500:
+      walwalBoostCenterLabel.disappearLabels { [weak self] in
+        guard let ss = self else { return }
+        ss.walwalBoostCenterLabel.updateCenterLabels(
+          with: WalWalBurstString.wonderfulText,
+          in: detailView,
+          window: window
+        )
+      }
     default:
       break
     }
