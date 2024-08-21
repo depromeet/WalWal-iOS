@@ -21,6 +21,12 @@ public final class WalWalFeed: UIView {
   private typealias Colors = ResourceKitAsset.Colors
   let walwalIndicator = WalWalLoadingIndicator(frame: .zero)
   let refreshLoading = PublishRelay<Bool>()
+  public let scrollEndReached = PublishRelay<Bool>()
+  
+  private var isNearBottomEdge: Bool {
+      return collectionView.contentOffset.y + collectionView.frame.size.height + 20 >= collectionView.contentSize.height
+  }
+
   
   // MARK: - UI
   
@@ -46,6 +52,17 @@ public final class WalWalFeed: UIView {
     
   }
   
+  private func setupScrollEndDetection() {
+      collectionView.rx.contentOffset
+          .observe(on: MainScheduler.instance)
+          .map { [weak self] _ in
+              return self?.isNearBottomEdge ?? false
+          }
+          .distinctUntilChanged()
+          .filter { $0 }
+          .bind(to: scrollEndReached)
+          .disposed(by: disposeBag)
+  }
   
   
   // MARK: - Property
@@ -149,6 +166,7 @@ public final class WalWalFeed: UIView {
   
   private func setupBindings() {
     feedData
+      .debug()
       .asDriver(onErrorJustReturn: [])
       .drive(with: self) { owner, feedData in
         self.currentFeedData = feedData
@@ -193,6 +211,7 @@ public final class WalWalFeed: UIView {
       $0.addItem(collectionView)
         .grow(1)
     }
+    
   }
   
   // MARK: - Boost Count Update
@@ -262,5 +281,11 @@ extension WalWalFeed: UICollectionViewDataSource {
 extension WalWalFeed: UICollectionViewDelegateFlowLayout {
   public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
     return CGSize(width: collectionView.bounds.width, height: headerHeight)
+  }
+  
+  public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+      if isNearBottomEdge {
+          scrollEndReached.accept(true)
+      }
   }
 }

@@ -94,13 +94,16 @@ extension FeedViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-      reactor.action
-        .onNext(.loadFeedData(cursor: "", limits: 10))
+    feed.scrollEndReached
+      .map { _ in Reactor.Action.loadFeedData(cursor: reactor.currentState.nextCursor) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
     reactor.state
       .map {  $0.feedData }
+      .debug()
       .subscribe(with: self, onNext: { owner, feed in
         owner.feed.feedData.accept(feed)
       })

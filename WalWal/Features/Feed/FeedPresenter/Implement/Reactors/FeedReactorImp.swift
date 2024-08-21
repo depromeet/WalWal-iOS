@@ -55,7 +55,7 @@ public final class FeedReactorImp: FeedReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .loadFeedData(let cursor):
-      return fetchFeedData(cursor: cursor, limit: 1)
+      return fetchFeedData(cursor: cursor, limit: 10)
     }
   }
   
