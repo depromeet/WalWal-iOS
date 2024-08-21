@@ -14,7 +14,7 @@ public enum MissionCoordinatorAction: ParentAction {
 }
 
 public enum MissionCoordinatorFlow: CoordinatorFlow {
-  case startMissionUpload
+  case startMissionUpload(recordId: Int)
 }
 
 public protocol MissionCoordinator: BaseCoordinator where Flow == MissionCoordinatorFlow{ }

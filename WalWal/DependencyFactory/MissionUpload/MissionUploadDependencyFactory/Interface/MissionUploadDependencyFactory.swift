@@ -26,7 +26,8 @@ public protocol MissionUploadDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator:( any BaseCoordinator)?,
     recordsDependencyFactory: RecordsDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
+    recordId: Int
   ) -> any MissionUploadCoordinator
   
   func injectCameraShootDuringTheMissionReactorReactor<T: MissionUploadCoordinator>(

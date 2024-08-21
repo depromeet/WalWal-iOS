@@ -35,14 +35,16 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     recordsDependencyFactory: RecordsDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
+    recordId: Int
   ) -> any MissionUploadCoordinator {
     return MissionUploadCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       missionUploadDependencyFactory: self,
       recordsDependencyFactory: recordsDependencyFactory,
-      imageDependencyFactory: imageDependencyFactory
+      imageDependencyFactory: imageDependencyFactory,
+      recordId: recordId
     )
   }
   

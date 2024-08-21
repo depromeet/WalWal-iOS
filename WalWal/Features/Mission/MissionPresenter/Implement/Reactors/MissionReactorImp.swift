@@ -106,7 +106,8 @@ public final class MissionReactorImp: MissionReactor {
     case .setCamPermission(let isAllow):
       newState.isAllowCamera = isAllow
     case .startMissionUpload:
-      coordinator.destination.accept(.startMissionUpload)
+      guard let missionState = newState.missionStatus else { return newState }
+      coordinator.destination.accept(.startMissionUpload(recordId: missionState.recordId))
     }
     return newState
   }

@@ -60,8 +60,8 @@ public final class MissionCoordinatorImp: MissionCoordinator {
     destination
       .subscribe(with: self, onNext: { owner, flow in
         switch flow { 
-        case .startMissionUpload:
-          owner.startMissionUpload()
+        case .startMissionUpload(let recordId):
+          owner.startMissionUpload(recordId: recordId)
         }
       })
       .disposed(by: disposeBag)
@@ -111,12 +111,13 @@ extension MissionCoordinatorImp {
 
 extension MissionCoordinatorImp {
   
-  fileprivate func startMissionUpload() {
+  fileprivate func startMissionUpload(recordId: Int) {
     let missionUploadCoordinator = missionUploadDependencyFactory.injectMissionUploadCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
       recordsDependencyFactory: recordDependencyFactory,
-      imageDependencyFactory: imageDependencyFactory
+      imageDependencyFactory: imageDependencyFactory,
+      recordId: recordId
     )
     self.childCoordinator = missionUploadCoordinator
     missionUploadCoordinator.start()

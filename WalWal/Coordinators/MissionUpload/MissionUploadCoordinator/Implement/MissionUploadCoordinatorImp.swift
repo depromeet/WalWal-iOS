@@ -31,22 +31,26 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
-  public var missionUploadDependencyFactory: MissionUploadDependencyFactory
-  public var recordsDependencyFactory: RecordsDependencyFactory
-  public var imageDependencyFactory: ImageDependencyFactory
+  public let missionUploadDependencyFactory: MissionUploadDependencyFactory
+  public let recordsDependencyFactory: RecordsDependencyFactory
+  public let imageDependencyFactory: ImageDependencyFactory
+  
+  private let recordId: Int
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     missionUploadDependencyFactory: MissionUploadDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
+    recordId: Int
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.missionUploadDependencyFactory = missionUploadDependencyFactory
     self.recordsDependencyFactory = recordsDependencyFactory
     self.imageDependencyFactory = imageDependencyFactory
+    self.recordId = recordId
     bindChildToParentAction()
     bindState()
   }
