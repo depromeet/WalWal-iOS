@@ -19,7 +19,7 @@ public final class FeedRepositoryImp: FeedRepository {
     self.networkService = networkService
   }
   
-  public func fetchFeedData(cursor: String, limit: Int) -> Single<FeedDTO> {
+  public func fetchFeedData(cursor: String?, limit: Int) -> Single<FeedDTO> {
     let query = FetchFeedQuery(cursor: cursor, limit: limit)
     let endPoint = FeedEndpoint<FeedDTO>.fetchFeed(query: query)
     return networkService.request(endpoint: endPoint, isNeedInterceptor: true)

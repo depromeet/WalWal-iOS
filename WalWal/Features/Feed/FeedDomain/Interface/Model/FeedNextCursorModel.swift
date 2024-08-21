@@ -11,9 +11,9 @@ import Foundation
 import FeedData
 
 public struct FeedNextCursorModel {
-  var nextCursor: String
+  var nextCursor: String?
   
   init(dto: FeedDTO) {
-    nextCursor = dto.nextCursor ?? ""
+    nextCursor = dto.nextCursor
   }
 }

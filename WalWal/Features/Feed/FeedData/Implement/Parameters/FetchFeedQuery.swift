@@ -9,6 +9,6 @@
 import Foundation
 
 struct FetchFeedQuery: Encodable {
-  let cursor: String
+  let cursor: String?
   let limit: Int
 }
