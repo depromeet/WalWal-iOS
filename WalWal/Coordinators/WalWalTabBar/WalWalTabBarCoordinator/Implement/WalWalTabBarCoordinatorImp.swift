@@ -65,7 +65,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory
   ) {
     self.navigationController = navigationController

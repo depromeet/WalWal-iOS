@@ -38,7 +38,7 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory
   ) -> any WalWalTabBarCoordinator {
     return WalWalTabBarCoordinatorImp(
@@ -52,7 +52,7 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
       recordDependencyFactory: recordDependencyFactory,
-      imageDependencyFactory: imageDependencyFactory
+      imageDependencyFactory: imageDependencyFactory,
       membersDependencyFactory: membersDependencyFactory
     )
   }

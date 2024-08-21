@@ -31,7 +31,7 @@ public protocol WalWalTabBarDependencyFactory {
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory
   ) -> any WalWalTabBarCoordinator
 }
