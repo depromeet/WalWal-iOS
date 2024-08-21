@@ -63,7 +63,7 @@ public final class WalWalProfile: UIView {
   
   // MARK: - UI
   
-  private let profileSize: CGFloat = 171.adjusted
+  private let profileSize: CGFloat = 170.adjusted
   private let viewWidth: CGFloat = UIScreen.main.bounds.width
   private let marginItems: CGFloat
   private let inActiveProfileSize: CGFloat = 140.adjusted
@@ -97,30 +97,20 @@ public final class WalWalProfile: UIView {
     userImage: UIImage? = nil
   ) {
     defaultImages = type == .dog ? DefaultProfile.defaultDogs : DefaultProfile.defaultCats
-    defaultImageCount = defaultImages.count
-    marginItems = (viewWidth - profileSize*2)/2
-    
-    super.init(frame: .zero)
-    
-    configInitialData(type: type, defaultImage: defaultImage, userImage: userImage)
-    setLayout()
-    bind()
-//    focusIndex.accept(IndexPath(item: userImage != nil ? 1 : 0, section: 0))
-  }
-  
-  public func configInitialData(
-    type: PetType,
-    defaultImage: String? = nil,
-    userImage: UIImage? = nil
-  ) {
     if let defaultImage = defaultImage, let defaultType = DefaultProfile(rawValue: defaultImage) {
       self.defaultImageIndex = defaultImages.firstIndex(of: defaultType) ?? 0
     } else {
       self.defaultImageIndex = 0
     }
+    defaultImageCount = defaultImages.count
+    marginItems = (viewWidth - profileSize*2)/2
     if let userImage = userImage {
       self.userSelectImage = userImage
     }
+    
+    super.init(frame: .zero)
+    setLayout()
+    bind()
     focusIndex.accept(IndexPath(item: userImage != nil ? 1 : 0, section: 0))
   }
   

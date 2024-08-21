@@ -10,6 +10,8 @@ import MyPageDomain
 import MyPagePresenter
 import MyPageCoordinator
 import Utility
+import DesignSystem
+import ResourceKit
 
 import MembersDomain
 
@@ -27,6 +29,8 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
   private let editProfileUseCase: EditProfileUseCase
   private let checkNicknameUseCase: CheckNicknameUseCase
   private let fetchMemberInfoUseCase: FetchMemberInfoUseCase
+  private var initProfileData: WalWalProfileModel?
+  private var initNickname: String = ""
   
   public init(
     coordinator: any MyPageCoordinator,
@@ -46,12 +50,10 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
     return .merge(action, loadProfileInfo)
   }
   
-  // TODO: 유효성 체크로 변경 필요
-  
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .checkCondition:
-      return .just(.showIndicator(show: true))
+    case let .checkCondition(nickname, profile):
+      return checkValidForm(nickname: nickname, profile: profile)
     case .editProfile:
       return .concat([
         .just(.showIndicator(show: true)),
@@ -71,8 +73,8 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
     switch mutation {
     case let .buttonEnable(isEnable):
       newState.buttonEnable = isEnable
-    case let .invaildNickname(message):
-      newState.invaildMessage = message
+    case let .invalidNickname(message):
+      newState.invalidMessage = message
     case let .showIndicator(show):
       newState.showIndicator = show
     case let .setPhotoPermission(isAllow):
@@ -85,9 +87,28 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
     return newState
   }
   
-  
-  private func checkNickname(nickname: String) {
-    
+}
+
+extension ProfileEditReactorImp {
+  private func fetchProfile() -> Observable<Mutation> {
+    return fetchMemberInfoUseCase.execute()
+      .map { MemberModel(global: $0) }
+      .asObservable()
+      .flatMap { info -> Observable<Mutation> in
+        let profileType: ProfileType = info.profileImage == nil ? .defaultImage : .selectImage
+        var defaultName: DefaultProfile?
+        if let defaultImageName = info.defaultImageName {
+          defaultName = DefaultProfile(rawValue: defaultImageName)
+        }
+        let profileModelType = WalWalProfileModel(
+          profileType: profileType,
+          selectImage: info.profileImage,
+          defaultImage: defaultName
+        )
+        self.initProfileData = profileModelType
+        self.initNickname = info.nickname
+        return .just(.profileInfo(info: info))
+      }
   }
   
   private func checkPhotoPermission() -> Observable<Bool> {
@@ -99,15 +120,31 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
         return Observable.just(isGranted)
       }
   }
-}
-
-extension ProfileEditReactorImp {
-  private func fetchProfile() -> Observable<Mutation> {
-    return fetchMemberInfoUseCase.execute()
-      .map { MemberModel(global: $0) }
-      .asObservable()
-      .flatMap { info -> Observable<Mutation> in
-        return .just(.profileInfo(info: info))
-      }
+  
+  private func checkValidForm(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
+    
+    if let initProfileData = initProfileData,
+        initProfileData == profile,
+        nickname == initNickname {
+      
+      return .just(.buttonEnable(isEnable: false))
+    }
+    
+    else if nickname.count < 2 {
+      return .just(.buttonEnable(isEnable: false))
+    }
+    else if nickname.count > 14 {
+      return .concat([
+        .just(.buttonEnable(isEnable: false)),
+        .just(.invalidNickname(message: "14글자 이내로 입력해주세요"))
+      ])
+    } else if !nickname.isValidNickName() {
+      return .concat([
+        .just(.buttonEnable(isEnable: false)),
+        .just(.invalidNickname(message: "영문, 한글만 입력할 수 있어요"))
+      ])
+    } else {
+      return .just(.buttonEnable(isEnable: true))
+    }
   }
 }

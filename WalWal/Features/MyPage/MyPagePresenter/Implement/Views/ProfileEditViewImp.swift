@@ -51,7 +51,7 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   ).then {
     $0.focusOnTextField()
   }
-  private let completeButton = WalWalButton(type: .active, title: "완료")
+  private let completeButton = WalWalButton(type: .disabled, title: "완료")
   
   public var disposeBag = DisposeBag()
   public var profileEditReactor: R
@@ -90,6 +90,7 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    let _ = view.pin.keyboardArea.height
     view.backgroundColor = Colors.white.color
     
     rootContainerView.pin
@@ -160,9 +161,30 @@ extension ProfileEditViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
+    let inputValue =  Observable.combineLatest(nicknameTextfield.rx.text.orEmpty, profileEditView.curProfileItems)
+    inputValue
+      .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
+      .map {
+        Reactor.Action.checkCondition(nickname: $0, profile: $1)
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    profileEditView.curProfileItems
+      .bind(with: self) { owner, items in
+        dump(items)
+      }
+      .disposed(by: disposeBag)
     
     profileEditView.showPHPicker
       .map { Reactor.Action.checkPhotoPermission }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    completeButton.rx.tapped
+      .withLatestFrom(inputValue) {
+        Reactor.Action.editProfile(nickname: $1.0, profile: $1.1)
+      }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
@@ -183,6 +205,11 @@ extension ProfileEditViewControllerImp: View {
           // 권한 요청 - Alert
         }
       })
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { return $0.buttonEnable ? .active : .disabled }
+      .bind(to: completeButton.rx.buttonType)
       .disposed(by: disposeBag)
     
   }

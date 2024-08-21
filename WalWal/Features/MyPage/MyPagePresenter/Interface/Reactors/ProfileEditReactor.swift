@@ -8,6 +8,7 @@
 
 import MyPageDomain
 import MyPageCoordinator
+import DesignSystem
 
 import MembersDomain
 
@@ -15,15 +16,15 @@ import ReactorKit
 import RxSwift
 
 public enum ProfileEditReactorAction {
-  case editProfile(nickname: String, profileURL: String)
-  case checkCondition(nickname: String)
+  case editProfile(nickname: String, profile: WalWalProfileModel)
+  case checkCondition(nickname: String, profile: WalWalProfileModel)
   case checkPhotoPermission
   case tapCancelButton
   case loadProfile
 }
 
 public enum ProfileEditReactorMutation {
-  case invaildNickname(message: String)
+  case invalidNickname(message: String)
   case buttonEnable(isEnable: Bool)
   case showIndicator(show: Bool)
   case setPhotoPermission(Bool)
@@ -37,7 +38,7 @@ public struct ProfileEditReactorState {
   public var buttonEnable: Bool = false
   public var showIndicator: Bool = false
   public var isGrantedPhoto: Bool = false
-  @Pulse public var invaildMessage: String = ""
+  @Pulse public var invalidMessage: String = ""
   public var profileInfo: MemberModel?
 }
 
