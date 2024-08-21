@@ -265,34 +265,33 @@ extension WalWalBoostGenerator {
     }
     
     switch count {
+    case 20:
+      walwalBoostCenterLabel.disappearLabels()
     case 100:
-      walwalBoostCenterLabel.disappearLabels { [weak self] in
-        guard let ss = self else { return }
-        ss.walwalBoostCenterLabel.updateCenterLabels(
-          with: WalWalBurstString.goodText,
-          in: detailView,
-          window: window
-        )
-      }
       walwalBoostBorder.startBorderAnimation(borderColor: .clear, isRainbow: true)
+      walwalBoostCenterLabel.updateCenterLabels(
+        with: WalWalBurstString.goodText,
+        in: detailView,
+        window: window
+      )
+    case 120:
+      walwalBoostCenterLabel.disappearLabels()
     case 250:
-      walwalBoostCenterLabel.disappearLabels { [weak self] in
-        guard let ss = self else { return }
-        ss.walwalBoostCenterLabel.updateCenterLabels(
-          with: WalWalBurstString.greatText,
-          in: detailView,
-          window: window
-        )
-      }
+      walwalBoostCenterLabel.updateCenterLabels(
+        with: WalWalBurstString.greatText,
+        in: detailView,
+        window: window
+      )
+    case 270:
+      walwalBoostCenterLabel.disappearLabels()
     case 500:
-      walwalBoostCenterLabel.disappearLabels { [weak self] in
-        guard let ss = self else { return }
-        ss.walwalBoostCenterLabel.updateCenterLabels(
-          with: WalWalBurstString.wonderfulText,
-          in: detailView,
-          window: window
-        )
-      }
+      walwalBoostCenterLabel.updateCenterLabels(
+        with: WalWalBurstString.wonderfulText,
+        in: detailView,
+        window: window
+      )
+    case 520:
+      walwalBoostCenterLabel.disappearLabels()
     default:
       break
     }

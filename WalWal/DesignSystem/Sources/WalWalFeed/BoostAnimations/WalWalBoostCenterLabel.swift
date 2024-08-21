@@ -56,7 +56,7 @@ final class WalWalBoostCenterLabel {
         window.addSubview(shadowLabel)
         window.addSubview(label)
         
-        let delay = Double(lineIndex * lineText.count + charIndex) * 0.05
+        let delay = Double(lineIndex * lineText.count + charIndex) * 0.1
         animateLabel(label, shadowLabel: shadowLabel, delay: delay)
         
         startX += label.bounds.width - characterOverlap
@@ -66,8 +66,8 @@ final class WalWalBoostCenterLabel {
     }
   }
   
-  func disappearLabels(completion: @escaping () -> Void) {
-    let delayBetweenChars: TimeInterval = 0.05
+  func disappearLabels() {
+    let delayBetweenChars: TimeInterval = 0.1
     var completionCount = 0
     
     for (index, (label, shadowLabel)) in zip(centerLabels, centerShadowLabels).enumerated() {
@@ -76,7 +76,6 @@ final class WalWalBoostCenterLabel {
         completionCount += 1
         if completionCount == self.centerLabels.count {
           self.clearExistingLabels()
-          completion()
         }
       }
     }
@@ -131,7 +130,7 @@ final class WalWalBoostCenterLabel {
     /// 랜덤 시작 각도 (-15도에서 15도 사이)
     let startAngle = [CGFloat.pi / 8, -CGFloat.pi / 8].randomElement() ?? CGFloat.pi / 8
     
-    UIView.animateKeyframes(withDuration: 0.3, delay: delay, options: [], animations: {
+    UIView.animateKeyframes(withDuration: 0.5, delay: delay, options: [], animations: {
       
       /// 크기 애니메이션 (팝업 효과)
       UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
@@ -157,7 +156,7 @@ final class WalWalBoostCenterLabel {
     /// 랜덤 시작 각도 (-15도에서 15도 사이)
     let startAngle = [CGFloat.pi / 8, -CGFloat.pi / 8].randomElement() ?? CGFloat.pi / 8
     
-    UIView.animateKeyframes(withDuration: 0.3, delay: delay, options: [], animations: {
+    UIView.animateKeyframes(withDuration: 0.5, delay: delay, options: [], animations: {
       // 첫 번째 키프레임: 약간 커지면서 회전 시작
       UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.3) {
         let transform = CGAffineTransform(scaleX: 1.1, y: 1.1).rotated(by: startAngle / 2)
