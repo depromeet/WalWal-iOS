@@ -59,8 +59,13 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
         switch flow {
         case .showRecordDetail:
           owner.showRecordDetailVC()
-        case .showProfileEdit:
-          owner.showProfileEditVC()
+        case let .showProfileEdit(nickname, defaultProfile, selectImage, raisePet):
+          owner.showProfileEditVC(
+            nickname: nickname,
+            defaultProfile: defaultProfile,
+            selectImage: selectImage,
+            raisePet: raisePet
+          )
         case .showProfileSetting:
           owner.showProfileSettingVC()
         }
@@ -68,8 +73,6 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
       .disposed(by: disposeBag)
   }
   
-  /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
-  /// 여기도, MyPage이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   public func handleChildEvent<T: ParentAction>(_ event: T) {
     /// if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
     ///   handle__Event(__Event)
@@ -79,8 +82,6 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   }
   
   public func start() {
-    /// 이런 Reactor랑 ViewController가 있다 치고~
-    /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
     let fetchWalWalCalendarModelsUseCase = myPageDependencyFactory.injectFetchWalWalCalendarModelsUseCase()
     let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
     let reactor = myPageDependencyFactory.injectMyPageReactor(
@@ -133,15 +134,28 @@ extension MyPageCoordinatorImp {
   }
   
   /// 프로필 변경뷰
-  fileprivate func showProfileEditVC() {
+  fileprivate func showProfileEditVC(
+    nickname: String,
+    defaultProfile: String?,
+    selectImage: UIImage?,
+    raisePet: String
+  ) {
     let editProfileUseCase = membersDependencyFactory.injectEditProfileUseCase()
     let checkNicknameUseCase = membersDependencyFactory.injectCheckNicknameUseCase()
+    let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
     let reactor = myPageDependencyFactory.injectProfileEditReactor(
       coordinator: self,
       editProfileUseCase: editProfileUseCase,
-      checkNicknameUseCase: checkNicknameUseCase
+      checkNicknameUseCase: checkNicknameUseCase,
+      fetchMemberInfoUseCase: fetchMemberInfoUseCase
     )
-    let ProfileEditVC = myPageDependencyFactory.injectProfileEditViewController(reactor: reactor)
+    let ProfileEditVC = myPageDependencyFactory.injectProfileEditViewController(
+      reactor: reactor,
+      nickname: nickname,
+      defaultProfile: defaultProfile,
+      selectImage: selectImage,
+      raisePet: raisePet
+    )
     self.pushViewController(viewController: ProfileEditVC, animated: false)
   }
 }

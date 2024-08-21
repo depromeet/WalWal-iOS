@@ -51,6 +51,8 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     chipTitle: "수정"
   )
   
+  // MARK: - Properties
+  
   public var disposeBag = DisposeBag()
   public var mypageReactor: R
   
@@ -96,13 +98,13 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     
     containerView.flex
       .direction(.column)
+      .justifyContent(.spaceBetween)
       .define { flex in
         flex.addItem(navigationBar)
         flex.addItem(seperator)
           .height(1)
           .width(100%)
         flex.addItem(calendar)
-          .grow(1)
         flex.addItem(profileCardView)
       }
   }

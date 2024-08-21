@@ -19,6 +19,7 @@ public enum ProfileEditReactorAction {
   case checkCondition(nickname: String)
   case checkPhotoPermission
   case tapCancelButton
+  case loadProfile
 }
 
 public enum ProfileEditReactorMutation {
@@ -27,6 +28,8 @@ public enum ProfileEditReactorMutation {
   case showIndicator(show: Bool)
   case setPhotoPermission(Bool)
   case moveToBack
+  case profileInfo(info: MemberModel)
+  
 }
 
 public struct ProfileEditReactorState {
@@ -35,6 +38,7 @@ public struct ProfileEditReactorState {
   public var showIndicator: Bool = false
   public var isGrantedPhoto: Bool = false
   @Pulse public var invaildMessage: String = ""
+  public var profileInfo: MemberModel?
 }
 
 
@@ -47,6 +51,7 @@ public protocol ProfileEditReactor: Reactor where Action == ProfileEditReactorAc
   init(
     coordinator: any MyPageCoordinator,
     editProfileUseCase: EditProfileUseCase,
-    checkNicknameUseCase: CheckNicknameUseCase
+    checkNicknameUseCase: CheckNicknameUseCase,
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase
   )
 }

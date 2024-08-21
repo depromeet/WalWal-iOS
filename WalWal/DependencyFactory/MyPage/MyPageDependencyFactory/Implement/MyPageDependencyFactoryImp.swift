@@ -109,16 +109,30 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   public func injectProfileEditReactor<T: MyPageCoordinator>(
     coordinator: T,
     editProfileUseCase: EditProfileUseCase,
-    checkNicknameUseCase: CheckNicknameUseCase
+    checkNicknameUseCase: CheckNicknameUseCase,
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase
   ) -> any ProfileEditReactor {
     return ProfileEditReactorImp(
       coordinator: coordinator,
       editProfileUseCase: editProfileUseCase,
-      checkNicknameUseCase: checkNicknameUseCase
+      checkNicknameUseCase: checkNicknameUseCase,
+      fetchMemberInfoUseCase: fetchMemberInfoUseCase
     )
   }
   
-  public func injectProfileEditViewController<T: ProfileEditReactor>(reactor: T) -> any ProfileEditViewController {
-    return ProfileEditViewControllerImp(reactor: reactor)
+  public func injectProfileEditViewController<T: ProfileEditReactor>(
+    reactor: T,
+    nickname: String,
+    defaultProfile: String?,
+    selectImage: UIImage?,
+    raisePet: String
+  ) -> any ProfileEditViewController {
+    return ProfileEditViewControllerImp(
+      reactor: reactor,
+      nickname: nickname,
+      defaultProfile: defaultProfile,
+      selectImage: selectImage,
+      raisePet: raisePet
+    )
   }
 }

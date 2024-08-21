@@ -26,25 +26,33 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
   public let coordinator: any MyPageCoordinator
   private let editProfileUseCase: EditProfileUseCase
   private let checkNicknameUseCase: CheckNicknameUseCase
+  private let fetchMemberInfoUseCase: FetchMemberInfoUseCase
   
   public init(
     coordinator: any MyPageCoordinator,
     editProfileUseCase: EditProfileUseCase,
-    checkNicknameUseCase: CheckNicknameUseCase
+    checkNicknameUseCase: CheckNicknameUseCase,
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase
   ) {
     self.editProfileUseCase = editProfileUseCase
     self.checkNicknameUseCase = checkNicknameUseCase
+    self.fetchMemberInfoUseCase = fetchMemberInfoUseCase
     self.initialState = State()
     self.coordinator = coordinator
+  }
+  
+  public func transform(action: Observable<ProfileEditReactorAction>) -> Observable<ProfileEditReactorAction> {
+    let loadProfileInfo = Observable.just(Action.loadProfile)
+    return .merge(action, loadProfileInfo)
   }
   
   // TODO: 유효성 체크로 변경 필요
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case let .checkCondition(nickname):
+    case .checkCondition:
       return .just(.showIndicator(show: true))
-    case let .editProfile(nickname, profileURL):
+    case .editProfile:
       return .concat([
         .just(.showIndicator(show: true)),
       ])
@@ -53,6 +61,8 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
         .map{ Mutation.setPhotoPermission($0) }
     case .tapCancelButton:
       return .just(.moveToBack)
+    case .loadProfile:
+      return fetchProfile()
     }
   }
   
@@ -69,6 +79,8 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
       newState.isGrantedPhoto = isAllow
     case .moveToBack:
       coordinator.popViewController(animated: true)
+    case let .profileInfo(info):
+      newState.profileInfo = info
     }
     return newState
   }
@@ -85,6 +97,17 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
           return PermissionManager.shared.requestPhotoPermission()
         }
         return Observable.just(isGranted)
+      }
+  }
+}
+
+extension ProfileEditReactorImp {
+  private func fetchProfile() -> Observable<Mutation> {
+    return fetchMemberInfoUseCase.execute()
+      .map { MemberModel(global: $0) }
+      .asObservable()
+      .flatMap { info -> Observable<Mutation> in
+        return .just(.profileInfo(info: info))
       }
   }
 }

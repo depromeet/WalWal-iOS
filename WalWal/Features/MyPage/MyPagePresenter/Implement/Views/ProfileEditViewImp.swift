@@ -39,7 +39,7 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   ).then {
     $0.backgroundColor = Colors.white.color
   }
-  private let profileEditView = WalWalProfile(type: .dog)
+  private var profileEditView: WalWalProfile
   private let nicknameTextfield = WalWalInputBox(
     defaultState: .active,
     placeholder: "",
@@ -54,9 +54,18 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   // MARK: - Initializer
   
   public init(
-    reactor: R
+    reactor: R,
+    nickname: String,
+    defaultProfile: String?,
+    selectImage: UIImage?,
+    raisePet: String
   ) {
     self.profileEditReactor = reactor
+    profileEditView = WalWalProfile(
+      type: PetType(rawValue: raisePet) ?? .dog,
+      defaultImage: defaultProfile,
+      userImage: selectImage
+    )
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -151,6 +160,7 @@ extension ProfileEditViewControllerImp: View {
         }
       })
       .disposed(by: disposeBag)
+    
   }
   
   public func bindEvent() {

@@ -15,13 +15,14 @@ public struct MemberModel {
   public let profileURL: String
   public let raisePet: String
   public var profileImage: UIImage?
+  public var defaultImageName: String?
   
   public init(global: GlobalProfileModel) {
     self.nickname = global.nickname
     self.profileURL = global.profileURL
     self.raisePet = global.raisePet
     if let defaultProfile = DefaultProfile(rawValue: global.profileURL) {
-      self.profileImage = defaultProfile.image
+      defaultImageName = defaultProfile.rawValue
     } else {
       self.profileImage = GlobalState.shared.imageStore[global.profileURL]
     }
