@@ -57,6 +57,7 @@ public final class GlobalState {
     
     feedList
       .asObservable()
+      .debug()
       .withUnretained(self)
       .flatMap { owner, feeds -> Observable<Void> in
         return owner.preloadImages(globalState: .feedList)
@@ -103,7 +104,7 @@ public final class GlobalState {
   }
   
   public func getFeeds(forDate date: String) -> [GlobalFeedListModel] {
-    return feedList.value.filter {  $0.missionDate == date  }
+    return feedList.value.filter {  $0.createdDate == date  }
   }
   
   public func resetFeeds() {
@@ -111,8 +112,14 @@ public final class GlobalState {
     imageStore.removeAll()
   }
   
-  public func getCachedImage(for feed: GlobalFeedListModel) -> UIImage? {
-    return imageStore[feed.imageUrl]
+  public func getCachedMissionImage(for feed: GlobalFeedListModel) -> UIImage? {
+    guard let imageURL = feed.missionImage else { return nil }
+    return imageStore[imageURL]
+  }
+  
+  public func getCachedProfileImage(for feed: GlobalFeedListModel) -> UIImage? {
+    guard let imageURL = feed.profileImage else { return nil }
+    return imageStore[imageURL]
   }
   
   /// 이미지 미리 불러오기 메서드
@@ -125,16 +132,19 @@ public final class GlobalState {
       return Observable.concat(downloadTasks) /// 모든 다운로드 작업을 순차적으로 실행
     case let .profile(url):
       return downloadAndCacheImage(for: url)
-    case .feedList: /// 피드 데이터 불러오기
-      let downloadTasks = self.feedList.value.map { feed in
-        return downloadAndCacheImage(for: feed.imageUrl)
+    case .feedList:
+      let downloadTasks = self.feedList.value.flatMap { feed -> [Observable<Void>] in
+        let missionDownload = downloadAndCacheImage(for: feed.missionImage)
+        let profileDownload = downloadAndCacheImage(for: feed.profileImage)
+        return [missionDownload, profileDownload]
       }
       return Observable.concat(downloadTasks)
     }
   }
   
   /// 이미지를 다운로드하고 캐시에 저장하는 메서드
-  public func downloadAndCacheImage(for imageUrl: String) -> Observable<Void> {
+  public func downloadAndCacheImage(for imageUrl: String?) -> Observable<Void> {
+    guard let imageUrl else { return Observable.just(()) }
     return ImageCacheManager().downloadImage(for: imageUrl)
       .withUnretained(self)
       .do(onNext: { owner, image in

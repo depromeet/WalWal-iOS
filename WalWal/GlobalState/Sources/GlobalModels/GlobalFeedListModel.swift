@@ -8,17 +8,29 @@
 
 import Foundation
 public struct GlobalFeedListModel {
-  public let imageId: Int
-  public let imageUrl: String
-  public let missionDate: String
+  public let recordID: Int
+  public let createdDate: String
+  public let authorNickname: String
+  public let missionTitle: String
+  public let profileImage: String?
+  public let missionImage: String?
+  public let boostCount: Int
   
   public init(
-    imageId: Int,
-    imageUrl: String,
-    missionDate: String
+    recordID: Int,
+    createdDate: String,
+    authorNickname: String,
+    missionTitle: String,
+    profileImage: String?,
+    missionImage: String?,
+    boostCount: Int
   ) {
-    self.imageId = imageId
-    self.imageUrl = imageUrl
-    self.missionDate = missionDate
+    self.recordID = recordID
+    self.createdDate = createdDate
+    self.authorNickname = authorNickname
+    self.missionTitle = missionTitle
+    self.profileImage = profileImage
+    self.missionImage = missionImage
+    self.boostCount = boostCount
   }
 }
