@@ -149,12 +149,14 @@ extension MyPageCoordinatorImp {
     let checkNicknameUseCase = membersDependencyFactory.injectCheckNicknameUseCase()
     let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
     let uploadMemberInfoUseCase = imageDependencyFactory.injectUploadMemberUseCase()
+    let memberInfoUseCase = membersDependencyFactory.injectMemberInfoUseCase()
     let reactor = myPageDependencyFactory.injectProfileEditReactor(
       coordinator: self,
       editProfileUseCase: editProfileUseCase,
       checkNicknameUseCase: checkNicknameUseCase,
       fetchMemberInfoUseCase: fetchMemberInfoUseCase,
-      uploadMemberUseCase: uploadMemberInfoUseCase
+      uploadMemberUseCase: uploadMemberInfoUseCase,
+      memberInfoUseCase: memberInfoUseCase
     )
     let ProfileEditVC = myPageDependencyFactory.injectProfileEditViewController(
       reactor: reactor,

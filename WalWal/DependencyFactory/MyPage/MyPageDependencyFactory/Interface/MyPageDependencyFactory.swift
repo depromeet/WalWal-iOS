@@ -60,7 +60,8 @@ public protocol MyPageDependencyFactory {
     editProfileUseCase: EditProfileUseCase,
     checkNicknameUseCase: CheckNicknameUseCase,
     fetchMemberInfoUseCase: FetchMemberInfoUseCase,
-    uploadMemberUseCase: UploadMemberUseCase
+    uploadMemberUseCase: UploadMemberUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   ) -> any ProfileEditReactor
   func injectProfileEditViewController<T: ProfileEditReactor>(
     reactor: T,

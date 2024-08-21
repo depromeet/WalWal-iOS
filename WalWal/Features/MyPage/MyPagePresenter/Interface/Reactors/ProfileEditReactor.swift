@@ -55,6 +55,7 @@ public protocol ProfileEditReactor: Reactor where Action == ProfileEditReactorAc
     editProfileUseCase: EditProfileUseCase,
     checkNicknameUseCase: CheckNicknameUseCase,
     fetchMemberInfoUseCase: FetchMemberInfoUseCase,
-    uploadMemberUseCase: UploadMemberUseCase
+    uploadMemberUseCase: UploadMemberUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   )
 }

@@ -30,7 +30,8 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
   private let editProfileUseCase: EditProfileUseCase
   private let checkNicknameUseCase: CheckNicknameUseCase
   private let fetchMemberInfoUseCase: FetchMemberInfoUseCase
-  private let uploadMemberUseCase: any UploadMemberUseCase
+  private let uploadMemberUseCase: UploadMemberUseCase
+  private let memberInfoUseCase: MemberInfoUseCase
   
   private var originWalWalProfileModel: WalWalProfileModel?
   private var profileModel: MemberModel?
@@ -40,12 +41,14 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
     editProfileUseCase: EditProfileUseCase,
     checkNicknameUseCase: CheckNicknameUseCase,
     fetchMemberInfoUseCase: FetchMemberInfoUseCase,
-    uploadMemberUseCase: UploadMemberUseCase
+    uploadMemberUseCase: UploadMemberUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   ) {
     self.editProfileUseCase = editProfileUseCase
     self.checkNicknameUseCase = checkNicknameUseCase
     self.fetchMemberInfoUseCase = fetchMemberInfoUseCase
     self.uploadMemberUseCase = uploadMemberUseCase
+    self.memberInfoUseCase = memberInfoUseCase
     self.initialState = State()
     self.coordinator = coordinator
   }
@@ -98,6 +101,12 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
 
 extension ProfileEditReactorImp {
   
+  private func refreshMemberInfo() -> Observable<Void> {
+    return memberInfoUseCase.execute()
+      .asObservable()
+      .map { _ in Void() }
+  }
+  
   private func editProfile(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
     if let profileModel = profileModel, 
         nickname != profileModel.nickname { // 닉네임 수정 -> 체크 필요
@@ -105,7 +114,9 @@ extension ProfileEditReactorImp {
         .asObservable()
         .withUnretained(self)
         .flatMap { owner, _ -> Observable<Mutation> in
-          return owner.uploadImage(nickname: nickname, profile: profile)
+          return .concat([
+            owner.uploadImage(nickname: nickname, profile: profile)
+          ])
         } .catch { error  -> Observable<Mutation> in
           return .just(.invalidNickname(message: error.localizedDescription))
         }
@@ -124,10 +135,10 @@ extension ProfileEditReactorImp {
     }
     
     // 이미지가 변경되지 않음
-    guard let image = profile.selectImage else {
+    if profile.selectImage == profileModel.profileImage {
       return editRequest(nickname: nickname, profileImage: profileModel.profileURL)
     }
-    guard let imagedata = image.jpegData(compressionQuality: 0.8) else {
+    guard let imagedata = profile.selectImage?.jpegData(compressionQuality: 0.8) else {
       return .never()
     }
     return uploadMemberUseCase.execute(nickname: nickname, type: "JPEG", image: imagedata)
@@ -145,8 +156,14 @@ extension ProfileEditReactorImp {
   private func editRequest(nickname: String, profileImage: String) -> Observable<Mutation> {
     return editProfileUseCase.execute(nickname: nickname, profileImage: profileImage)
       .asObservable()
-      .flatMap { _ -> Observable<Mutation> in
-        print("수정 성공") // TODO: - pop, mypage에 반영
+      .withUnretained(self)
+      .flatMap { owner, _ in
+        owner.refreshMemberInfo()
+      }
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
+        print("수정 성공")
+        owner.coordinator.popViewController(animated: true)
         return .just(.showIndicator(show: false))
       }.catch { _ -> Observable<Mutation> in
         print("수정 실패")

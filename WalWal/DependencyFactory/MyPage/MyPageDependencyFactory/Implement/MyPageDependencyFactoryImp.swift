@@ -115,14 +115,16 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     editProfileUseCase: EditProfileUseCase,
     checkNicknameUseCase: CheckNicknameUseCase,
     fetchMemberInfoUseCase: FetchMemberInfoUseCase,
-    uploadMemberUseCase: UploadMemberUseCase
+    uploadMemberUseCase: UploadMemberUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   ) -> any ProfileEditReactor {
     return ProfileEditReactorImp(
       coordinator: coordinator,
       editProfileUseCase: editProfileUseCase,
       checkNicknameUseCase: checkNicknameUseCase,
       fetchMemberInfoUseCase: fetchMemberInfoUseCase,
-      uploadMemberUseCase: uploadMemberUseCase
+      uploadMemberUseCase: uploadMemberUseCase,
+      memberInfoUseCase: memberInfoUseCase
     )
   }
   
