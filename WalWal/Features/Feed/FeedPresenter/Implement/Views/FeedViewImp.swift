@@ -103,7 +103,6 @@ extension FeedViewControllerImp: View {
   public func bindState(reactor: R) {
     reactor.state
       .map {  $0.feedData }
-      .debug()
       .subscribe(with: self, onNext: { owner, feed in
         owner.feed.feedData.accept(feed)
       })

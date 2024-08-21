@@ -57,7 +57,6 @@ public final class GlobalState {
     
     feedList
       .asObservable()
-      .debug()
       .withUnretained(self)
       .flatMap { owner, feeds -> Observable<Void> in
         return owner.preloadImages(globalState: .feedList)

@@ -28,16 +28,13 @@ public final class FeedReactorImp: FeedReactor {
   public let initialState: State
   public let coordinator: any FeedCoordinator
   private let fetchFeedUseCase: FetchFeedUseCase
-  private let fetchNewFeedUseCase: FetchNewFeedUseCase
   
   public init(
     coordinator: any FeedCoordinator,
-    fetchFeedUseCase: FetchFeedUseCase,
-    fetchNewFeedUseCase: FetchNewFeedUseCase
+    fetchFeedUseCase: FetchFeedUseCase
   ) {
     self.coordinator = coordinator
     self.fetchFeedUseCase = fetchFeedUseCase
-    self.fetchNewFeedUseCase = fetchNewFeedUseCase
     self.initialState = State()
   }
   

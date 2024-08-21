@@ -166,7 +166,6 @@ public final class WalWalFeed: UIView {
   
   private func setupBindings() {
     feedData
-      .debug()
       .asDriver(onErrorJustReturn: [])
       .drive(with: self) { owner, feedData in
         self.currentFeedData = feedData
