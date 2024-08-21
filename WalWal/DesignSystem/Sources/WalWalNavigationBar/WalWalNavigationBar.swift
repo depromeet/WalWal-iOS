@@ -120,7 +120,7 @@ extension WalWalNavigationBar {
     self.addSubview(containerView)
     
     self.containerView.flex
-      .height(50)
+      .height(60)
       .direction(.row)
       .alignItems(.center)
       .backgroundColor(colorType.backgroundColor)
