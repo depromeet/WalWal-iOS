@@ -23,6 +23,8 @@ import AuthDomain
 import MembersDependencyFactory
 import MembersDomain
 
+import ImageDependencyFactory
+import ImageDomain
 
 public protocol MyPageDependencyFactory {
   
@@ -31,7 +33,8 @@ public protocol MyPageDependencyFactory {
     parentCoordinator: (any BaseCoordinator)?,
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
-    membersDependencyFactory: MembersDependencyFactory
+    membersDependencyFactory: MembersDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory
   ) -> any MyPageCoordinator
   func injectMyPageRepository() -> MyPageRepository
   func injectFetchWalWalCalendarModelsUseCase() -> FetchWalWalCalendarModelsUseCase
@@ -56,7 +59,8 @@ public protocol MyPageDependencyFactory {
     coordinator: T,
     editProfileUseCase: EditProfileUseCase,
     checkNicknameUseCase: CheckNicknameUseCase,
-    fetchMemberInfoUseCase: FetchMemberInfoUseCase
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase,
+    uploadMemberUseCase: UploadMemberUseCase
   ) -> any ProfileEditReactor
   func injectProfileEditViewController<T: ProfileEditReactor>(
     reactor: T,

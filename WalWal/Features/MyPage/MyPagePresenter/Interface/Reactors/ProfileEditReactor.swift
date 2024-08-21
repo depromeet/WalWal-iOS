@@ -11,6 +11,7 @@ import MyPageCoordinator
 import DesignSystem
 
 import MembersDomain
+import ImageDomain
 
 import ReactorKit
 import RxSwift
@@ -53,6 +54,7 @@ public protocol ProfileEditReactor: Reactor where Action == ProfileEditReactorAc
     coordinator: any MyPageCoordinator,
     editProfileUseCase: EditProfileUseCase,
     checkNicknameUseCase: CheckNicknameUseCase,
-    fetchMemberInfoUseCase: FetchMemberInfoUseCase
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase,
+    uploadMemberUseCase: UploadMemberUseCase
   )
 }

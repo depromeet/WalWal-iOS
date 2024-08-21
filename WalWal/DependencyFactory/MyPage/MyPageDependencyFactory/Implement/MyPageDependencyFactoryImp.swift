@@ -11,6 +11,7 @@ import MyPageDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
 import MembersDependencyFactory
+import ImageDependencyFactory
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -25,6 +26,7 @@ import MyPageDataImp
 import FCMDomain
 import AuthDomain
 import MembersDomain
+import ImageDomain
 
 import WalWalNetwork
 
@@ -39,7 +41,8 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     parentCoordinator: (any BaseCoordinator)?,
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: any AuthDependencyFactory,
-    membersDependencyFactory: MembersDependencyFactory
+    membersDependencyFactory: MembersDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory
   ) -> any MyPageCoordinator {
     return MyPageCoordinatorImp(
       navigationController: navigationController,
@@ -47,7 +50,8 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
       myPageDependencyFactory: self,
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
-      membersDependencyFactory: membersDependencyFactory
+      membersDependencyFactory: membersDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory
     )
   }
   
@@ -110,13 +114,15 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     coordinator: T,
     editProfileUseCase: EditProfileUseCase,
     checkNicknameUseCase: CheckNicknameUseCase,
-    fetchMemberInfoUseCase: FetchMemberInfoUseCase
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase,
+    uploadMemberUseCase: UploadMemberUseCase
   ) -> any ProfileEditReactor {
     return ProfileEditReactorImp(
       coordinator: coordinator,
       editProfileUseCase: editProfileUseCase,
       checkNicknameUseCase: checkNicknameUseCase,
-      fetchMemberInfoUseCase: fetchMemberInfoUseCase
+      fetchMemberInfoUseCase: fetchMemberInfoUseCase,
+      uploadMemberUseCase: uploadMemberUseCase
     )
   }
   

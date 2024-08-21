@@ -11,6 +11,7 @@ import MyPageDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
 import MembersDependencyFactory
+import ImageDependencyFactory
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -35,13 +36,16 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   private let fcmDependencyFactory: FCMDependencyFactory
   private let authDependencyFactory: AuthDependencyFactory
   private let membersDependencyFactory: MembersDependencyFactory
+  private let imageDependencyFactory: ImageDependencyFactory
+  
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
-    membersDependencyFactory: MembersDependencyFactory
+    membersDependencyFactory: MembersDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -49,6 +53,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     self.fcmDependencyFactory = fcmDependencyFactory
     self.authDependencyFactory = authDependencyFactory
     self.membersDependencyFactory = membersDependencyFactory
+    self.imageDependencyFactory = imageDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -143,11 +148,13 @@ extension MyPageCoordinatorImp {
     let editProfileUseCase = membersDependencyFactory.injectEditProfileUseCase()
     let checkNicknameUseCase = membersDependencyFactory.injectCheckNicknameUseCase()
     let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
+    let uploadMemberInfoUseCase = imageDependencyFactory.injectUploadMemberUseCase()
     let reactor = myPageDependencyFactory.injectProfileEditReactor(
       coordinator: self,
       editProfileUseCase: editProfileUseCase,
       checkNicknameUseCase: checkNicknameUseCase,
-      fetchMemberInfoUseCase: fetchMemberInfoUseCase
+      fetchMemberInfoUseCase: fetchMemberInfoUseCase,
+      uploadMemberUseCase: uploadMemberInfoUseCase
     )
     let ProfileEditVC = myPageDependencyFactory.injectProfileEditViewController(
       reactor: reactor,

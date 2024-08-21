@@ -14,6 +14,7 @@ import DesignSystem
 import ResourceKit
 
 import MembersDomain
+import ImageDomain
 
 import ReactorKit
 import RxSwift
@@ -29,6 +30,7 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
   private let editProfileUseCase: EditProfileUseCase
   private let checkNicknameUseCase: CheckNicknameUseCase
   private let fetchMemberInfoUseCase: FetchMemberInfoUseCase
+  private let uploadMemberUseCase: any UploadMemberUseCase
   private var initProfileData: WalWalProfileModel?
   private var initNickname: String = ""
   
@@ -36,11 +38,13 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
     coordinator: any MyPageCoordinator,
     editProfileUseCase: EditProfileUseCase,
     checkNicknameUseCase: CheckNicknameUseCase,
-    fetchMemberInfoUseCase: FetchMemberInfoUseCase
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase,
+    uploadMemberUseCase: UploadMemberUseCase
   ) {
     self.editProfileUseCase = editProfileUseCase
     self.checkNicknameUseCase = checkNicknameUseCase
     self.fetchMemberInfoUseCase = fetchMemberInfoUseCase
+    self.uploadMemberUseCase = uploadMemberUseCase
     self.initialState = State()
     self.coordinator = coordinator
   }
