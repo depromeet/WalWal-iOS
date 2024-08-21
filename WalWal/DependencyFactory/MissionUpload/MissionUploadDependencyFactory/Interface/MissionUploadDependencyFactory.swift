@@ -44,7 +44,8 @@ public protocol MissionUploadDependencyFactory {
   ) -> any CameraShootDuringTheMissionViewController
   
   func injectWriteContentDuringTheMissionViewController<T: WriteContentDuringTheMissionReactor>(
-    reactor: T
+    reactor: T,
+    capturedImage: UIImage
   ) -> any WriteContentDuringTheMissionViewController
   
 }

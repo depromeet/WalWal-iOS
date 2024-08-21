@@ -75,12 +75,8 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let saveRecordUseCase = recordsDependencyFactory.injectSaveRecordUseCase()
-    let uploadRecordUseCase = imageDependencyFactory.injectUploadRecordUseCase()
     let reactor = missionUploadDependencyFactory.injectCameraShootDuringTheMissionReactorReactor(
-      coordinator: self,
-      saveRecordUseCase: saveRecordUseCase,
-      uploadRecordUseCase: uploadRecordUseCase
+      coordinator: self
     )
     let cameraShootDuringTheMissionViewController = missionUploadDependencyFactory.injectCameraShootDuringTheMissionViewController(reactor: reactor)
     self.baseViewController = cameraShootDuringTheMissionViewController
@@ -112,9 +108,18 @@ extension MissionUploadCoordinatorImp {
   
   /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
   fileprivate func showWriteContent(_ capturedImage: UIImage) {
-    /// let reactor = dependencyFactory.make__Reactor(coordinator: self)
-    /// let __VC = dependencyFactory.make__ViewController(reactor: reactor)
-    /// self.pushViewController(viewController: __VC, animated: false)
+    let saveRecordUseCase = recordsDependencyFactory.injectSaveRecordUseCase()
+    let uploadRecordUseCase = imageDependencyFactory.injectUploadRecordUseCase()
+    let reactor = missionUploadDependencyFactory.injectWriteContentDuringTheMissionReactor(
+      coordinator: self,
+      saveRecordUseCase: saveRecordUseCase,
+      uploadRecordUseCase: uploadRecordUseCase
+    )
+    let writeContentDuringTheMissionViewController = missionUploadDependencyFactory.injectWriteContentDuringTheMissionViewController(
+      reactor: reactor,
+      capturedImage: capturedImage
+    )
+    self.pushViewController(viewController: writeContentDuringTheMissionViewController, animated: true)
   }
 }
 

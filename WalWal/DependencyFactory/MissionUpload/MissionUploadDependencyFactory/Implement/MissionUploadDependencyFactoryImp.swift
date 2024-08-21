@@ -75,10 +75,12 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
   }
   
   public func injectWriteContentDuringTheMissionViewController<T: WriteContentDuringTheMissionReactor>(
-    reactor: T
+    reactor: T,
+    capturedImage: UIImage
   ) -> any WriteContentDuringTheMissionViewController {
     return WriteContentDuringTheMissionViewControllerImp(
-      reactor: reactor
+      reactor: reactor,
+      capturedImage: capturedImage
     )
   }
   
