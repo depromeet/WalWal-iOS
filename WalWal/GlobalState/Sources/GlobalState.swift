@@ -97,10 +97,13 @@ public final class GlobalState {
   }
   
   public func updateFeed(with newFeeds: [GlobalFeedListModel]) {
-    var currentFeeds = feedList.value
-    currentFeeds.append(contentsOf: newFeeds)
-    feedList.accept(currentFeeds)
-  }
+     var currentFeeds = feedList.value
+     let newUniqueFeeds = newFeeds.filter { newFeed in
+       !currentFeeds.contains(where: { $0.recordID == newFeed.recordID }) // 중복 검사 (id가 같으면 중복)
+     }
+     currentFeeds.append(contentsOf: newUniqueFeeds)
+     feedList.accept(currentFeeds)
+   }
   
   public func getFeeds(forDate date: String) -> [GlobalFeedListModel] {
     return feedList.value.filter {  $0.createdDate == date  }
