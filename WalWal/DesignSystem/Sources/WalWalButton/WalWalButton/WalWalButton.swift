@@ -26,6 +26,8 @@ public class WalWalButton: UIControl {
   
   public struct Configuration {
     var backgroundColor: UIColor
+    var titleColor: UIColor? = Colors.white.color
+    var font: UIFont? = Fonts.KR.H5.B
     var isEnabled: Bool
   }
   
@@ -36,7 +38,6 @@ public class WalWalButton: UIControl {
   private lazy var titleLabel = UILabel().then {
     $0.textAlignment = .center
     $0.font = Fonts.KR.H5.B
-    $0.textColor = Colors.white.color
     $0.text = title
   }
   
@@ -116,6 +117,8 @@ public class WalWalButton: UIControl {
     let configuration = buttonType.value.configuration
     backgroundColor = configuration.backgroundColor
     isEnabled = configuration.isEnabled
+    titleLabel.textColor = configuration.titleColor
+    titleLabel.font = configuration.font
   }
 }
 
