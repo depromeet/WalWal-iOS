@@ -159,6 +159,7 @@ extension MissionViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.state
+      .observe(on: MainScheduler.instance)
       .map { $0 }
       .subscribe(with: self, onNext: { owner, state in
         
