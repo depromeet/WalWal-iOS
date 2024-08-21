@@ -119,7 +119,8 @@ private enum SampleDataGenerator {
       let randomDate = Date(timeIntervalSince1970: .random(in: oneYearAgo.timeIntervalSince1970...today.timeIntervalSince1970))
       let dateString = dateFormatter.string(from: randomDate)
       let id = "\(dateString)의 이미지 입니당 🐶"
-      return WalWalCalendarModel(imageId: id, date: dateString, imageData: sampleImageData)
+      let image = UIImage(data: sampleImageData)
+      return WalWalCalendarModel(imageId: count, date: dateString, image: image)
     }
     
     return sampleModels.sorted { $0.date < $1.date }
