@@ -29,9 +29,7 @@ extension ImageEndPoint {
     switch self {
     case .membersUploadComplete, .membersUploadURL, .recordUploadComplete, .recordUploadURL:
       return .walWalBaseURL
-    case let .uploadMemberImage(url):
-      return .presignedURL(url)
-    case let .uploadRecordImage(url):
+    case .uploadMemberImage(let url), .uploadRecordImage(let url):
       return .presignedURL(url)
     }
   }
@@ -43,7 +41,7 @@ extension ImageEndPoint {
     case .membersUploadURL:
       return "/images/members/me/upload-url"
     case .recordUploadComplete:
-      return "/images/members/me/upload-url"
+      return "/images/mission-record/upload-complete"
     case .recordUploadURL:
       return "/images/mission-record/upload-url"
     case .uploadMemberImage, .uploadRecordImage:
