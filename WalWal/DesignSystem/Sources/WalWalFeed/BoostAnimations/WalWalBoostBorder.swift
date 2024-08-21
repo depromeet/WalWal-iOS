@@ -114,20 +114,20 @@ final class WalWalBoostBorder {
   
   private func startRainbowBorderAnimation(for layer: CAShapeLayer) {
     let colors: [CGColor] = [
-      Colors.pink.color.cgColor,
-      Colors.walwalOrange.color.cgColor,
-      Colors.yellow.color.cgColor,
-      Colors.green.color.cgColor,
-      Colors.skyblue.color.cgColor,
-      Colors.blue.color.cgColor,
-      Colors.purple.color.cgColor,
-      Colors.pink.color.cgColor
+      UIColor(hex: 0xFFB526).cgColor,
+      UIColor(hex: 0xFFB0CC).cgColor,
+      UIColor(hex: 0xFFE38E).cgColor,
+      UIColor(hex: 0x94E4A5).cgColor,
+      UIColor(hex: 0x90DEFF).cgColor,
+      UIColor(hex: 0x66A3FF).cgColor,
+      UIColor(hex: 0xB69CFF).cgColor,
+      UIColor(hex: 0xFFB526).cgColor
     ]
     
     let rainbowAnimation = CAKeyframeAnimation(keyPath: "strokeColor")
     rainbowAnimation.values = colors
     rainbowAnimation.keyTimes = [0, 0.14, 0.28, 0.43, 0.58, 0.72, 0.87, 1.0]
-    rainbowAnimation.duration = 5.0
+    rainbowAnimation.duration = 4.0
     rainbowAnimation.repeatCount = .infinity
     
     layer.add(rainbowAnimation, forKey: "rainbowBorderAnimation")
@@ -135,7 +135,7 @@ final class WalWalBoostBorder {
     let strokeAnimation = CABasicAnimation(keyPath: "strokeEnd")
     strokeAnimation.fromValue = 0.0
     strokeAnimation.toValue = 1.0
-    strokeAnimation.duration = 2.5
+    strokeAnimation.duration =  0.5
     strokeAnimation.fillMode = .forwards
     strokeAnimation.isRemovedOnCompletion = false
     
@@ -146,7 +146,7 @@ final class WalWalBoostBorder {
     let animation = CABasicAnimation(keyPath: "strokeEnd")
     animation.fromValue = 0.0
     animation.toValue = 1.0
-    animation.duration = 2.5
+    animation.duration = 1.0
     animation.isRemovedOnCompletion = false
     animation.fillMode = .forwards
     
