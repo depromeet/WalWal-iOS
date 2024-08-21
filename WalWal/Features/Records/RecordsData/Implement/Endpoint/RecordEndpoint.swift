@@ -30,7 +30,7 @@ extension RecordEndpoint {
   var path: String {
     switch self {
     case .saveRecord:
-      return "/records/"
+      return "/records"
     case .startRecord:
       return "/records/start"
     case .checkRecordStatus:

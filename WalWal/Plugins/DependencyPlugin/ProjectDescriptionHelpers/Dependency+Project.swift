@@ -28,6 +28,7 @@ enum DependencyFactoryStr: String {
   case fcm = "FCM"
   case records = "Records"
   case image = "Image"
+  case missionUpload = "MissionUpload"
   case members = "Members"
 }
 
@@ -40,6 +41,7 @@ enum CoordinatorStr: String {
   case mission = "Mission"
   case feed = "Feed"
   case myPage = "MyPage"
+  case missionUpload = "MissionUpload"
 }
 
 enum FeatureStr: String {
@@ -52,6 +54,7 @@ enum FeatureStr: String {
   case records = "Records"
   case image = "Image"
   case feed = "Feed"
+  case missionUpload = "MissionUpload"
   case members = "Members"
 }
 
@@ -92,7 +95,7 @@ extension WalWalDependency {
 }
 
 extension TargetDependency {
-  public static let Utility =  TargetDependency.project(target: "Utility", path: .relativeToRoot("Utility"))
+  public static let Utility = TargetDependency.project(target: "Utility", path: .relativeToRoot("Utility"))
   public static let LocalStorage = TargetDependency.project(target: "LocalStorage", path: .relativeToRoot("LocalStorage"))
   public static let GlobalState = TargetDependency.project(target: "GlobalState", path: .relativeToRoot("GlobalState"))
   public static let ResourceKit =  TargetDependency.project(target: "ResourceKit", path: .relativeToRoot("ResourceKit"))
@@ -112,6 +115,7 @@ extension TargetDependency {
     public struct Records: WalWalDependency { }
     public struct Image: WalWalDependency { }
     public struct Feed: WalWalDependency { }
+    public struct MissionUpload: WalWalDependency { }
     public struct Members: WalWalDependency { }
   }
   
@@ -124,6 +128,7 @@ extension TargetDependency {
     public struct Mission: WalWalDependency { }
     public struct MyPage: WalWalDependency { }
     public struct Feed: WalWalDependency { }
+    public struct MissionUpload: WalWalDependency { }
   }
   
   public struct Feature {
@@ -176,6 +181,11 @@ extension TargetDependency {
     public struct Image: WalWalDependency {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
+    }
+    
+    public struct MissionUpload: WalWalDependency {
+      public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
     }
     
     public struct Members: WalWalDependency {
@@ -235,6 +245,11 @@ public extension TargetDependency.DependencyFactory.Image {
 public extension TargetDependency.DependencyFactory.Feed {
   static let Interface = Self.project(dependencyName: .feed, isInterface: true)
   static let Implement = Self.project(dependencyName: .feed, isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.MissionUpload {
+  static let Interface = Self.project(dependencyName: .missionUpload, isInterface: true)
+  static let Implement = Self.project(dependencyName: .missionUpload, isInterface: false)
 }
 
 public extension TargetDependency.DependencyFactory.Members {
@@ -320,18 +335,18 @@ public extension TargetDependency.Feature.MyPage.Data {
 }
 
 public extension TargetDependency.Feature.Feed.Presenter {
-static let Interface = Self.project(name: .feed, layer: .presenter, isInterface: true)
-static let Implement = Self.project(name: .feed, layer: .presenter, isInterface: false)
+  static let Interface = Self.project(name: .feed, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .feed, layer: .presenter, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Feed.Domain {
-static let Interface = Self.project(name: .feed, layer: .domain, isInterface: true)
-static let Implement = Self.project(name: .feed, layer: .domain, isInterface: false)
+  static let Interface = Self.project(name: .feed, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .feed, layer: .domain, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Feed.Data {
-static let Interface = Self.project(name: .feed, layer: .data, isInterface: true)
-static let Implement = Self.project(name: .feed, layer: .data, isInterface: false)
+  static let Interface = Self.project(name: .feed, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .feed, layer: .data, isInterface: false)
 }
 
 public extension TargetDependency.Feature.FCM.Domain {
@@ -362,6 +377,16 @@ public extension TargetDependency.Feature.Image.Domain {
 public extension TargetDependency.Feature.Image.Data {
   static let Interface = Self.project(name: .image, layer: .data, isInterface: true)
   static let Implement = Self.project(name: .image, layer: .data, isInterface: false)
+}
+
+public extension TargetDependency.Feature.MissionUpload.Presenter {
+  static let Interface = Self.project(name: .missionUpload, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .missionUpload, layer: .presenter, isInterface: false)
+}
+
+public extension TargetDependency.Feature.MissionUpload.Domain {
+  static let Interface = Self.project(name: .missionUpload, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .missionUpload, layer: .domain, isInterface: false)
 }
 
 public extension TargetDependency.Feature.Members.Domain {
@@ -413,6 +438,11 @@ public extension TargetDependency.Coordinator.MyPage {
 public extension TargetDependency.Coordinator.Feed {
   static let Interface = Self.project(name: .feed, isInterface: true)
   static let Implement = Self.project(name: .feed, isInterface: false)
+}
+
+public extension TargetDependency.Coordinator.MissionUpload {
+  static let Interface = Self.project(name: .missionUpload, isInterface: true)
+  static let Implement = Self.project(name: .missionUpload, isInterface: false)
 }
 
 public extension TargetDependency.ThirdParty {

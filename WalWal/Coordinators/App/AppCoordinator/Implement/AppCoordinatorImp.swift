@@ -14,16 +14,16 @@ import OnboardingCoordinator
 import WalWalTabBarCoordinator
 
 import SplashDependencyFactory
+import OnboardingDependencyFactory
 import AuthDependencyFactory
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
-import MyPageDependencyFactory
-import FCMDependencyFactory
-import ImageDependencyFactory
-import OnboardingDependencyFactory
+import MissionUploadDependencyFactory
 import FeedDependencyFactory
-import RecordsDependencyFactory
 import FCMDependencyFactory
+import MyPageDependencyFactory
+import RecordsDependencyFactory
+import ImageDependencyFactory
 import MembersDependencyFactory
 
 import RxSwift
@@ -46,6 +46,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   private let authDependencyFactory: AuthDependencyFactory
   private let walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   private let missionDependencyFactory: MissionDependencyFactory
+  private let missionUploadDependencyFactory: MissionUploadDependencyFactory
   private let myPageDependencyFactory: MyPageDependencyFactory
   private let fcmDependencyFactory: FCMDependencyFactory
   private let imageDependencyFactory: ImageDependencyFactory
@@ -62,6 +63,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     authDependencyFactory: AuthDependencyFactory,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
     missionDependencyFactory: MissionDependencyFactory,
+    missionUploadDependencyFactory: MissionUploadDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
@@ -75,6 +77,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     self.authDependencyFactory = authDependencyFactory
     self.walwalTabBarDependencyFactory = walwalTabBarDependencyFactory
     self.missionDependencyFactory = missionDependencyFactory
+    self.missionUploadDependencyFactory = missionUploadDependencyFactory
     self.myPageDependencyFactory = myPageDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
     self.imageDependencyFactory = imageDependencyFactory
@@ -201,11 +204,13 @@ extension AppCoordinatorImp {
       navigationController: navigationController,
       parentCoordinator: self,
       missionDependencyFactory: missionDependencyFactory,
+      missionUploadDependencyFactory: missionUploadDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
-      recordDependencyFactory: recordsDependencyFactory,
+      recordDependencyFactory: recordsDependencyFactory, 
+      imageDependencyFactory: imageDependencyFactory,
       membersDependencyFactory: memberDependencyFactory
     )
     childCoordinator = walwalTabBarCoordinator

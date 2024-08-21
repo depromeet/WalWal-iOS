@@ -11,6 +11,7 @@ import SplashDependencyFactoryImp
 import AuthDependencyFactoryImp
 import WalWalTabBarDependencyFactoryImp
 import MissionDependencyFactoryImp
+import MissionUploadDependencyFactoryImp
 import MyPageDependencyFactoryImp
 import OnboardingDependencyFactoryImp
 import FeedDependencyFactoryImp
@@ -26,6 +27,7 @@ extension AppDelegate {
     let authDependencyFactory = AuthDependencyFactoryImp()
     let walwalTabBarDependencyFactory = WalWalTabBarDependencyFactoryImp()
     let missionDependencyFactory = MissionDependencyFactoryImp()
+    let missionUploadDependencyFactory = MissionUploadDependencyFactoryImp()
     let myPageDependencyFactory = MyPageDependencyFactoryImp()
     let fcmDependencyFactory = FCMDependencyFactoryImp()
     let onboardingDependencyFactory = OnboardingDependencyFactoryImp()
@@ -39,6 +41,7 @@ extension AppDelegate {
       authDependencyFactory: authDependencyFactory,
       walwalTabBarDependencyFactory: walwalTabBarDependencyFactory,
       missionDependencyFactory: missionDependencyFactory,
+      missionUploadDependencyFactory: missionUploadDependencyFactory,
       myPageDependencyFactory: myPageDependencyFactory,
       fcmDependencyFactory: fcmDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,

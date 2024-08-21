@@ -150,7 +150,6 @@ public final class WalWalAlert {
       }
     rootContainer.flex
       .justifyContent(.center)
-    
     rootContainer.flex
       .layout()
     alertView.pin

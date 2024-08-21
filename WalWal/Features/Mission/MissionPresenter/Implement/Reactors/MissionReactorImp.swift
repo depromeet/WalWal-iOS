@@ -70,6 +70,8 @@ public final class MissionReactorImp: MissionReactor {
       return startMission(id: id)
     case .startTimer:
       return startMissionTimer()
+    case .moveToMissionUpload:
+      return Observable.just(Mutation.startMissionUpload)
     }
   }
   
@@ -103,11 +105,15 @@ public final class MissionReactorImp: MissionReactor {
       newState.isAllowNoti = isAllow
     case .setCamPermission(let isAllow):
       newState.isAllowCamera = isAllow
+    case .startMissionUpload:
+      guard let missionState = newState.missionStatus else { return newState }
+      guard let mission = newState.mission else { return newState }
+      coordinator.destination.accept(.startMissionUpload(recordId: missionState.recordId, missionId: mission.id))
     }
     return newState
   }
   
-  private func fetchMissionDataAndCount() -> Observable<Mutation> {
+  public func fetchMissionDataAndCount() -> Observable<Mutation> {
     return fetchMissionData()
       .flatMap { mutation -> Observable<Mutation> in
         if case let .setMission(mission) = mutation {

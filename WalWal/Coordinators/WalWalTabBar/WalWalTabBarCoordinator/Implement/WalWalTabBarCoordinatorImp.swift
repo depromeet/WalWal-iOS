@@ -10,11 +10,13 @@ import UIKit
 import DesignSystem
 import WalWalTabBarDependencyFactory
 import MissionDependencyFactory
+import MissionUploadDependencyFactory
 import MyPageDependencyFactory
 import FeedDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
 import RecordsDependencyFactory
+import ImageDependencyFactory
 import MembersDependencyFactory
 
 import BaseCoordinator
@@ -43,11 +45,13 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   
   public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var missionDependencyFactory: MissionDependencyFactory
+  private let missionUploadDependencyFactory: MissionUploadDependencyFactory
   public var recordDependencyFactory: RecordsDependencyFactory
   public var myPageDependencyFactory: MyPageDependencyFactory
   public var feedDependencyFactory: FeedDependencyFactory
   private var fcmDependencyFactory: FCMDependencyFactory
   private var authDependencyFactory: AuthDependencyFactory
+  private let imageDependencyFactory: ImageDependencyFactory
   private var membersDependencyFactory: MembersDependencyFactory
   
   public required init(
@@ -55,22 +59,26 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     parentCoordinator: (any BaseCoordinator)?,
     walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory,
     missionDependencyFactory: MissionDependencyFactory,
+    missionUploadDependencyFactory: MissionUploadDependencyFactory,
     myPageDependencyFactory: MyPageDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.walwalTabBarDependencyFactory = walwalTabBarDependencyFactory
     self.missionDependencyFactory = missionDependencyFactory
+    self.missionUploadDependencyFactory = missionUploadDependencyFactory
     self.myPageDependencyFactory = myPageDependencyFactory
     self.feedDependencyFactory = feedDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
     self.authDependencyFactory = authDependencyFactory
     self.recordDependencyFactory = recordDependencyFactory
+    self.imageDependencyFactory = imageDependencyFactory
     self.tabBarController = WalWalTabBarViewController()
     self.membersDependencyFactory = membersDependencyFactory
     
@@ -144,7 +152,9 @@ extension WalWalTabBarCoordinatorImp {
     let missionCoordinator = missionDependencyFactory.injectMissionCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
-      recordDependencyFactory: recordDependencyFactory
+      missionUploadDependencyFactory: missionUploadDependencyFactory,
+      recordDependencyFactory: recordDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory
     )
     missionCoordinator.start()
     return missionCoordinator

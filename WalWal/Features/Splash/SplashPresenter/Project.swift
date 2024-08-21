@@ -24,6 +24,7 @@ let project = Project.invertedPresenterWithDemoApp(
   ],
   implementDependencies: [
     .DependencyFactory.Splash.Interface,
+    
     .DesignSystem
   ],
   demoAppDependencies: [
