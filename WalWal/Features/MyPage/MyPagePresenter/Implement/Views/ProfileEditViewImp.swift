@@ -195,14 +195,12 @@ extension ProfileEditViewControllerImp: View {
   }
   
   public func bindState(reactor: R) {
-    reactor.state
-      .map { $0.isGrantedPhoto }
-      .distinctUntilChanged()
+    reactor.pulse(\.$isGrantedPhoto)
       .bind(with: self, onNext: { owner, isAllowed in
         if isAllowed {
           PHPickerManager.shared.presentPicker(vc: owner)
         } else {
-          // 권한 요청 - Alert
+          // TODO: - alert 띄우기
         }
       })
       .disposed(by: disposeBag)
@@ -215,8 +213,6 @@ extension ProfileEditViewControllerImp: View {
   }
   
   public func bindEvent() {
-
-    
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
       .bind(with: self) { owner, _ in
         owner.keyboardLayout()
@@ -227,12 +223,6 @@ extension ProfileEditViewControllerImp: View {
       .asDriver()
       .drive(with: self) { owner, _ in
         owner.navigationController?.popViewController(animated: true)
-      }
-      .disposed(by: disposeBag)
-    
-    profileEditView.showPHPicker
-      .bind(with: self) { owner, _ in
-        PHPickerManager.shared.presentPicker(vc: owner)
       }
       .disposed(by: disposeBag)
   }

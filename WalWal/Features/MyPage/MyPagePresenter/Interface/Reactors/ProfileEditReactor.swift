@@ -37,7 +37,7 @@ public struct ProfileEditReactorState {
   public init() { }
   public var buttonEnable: Bool = false
   public var showIndicator: Bool = false
-  public var isGrantedPhoto: Bool = false
+  @Pulse public var isGrantedPhoto: Bool = false
   @Pulse public var invalidMessage: String = ""
   public var profileInfo: MemberModel?
 }
