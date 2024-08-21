@@ -173,6 +173,7 @@ public final class WalWalChip: UIView {
     case .semiFilled:
       containerView.backgroundColor = UIColor(hex: 0x2C2C2C).withAlphaComponent(opacity)
       label.textColor = Colors.white.color
+      label.font = Fonts.KR.H7.B
       layer.borderWidth = 1
       layer.borderWidth = 0
     case .outlined:

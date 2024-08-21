@@ -40,7 +40,10 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
     size: 40
   )
   
-  private let cameraPreviewView = UIView()
+  private let cameraPreviewView = UIView().then {
+    $0.clipsToBounds = true
+    $0.layer.cornerRadius = 20
+  }
   
   private let previewView = UIView()
   
@@ -52,12 +55,12 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
   )
   
   private var captureButton = WalWalTouchArea(
-    image: Assets.cameraPosSwipe.image,
+    image: Assets.cameraCapture.image,
     size: 74
   )
   
   private var switchCameraButton = WalWalTouchArea(
-    image: Assets.cameraCapture.image,
+    image: Assets.cameraPosSwipe.image,
     size: 48
   )
   
@@ -105,7 +108,7 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
     view.backgroundColor = Colors.black.color
     
     view.addSubview(rootFlexContainer)
-    [navigationContainer, cameraPreviewView, noticeLabelChip, shotContainerView].forEach {
+    [navigationContainer, cameraPreviewView, noticeLabelChip].forEach {
       rootFlexContainer.addSubview($0)
     }
     
@@ -118,7 +121,6 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
     
     rootFlexContainer.flex
       .direction(.column)
-      .justifyContent(.spaceBetween)
       .define { flex in
         flex.addItem(navigationContainer)
           .direction(.row)
@@ -131,6 +133,7 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
         
         flex.addItem(cameraPreviewView)
           .alignSelf(.center)
+          .marginTop(70)
           .aspectRatio(1)
           .width(100%)
           .maxWidth(UIScreen.main.bounds.width - 16)
@@ -138,6 +141,9 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
         flex.addItem(noticeLabelChip)
           .alignSelf(.center)
           .marginTop(20)
+        
+        // 하단 여백을 위한 빈 공간
+        flex.addItem().grow(1)
         
         flex.addItem(shotContainerView)
           .direction(.row)
