@@ -43,8 +43,6 @@ public protocol CameraShootDuringTheMissionReactor:
   var coordinator: any MissionUploadCoordinator { get }
   
   init(
-    coordinator: any MissionUploadCoordinator,
-    saveRecordUseCase: SaveRecordUseCase,
-    uploadRecordUseCase: UploadRecordUseCase
+    coordinator: any MissionUploadCoordinator
   )
 }

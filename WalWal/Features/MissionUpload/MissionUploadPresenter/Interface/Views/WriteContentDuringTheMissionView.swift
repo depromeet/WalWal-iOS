@@ -12,7 +12,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
-public protocol WriteContentDuringTheMissionView: UIViewController {
+public protocol WriteContentDuringTheMissionViewController: UIViewController {
   
   associatedtype WriteContentDuringTheMissionReactorType: WriteContentDuringTheMissionReactor
   var disposeBag: DisposeBag { get set }

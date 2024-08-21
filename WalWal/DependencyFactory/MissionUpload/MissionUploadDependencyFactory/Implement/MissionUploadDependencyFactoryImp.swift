@@ -46,13 +46,20 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
     )
   }
   
-  
   public func injectCameraShootDuringTheMissionReactorReactor<T: MissionUploadCoordinator>(
+    coordinator: T
+  ) -> any CameraShootDuringTheMissionReactor {
+    return CameraShootDuringTheMissionReactorImp(
+      coordinator: coordinator
+    )
+  }
+  
+  public func injectWriteContentDuringTheMissionReactor<T: MissionUploadCoordinator>(
     coordinator: T,
     saveRecordUseCase: SaveRecordUseCase,
     uploadRecordUseCase: UploadRecordUseCase
-  ) -> any CameraShootDuringTheMissionReactor {
-    return CameraShootDuringTheMissionReactorImp(
+  ) -> any WriteContentDuringTheMissionReactor {
+    return WriteContentDuringTheMissionReactorImp(
       coordinator: coordinator,
       saveRecordUseCase: saveRecordUseCase,
       uploadRecordUseCase: uploadRecordUseCase
@@ -63,6 +70,14 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
     reactor: T
   ) -> any CameraShootDuringTheMissionViewController {
     return CameraShootDuringTheMissionViewControllerImp(
+      reactor: reactor
+    )
+  }
+  
+  public func injectWriteContentDuringTheMissionViewController<T: WriteContentDuringTheMissionReactor>(
+    reactor: T
+  ) -> any WriteContentDuringTheMissionViewController {
+    return WriteContentDuringTheMissionViewControllerImp(
       reactor: reactor
     )
   }

@@ -171,13 +171,13 @@ extension CameraShootDuringTheMissionViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    // 사진 찍기 결과
+    /// 사진 찍기 결과
     cameraManager.photoCapturedSubject
       .map{ Reactor.Action.photoCaptured($0)}
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    // 닫기 버튼 탭 처리
+    /// 닫기 버튼 탭 처리
     closeButton.rx.tapped
       .map{ Reactor.Action.backButtonTapped }
       .bind(to: reactor.action)

@@ -19,9 +19,9 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-public final class WriteContentDuringTheMissionViewImp<R: WriteContentDuringTheMissionReactor>:
+public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContentDuringTheMissionReactor>:
   UIViewController,
-  WriteContentDuringTheMissionView {
+  WriteContentDuringTheMissionViewController {
   
   private typealias Images = ResourceKitAsset.Images
   private typealias Assets = ResourceKitAsset.Assets
@@ -66,7 +66,7 @@ public final class WriteContentDuringTheMissionViewImp<R: WriteContentDuringTheM
   }
 }
 
-extension WriteContentDuringTheMissionViewImp: View {
+extension WriteContentDuringTheMissionViewControllerImp: View {
   
   // MARK: - Binding
   

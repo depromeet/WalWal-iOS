@@ -29,15 +29,22 @@ public protocol MissionUploadDependencyFactory {
     imageDependencyFactory: ImageDependencyFactory
   ) -> any MissionUploadCoordinator
   
-  
   func injectCameraShootDuringTheMissionReactorReactor<T: MissionUploadCoordinator>(
+    coordinator: T
+  ) -> any CameraShootDuringTheMissionReactor
+  
+  func injectWriteContentDuringTheMissionReactor<T: MissionUploadCoordinator>(
     coordinator: T,
     saveRecordUseCase: SaveRecordUseCase,
     uploadRecordUseCase: UploadRecordUseCase
-  ) -> any CameraShootDuringTheMissionReactor
+  ) -> any WriteContentDuringTheMissionReactor
   
   func injectCameraShootDuringTheMissionViewController<T: CameraShootDuringTheMissionReactor>(
     reactor: T
   ) -> any CameraShootDuringTheMissionViewController
+  
+  func injectWriteContentDuringTheMissionViewController<T: WriteContentDuringTheMissionReactor>(
+    reactor: T
+  ) -> any WriteContentDuringTheMissionViewController
   
 }

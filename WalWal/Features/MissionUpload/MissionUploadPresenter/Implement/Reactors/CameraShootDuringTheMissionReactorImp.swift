@@ -26,15 +26,11 @@ public final class CameraShootDuringTheMissionReactorImp: CameraShootDuringTheMi
   
   public let initialState: State
   public let coordinator: any MissionUploadCoordinator
-  public let saveRecordUseCase: SaveRecordUseCase
-  public let uploadRecordUseCase: UploadRecordUseCase
   
   private let disposeBag = DisposeBag()
   
   public init(
-    coordinator: any MissionUploadCoordinator,
-    saveRecordUseCase: SaveRecordUseCase,
-    uploadRecordUseCase: UploadRecordUseCase
+    coordinator: any MissionUploadCoordinator
   ) {
     self.coordinator = coordinator
     self.saveRecordUseCase = saveRecordUseCase
