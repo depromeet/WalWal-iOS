@@ -7,10 +7,10 @@
 //
 
 import UIKit
+import GlobalState
 
 import RxSwift
 
 public protocol FetchFeedUseCase {
-  func execute(cursor: String, limit: Int) -> Single<FeedModel>
+  func execute(cursor: String?, limit: Int) -> Single<FeedModel>
 }
-

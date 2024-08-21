@@ -10,12 +10,12 @@
 import UIKit
 import FeedData
 import FeedDomain
+
 import GlobalState
 
 import RxSwift
 
-
-public final class FetchFeedUseCaseImp: FetchFeedUseCase{
+public final class FetchFeedUseCaseImp: FetchFeedUseCase {
 
   private let feedRepository: FeedRepository
   
@@ -23,15 +23,12 @@ public final class FetchFeedUseCaseImp: FetchFeedUseCase{
     self.feedRepository = feedRepository
   }
   
-  public func execute(cursor: String, limit: Int) -> Single<FeedModel> {
+  public func execute(cursor: String?, limit: Int) -> Single<FeedModel> {
     return feedRepository.fetchFeedData(cursor: cursor, limit: limit)
-      .map{
-        let feedModel = FeedModel(dto: $0)
+      .map { dto in
+        let feedModel = FeedModel(dto: dto)
         feedModel.saveToGlobalState()
         return feedModel
       }
   }
-
-  
 }
-
