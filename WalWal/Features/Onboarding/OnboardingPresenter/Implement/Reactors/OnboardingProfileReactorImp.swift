@@ -116,7 +116,7 @@ extension OnboardingProfileReactorImp {
     return uploadMemberUseCase.execute(nickname: nickname, type: "JPEG", image: imagedata)
       .asObservable()
       .withUnretained(self)
-      .flatMap { owner, result -> Observable<Mutation> in
+      .flatMap { owner, _ -> Observable<Mutation> in
         return owner.register(nickname: nickname, petType: petType)
       }
       .catch { error -> Observable<Mutation> in
