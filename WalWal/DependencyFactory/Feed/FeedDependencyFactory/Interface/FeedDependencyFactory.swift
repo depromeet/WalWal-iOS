@@ -14,10 +14,15 @@ import FeedDomain
 import FeedPresenter
 
 public protocol FeedDependencyFactory {
+  func injectFeedRepository() -> FeedRepository
+  func injectFetchFeedUseCase() -> FetchFeedUseCase
   func makeFeedCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator
   ) -> any FeedCoordinator
-  func makeFeedReactor<T: FeedCoordinator>(coordinator: T) -> any FeedReactor
+  func makeFeedReactor<T: FeedCoordinator>(
+    coordinator: T,
+    fetchFeedUseCase: FetchFeedUseCase
+  ) -> any FeedReactor
   func makeFeedViewController<T: FeedReactor>(reactor: T) -> any FeedViewController
 }

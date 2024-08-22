@@ -8,22 +8,28 @@
 
 import FeedDomain
 import FeedCoordinator
+import DesignSystem
+import GlobalState
 
 import ReactorKit
 import RxSwift
 
 public enum FeedReactorAction {
-  
+  case loadFeedData(cursor: String?)
 }
 
 public enum FeedReactorMutation {
-  
+  case feedFetchFailed(error: String)
+  case feedReachEnd
+  case feedLoadEnded(nextCursor: String?)
 }
 
 public struct FeedReactorState {
-  public init() {
-  
-  }
+  public init() {  }
+  public var feedData: [WalWalFeedModel] = []
+  @Pulse public var feedErrorMessage: String = ""
+  public var nextCursor: String? = nil
+  public var feedFetchEnded: Bool = false
 }
 
 public protocol FeedReactor: Reactor where Action == FeedReactorAction, Mutation == FeedReactorMutation, State == FeedReactorState {
@@ -31,6 +37,7 @@ public protocol FeedReactor: Reactor where Action == FeedReactorAction, Mutation
   var coordinator: any FeedCoordinator { get }
   
   init(
-    coordinator: any FeedCoordinator
+    coordinator: any FeedCoordinator,
+    fetchFeedUseCase: FetchFeedUseCase
   )
 }

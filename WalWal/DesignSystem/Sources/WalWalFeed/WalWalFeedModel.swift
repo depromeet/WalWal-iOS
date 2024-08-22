@@ -13,8 +13,8 @@ public struct WalWalFeedModel {
   var date: String
   var nickname: String
   var missionTitle: String
-  var profileImage: UIImage
-  var missionImage: UIImage
+  var profileImage: UIImage?
+  var missionImage: UIImage?
   var boostCount: Int
   
   public init(
@@ -22,8 +22,8 @@ public struct WalWalFeedModel {
     date: String,
     nickname: String,
     missionTitle: String,
-    profileImage: UIImage,
-    missionImage: UIImage,
+    profileImage: UIImage?,
+    missionImage: UIImage?,
     boostCount: Int
   ) {
     self.id = id

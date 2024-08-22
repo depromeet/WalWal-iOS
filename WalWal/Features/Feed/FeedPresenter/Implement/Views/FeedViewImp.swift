@@ -18,6 +18,7 @@ import FlexLayout
 import ReactorKit
 import RxSwift
 import RxCocoa
+import Lottie
 
 public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, FeedViewController {
   
@@ -93,11 +94,21 @@ extension FeedViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    
+    feed.scrollEndReached
+      .skip(1)
+      .map { _ in Reactor.Action.loadFeedData(cursor: reactor.currentState.nextCursor) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
-    
+    reactor.state
+      .map {  $0.feedData }
+      .observe(on: MainScheduler.instance)
+      .subscribe(with: self, onNext: { owner, feed in
+        owner.feed.feedData.accept(feed)
+      })
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

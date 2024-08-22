@@ -48,7 +48,10 @@ extension Project {
                                                    dependencies: dependencies)
     return Project(name: name,
                    organizationName: organizationName,
-                   targets: targetsForFramework)
+                   targets: targetsForFramework,
+                   resourceSynthesizers: .default + [
+                      .custom(name: "Lottie", parser: .json, extensions: ["json"]),
+                    ])
   }
   
   //MARK: - 빠르게 UI체크 할 DemoApp (Framework + App) -> Feature 단위로 테스트할 수 있게

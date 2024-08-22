@@ -8,18 +8,29 @@
 
 import UIKit
 import ResourceKit
+
 import FlexLayout
 import PinLayout
+import Then
 import RxSwift
 import RxCocoa
+import Lottie
 
 public final class WalWalFeed: UIView {
   
   private typealias Colors = ResourceKitAsset.Colors
+  let walwalIndicator = WalWalLoadingIndicator(frame: .zero)
+  let refreshLoading = PublishRelay<Bool>()
+  public let scrollEndReached = PublishRelay<Bool>()
+  
+  private var isNearBottomEdge: Bool {
+    return collectionView.contentOffset.y + collectionView.frame.size.height + 20 >= collectionView.contentSize.height
+  }
+  
   
   // MARK: - UI
   
-  private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
+  public private(set) var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
     let flowLayout = UICollectionViewFlowLayout()
     flowLayout.itemSize = CGSize(width: 342, height: 470)
     flowLayout.minimumLineSpacing = 14
@@ -37,6 +48,8 @@ public final class WalWalFeed: UIView {
     )
     $0.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 24, right: 0)
     $0.showsHorizontalScrollIndicator = false
+    $0.alwaysBounceVertical = true
+    
   }
   
   // MARK: - Property
@@ -98,6 +111,7 @@ public final class WalWalFeed: UIView {
     self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
     self.headerHeight = isFeed ? 71 : 0
     super.init(frame: .zero)
+    
     configureView()
     self.feedData.accept(feedData)
   }
@@ -116,31 +130,52 @@ public final class WalWalFeed: UIView {
   // MARK: - Setup Methods
   
   private func configureView() {
-    setupCollectionView()
+    setupView()
     setupGestureHandler()
     setupBindings()
     setLayouts()
   }
+  
   
   private func setupGestureHandler() {
     gestureHandler?.delegate = self
     gestureHandler?.setupLongPressGesture(for: collectionView)
   }
   
-  private func setupCollectionView() {
+  private func setupView() {
+    addSubview(collectionView)
     collectionView.dataSource = self
     collectionView.delegate = self
-    addSubview(collectionView)
+    
+    walwalIndicator.endRefreshing()
+    collectionView.refreshControl = walwalIndicator
   }
   
   private func setupBindings() {
     feedData
       .asDriver(onErrorJustReturn: [])
-      .drive(with: self, onNext: { owner, feedData in
-        owner.currentFeedData = feedData
-        owner.collectionView.layoutSubviews()
+      .drive(with: self) { owner, feedData in
+        self.currentFeedData = feedData
         owner.collectionView.reloadData()
-      })
+        owner.walwalIndicator.endRefreshing()
+      }
+      .disposed(by: disposeBag)
+    
+    refreshLoading
+      .distinctUntilChanged()
+      .bind(to: walwalIndicator.rx.isRefreshing)
+      .disposed(by: disposeBag)
+    
+    walwalIndicator.rx.controlEvent(.valueChanged)
+      .bind { [weak self] _ in
+        self?.refreshLoading.accept(true)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+          // 여기에 데이터 로드 완료 시 호출할 로직 추가
+          self?.feedData.accept(self?.feedData.value ?? [])
+          self?.refreshLoading.accept(false)
+        }
+      }
       .disposed(by: disposeBag)
     
     walwalBoostGenerater.boostFinished
@@ -155,6 +190,17 @@ public final class WalWalFeed: UIView {
       }
       .bind(to: feedData)
       .disposed(by: disposeBag)
+    
+    
+    collectionView.rx.didEndDragging
+      .observe(on: MainScheduler.instance)
+      .distinctUntilChanged()
+      .map { [weak self] _ in
+        return self?.isNearBottomEdge ?? false
+      }
+      .filter { $0 }
+      .bind(to: scrollEndReached)
+      .disposed(by: disposeBag)
   }
   
   private func setLayouts() {
@@ -162,6 +208,7 @@ public final class WalWalFeed: UIView {
       $0.addItem(collectionView)
         .grow(1)
     }
+    
   }
   
   // MARK: - Boost Count Update
@@ -231,5 +278,11 @@ extension WalWalFeed: UICollectionViewDataSource {
 extension WalWalFeed: UICollectionViewDelegateFlowLayout {
   public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
     return CGSize(width: collectionView.bounds.width, height: headerHeight)
+  }
+  
+  public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+      if isNearBottomEdge {
+          scrollEndReached.accept(true)
+      }
   }
 }

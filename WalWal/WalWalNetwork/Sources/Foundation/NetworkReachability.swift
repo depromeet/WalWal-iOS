@@ -29,7 +29,6 @@ public final class NetworkReachability {
   fileprivate let statusPublish = PublishSubject<NetworkStatusType>()
   var statusObservable: Observable<NetworkStatusType>{
     statusPublish
-      .debug()
   }
   
   private init() {
