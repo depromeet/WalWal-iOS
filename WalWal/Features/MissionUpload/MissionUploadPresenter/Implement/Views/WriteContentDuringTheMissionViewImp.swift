@@ -213,40 +213,26 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   }
   
   fileprivate func showLottie() {
-    print("로띠를 띄워봐용~")
+    guard let window = UIWindow.key else { return }
     
-    guard let window = UIWindow.key else {
-      return
-    }
-    
-    // 백그라운드 딤 처리
     let dimView = UIView(frame: window.bounds)
     dimView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
-    dimView.tag = 999 // 나중에 제거하기 쉽게 태그 설정
+    dimView.tag = 999
     
-    // Lottie 애니메이션 뷰 설정
     missionUploadCompletedLottieView.center = window.center
     
-    // 윈도우에 추가
     window.addSubview(dimView)
     window.addSubview(missionUploadCompletedLottieView)
     
-    // 애니메이션 실행
     missionUploadCompletedLottieView.play { [weak self] (finished) in
-      // 애니메이션이 끝난 후 실행할 동작
-      if finished {
-        self?.hideLottie() // Lottie와 dimView를 제거
-      }
+      guard let self = self else { return }
+      if finished { self.hideLottie() }
     }
   }
   
   fileprivate func hideLottie() {
-    print("로띠를 지워봐용~")
-    guard let window = UIWindow.key else {
-      return
-    }
+    guard let window = UIWindow.key else { return }
     
-    // Lottie 애니메이션 뷰 및 dimView 제거
     window.viewWithTag(999)?.removeFromSuperview()
     missionUploadCompletedLottieView.removeFromSuperview()
     
