@@ -16,6 +16,8 @@ import ImageDependencyFactory
 import BaseCoordinator
 import MyPageCoordinator
 
+import DesignSystem
+
 import RxSwift
 import RxCocoa
 
@@ -165,6 +167,10 @@ extension MyPageCoordinatorImp {
       selectImage: selectImage,
       raisePet: raisePet
     )
+    guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
+      return
+    }
+    tabBarViewController.hideCustomTabBar()
     self.pushViewController(viewController: ProfileEditVC, animated: false)
   }
 }

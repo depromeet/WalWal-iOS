@@ -90,6 +90,11 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
     case let .setPhotoPermission(isAllow):
       newState.isGrantedPhoto = isAllow
     case .moveToBack:
+      guard let tabBarViewController = coordinator.navigationController.tabBarController 
+              as? WalWalTabBarViewController else {
+        return state
+      }
+      tabBarViewController.showCustomTabBar()
       coordinator.popViewController(animated: true)
     case let .profileInfo(info):
       newState.profileInfo = info
@@ -108,7 +113,7 @@ extension ProfileEditReactorImp {
   }
   
   private func editProfile(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
-    if let profileModel = profileModel, 
+    if let profileModel = profileModel,
         nickname != profileModel.nickname { // 닉네임 수정 -> 체크 필요
       return checkNicknameUseCase.execute(nickname: nickname)
         .asObservable()
@@ -130,7 +135,7 @@ extension ProfileEditReactorImp {
     
     // 기본 이미지로 변경
     if profile.profileType == .defaultImage,
-        let defaultImage = profile.defaultImage {
+       let defaultImage = profile.defaultImage {
       return editRequest(nickname: nickname, profileImage: defaultImage.rawValue)
     }
     
@@ -175,8 +180,10 @@ extension ProfileEditReactorImp {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
-        owner.coordinator.popViewController(animated: true)
-        return .just(.showIndicator(show: false))
+        return .concat([
+          .just(.showIndicator(show: false)),
+          .just(.moveToBack)
+        ])
       }
   }
   
@@ -215,7 +222,7 @@ extension ProfileEditReactorImp {
     
     if let initProfileData = originWalWalProfileModel,
        let profileModel = profileModel,
-        initProfileData == profile,
+       initProfileData == profile,
        nickname == profileModel.nickname {
       
       return .just(.buttonEnable(isEnable: false))
