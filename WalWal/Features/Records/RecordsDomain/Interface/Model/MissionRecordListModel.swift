@@ -10,12 +10,12 @@ import Foundation
 import RecordsData
 
 public struct MissionRecordListModel {
-  public let imageId: Int
+  public let recordId: Int
   public let imageUrl: String
   public let missionDate: String
   
   public init(dto: MissionRecordListDTO) {
-    self.imageId = dto.imageId
+    self.recordId = dto.recordId
     self.imageUrl = dto.imageUrl
     self.missionDate = dto.missionDate
   }

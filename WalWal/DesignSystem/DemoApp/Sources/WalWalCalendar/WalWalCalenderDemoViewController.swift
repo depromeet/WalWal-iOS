@@ -95,7 +95,7 @@ final class WalWalCalenderDemoViewController: UIViewController {
   private func showAlert(with data: WalWalCalendarModel) {
     let alert = UIAlertController(
       title: "선택된 날짜: \(data.date)",
-      message: "현재 선택된 이미지의 ID는: \"\(data.imageId)\"입니다",
+      message: "현재 선택된 이미지의 ID는: \"\(data.recordId)\"입니다",
       preferredStyle: .alert
     )
     alert.addAction(UIAlertAction(title: "닫기", style: .default))
@@ -119,7 +119,7 @@ private enum SampleDataGenerator {
       let randomDate = Date(timeIntervalSince1970: .random(in: oneYearAgo.timeIntervalSince1970...today.timeIntervalSince1970))
       let dateString = dateFormatter.string(from: randomDate)
       let id = "\(dateString)의 이미지 입니당 🐶"
-      return WalWalCalendarModel(imageId: id, date: dateString, imageData: sampleImageData)
+      return WalWalCalendarModel(recordId: 1, date: dateString, image: UIImage())
     }
     
     return sampleModels.sorted { $0.date < $1.date }

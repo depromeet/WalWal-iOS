@@ -9,16 +9,16 @@
 import Foundation
 
 public struct GlobalMissonRecordListModel {
-  public let imageId: Int
+  public let recordId: Int
   public let imageUrl: String
   public let missionDate: String
   
   public init(
-    imageId: Int,
+    recordId: Int,
     imageUrl: String,
     missionDate: String
   ) {
-    self.imageId = imageId
+    self.recordId = recordId
     self.imageUrl = imageUrl
     self.missionDate = missionDate
   }

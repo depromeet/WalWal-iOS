@@ -99,7 +99,7 @@ extension MyPageReactorImp {
     return records.compactMap { record in
       let image = GlobalState.shared.imageStore[record.imageUrl]
       return WalWalCalendarModel(
-        imageId: record.imageId,
+        recordId: record.recordId,
         date: record.missionDate,
         image: image
       )
