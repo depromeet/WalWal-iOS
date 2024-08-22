@@ -58,8 +58,12 @@ final class WalWalFeedCell: UICollectionViewCell {
   
   private func layoutCell() {
     feedView.pin
-      .all()
+      .center()
+    
     feedView.flex
-      .layout()
+      .layout(mode: .adjustHeight)
+    
+    contentView.flex
+      .layout(mode: .adjustHeight)
   }
 }

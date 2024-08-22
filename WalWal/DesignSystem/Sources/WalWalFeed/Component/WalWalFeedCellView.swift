@@ -8,6 +8,7 @@
 
 import UIKit
 import ResourceKit
+import Utility
 
 import Then
 import FlexLayout
@@ -81,7 +82,7 @@ final class WalWalFeedCellView: UIView {
     $0.font = Fonts.KR.B2
     $0.textColor = Colors.gray500.color
   }
-
+  
   private let missionDateLabel = UILabel().then {
     $0.font = Fonts.KR.B2
     $0.textColor = Colors.gray500.color
@@ -105,8 +106,24 @@ final class WalWalFeedCellView: UIView {
     super.layoutSubviews()
     containerView.pin
       .all()
+    
     containerView.flex
-      .layout()
+      .layout(mode: .adjustHeight)
+    
+    boostCountLabel.flex
+      .markDirty()
+    
+    boostLabelView.flex
+      .markDirty()
+    
+    missionDateLabel.flex
+      .markDirty()
+    
+    contentLabel.flex
+      .markDirty()
+    
+    feedContentView.flex
+      .markDirty()
   }
   
   // MARK: - Methods
@@ -123,8 +140,9 @@ final class WalWalFeedCellView: UIView {
     boostCountLabel.textColor = isBoostColor
     boostLabel.textColor = isBoostColor
     contentLabel.text = feedData.contents
+    contentLabel.sizeToFit()
     
-    let missionDate = feedData.date
+    let missionDate = feedData.date.toFormattedDate() ?? feedData.date
     let attributedString = NSMutableAttributedString(string: missionDate)
     
     let numberFont = Fonts.EN.Caption // 숫자에 적용할 폰트
@@ -134,21 +152,21 @@ final class WalWalFeedCellView: UIView {
     
     let numberPattern = "[0-9]"
     if let regex = try? NSRegularExpression(pattern: numberPattern, options: []) {
-        let matches = regex.matches(in: missionDate, options: [], range: NSRange(location: 0, length: missionDate.count))
-        for match in matches {
-            attributedString.addAttribute(.font, value: numberFont, range: match.range)
-        }
+      let matches = regex.matches(in: missionDate, options: [], range: NSRange(location: 0, length: missionDate.count))
+      for match in matches {
+        attributedString.addAttribute(.font, value: numberFont, range: match.range)
+      }
     }
     
     missionDateLabel.attributedText = attributedString
     
-    
-    guard let contentTextLength = self.contentLabel.text?.count else { return }
-    if contentTextLength > 30 {
-      DispatchQueue.main.async {
-        self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
-      }
-    }
+    /// 더보기 버튼 구현
+    //    guard let contentTextLength = self.contentLabel.text?.count else { return }
+    //    if contentTextLength > 30 {
+    //      DispatchQueue.main.async {
+    //        self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
+    //      }
+    //    }
   }
   
   private func setAttributes() {
@@ -182,7 +200,7 @@ final class WalWalFeedCellView: UIView {
           .marginHorizontal(16)
           .marginVertical(15)
         $0.addItem(feedContentView)
-          .marginBottom(16)
+          .marginBottom(20)
       }
     
     profileHeaderView.flex
@@ -212,13 +230,12 @@ final class WalWalFeedCellView: UIView {
           .size(343)
           .position(.relative)
         $0.addItem(contentLabel)
-          .height(32)
           .marginHorizontal(16)
           .marginTop(14)
         $0.addItem(boostLabelView)
+          .width(100%)
           .marginTop(8)
           .marginHorizontal(16)
-          .marginBottom(20)
       }
     
     boostLabelView.flex
