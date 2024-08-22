@@ -188,7 +188,8 @@ extension WalWalTabBarCoordinatorImp {
       parentCoordinator: self,
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
-      membersDependencyFactory: membersDependencyFactory
+      membersDependencyFactory: membersDependencyFactory,
+      feedDependencyFactory: feedDependencyFactory
     )
     myPageCoordinator.start()
     return myPageCoordinator
