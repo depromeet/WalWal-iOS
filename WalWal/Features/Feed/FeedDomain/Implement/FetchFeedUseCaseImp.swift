@@ -23,7 +23,7 @@ public final class FetchFeedUseCaseImp: FetchFeedUseCase {
     self.feedRepository = feedRepository
   }
   
-  public func execute(memberId: Int?, cursor: String?, limit: Int) -> Single<FeedModel> {
+  public func execute(memberId: Int? = nil, cursor: String?, limit: Int) -> Single<FeedModel> {
     return feedRepository.fetchFeedData(memberId: memberId, cursor: cursor, limit: limit)
       .map { dto in
         let feedModel = FeedModel(dto: dto)

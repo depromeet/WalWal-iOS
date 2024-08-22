@@ -12,5 +12,5 @@ import GlobalState
 import RxSwift
 
 public protocol FetchFeedUseCase {
-  func execute(cursor: String?, limit: Int) -> Single<FeedModel>
+  func execute(memberId: Int?, cursor: String?, limit: Int) -> Single<FeedModel>
 }
