@@ -11,12 +11,14 @@ import GlobalState
 import ResourceKit
 
 public struct MemberModel {
+  public let memberId: Int
   public let nickname: String
   public let profileURL: String
   public let raisePet: String
   public var profileImage: UIImage?
   
   public init(global: GlobalProfileModel) {
+    self.memberId = global.memberId
     self.nickname = global.nickname
     self.profileURL = global.profileURL
     self.raisePet = global.raisePet
