@@ -11,7 +11,7 @@ import RecordsData
 
 public struct MissionRecordListModel {
   public let recordId: Int
-  public let imageUrl: String
+  public let imageUrl: String?
   public let missionDate: String
   
   public init(dto: MissionRecordListDTO) {

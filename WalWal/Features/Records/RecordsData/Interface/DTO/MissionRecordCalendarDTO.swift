@@ -16,6 +16,6 @@ public struct MissionRecordCalendarDTO: Decodable {
 
 public struct MissionRecordListDTO: Decodable {
   public let recordId: Int
-  public let imageUrl: String
+  public let imageUrl: String?
   public let missionDate: String
 }
