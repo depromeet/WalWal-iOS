@@ -15,6 +15,8 @@ import MembersDependencyFactory
 import BaseCoordinator
 import MyPageCoordinator
 
+import DesignSystem
+
 import RxSwift
 import RxCocoa
 
@@ -120,6 +122,7 @@ extension MyPageCoordinatorImp {
   
   /// 프로필 설정뷰
   fileprivate func showProfileSettingVC() {
+    
     let reactor = myPageDependencyFactory.injectProfileSettingReactor(
       coordinator: self,
       tokenDeleteUseCase: authDependencyFactory.injectTokenDeleteUseCase(),
@@ -129,6 +132,10 @@ extension MyPageCoordinatorImp {
       kakaoUnlinkUseCase: authDependencyFactory.injectKakaoUnlinkUseCase()
     )
     let ProfileSettingVC = myPageDependencyFactory.injectProfileSettingViewController(reactor: reactor)
+    guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
+      return
+    }
+    tabBarViewController.hideCustomTabBar()
     self.pushViewController(viewController: ProfileSettingVC, animated: true)
   }
   
