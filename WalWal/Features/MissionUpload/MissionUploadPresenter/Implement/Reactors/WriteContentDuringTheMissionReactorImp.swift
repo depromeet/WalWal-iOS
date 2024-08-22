@@ -66,6 +66,8 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
         .just(Mutation.showIndicator(show: true)),
         uploadProcess(content, image)
       ])
+    case .lottieFinished:
+      return .just(Mutation.lottieFinished)
     }
   }
   
@@ -81,9 +83,10 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
       newState.isCompletedUpload = false
     case .uploadProcessEnded:
       newState.isCompletedUpload = true
-      passFlagAndMoveToMission()
     case .moveToMain:
       justMoveToMission()
+    case .lottieFinished:
+      passFlagAndMoveToMission()
     }
     return newState
   }

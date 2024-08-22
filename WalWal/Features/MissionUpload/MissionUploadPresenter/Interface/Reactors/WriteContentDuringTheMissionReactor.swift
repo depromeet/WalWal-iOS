@@ -21,6 +21,7 @@ public enum WriteContentDuringTheMissionReactorAction {
   case uploadButtonTapped(capturedImage: UIImage, content: String)
   case deleteThisContent
   case keepThisContent
+  case lottieFinished
 }
 
 public enum WriteContentDuringTheMissionReactorMutation {
@@ -29,10 +30,10 @@ public enum WriteContentDuringTheMissionReactorMutation {
   case uploadFailed(message: String)
   case moveToMain /// 미션으로 돌아가자~
   case showIndicator(show: Bool)
+  case lottieFinished
 }
 
 public struct WriteContentDuringTheMissionReactorState {
-  public var showCompletedLottie: Bool = false
   public var isAlertWillPresent: Bool = false
   @Pulse public var uploadErrorMessage: String = ""
   public var isCompletedUpload: Bool = false
