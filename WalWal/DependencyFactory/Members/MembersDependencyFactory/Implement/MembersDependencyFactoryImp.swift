@@ -23,7 +23,10 @@ public class MembersDependencyFactoryImp: MembersDependencyFactory {
     return MembersRepositoryImp(networkService: networkService)
   }
   public func injectMemberInfoUseCase() -> MemberInfoUseCase {
-    return MemberInfoUseCaseImp(memberRepository: injectMembersRepository())
+    return MemberInfoUseCaseImp(
+      memberRepository: injectMembersRepository(),
+      saveProfileGlobalStateUseCase: injectSaveProfileGlobalStateUseCase()
+    )
   }
   public func injectFetchMemberInfoUseCase() -> FetchMemberInfoUseCase {
     return FetchMemberInfoUseCaseImp()
@@ -31,7 +34,7 @@ public class MembersDependencyFactoryImp: MembersDependencyFactory {
   public func injectCheckNicknameUseCase() -> CheckNicknameUseCase {
     return CheckNicknameUseCaseImp(membersRepository: injectMembersRepository())
   }
-  public func injectEditProfileUseCase() -> EditProfileUseCase {
-    return EditProfileUseCaseImp(membersRepository: injectMembersRepository())
+  public func injectSaveProfileGlobalStateUseCase() -> SaveProfileGlobalStateUseCase {
+    return SaveProfileGlobalStateUseCaseImp()
   }
 }

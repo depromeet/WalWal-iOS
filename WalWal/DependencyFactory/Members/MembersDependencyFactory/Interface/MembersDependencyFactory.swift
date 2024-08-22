@@ -17,5 +17,5 @@ public protocol MembersDependencyFactory {
   func injectMemberInfoUseCase() -> MemberInfoUseCase
   func injectFetchMemberInfoUseCase() -> FetchMemberInfoUseCase
   func injectCheckNicknameUseCase() -> CheckNicknameUseCase
-  func injectEditProfileUseCase() -> EditProfileUseCase
+  func injectSaveProfileGlobalStateUseCase() -> SaveProfileGlobalStateUseCase
 }

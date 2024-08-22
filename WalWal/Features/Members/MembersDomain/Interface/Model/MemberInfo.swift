@@ -34,14 +34,4 @@ public struct MemeberInfo {
     self.raisePet = dto.raisePet
   }
   
-  
-  public func saveToGlobalState(globalState: GlobalState = GlobalState.shared) {
-    let globalProfile = GlobalProfileModel(
-      nickname: nickname,
-      profileURL: profileURL,
-      raisePet: raisePet
-    )
-    globalState.updateProfileInfo(data: globalProfile)
-  }
-  
 }
