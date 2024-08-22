@@ -165,8 +165,7 @@ extension AuthViewControllerImp: View {
       .drive(with: self) { owner, message in
         WalWalToast.shared.show(
           type: .error,
-          message: message,
-          isTabBarExist: false
+          message: message
         )
       }
       .disposed(by: disposeBag)
