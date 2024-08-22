@@ -28,6 +28,7 @@ public enum WriteContentDuringTheMissionReactorMutation {
   case uploadProcessEnded /// 업로드 프로세스가 끝났어요~
   case uploadFailed(message: String)
   case moveToMain /// 미션으로 돌아가자~
+  case showIndicator(show: Bool)
 }
 
 public struct WriteContentDuringTheMissionReactorState {
@@ -35,6 +36,7 @@ public struct WriteContentDuringTheMissionReactorState {
   public var isAlertWillPresent: Bool = false
   @Pulse public var uploadErrorMessage: String = ""
   public var isCompletedUpload: Bool = false
+  public var showIndicator: Bool = false
   
   public init() {}
 }
