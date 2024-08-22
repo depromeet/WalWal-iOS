@@ -62,7 +62,10 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
     case .keepThisContent: /// 얼럿에서 취소하기 눌렀어
       return .just(Mutation.showMeTheAlert(show: false))
     case .uploadButtonTapped(let image, let content): /// 피드 공유하기 버튼 눌렀어
-      return uploadProcess(content, image)
+      return .concat([
+        .just(Mutation.showIndicator(show: true)),
+        uploadProcess(content, image)
+      ])
     }
   }
   
@@ -71,6 +74,8 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
     switch mutation {
     case .showMeTheAlert(let isShow):
       newState.isAlertWillPresent = isShow
+    case let .showIndicator(show):
+      newState.showIndicator = show
     case .uploadFailed(message: let message):
       newState.uploadErrorMessage = message
       newState.isCompletedUpload = false
@@ -111,7 +116,10 @@ extension WriteContentDuringTheMissionReactorImp {
         return owner.uploadImage(image)
       }
       .catch { error -> Observable<Mutation> in
-        return .just(.uploadFailed(message: error.localizedDescription))
+        return .concat([
+          .just(.uploadFailed(message: error.localizedDescription)),
+          .just(.showIndicator(show: false))
+        ])
       }
   }
   
@@ -121,10 +129,16 @@ extension WriteContentDuringTheMissionReactorImp {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, result -> Observable<Mutation> in
-        return .just(.uploadProcessEnded)
+        return .concat([
+          .just(.uploadProcessEnded),
+          .just(.showIndicator(show: false))
+        ])
       }
       .catch { error -> Observable<Mutation> in
-        return .just(.uploadFailed(message: error.localizedDescription))
+        return .concat([
+          .just(.uploadFailed(message: error.localizedDescription)),
+          .just(.showIndicator(show: false))
+        ])
       }
   }
 }

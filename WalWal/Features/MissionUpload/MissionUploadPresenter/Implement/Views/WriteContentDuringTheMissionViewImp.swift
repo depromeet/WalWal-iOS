@@ -298,6 +298,15 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
         owner.showLottie()
       })
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.showIndicator }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, show in
+        ActivityIndicator.shared.showIndicator.accept(show)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
