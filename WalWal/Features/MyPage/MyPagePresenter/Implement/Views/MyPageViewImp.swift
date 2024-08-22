@@ -169,9 +169,14 @@ extension MyPageViewControllerImp: View {
       .map { $0.profileData }
       .compactMap { $0 }
       .bind(with: self) { owner, data in
+        var image: UIImage?
+        if let imgName = data.defaultImageName,
+            let defaultImage = DefaultProfile(rawValue: imgName) {
+          image = defaultImage.image
+        }
         owner.profileCardView.changeProfileInfo(
           nickname: data.nickname,
-          image: data.profileImage,
+          image: data.profileImage ?? image,
           raisePet: data.raisePet
         )
       }

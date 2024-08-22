@@ -163,10 +163,19 @@ extension ProfileEditReactorImp {
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
         print("수정 성공")
-        owner.coordinator.popViewController(animated: true)
-        return .just(.showIndicator(show: false))
+        return owner.refreshProfile()
       }.catch { _ -> Observable<Mutation> in
         print("수정 실패")
+        return .just(.showIndicator(show: false))
+      }
+  }
+  
+  private func refreshProfile() -> Observable<Mutation> {
+    return memberInfoUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
+        owner.coordinator.popViewController(animated: true)
         return .just(.showIndicator(show: false))
       }
   }
