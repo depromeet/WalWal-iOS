@@ -10,12 +10,12 @@ import Foundation
 
 public struct GlobalMissonRecordListModel {
   public let recordId: Int
-  public let imageUrl: String
+  public let imageUrl: String?
   public let missionDate: String
   
   public init(
     recordId: Int,
-    imageUrl: String,
+    imageUrl: String?,
     missionDate: String
   ) {
     self.recordId = recordId
