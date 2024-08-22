@@ -31,10 +31,6 @@ public final class WalWalFeed: UIView {
   // MARK: - UI
   
   public private(set) var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
-    let flowLayout = UICollectionViewFlowLayout()
-    flowLayout.minimumLineSpacing = 14
-    
-    $0.collectionViewLayout = flowLayout
     $0.backgroundColor = .clear
     $0.register(
       WalWalFeedCell.self,
@@ -126,30 +122,42 @@ public final class WalWalFeed: UIView {
   private func setupCollectionView() {
     collectionView.collectionViewLayout = createLayout()
     collectionView.dataSource = self
-    collectionView.delegate = self
     
     walwalIndicator.endRefreshing()
     collectionView.refreshControl = walwalIndicator
   }
   
-  private func createLayout() -> UICollectionViewLayout{
+  private func createLayout() -> UICollectionViewLayout {
+    let itemSize = NSCollectionLayoutSize(
+      widthDimension: .fractionalWidth(1.0),
+      heightDimension: .estimated(520)
+    )
+    let item = NSCollectionLayoutItem(layoutSize: itemSize)
     
-    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                          heightDimension: .estimated(504))
-    let itme = NSCollectionLayoutItem(layoutSize: itemSize)
-    // estimated를 사용하게 되면 contentInsets 값은 무시가 됩니다.
-    itme.edgeSpacing = NSCollectionLayoutEdgeSpacing(leading: nil, top: .fixed(20), trailing: nil, bottom: nil)
+    let groupSize = NSCollectionLayoutSize(
+      widthDimension: .fractionalWidth(1.0),
+      heightDimension: .estimated(520)
+    )
     
-    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                           heightDimension: .estimated(504))
-    let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
-                                                   subitems: [itme])
-    group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
-
+    let group = NSCollectionLayoutGroup.horizontal(
+      layoutSize: groupSize,
+      subitem: item,
+      count: 1
+    )
+    group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+    group.interItemSpacing = .fixed(14)
+    
     let section = NSCollectionLayoutSection(group: group)
+    section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+    
+    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                            heightDimension: .absolute(headerHeight))
+    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                             elementKind: UICollectionView.elementKindSectionHeader,
+                                                             alignment: .top)
+    section.boundarySupplementaryItems = [header]
     
     let layout = UICollectionViewCompositionalLayout(section: section)
-    
     return layout
   }
   
@@ -202,6 +210,10 @@ public final class WalWalFeed: UIView {
       }
       .filter { $0 }
       .bind(to: scrollEndReached)
+      .disposed(by: disposeBag)
+    
+    collectionView.rx
+      .setDelegate(self)
       .disposed(by: disposeBag)
   }
   
@@ -270,14 +282,10 @@ extension WalWalFeed: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension WalWalFeed: UICollectionViewDelegateFlowLayout {
-  public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-    return CGSize(width: collectionView.bounds.width, height: headerHeight)
-  }
-  
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-      if isNearBottomEdge {
-          scrollEndReached.accept(true)
-      }
+    if isNearBottomEdge {
+      scrollEndReached.accept(true)
+    }
   }
 }
 
