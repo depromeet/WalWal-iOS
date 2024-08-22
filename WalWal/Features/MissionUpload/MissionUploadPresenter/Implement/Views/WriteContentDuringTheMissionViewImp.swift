@@ -59,7 +59,7 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   }
   
   private let uploadButton = WalWalTouchArea(
-    image: Images.arrow.image,
+    image: Images.arrowL.image,
     size: 40
   )
   
