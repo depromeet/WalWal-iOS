@@ -25,7 +25,6 @@ final class WalWalBoostGenerator {
   
   private weak var feed: WalWalFeed?
   private var currentDetailView: UIView?
-  private var currentBackgroundView: UIView?
   private var currentBlackOverlayView: UIView?
   private var currentIndexPath: IndexPath?
   
@@ -67,40 +66,33 @@ final class WalWalBoostGenerator {
     currentIndexPath = indexPath
     
     let detailView = createAndConfigureDetailView(from: cell, with: feedModel)
-    let backgroundView = createBackgroundView(frame: window.bounds)
     let overlayView = createOverlayView(frame: detailView.frame)
     
     addViewsToWindow(
       detailView: detailView,
-      backgroundView: backgroundView,
       overlayView: overlayView,
       window: window
     )
     
     animateDetailViewAppearance(
       detailView,
-      backgroundView: backgroundView,
       window: window
     )
     
     currentDetailView = detailView
-    currentBackgroundView = backgroundView
     currentBlackOverlayView = overlayView
   }
   
   /// 부스트 애니메이션 종료
   func stopBoostAnimation() {
     guard let detailView = currentDetailView,
-          let backgroundView = currentBackgroundView,
           let overlayView = currentBlackOverlayView,
           let indexPath = currentIndexPath else { return }
     
     UIView.animate(withDuration: 0.3, animations: {
-      backgroundView.alpha = 0
       detailView.alpha = 0
       overlayView.alpha = 0
     }) { _ in
-      backgroundView.removeFromSuperview()
       detailView.removeFromSuperview()
       overlayView.removeFromSuperview()
     }
@@ -109,9 +101,9 @@ final class WalWalBoostGenerator {
     walwalBoostCounter.stopCountTimer()
     walwalBoostBorder.stopBorderAnimation()
     currentDetailView = nil
-    currentBackgroundView = nil
     currentBlackOverlayView = nil
     walwalEmitter.stopEmitting()
+    walwalEmitter.removeFromSuperlayer()
     
     boostFinished.onNext(
       BoostResult(
@@ -157,31 +149,23 @@ extension WalWalBoostGenerator {
   
   private func addViewsToWindow(
     detailView: UIView,
-    backgroundView: UIView,
     overlayView: UIView,
     window: UIWindow
   ) {
     window.addSubview(overlayView)
-    window.addSubview(backgroundView)
     window.addSubview(detailView)
   }
   
   private func animateDetailViewAppearance(
     _ detailView: UIView,
-    backgroundView: UIView,
     window: UIWindow
   ) {
     detailView.transform = .identity
-    backgroundView.alpha = 0
     UIView.animateKeyframes(
       withDuration: 0.5,
       delay: 0,
       options: [],
       animations: {
-        UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1) {
-          backgroundView.alpha = 1
-        }
-        
         UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
           detailView.transform = CGAffineTransform(scaleX: 0.98, y: 0.98).translatedBy(x: 0, y: 2)
         }
@@ -197,6 +181,7 @@ extension WalWalBoostGenerator {
     /// DetailView가 작아진 후 다시 커지기 시작할 때 다른 애니메이션 시작
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
       guard let self = self else { return }
+      if isEndedLongPress { return }
       self.addTiltAnimation(to: detailView)
       self.setupBoostAnimationComponents(in: detailView, window: window)
     }
@@ -204,35 +189,37 @@ extension WalWalBoostGenerator {
   
   private func setupBoostAnimationComponents(in detailView: UIView, window: UIWindow) {
     walwalBoostBorder.addBorderLayer(to: detailView)
-    walwalBoostBorder.startBorderAnimation(borderColor: Colors.yellow.color)
-    
-    let burstCase = [
-      WalWalBurstString.cute,
-      WalWalBurstString.cool,
-      WalWalBurstString.lovely
-    ].randomElement() ?? .cute
+    walwalBoostBorder.startBorderAnimation()
     
     walwalBoostCenterLabel.updateCenterLabels(
-      with: burstCase.normalText,
+      with: WalWalBurstString.normalText,
       in: detailView,
-      window: window,
-      burstMode: burstCase
-    )
+      window: window
+    ) { [weak self] in
+      guard let self = self else { return }
+      self.walwalBoostCenterLabel.disappearLabels()
+    }
     
     walwalBoostCounter.setupCountLabel(in: window, detailView: detailView)
     walwalBoostCounter.startCountTimer(
       in: detailView,
-      window: window,
-      burstCase: burstCase
+      window: window
     ) { [weak self] count in
       guard let self = self else { return }
       self.handleCountUpdate(
         count: count,
         in: detailView,
-        window: window,
-        burstCase: burstCase
+        window: window
       )
     }
+    
+    walwalEmitter.configureEmitter(
+      in: detailView,
+      positionRatio: CGPoint(x: 0.5, y: 0.5),
+      sizeRatio: CGSize(width: 0.5, height: 0.5)
+    )
+    walwalEmitter.startEmitting(rate: 20)
+    detailView.layer.addSublayer(walwalEmitter)
   }
   
   private func addTiltAnimation(to view: UIView) {
@@ -259,47 +246,62 @@ extension WalWalBoostGenerator {
   private func handleCountUpdate(
     count: Int,
     in detailView: UIView,
-    window: UIWindow,
-    burstCase: WalWalBurstString
+    window: UIWindow
   ) {
     feedbackGenerator.impactOccurred()
     
-    if count == 1 {
-      walwalEmitter.configureEmitter(
-        in: detailView,
-        positionRatio: CGPoint(x: 0.5, y: 0.5),
-        sizeRatio: CGSize(width: 0.5, height: 0.5)
-      )
-      walwalEmitter.startEmitting(rate: 30)
-      detailView.layer.addSublayer(walwalEmitter)
+    // 기본 방출량
+    let normalRate: Float = 20
+    
+    // 순간적으로 방출량을 2배로 늘리는 메서드
+    func temporarilyIncreaseRate(_ rate: Float, duration: TimeInterval) {
+      walwalEmitter.startEmitting(rate: rate)
+      DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
+        self?.walwalEmitter.startEmitting(rate: normalRate)  // 원래 방출량으로 돌아감
+      }
     }
     
     switch count {
-    case 50:
-      walwalBoostCenterLabel.disappearLabels { [weak self] in
-        guard let ss = self else { return }
-        ss.walwalBoostCenterLabel.updateCenterLabels(
-          with: burstCase.goodText,
-          in: detailView,
-          window: window,
-          burstMode: burstCase
-        )
-      }
-      walwalBoostBorder.startBorderAnimation(borderColor: Colors.walwalOrange.color)
+    case 1:
+      // 1개일 때 방출량 잠깐 2배로 늘림
+      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
+      
     case 100:
-      walwalBoostCenterLabel.disappearLabels { [weak self] in
-        guard let ss = self else { return }
-        ss.walwalBoostCenterLabel.updateCenterLabels(
-          with: burstCase.greatText,
-          in: detailView, window: window,
-          burstMode: burstCase
-        )
+      walwalBoostBorder.startBorderAnimation(isRainbow: true)
+      walwalBoostCenterLabel.updateCenterLabels(
+        with: WalWalBurstString.goodText,
+        in: detailView,
+        window: window
+      ) { [weak self] in
+        guard let self = self else { return }
+        self.walwalBoostCenterLabel.disappearLabels()
       }
-      walwalBoostBorder.startBorderAnimation(borderColor: .red)
-    case 150:
-      walwalBoostBorder.startBorderAnimation(borderColor: .clear, isRainbow: true)
+      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
+      
+    case 250:
+      walwalBoostCenterLabel.updateCenterLabels(
+        with: WalWalBurstString.greatText,
+        in: detailView,
+        window: window
+      ) { [weak self] in
+        guard let self = self else { return }
+        self.walwalBoostCenterLabel.disappearLabels()
+      }
+      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
+      
+    case 500:
+      walwalBoostCenterLabel.updateCenterLabels(
+        with: WalWalBurstString.wonderfulText,
+        in: detailView,
+        window: window
+      ) { [weak self] in
+        guard let self = self else { return }
+        self.walwalBoostCenterLabel.disappearLabels()
+      }
+      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
+      
     default:
-      break
+      walwalEmitter.startEmitting(rate: normalRate)  // 기본 방출량 유지
     }
   }
 }
