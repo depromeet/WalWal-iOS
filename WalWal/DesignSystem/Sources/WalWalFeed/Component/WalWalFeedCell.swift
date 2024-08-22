@@ -28,7 +28,6 @@ final class WalWalFeedCell: UICollectionViewCell {
   override init(frame: CGRect) {
     super.init(frame: frame)
     setAttributes()
-    setLayouts()
   }
   
   required init?(coder: NSCoder) {
@@ -55,14 +54,6 @@ final class WalWalFeedCell: UICollectionViewCell {
   
   private func setAttributes() {
     contentView.addSubview(feedView)
-  }
-  
-  private func setLayouts() {
-    contentView.flex
-      .grow(1)
-      .define {
-        $0.addItem(feedView)
-      }
   }
   
   private func layoutCell() {
