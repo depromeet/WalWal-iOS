@@ -115,7 +115,8 @@ public final class FeedReactorImp: FeedReactor {
         missionTitle: feed.missionTitle,
         profileImage: profileImage,
         missionImage: missionImage,
-        boostCount: feed.boostCount
+        boostCount: feed.boostCount,
+        contents: feed.contents ?? ""
       )
     }
   }

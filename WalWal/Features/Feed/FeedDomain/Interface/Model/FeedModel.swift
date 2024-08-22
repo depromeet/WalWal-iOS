@@ -29,7 +29,8 @@ public struct FeedModel {
         missionTitle: $0.missionTitle,
         profileImage: $0.authorProfileImageURL,
         missionImage: $0.missionRecordImageURL,
-        boostCount: $0.totalBoostCount
+        boostCount: $0.totalBoostCount,
+        contents: $0.content
       )
     }
     
