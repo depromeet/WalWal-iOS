@@ -12,4 +12,5 @@ public enum GlobalStateType {
   case missonRecordList
   case profile(_ image: String)
   case feedList
+  case recodList(_ memberid: Int)
 }

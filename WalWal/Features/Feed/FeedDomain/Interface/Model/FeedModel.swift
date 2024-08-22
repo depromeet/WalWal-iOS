@@ -20,7 +20,7 @@ public struct FeedModel {
     self.nextCursor = FeedNextCursorModel( dto: dto ).nextCursor
   }
   
-  public func saveToGlobalState(globalState: GlobalState = GlobalState.shared) {
+  public func saveToGlobalState(globalState: GlobalState = GlobalState.shared, isFeed: Bool = true) {
     let globalFeed = self.list.map {
       GlobalFeedListModel(
         recordID: $0.missionRecordID,
@@ -32,8 +32,11 @@ public struct FeedModel {
         boostCount: $0.totalBoostCount
       )
     }
-    
+    if isFeed {
     globalState.updateFeed(with: globalFeed)
+    } else {
+      globalState.updateRecords(with: globalFeed)
+  }
   }
 }
 
