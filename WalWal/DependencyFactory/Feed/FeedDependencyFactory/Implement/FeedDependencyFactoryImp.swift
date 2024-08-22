@@ -35,6 +35,10 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     return FetchFeedUseCaseImp(feedRepository: injectFeedRepository())
   }
   
+  public func injectFetchUserFeedUseCase() -> FetchUserFeedUseCase {
+    return FetchUserFeedUseCaseImp(feedRepository: injectFeedRepository())
+  }
+  
   public func makeFeedCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any FeedCoordinator {
     return FeedCoordinatorImp(
       navigationController: navigationController,
