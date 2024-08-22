@@ -25,7 +25,6 @@ public final class WalWalToast {
   private let fadeInDuration: TimeInterval = 0.3
   private let maintenanceTime: TimeInterval = 1.5
   private let fadeOutDutaion: TimeInterval = 0.5
-  private let tabbarHeight: CGFloat = 68
   private let bottomMargin: CGFloat = 13
   
   // MARK: - UI
@@ -48,9 +47,9 @@ public final class WalWalToast {
   
   // MARK: - Layout
   
-  private func configureLayout(bottom: CGFloat) {
+  private func configureLayout() {
     guard let window = UIWindow.key else { return }
-    let safeAreaBottomInset = window.safeAreaInsets.bottom
+    let safeAreaBottomInset = window.topViewControllerSafeAreaInsets?.bottom ?? 34
     
     container.flex
       .direction(.row)
@@ -67,11 +66,11 @@ public final class WalWalToast {
     
     container.pin
       .horizontally(16)
-      .bottom(safeAreaBottomInset+bottom)
+      .bottom(safeAreaBottomInset+bottomMargin)
     container.flex
       .layout(mode: .adjustHeight)
     container.pin
-      .bottom(safeAreaBottomInset+bottom-10)
+      .bottom(safeAreaBottomInset+bottomMargin-10)
   }
   
   /// 토스트 메세지 띄우는 메서드
@@ -79,19 +78,16 @@ public final class WalWalToast {
   /// - Parameters:
   ///   - type: 토스트 메세지 타입(타입에 따라 아이콘이 달라짐)
   ///   - message: 토스트 메세지 내용, nil일 경우 ToastType에 지정된 기본 메세지 출력
-  ///   - tabBarShown: default value: `false`, 토스트 메세지를 띄울 뷰에 탭바 존재 여부(하단 여백이 다름)
   public func show(
     type: ToastType,
-    message: String? = nil,
-    isTabBarExist: Bool = true
+    message: String? = nil
   ) {
     guard let window = UIWindow.key else { return }
     
     self.messageLabel.text = message ?? type.message
     self.iconImage.image = type.icon
-    
     window.addSubview(container)
-    configureLayout(bottom: isTabBarExist ? bottomMargin+tabbarHeight : bottomMargin)
+    configureLayout()
     window.bringSubviewToFront(container)
     
     render()
@@ -99,6 +95,7 @@ public final class WalWalToast {
   
   private func render() {
     guard let window = UIWindow.key else { return }
+    let safeAreaBottomInset = window.topViewControllerSafeAreaInsets?.bottom ?? 34
     UIView.animate(
       withDuration: self.fadeInDuration,
       delay: 0,
@@ -107,8 +104,9 @@ public final class WalWalToast {
         guard let self = self else {
           return
         }
+        
         self.container.transform = CGAffineTransform(translationX: 0, y: -10)
-        self.container.pin.bottom(window.safeAreaInsets.bottom + 13)
+        self.container.pin.bottom(safeAreaBottomInset+bottomMargin)
         container.alpha = 1.0
       },
       completion: { [weak self] _ in
@@ -132,3 +130,33 @@ public final class WalWalToast {
   }
   
 }
+
+extension UIWindow {
+  
+  private func topViewController() -> UIViewController? {
+    return self.topViewController(rootViewController: self.rootViewController)
+  }
+  
+  private func topViewController(rootViewController: UIViewController?) -> UIViewController? {
+    if let presentedViewController = rootViewController?.presentedViewController {
+      return topViewController(rootViewController: presentedViewController)
+    }
+    
+    if let navigationController = rootViewController as? UINavigationController {
+      return topViewController(rootViewController: navigationController.visibleViewController)
+    }
+    
+    if let tabBarController = rootViewController as? UITabBarController {
+      return topViewController(rootViewController: tabBarController.selectedViewController)
+    }
+    return rootViewController
+  }
+  
+  /// 최상위 뷰의 safeAreaInsets를 반환
+  var topViewControllerSafeAreaInsets: UIEdgeInsets? {
+    guard let topViewController = self.topViewController() else { return nil }
+    return topViewController.view.safeAreaInsets
+  }
+}
+
+
