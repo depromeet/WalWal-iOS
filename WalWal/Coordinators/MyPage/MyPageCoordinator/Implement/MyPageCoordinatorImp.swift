@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import DesignSystem
 import MyPageDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
 import MembersDependencyFactory
+import FeedDependencyFactory
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -35,13 +37,16 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   private let fcmDependencyFactory: FCMDependencyFactory
   private let authDependencyFactory: AuthDependencyFactory
   private let membersDependencyFactory: MembersDependencyFactory
+  private let feedDependencyFactory: FeedDependencyFactory
+  
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     myPageDependencyFactory: MyPageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
-    membersDependencyFactory: MembersDependencyFactory
+    membersDependencyFactory: MembersDependencyFactory,
+    FeedDependencyFactory: FeedDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -49,6 +54,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     self.fcmDependencyFactory = fcmDependencyFactory
     self.authDependencyFactory = authDependencyFactory
     self.membersDependencyFactory = membersDependencyFactory
+    self.feedDependencyFactory = FeedDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -57,8 +63,11 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     destination
       .subscribe(with: self, onNext: { owner, flow in
         switch flow {
-        case .showRecordDetail:
-          owner.showRecordDetailVC()
+        case .showRecordDetail(let nickname, let memberId):
+          owner.showRecordDetailVC(
+            nickname: nickname,
+            memberId: memberId
+          )
         case .showProfileEdit:
           owner.showProfileEditVC()
         case .showProfileSetting:
@@ -83,6 +92,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
     let fetchWalWalCalendarModelsUseCase = myPageDependencyFactory.injectFetchWalWalCalendarModelsUseCase()
     let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
+    let fetchUserFeedUseCase = feedDependencyFactory.injectFetchFeedUseCase()
     let reactor = myPageDependencyFactory.injectMyPageReactor(
       coordinator: self,
       fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
@@ -112,10 +122,24 @@ extension MyPageCoordinatorImp {
 
 extension MyPageCoordinatorImp {
   /// 기록 상세뷰
-  fileprivate func showRecordDetailVC() {
-    let reactor = myPageDependencyFactory.injectRecordDetailReactor(coordinator: self)
-    let RecordDetailVC = myPageDependencyFactory.injectRecordDetailViewController(reactor: reactor)
-    self.pushViewController(viewController: RecordDetailVC, animated: false)
+  fileprivate func showRecordDetailVC(
+    nickname: String,
+    memberId: Int
+  ) {
+    let fetchUserFeedUseCase = feedDependencyFactory.injectFetchUserFeedUseCase()
+    let reactor = myPageDependencyFactory.injectRecordDetailReactor(
+      coordinator: self,
+      fetchUserFeedUseCase: fetchUserFeedUseCase)
+    let recordDetailVC = myPageDependencyFactory.injectRecordDetailViewController(
+      reactor: reactor,
+      memberId: memberId,
+      memberNickname: nickname
+    )
+    guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
+      return
+    }
+    tabBarViewController.hideCustomTabBar()
+    self.pushViewController(viewController: recordDetailVC, animated: false)
   }
   
   /// 프로필 설정뷰
