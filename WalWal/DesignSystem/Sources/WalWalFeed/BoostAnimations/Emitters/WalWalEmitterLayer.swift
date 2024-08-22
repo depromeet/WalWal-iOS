@@ -20,8 +20,8 @@ final class WalWalEmitterLayer: CAEmitterLayer {
   ///   - renderMode: 렌더링 모드
   init(
     cell: WalWalEmitterCell,
-    emitterShape: CAEmitterLayerEmitterShape = .sphere,
-    emitterMode: CAEmitterLayerEmitterMode = .outline,
+    emitterShape: CAEmitterLayerEmitterShape = .rectangle,
+    emitterMode: CAEmitterLayerEmitterMode = .surface,
     renderMode: CAEmitterLayerRenderMode = .additive
   ) {
     self.walwalCell = cell
@@ -31,6 +31,8 @@ final class WalWalEmitterLayer: CAEmitterLayer {
     self.emitterMode = emitterMode
     self.renderMode = renderMode
     self.emitterCells = [walwalCell]
+    
+    self.emitterSize = CGSize(width: 240, height: 120) // 직사각형 방출 크기 설정
   }
   
   required init?(coder aDecoder: NSCoder) {

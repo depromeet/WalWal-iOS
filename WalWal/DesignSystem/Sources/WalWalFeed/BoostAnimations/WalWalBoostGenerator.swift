@@ -212,7 +212,14 @@ extension WalWalBoostGenerator {
         window: window
       )
     }
-    window.layer.addSublayer(walwalEmitter)
+    
+    walwalEmitter.configureEmitter(
+      in: detailView,
+      positionRatio: CGPoint(x: 0.5, y: 0.5),
+      sizeRatio: CGSize(width: 0.5, height: 0.5)
+    )
+    walwalEmitter.startEmitting(rate: 10)
+    detailView.layer.addSublayer(walwalEmitter)
   }
   
   private func addTiltAnimation(to view: UIView) {
@@ -243,20 +250,24 @@ extension WalWalBoostGenerator {
   ) {
     feedbackGenerator.impactOccurred()
     
-    if count == 1 {
-      walwalEmitter.configureEmitter(
-        in: detailView,
-        positionRatio: CGPoint(x: 0.5, y: 0.5),
-        sizeRatio: CGSize(width: 0.5, height: 0.5)
-      )
-      walwalEmitter.startEmitting(rate: 30)
-      detailView.layer.addSublayer(walwalEmitter)
+    // 기본 방출량
+    let normalRate: Float = 20
+    
+    // 순간적으로 방출량을 2배로 늘리는 메서드
+    func temporarilyIncreaseRate(_ rate: Float, duration: TimeInterval) {
+      walwalEmitter.startEmitting(rate: rate)
+      DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
+        self?.walwalEmitter.startEmitting(rate: normalRate)  // 원래 방출량으로 돌아감
+      }
     }
     
     switch count {
-    case 40:
-      walwalBoostBorder.startBorderAnimation(isRainbow: true)
+    case 1:
+      // 1개일 때 방출량 잠깐 2배로 늘림
+      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
+      
     case 100:
+      walwalBoostBorder.startBorderAnimation(isRainbow: true)
       walwalBoostCenterLabel.updateCenterLabels(
         with: WalWalBurstString.goodText,
         in: detailView,
@@ -265,6 +276,8 @@ extension WalWalBoostGenerator {
         guard let self = self else { return }
         self.walwalBoostCenterLabel.disappearLabels()
       }
+      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
+      
     case 250:
       walwalBoostCenterLabel.updateCenterLabels(
         with: WalWalBurstString.greatText,
@@ -274,6 +287,8 @@ extension WalWalBoostGenerator {
         guard let self = self else { return }
         self.walwalBoostCenterLabel.disappearLabels()
       }
+      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
+      
     case 500:
       walwalBoostCenterLabel.updateCenterLabels(
         with: WalWalBurstString.wonderfulText,
@@ -283,8 +298,10 @@ extension WalWalBoostGenerator {
         guard let self = self else { return }
         self.walwalBoostCenterLabel.disappearLabels()
       }
+      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
+      
     default:
-      break
+      walwalEmitter.startEmitting(rate: normalRate)  // 기본 방출량 유지
     }
   }
 }
