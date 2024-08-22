@@ -54,7 +54,6 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   private var authDependencyFactory: AuthDependencyFactory
   private let imageDependencyFactory: ImageDependencyFactory
   private var membersDependencyFactory: MembersDependencyFactory
-  private let imageDependencyFactory: ImageDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
@@ -83,7 +82,6 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     self.imageDependencyFactory = imageDependencyFactory
     self.tabBarController = WalWalTabBarViewController()
     self.membersDependencyFactory = membersDependencyFactory
-    self.imageDependencyFactory = imageDependencyFactory
     
     bindChildToParentAction()
     bindState()
