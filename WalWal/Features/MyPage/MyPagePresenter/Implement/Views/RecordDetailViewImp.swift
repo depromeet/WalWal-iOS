@@ -33,7 +33,7 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   }
   
   private let navigationBar = WalWalNavigationBar(
-    leftItems: [.back],
+    leftItems: [.darkBack],
     title: "기록",
     rightItems: []
   ).then {
@@ -43,15 +43,23 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   
   // MARK: - Property
   
+  private var memberId: Int
+  private var nickname: String
+  
   public var disposeBag = DisposeBag()
   public var recordDetailReactor: R
   
   private let dummyData: [WalWalFeedModel] = [ ]
 
-  
   public init(
-    reactor: R
+    reactor: R,
+    nickname: String,
+    memberId: Int,
+    isFeedRecord: Bool
   ) {
+    self.nickname = nickname
+    self.memberId = memberId
+    
     self.recordDetailReactor = reactor
     self.feed = WalWalFeed(feedData: dummyData, isFeed: false)
 
@@ -64,11 +72,16 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   
   // MARK: - Lifecycle
   
+  public override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.tabBarController?.tabBar.isHidden = true
+  }
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     setAttribute()
     setLayout()
-    bind(reactor: recordDetailReactor)
+    self.reactor = recordDetailReactor
   }
   
   public override func viewDidLayoutSubviews() {
@@ -109,9 +122,21 @@ extension RecordDetailViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
+    navigationBar.leftItems?[0].rx.tapped
+      .map { Reactor.Action.tapBackButton }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
+    reactor.state
+      .debug()
+      .map {  $0.feedData }
+      .observe(on: MainScheduler.instance)
+      .subscribe(with: self, onNext: { owner, feed in
+        owner.feed.feedData.accept(feed)
+      })
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
