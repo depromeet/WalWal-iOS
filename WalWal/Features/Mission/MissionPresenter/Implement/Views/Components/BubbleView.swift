@@ -76,7 +76,7 @@ public final class BubbleView: UIView {
     containerView.pin
       .all()
     titleLabel.sizeToFit()
-    titleLabel.flex
+    containerView.flex
       .markDirty()
     layer.cornerRadius = containerView.bounds.height / 2
   }
@@ -100,7 +100,7 @@ public final class BubbleView: UIView {
   private func bind() {
     Observable.combineLatest(missionCount, isCompleted)
       .map { count, completed -> String in
-        return completed ? "\(count+1)번째 함께 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
+        return completed ? "\(count)번째 함께 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
       }
       .bind(to: titleLabel.rx.text)
       .disposed(by: disposeBag)

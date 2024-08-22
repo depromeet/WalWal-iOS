@@ -35,6 +35,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     missionTitle: "반려동물과 함께\n산책한 사진을 찍어요",
     missionImage: ResourceKitAsset.Sample.missionSample.image
   )
+  private let missionSucessView = MissionCompleteView()
   private lazy var missionCountBubbleView = BubbleView()
   private let missionStartButton = WalWalButton_Icon(
     type: .active,
@@ -99,7 +100,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     rootContainer.flex
       .paddingTop(80.adjusted)
       .define {
-        $0.addItem(missionStartView)
+        $0.addItem(missionSucessView)
           .alignSelf(.center)
         $0.addItem()
           .direction(.columnReverse)
