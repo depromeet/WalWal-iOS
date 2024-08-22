@@ -51,7 +51,6 @@ public final class WalWalTabBarViewController: UITabBarController {
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    additionalSafeAreaInsets.bottom = customTabBar.isHidden ? 0 : 68
     containerView.pin
       .bottom()
       .left()
