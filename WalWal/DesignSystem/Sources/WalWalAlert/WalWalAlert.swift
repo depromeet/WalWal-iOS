@@ -32,6 +32,7 @@ public final class WalWalAlert {
   /// 얼럿 버튼 탭 시 어떤 버튼이 눌렸는지에 대한 값을 리턴
   ///
   /// ### 사용 예시
+  /// - show()
   /// ```swift
   /// WalWalAlert.shared.resultRelay
   ///  .bind(with: self) { owner, result in
@@ -46,6 +47,14 @@ public final class WalWalAlert {
   ///  }
   ///  .disposed(by: disposeBag)
   /// ```
+  /// 또는
+  /// - showOKAlert()
+  /// ```swift
+  /// WalWalAlert.shared.resultRelay
+  ///   .map { _ in Void() }
+  ///   .bind(to: WalWalAlert.shared.closeAlert)
+  ///   .disposed(by: disposeBag)
+  /// ```
   /// - Returns: .cancel 또는 .ok
   public let resultRelay = PublishRelay<AlertResultType>()
   
@@ -54,6 +63,8 @@ public final class WalWalAlert {
   /// ### 사용 예시
   /// `WalWalAlert.shared.closeAlert.accept(())`
   public let closeAlert = PublishRelay<Void>()
+  private var isOneButtonAlert: Bool = false
+  private var closeButtonMargin: CGFloat = 8
   
   // MARK: - UI
   
@@ -68,7 +79,7 @@ public final class WalWalAlert {
   private let titleLabel = UILabel().then {
     $0.font = FontsKR.H4
     $0.textColor = Colors.black.color
-    $0.numberOfLines = 1
+    $0.numberOfLines = 2
     $0.textAlignment = .center
   }
   private let bodyLabel = UILabel().then {
@@ -124,9 +135,41 @@ public final class WalWalAlert {
     
   }
   
-  private func configureLayout() {
-    rootContainer.addSubview(alertView)
+  /// 얼럿 뷰를 보여주기 위한 메서드
+  /// ### 사용예시
+  /// ```swift
+  ///   WalWalAlert.shared.showOkAlert(
+  ///     title: "앨범에 대한 접근 권한이 없습니다.",
+  ///     bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
+  ///     okTitle: "확인"
+  ///   )
+  /// ```
+  /// - Parameters:
+  ///   - title: 상단 얼럿 제목
+  ///   - bodyMessage: 얼럿에 대한 내용
+  ///   - okTitle:얼럿 내용에 대한 확인 버튼 타이틀
+  public func showOkAlert(
+    title: String,
+    bodyMessage: String,
+    okTitle: String
+  ) {
+    titleLabel.text = title
+    bodyLabel.text = bodyMessage
+    cancelButton.title = okTitle
+    isOneButtonAlert = true
     
+    guard let window = UIWindow.key else { return }
+    window.addSubview(rootContainer)
+    configureLayout()
+    okButton.isHidden = true
+  }
+  
+  private func configureLayout() {
+    
+    closeButtonMargin = isOneButtonAlert ? 20 : 8
+    okButton.flex.isIncludedInLayout = !isOneButtonAlert
+    
+    rootContainer.addSubview(alertView)
     rootContainer.pin
       .all()
     
@@ -142,12 +185,12 @@ public final class WalWalAlert {
         $0.addItem(cancelButton)
           .marginTop(30)
           .marginHorizontal(20)
+          .marginBottom(closeButtonMargin)
         $0.addItem(okButton)
-          .marginTop(8)
           .marginBottom(20)
           .marginHorizontal(20)
-        
       }
+    
     rootContainer.flex
       .justifyContent(.center)
     rootContainer.flex
