@@ -36,7 +36,7 @@ let spm = SwiftPackageManagerDependencies(
             requirement: .upToNextMajor(from: "2.0.0")),
     .remote(url: "https://github.com/kakao/kakao-ios-sdk",
             requirement: .upToNextMajor(from: "2.22.4")),
-    .remote(url: "https://github.com/airbnb/lottie-ios",
+    .remote(url: "https://github.com/airbnb/lottie-spm",
             requirement: .upToNextMajor(from: "4.5.0"))
   ],
   productTypes: [
