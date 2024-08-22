@@ -32,7 +32,6 @@ public final class WalWalFeed: UIView {
   
   public private(set) var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
     let flowLayout = UICollectionViewFlowLayout()
-    flowLayout.itemSize = CGSize(width: 342, height: 470)
     flowLayout.minimumLineSpacing = 14
     
     $0.collectionViewLayout = flowLayout
@@ -112,7 +111,7 @@ public final class WalWalFeed: UIView {
   // MARK: - Setup Methods
   
   private func configureView() {
-    setupView()
+    setupCollectionView()
     setupGestureHandler()
     setupBindings()
     setLayouts()
@@ -124,13 +123,34 @@ public final class WalWalFeed: UIView {
     gestureHandler?.setupLongPressGesture(for: collectionView)
   }
   
-  private func setupView() {
-    addSubview(collectionView)
+  private func setupCollectionView() {
+    collectionView.collectionViewLayout = createLayout()
     collectionView.dataSource = self
     collectionView.delegate = self
     
     walwalIndicator.endRefreshing()
     collectionView.refreshControl = walwalIndicator
+  }
+  
+  private func createLayout() -> UICollectionViewLayout{
+    
+    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                          heightDimension: .estimated(504))
+    let itme = NSCollectionLayoutItem(layoutSize: itemSize)
+    // estimated를 사용하게 되면 contentInsets 값은 무시가 됩니다.
+    itme.edgeSpacing = NSCollectionLayoutEdgeSpacing(leading: nil, top: .fixed(20), trailing: nil, bottom: nil)
+    
+    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                           heightDimension: .estimated(504))
+    let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
+                                                   subitems: [itme])
+    group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+
+    let section = NSCollectionLayoutSection(group: group)
+    
+    let layout = UICollectionViewCompositionalLayout(section: section)
+    
+    return layout
   }
   
   private func setupBindings() {
@@ -221,14 +241,6 @@ extension WalWalFeed: GestureHandlerDelegate {
   }
 }
 
-// MARK: - Array Extension
-
-extension Array {
-  subscript(safe index: Index) -> Element? {
-    return indices.contains(index) ? self[index] : nil
-  }
-}
-
 // MARK: - UICollectionViewDataSource
 extension WalWalFeed: UICollectionViewDataSource {
   public func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -266,5 +278,13 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
       if isNearBottomEdge {
           scrollEndReached.accept(true)
       }
+  }
+}
+
+// MARK: - Array Extension
+
+extension Array {
+  subscript(safe index: Index) -> Element? {
+    return indices.contains(index) ? self[index] : nil
   }
 }
