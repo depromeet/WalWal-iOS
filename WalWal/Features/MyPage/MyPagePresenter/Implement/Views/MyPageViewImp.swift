@@ -7,7 +7,9 @@
 //
 
 import UIKit
+import MyPageDomain
 import MyPagePresenter
+
 import DesignSystem
 import ResourceKit
 import GlobalState
@@ -53,6 +55,8 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   
   public var disposeBag = DisposeBag()
   public var mypageReactor: R
+  
+  private var memberInfo: MemberModel = .init(global: GlobalState.shared.profileInfo.value)
   
   public init(
     reactor: R
@@ -121,7 +125,7 @@ extension MyPageViewControllerImp: View {
   public func bindAction(reactor: R) {
     calendar.selectedDayData
       .map {
-        Reactor.Action.didSelectCalendarItem($0)
+        return Reactor.Action.didSelectCalendarItem(memberInfo: self.memberInfo, date: $0.date)
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)

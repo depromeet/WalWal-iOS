@@ -10,12 +10,13 @@ import MyPageDomain
 import MyPageCoordinator
 import DesignSystem
 import MembersDomain
+import FeedDomain
 
 import ReactorKit
 import RxSwift
 
 public enum MyPageReactorAction {
-  case didSelectCalendarItem(WalWalCalendarModel)
+  case didSelectCalendarItem(memberInfo: MemberModel, date: String)
   case didTapSettingButton
   case didTapEditButton
   case loadCalendarData
@@ -27,6 +28,7 @@ public enum MyPageReactorMutation {
   case setCalendarData([WalWalCalendarModel]) // 캘린더 데이터를 설정하는 뮤테이션 추가
   case moveToSettingView
   case moveToEditView
+  case moveToRecordDetail(memberInfo: MemberModel, cursor: String?)
   case profileInfo(data: MemberModel)
 }
 
