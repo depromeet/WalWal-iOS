@@ -6,7 +6,8 @@
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import Foundation
+import UIKit
+import DesignSystem
 import MyPageDomain
 import MyPagePresenter
 import MyPageCoordinator
@@ -14,6 +15,7 @@ import ResourceKit
 import FCMDomain
 import AuthDomain
 import LocalStorage
+import GlobalState
 
 import ReactorKit
 import RxSwift
@@ -101,6 +103,10 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     case let .setIsRecentVersion(isRecent):
       newState.isRecent = isRecent
     case .moveToBack:
+      guard let tabBarViewController = coordinator.navigationController.tabBarController as? WalWalTabBarViewController else {
+        return state
+      }
+      tabBarViewController.showCustomTabBar()
       coordinator.popViewController(animated: true)
     }
     return newState
@@ -243,6 +249,7 @@ extension ProfileSettingReactorImp {
             rightText: "")
     ]
   }
+  
 }
 
 fileprivate enum AuthAction {

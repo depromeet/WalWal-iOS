@@ -152,8 +152,13 @@ extension MyPageCoordinatorImp {
       kakaoLogoutUseCase: authDependencyFactory.injectKakaoLogoutUseCase(),
       kakaoUnlinkUseCase: authDependencyFactory.injectKakaoUnlinkUseCase()
     )
-    let ProfileSettingVC = myPageDependencyFactory.injectProfileSettingViewController(reactor: reactor)
-    self.pushViewController(viewController: ProfileSettingVC, animated: true)
+    let profileSettingVC = myPageDependencyFactory.injectProfileSettingViewController(reactor: reactor)
+    
+    guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
+      return
+    }
+    tabBarViewController.hideCustomTabBar()
+    self.pushViewController(viewController: profileSettingVC, animated: true)
   }
   
   /// 프로필 변경뷰
