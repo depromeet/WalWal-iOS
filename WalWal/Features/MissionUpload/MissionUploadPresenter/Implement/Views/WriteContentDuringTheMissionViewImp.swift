@@ -280,6 +280,7 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
     
     reactor.pulse(\.$uploadErrorMessage)
       .asDriver(onErrorJustReturn: "")
+      .filter { !$0.isEmpty }
       .drive(onNext: { errorMessage in
         WalWalToast.shared.show(
           type: .error,
