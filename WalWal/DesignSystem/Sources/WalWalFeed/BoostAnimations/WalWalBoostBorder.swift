@@ -13,7 +13,10 @@ final class WalWalBoostBorder {
   
   private typealias Colors = ResourceKitAsset.Colors
   
+  var onRainbowAnimationAdded: (() -> Void)?
+  
   private var borderLayers: [CAShapeLayer] = []
+  private let newLayer = CAShapeLayer()
   private weak var containerView: UIView?
   private let cornerRadius: CGFloat = 20
   
@@ -21,25 +24,26 @@ final class WalWalBoostBorder {
     containerView = view
     borderLayers.forEach { $0.removeFromSuperlayer() }
     borderLayers.removeAll()
+    setupBorderLayer()
   }
   
-  func startBorderAnimation(borderColor: UIColor, isRainbow: Bool = false) {
+  func setupBorderLayer() {
     guard let containerView = containerView else { return }
     
-    let newLayer = CAShapeLayer()
     let path = createDashedBorderPath(in: containerView.bounds)
     newLayer.path = path.cgPath
     newLayer.fillColor = UIColor.clear.cgColor
     newLayer.lineWidth = 5
-    newLayer.strokeColor = borderColor.cgColor
-    
+    newLayer.strokeColor = Colors.walwalOrange.color.cgColor
     // 상단 중앙에서 시작하는 설정
     newLayer.strokeStart = 0.0
     newLayer.strokeEnd = 0.0
     
     containerView.layer.addSublayer(newLayer)
     borderLayers.append(newLayer)
-    
+  }
+  
+  func startBorderAnimation(isRainbow: Bool = false) {
     if isRainbow {
       startRainbowBorderAnimation(for: newLayer)
     } else {
@@ -133,7 +137,7 @@ final class WalWalBoostBorder {
     layer.add(rainbowAnimation, forKey: "rainbowBorderAnimation")
     
     let strokeAnimation = CABasicAnimation(keyPath: "strokeEnd")
-    strokeAnimation.fromValue = 0.0
+    strokeAnimation.fromValue = 1.0
     strokeAnimation.toValue = 1.0
     strokeAnimation.duration =  0.5
     strokeAnimation.fillMode = .forwards

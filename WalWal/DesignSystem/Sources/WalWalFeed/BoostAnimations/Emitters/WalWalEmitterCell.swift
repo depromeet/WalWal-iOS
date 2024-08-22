@@ -37,7 +37,8 @@ final class WalWalEmitterCell: CAEmitterCell {
     emissionRange: CGFloat = .pi * 2,
     spin: CGFloat = 3.14,
     spinRange: CGFloat = 6.28,
-    alphaSpeed: Float = -0.5
+    alphaSpeed: Float = 0,
+    alphaRange: Float = 0
   ) {
     super.init()
     
@@ -53,6 +54,9 @@ final class WalWalEmitterCell: CAEmitterCell {
     self.spin = spin
     self.spinRange = spinRange
     self.alphaSpeed = alphaSpeed
+    self.alphaRange = alphaRange
+    
+    self.color = UIColor.white.withAlphaComponent(1.0).cgColor
   }
   
   required init?(coder aDecoder: NSCoder) {

@@ -73,7 +73,7 @@ public final class WalWalFeed: UIView {
     emissionRange: .pi * 2,
     spin: 3.14,
     spinRange: 6.28,
-    alphaSpeed: -0.5
+    alphaSpeed: 0
   )
   
   private lazy var walwalEmitter = WalWalEmitterLayer(

@@ -103,6 +103,7 @@ final class WalWalBoostGenerator {
     currentDetailView = nil
     currentBlackOverlayView = nil
     walwalEmitter.stopEmitting()
+    walwalEmitter.removeFromSuperlayer()
     
     boostFinished.onNext(
       BoostResult(
@@ -188,7 +189,7 @@ extension WalWalBoostGenerator {
   
   private func setupBoostAnimationComponents(in detailView: UIView, window: UIWindow) {
     walwalBoostBorder.addBorderLayer(to: detailView)
-    walwalBoostBorder.startBorderAnimation(borderColor: Colors.walwalOrange.color)
+    walwalBoostBorder.startBorderAnimation()
     
     walwalBoostCenterLabel.updateCenterLabels(
       with: WalWalBurstString.normalText,
@@ -211,6 +212,7 @@ extension WalWalBoostGenerator {
         window: window
       )
     }
+    window.layer.addSublayer(walwalEmitter)
   }
   
   private func addTiltAnimation(to view: UIView) {
@@ -253,7 +255,7 @@ extension WalWalBoostGenerator {
     
     switch count {
     case 40:
-      walwalBoostBorder.startBorderAnimation(borderColor: .clear, isRainbow: true)
+      walwalBoostBorder.startBorderAnimation(isRainbow: true)
     case 100:
       walwalBoostCenterLabel.updateCenterLabels(
         with: WalWalBurstString.goodText,
