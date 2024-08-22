@@ -204,6 +204,15 @@ extension ProfileEditViewControllerImp: View {
       .bind(to: completeButton.rx.buttonType)
       .disposed(by: disposeBag)
     
+    reactor.state
+      .map { $0.showIndicator }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, show in
+        ActivityIndicator.shared.showIndicator.accept(show)
+      }
+      .disposed(by: disposeBag)
+    
   }
   
   public func bindEvent() {
