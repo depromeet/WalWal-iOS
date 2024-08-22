@@ -218,7 +218,7 @@ extension WalWalBoostGenerator {
       positionRatio: CGPoint(x: 0.5, y: 0.5),
       sizeRatio: CGSize(width: 0.5, height: 0.5)
     )
-    walwalEmitter.startEmitting(rate: 10)
+    walwalEmitter.startEmitting(rate: 20)
     detailView.layer.addSublayer(walwalEmitter)
   }
   
