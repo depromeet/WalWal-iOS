@@ -11,6 +11,7 @@ import MissionUploadPresenter
 import ResourceKit
 import DesignSystem
 import Utility
+import Lottie
 
 import Then
 import PinLayout
@@ -61,6 +62,12 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
     image: Images.arrow.image,
     size: 40
   )
+  
+  private let missionUploadCompletedLottieView: LottieAnimationView = {
+    let animationView = LottieAnimationView(animation: AnimationAsset.missionComplete.animation)
+    animationView.loopMode = .playOnce
+    return animationView
+  }()
   
   // MARK: - Properties
   
@@ -206,11 +213,30 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   }
   
   fileprivate func showLottie() {
-    print("로띠를 띄워봐용~")
+    guard let window = UIWindow.key else { return }
+    
+    let dimView = UIView(frame: window.bounds)
+    dimView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+    dimView.tag = 999
+    
+    missionUploadCompletedLottieView.center = window.center
+    
+    window.addSubview(dimView)
+    window.addSubview(missionUploadCompletedLottieView)
+    
+    missionUploadCompletedLottieView.play { [weak self] (finished) in
+      guard let self = self else { return }
+      if finished { self.hideLottie() }
+    }
   }
   
   fileprivate func hideLottie() {
-    print("로띠를 지워봐용~")
+    guard let window = UIWindow.key else { return }
+    
+    window.viewWithTag(999)?.removeFromSuperview()
+    missionUploadCompletedLottieView.removeFromSuperview()
+    
+    writeContentDuringTheMissionReactor.action.onNext(.lottieFinished)
   }
 }
 
@@ -270,16 +296,9 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
       })
       .disposed(by: disposeBag)
     
-    reactor.state
-      .map { $0.showCompletedLottie }
-      .distinctUntilChanged()
-      .subscribe(with: self, onNext: { owner, isShow in
-        isShow ? owner.showLottie() : owner.hideLottie()
-      })
-      .disposed(by: disposeBag)
-    
     reactor.pulse(\.$uploadErrorMessage)
       .asDriver(onErrorJustReturn: "")
+      .filter { !$0.isEmpty }
       .drive(onNext: { errorMessage in
         WalWalToast.shared.show(
           type: .error,
@@ -296,6 +315,15 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
       .subscribe(with: self, onNext: { owner, _ in
         owner.showLottie()
       })
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.showIndicator }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, show in
+        ActivityIndicator.shared.showIndicator.accept(show)
+      }
       .disposed(by: disposeBag)
   }
   
