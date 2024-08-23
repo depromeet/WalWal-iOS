@@ -106,10 +106,6 @@ final class WalWalFeedCellView: UIView {
     super.layoutSubviews()
     containerView.pin
       .all()
-    
-    containerView.flex
-      .layout(mode: .adjustHeight)
-    
     boostCountLabel.flex
       .markDirty()
     
@@ -119,11 +115,12 @@ final class WalWalFeedCellView: UIView {
     missionDateLabel.flex
       .markDirty()
     
-    contentLabel.flex
-      .markDirty()
-    
     feedContentView.flex
       .markDirty()
+    
+    containerView.flex
+      .layout(mode: .adjustHeight)
+    
   }
   
   // MARK: - Methods
@@ -223,6 +220,7 @@ final class WalWalFeedCellView: UIView {
       }
     
     feedContentView.flex
+      .width(100%)
       .direction(.column)
       .justifyContent(.center)
       .define {
@@ -233,12 +231,12 @@ final class WalWalFeedCellView: UIView {
           .marginHorizontal(16)
           .marginTop(14)
         $0.addItem(boostLabelView)
-          .width(100%)
           .marginTop(8)
           .marginHorizontal(16)
       }
     
     boostLabelView.flex
+      .width(100%)
       .direction(.row)
       .alignItems(.center)
       .define {
