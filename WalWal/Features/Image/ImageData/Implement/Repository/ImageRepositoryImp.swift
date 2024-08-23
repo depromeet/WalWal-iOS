@@ -9,6 +9,7 @@
 import Foundation
 import WalWalNetwork
 import ImageData
+import LocalStorage
 
 import RxSwift
 
@@ -34,15 +35,18 @@ public final class ImageRepositoryImp: ImageRepository {
       }
   }
   
-  public func uploadMemberImage(nickname: String, type: String, image: Data) -> Single<Void> {
+  public func uploadMemberImage(nickname: String, type: String, image: Data) -> Single<UploadCompleteDTO> {
     let completeBody = MemberUploadBody(imageFileExtension: type, nickname: nickname)
-    let endpoint = ImageEndPoint<EmptyResponse>.membersUploadComplete(body: completeBody)
-
+    let endpoint = ImageEndPoint<UploadCompleteDTO>.membersUploadComplete(body: completeBody)
+    let isTempraryUser = KeychainWrapper.shared.accessToken == nil
+    
     return requestMemberUploadURL(type: type, image: image)
-      .flatMap { [weak self] result -> Single<Void> in
+      .flatMap { [weak self] result -> Single<UploadCompleteDTO> in
         guard let self = self else { return .never() }
-        return self.networkService.request(endpoint: endpoint, isNeedInterceptor: false)
-          .map { _ in Void() }
+        return self.networkService.request(endpoint: endpoint, isNeedInterceptor: !isTempraryUser)
+          .compactMap { $0 }
+          .asObservable()
+          .asSingle()
       }
   }
   

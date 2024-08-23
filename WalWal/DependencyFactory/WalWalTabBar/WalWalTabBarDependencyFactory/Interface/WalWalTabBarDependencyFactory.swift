@@ -16,6 +16,7 @@ import AuthDependencyFactory
 import RecordsDependencyFactory
 import ImageDependencyFactory
 import MembersDependencyFactory
+import ImageDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator

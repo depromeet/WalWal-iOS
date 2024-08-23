@@ -51,8 +51,12 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     chipTitle: "수정"
   )
   
+  // MARK: - Properties
+  
   public var disposeBag = DisposeBag()
   public var mypageReactor: R
+  private var isMoveToEdit: Bool = false
+  private let refreshProfileInfo = PublishRelay<Void>()
   
   public init(
     reactor: R
@@ -72,6 +76,14 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     self.reactor = mypageReactor
     setAttribute()
     setLayout()
+  }
+  
+  public override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    if isMoveToEdit {
+      isMoveToEdit = false
+      refreshProfileInfo.accept(())
+    }
   }
   
   public override func viewDidLayoutSubviews() {
@@ -96,13 +108,13 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     
     containerView.flex
       .direction(.column)
+      .justifyContent(.spaceBetween)
       .define { flex in
         flex.addItem(navigationBar)
         flex.addItem(seperator)
           .height(1)
           .width(100%)
         flex.addItem(calendar)
-          .grow(1)
         flex.addItem(profileCardView)
       }
   }
@@ -135,8 +147,14 @@ extension MyPageViewControllerImp: View {
     
     profileCardView.rx.chipTapped
       .map {
-        Reactor.Action.didTapEditButton
+        self.isMoveToEdit = true
+        return Reactor.Action.didTapEditButton
       }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    refreshProfileInfo
+      .map { Reactor.Action.loadProfileInfo }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
@@ -151,9 +169,14 @@ extension MyPageViewControllerImp: View {
       .map { $0.profileData }
       .compactMap { $0 }
       .bind(with: self) { owner, data in
+        var image: UIImage?
+        if let imgName = data.defaultImageName,
+            let defaultImage = DefaultProfile(rawValue: imgName) {
+          image = defaultImage.image
+        }
         owner.profileCardView.changeProfileInfo(
           nickname: data.nickname,
-          image: data.profileImage,
+          image: data.profileImage ?? image,
           raisePet: data.raisePet
         )
       }

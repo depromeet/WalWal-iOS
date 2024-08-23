@@ -23,6 +23,7 @@ final class WalWalProfileDemoViewController: UIViewController {
   private let profileSelectView2 = WalWalProfile(
     type: .cat,
     defaultImage: "GREEN_CAT"
+    
   )
   private let profileSelectView3 = WalWalProfile(
     type: .cat,

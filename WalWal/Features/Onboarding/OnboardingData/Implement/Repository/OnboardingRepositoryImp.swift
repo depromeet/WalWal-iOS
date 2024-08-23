@@ -19,10 +19,4 @@ public final class OnboardingRepositoryImp: OnboardingRepository {
     self.networkService = networkService
   }
   
-  public func checkValidNickname(nickname: String) -> Single<Void> {
-    let body = NicknameCheckBody(nickname: nickname)
-    let endpoint = OnboardingEndPoint<EmptyResponse>.checkNickname(body: body)
-    return networkService.request(endpoint: endpoint, isNeedInterceptor: false)
-      .map { _ in return () }
-  }
 }

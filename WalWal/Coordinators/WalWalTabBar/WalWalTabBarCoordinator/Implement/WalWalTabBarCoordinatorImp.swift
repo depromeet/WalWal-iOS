@@ -18,6 +18,7 @@ import AuthDependencyFactory
 import RecordsDependencyFactory
 import ImageDependencyFactory
 import MembersDependencyFactory
+import ImageDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -188,7 +189,8 @@ extension WalWalTabBarCoordinatorImp {
       parentCoordinator: self,
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
-      membersDependencyFactory: membersDependencyFactory
+      membersDependencyFactory: membersDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory
     )
     myPageCoordinator.start()
     return myPageCoordinator
