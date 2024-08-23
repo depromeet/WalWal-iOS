@@ -30,7 +30,7 @@ public final class BubbleView: UIView {
   private let titleLabel = UILabel().then {
     $0.textColor = Colors.walwalOrange.color
     $0.font = Fonts.KR.H6.B
-    $0.numberOfLines = 0
+    $0.numberOfLines = 1
   }
   
   // MARK: - Property
@@ -75,6 +75,8 @@ public final class BubbleView: UIView {
     self.addSubview(containerView)
     containerView.pin
       .all()
+    containerView.pin.left().top().right()
+
     titleLabel.sizeToFit()
     containerView.flex
       .markDirty()
@@ -99,11 +101,14 @@ public final class BubbleView: UIView {
   
   private func bind() {
     Observable.combineLatest(missionCount, isCompleted)
-      .map { count, completed -> String in
-        return completed ? "\(count)번째 함께 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
+      .observe(on: MainScheduler.instance)
+      .bind(with: self) { owner, data in
+        let (count, completed) = data
+        owner.titleLabel.text = completed ? "\(count)번째 함께 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
+        owner.setNeedsLayout()
       }
-      .bind(to: titleLabel.rx.text)
       .disposed(by: disposeBag)
+    
   }
   
   
@@ -127,9 +132,7 @@ public final class BubbleView: UIView {
     let shape = CAShapeLayer()
     shape.path = path
     shape.fillColor = viewColor.cgColor
-    
     self.layer.insertSublayer(shape, at: 0)
-    
   }
   
   func startFloatingAnimation() {
