@@ -28,7 +28,7 @@ let project = Project(
         .ThirdParty.KakaoSDKCommon,
         .ThirdParty.FirebaseMessaging,
         
-        .DependencyFactory.Auth.Implement,
+          .DependencyFactory.Auth.Implement,
         .DependencyFactory.Splash.Implement,
         .DependencyFactory.WalWalTabBar.Implement,
         .DependencyFactory.Mission.Implement,
@@ -47,7 +47,6 @@ let project = Project(
         ]
       )
     ),
-    
     .makeApp(
       name: "PROD-WalWalApp",
       platform: .iOS,
@@ -60,7 +59,7 @@ let project = Project(
         .ThirdParty.KakaoSDKCommon,
         .ThirdParty.FirebaseMessaging,
         
-        .DependencyFactory.Auth.Implement,
+          .DependencyFactory.Auth.Implement,
         .DependencyFactory.Splash.Implement,
         .DependencyFactory.WalWalTabBar.Implement,
         .DependencyFactory.Mission.Implement,
@@ -78,6 +77,24 @@ let project = Project(
           .debug(name: .release, xcconfig: "../Config/Release.xcconfig")
         ]
       )
+    )
+  ],
+  schemes: [
+    Scheme(
+      name: "DEV-WalWalApp",
+      buildAction: .buildAction(targets: ["DEV-WalWalApp"]),
+      runAction: .runAction(configuration: .debug),
+      archiveAction: .archiveAction(configuration: .debug),
+      profileAction: .profileAction(configuration: .debug),
+      analyzeAction: .analyzeAction(configuration: .debug)
+    ),
+    Scheme(
+      name: "PROD-WalWalApp",
+      buildAction: .buildAction(targets: ["PROD-WalWalApp"]),
+      runAction: .runAction(configuration: .release),
+      archiveAction: .archiveAction(configuration: .release),
+      profileAction: .profileAction(configuration: .release),
+      analyzeAction: .analyzeAction(configuration: .release)
     )
   ]
 )
