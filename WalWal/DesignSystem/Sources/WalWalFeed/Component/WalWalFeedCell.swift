@@ -39,17 +39,20 @@ final class WalWalFeedCell: UICollectionViewCell {
   override func layoutSubviews() {
     super.layoutSubviews()
     layoutCell()
+    feedView.layoutSubviews()
   }
   
   override func prepareForReuse() {
     super.prepareForReuse()
     layoutCell()
+    feedView.layoutSubviews()
   }
   
   // MARK: - Methods
   
   func configureCell(feedData: WalWalFeedModel) {
     feedView.configureFeed(feedData: feedData)
+    contentView.backgroundColor = .clear
   }
   
   private func setAttributes() {
