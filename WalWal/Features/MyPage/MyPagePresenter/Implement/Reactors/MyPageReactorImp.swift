@@ -94,7 +94,10 @@ public final class MyPageReactorImp: MyPageReactor {
     case let .profileInfo(data):
       newState.profileData = data
     case .moveToRecordDetail(let member, let cursor):
-      coordinator.destination.accept(.showRecordDetail(nickname: member.nickname, memberId: member.memberId))
+      coordinator.destination.accept(.showRecordDetail(
+        nickname: member.nickname,
+        memberId: member.memberId
+      ))
     }
     return newState
   }
