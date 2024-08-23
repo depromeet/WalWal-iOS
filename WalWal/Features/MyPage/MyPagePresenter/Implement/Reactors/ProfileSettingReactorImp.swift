@@ -246,21 +246,18 @@ extension ProfileSettingReactorImp {
     return [
       .init(
         title: "로그아웃",
-        iconImage: Images.logout.image,
         subTitle: "",
         rightText: "",
         type: .logout
       ),
       .init(
         title: "버전 정보",
-        iconImage: Images.swap.image,
         subTitle: appVersion,
         rightText: isRecent ? "최신 버전입니다." : "업데이트 필요",
         type: .version
       ),
       .init(
         title: "회원 탈퇴",
-        iconImage: Images.xSquare.image,
         subTitle: "",
         rightText: "",
         type: .withdraw

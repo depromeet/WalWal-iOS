@@ -138,7 +138,6 @@ extension ProfileSettingViewControllerImp: View {
       .bind(to: settingTableView.rx
         .items(ProfileSettingTableViewCell.self)) { row, model, cell in
           cell.configureCell(
-            iconImage: model.iconImage,
             title: model.title,
             subTitle: model.subTitle,
             rightText: model.rightText

@@ -24,9 +24,8 @@ final class ProfileSettingTableViewCell: UITableViewCell, ReusableView {
   // MARK: - UI
   
   private let containerView = UIView()
-  private let iconImageView = UIImageView()
   private let titleLabel = UILabel().then {
-    $0.font = FontKR.H7.M
+    $0.font = FontKR.H6.M
     $0.textColor = AssetColor.gray700.color
   }
   private let subTitleLabel = UILabel().then {
@@ -59,6 +58,7 @@ final class ProfileSettingTableViewCell: UITableViewCell, ReusableView {
   }
   
   override func prepareForReuse() {
+    super.prepareForReuse()
     resetCell()
   }
   
@@ -69,54 +69,45 @@ final class ProfileSettingTableViewCell: UITableViewCell, ReusableView {
   
   private func setLayout() {
     contentView.addSubview(containerView)
-    [iconImageView, titleLabel, subTitleLabel, rightLabel].forEach {
-      containerView.addSubview($0)
-    }
     
     containerView.flex
       .direction(.row)
+      .justifyContent(.spaceBetween)
       .alignItems(.center)
       .define {
-        $0.addItem(iconImageView)
-          .size(22)
-          .marginLeft(20)
+        $0.addItem(titleLabel)
+          .marginLeft(30)
+        
         $0.addItem()
           .direction(.row)
           .alignItems(.center)
-          .grow(1)
-          .marginLeft(6)
           .define {
-            $0.addItem(titleLabel)
-              .minWidth(58)
             $0.addItem(subTitleLabel)
-              .minWidth(21)
-              .marginLeft(20)
+              .marginRight(4)
+            $0.addItem(rightLabel)
+              .marginRight(19)
           }
-        $0.addItem(rightLabel)
-          .minWidth(80)
-          .marginRight(19)
-          .alignSelf(.center)
       }
   }
   
   private func resetCell() {
-    iconImageView.image = nil
     titleLabel.text = nil
     subTitleLabel.text = nil
     rightLabel.text = nil
   }
   
   func configureCell(
-    iconImage: UIImage?,
     title: String,
     subTitle: String,
     rightText: String
   ) {
-    iconImageView.image = iconImage
     titleLabel.text = title
+    titleLabel.flex.markDirty()
+    
     subTitleLabel.text = subTitle.isEmpty ? " " : subTitle
+    subTitleLabel.flex.markDirty()
+    
     rightLabel.text = rightText.isEmpty ? " " : rightText
-    
-    
+    rightLabel.flex.markDirty()
   }
 }
