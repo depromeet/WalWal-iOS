@@ -111,14 +111,15 @@ extension OnboardingCoordinatorImp {
     let registerUseCase = authDependencyFactory.injectRegisterUseCase()
     let userTokensUseCase = authDependencyFactory.injectUserTokensUseCase()
     let memberInfoUseCase = membersDependencyFactory.injectMemberInfoUseCase()
-    
+    let checkNicknameUseCase = membersDependencyFactory.injectCheckNicknameUseCase()
     let reactor = onboardingDependencyFactory.injectOnboardingProfileReactor(
       coordinator: self,
       fcmSaveUseCase: fcmSaveUseCase,
       uploadMemberUseCase: uploadMemberUseCase,
       registerUseCase: registerUseCase,
       userTokensUseCase: userTokensUseCase,
-      memberInfoUseCase: memberInfoUseCase
+      memberInfoUseCase: memberInfoUseCase,
+      checkNicknameUseCase: checkNicknameUseCase
     )
     let vc = onboardingDependencyFactory.injectOnboardingProfileViewController(reactor: reactor, petType: petType)
     self.pushViewController(viewController: vc, animated: true)

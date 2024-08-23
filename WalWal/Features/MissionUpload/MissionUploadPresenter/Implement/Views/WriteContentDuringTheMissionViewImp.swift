@@ -302,8 +302,7 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
       .drive(onNext: { errorMessage in
         WalWalToast.shared.show(
           type: .error,
-          message: errorMessage,
-          isTabBarExist: false
+          message: errorMessage
         )
       })
       .disposed(by: disposeBag)

@@ -60,11 +60,6 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     return OnboardingRepositoryImp(networkService: networkService)
   }
   
-  
-  public func injectNicknameValidUseCase() -> NicknameValidUseCase {
-    return NicknameValidUseCaseImp(repository: injectOnboardingRepository())
-  }
-  
   public func injectOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor {
     return OnboardingReactorImp(coordinator: coordinator)
   }
@@ -79,16 +74,17 @@ public class OnboardingDependencyFactoryImp: OnboardingDependencyFactory {
     uploadMemberUseCase: UploadMemberUseCase,
     registerUseCase: RegisterUseCase,
     userTokensUseCase: UserTokensSaveUseCase,
-    memberInfoUseCase: MemberInfoUseCase
+    memberInfoUseCase: MemberInfoUseCase,
+    checkNicknameUseCase: CheckNicknameUseCase
   ) -> any OnboardingProfileReactor {
     return OnboardingProfileReactorImp(
       coordinator: coordinator,
       registerUseCase: registerUseCase,
-      nicknameValidUseCase: injectNicknameValidUseCase(),
       uploadMemberUseCase: uploadMemberUseCase,
       fcmSaveUseCase: fcmSaveUseCase,
       userTokensSaveUseCase: userTokensUseCase,
-      memberInfoUseCase: memberInfoUseCase
+      memberInfoUseCase: memberInfoUseCase,
+      checkNicknameUseCase: checkNicknameUseCase
     )
   }
   

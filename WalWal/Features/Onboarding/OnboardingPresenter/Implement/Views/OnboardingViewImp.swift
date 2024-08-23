@@ -60,7 +60,7 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
     $0.currentPageIndicatorTintColor = Colors.gray600.color
     $0.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
   }
-  private let nextButton = WalWalButton(type: .active, title: "다음")
+  private let nextButton = WalWalButton(type: .active, title: "시작하기")
   
   // MARK: - Initialize
   

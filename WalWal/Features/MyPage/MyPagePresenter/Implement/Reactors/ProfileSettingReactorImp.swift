@@ -14,6 +14,7 @@ import ResourceKit
 import FCMDomain
 import AuthDomain
 import LocalStorage
+import DesignSystem
 
 import ReactorKit
 import RxSwift
@@ -101,6 +102,10 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     case let .setIsRecentVersion(isRecent):
       newState.isRecent = isRecent
     case .moveToBack:
+      guard let tabBarViewController = coordinator.navigationController.tabBarController as? WalWalTabBarViewController else {
+        return state
+      }
+      tabBarViewController.showCustomTabBar()
       coordinator.popViewController(animated: true)
     }
     return newState

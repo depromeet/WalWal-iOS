@@ -11,6 +11,6 @@ import Foundation
 import RxSwift
 
 public protocol UploadMemberUseCase {
-  func execute(nickname: String, type: String, image: Data) -> Single<Void>
+  func execute(nickname: String, type: String, image: Data) -> Single<UploadComplete>
 }
 
