@@ -10,7 +10,7 @@ platform :ios do
   lane :dev do |options|
     build_and_upload_app(
       app_identifier: "olderStoneBed.io.walwal.dev",
-      scheme: "WalWal",
+      scheme: "DEV-WalWal",
       configuration: "Debug"
     )
   end
@@ -19,7 +19,7 @@ platform :ios do
   lane :release do |options|
     build_and_upload_app(
       app_identifier: "olderStoneBed.io.walwal",
-      scheme: "WalWal",
+      scheme: "PROD-WalWal",
       configuration: "Release"
     )
   end
@@ -43,7 +43,7 @@ def build_and_upload_app(app_identifier:, scheme:, configuration:)
 
   update_app_identifier(
     xcodeproj: project_path,
-    plist_path: File.join(PROJECT_ROOT, "App", "Derived", "InfoPlists", "WalWal-Info.plist"),
+    plist_path: File.join(PROJECT_ROOT, "App", "WalWal-Info.plist"),
     app_identifier: app_identifier
   )
 
