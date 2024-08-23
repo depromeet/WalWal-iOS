@@ -15,30 +15,11 @@ import AuthDomain
 import ReactorKit
 import RxSwift
 
-
-// Cell 구성 모델
-public struct ProfileSettingItemModel {
-  public let title: String
-  public let iconImage: UIImage?
-  public let subTitle: String
-  public let rightText: String
-  
-  public init(title: String,
-              iconImage: UIImage?,
-              subTitle: String,
-              rightText: String) {
-    self.title = title
-    self.iconImage = iconImage
-    self.subTitle = subTitle
-    self.rightText = rightText
-  }
-}
-
-
 public enum ProfileSettingReactorAction {
   
   case viewDidLoad
-  case didSelectItem(at: IndexPath)
+  case logout
+  case withdraw
   case tapBackButton
 }
 

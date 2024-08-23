@@ -64,20 +64,16 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
         fetchAppVersion(),
         Observable.just(.setLoading(false))
       ])
-    case let .didSelectItem(at: indexPath):
-      if indexPath.row == 0 {
-        return .concat([
-          .just(.setLoading(true)),
-          deleteFCMToken(authAction: .logout)
-        ])
-      } else if indexPath.row == 2 {
-        return .concat([
-          .just(.setLoading(true)),
-          deleteFCMToken(authAction: .withdraw)
-        ])
-      } else {
-        return .never()
-      }
+    case .logout:
+      return .concat([
+        .just(.setLoading(true)),
+        logoutFlow()
+      ])
+    case .withdraw:
+      return .concat([
+        .just(.setLoading(true)),
+        withdrawFlow()
+      ])
     case .tapBackButton:
       return Observable.just(.moveToBack)
     }
@@ -113,29 +109,43 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
 }
 
 extension ProfileSettingReactorImp {
-  private func deleteFCMToken(authAction: AuthAction) -> Observable<Mutation> {
+  private func logoutFlow() -> Observable<Mutation> {
     return fcmDeleteUseCase.execute()
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
         let provider = UserDefaults.string(forUserDefaultsKey: .socialLogin)
-        if authAction == .logout {
-          if provider == "kakao" {
-            return owner.kakaoLogout()
-          } else {
-            return owner.appleLogout()
-          }
-        } else if authAction == .withdraw {
-          if provider == "kakao" {
-            return owner.kakaoUnlink()
-          } else {
-            return owner.withdraw()
-          }
+        if provider == "kakao" {
+          return owner.kakaoLogout()
+        } else {
+          return owner.appleLogout()
         }
-        return .never()
       }
       .catch { error -> Observable<Mutation> in
-        print(error.localizedDescription)
+        return self.tokenDeleteUseCase.execute()
+          .asObservable()
+          .flatMap { _ -> Observable<Mutation> in
+            return .concat([
+              .just(.setLoading(false)),
+              .just(.moveToAuth)
+            ])
+          }
+      }
+  }
+  
+  private func withdrawFlow() -> Observable<Mutation> {
+    return fcmDeleteUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Mutation> in
+        let provider = UserDefaults.string(forUserDefaultsKey: .socialLogin)
+        if provider == "kakao" {
+          return owner.kakaoUnlink()
+        } else {
+          return owner.withdraw()
+        }
+      }
+      .catch { error -> Observable<Mutation> in
         return self.tokenDeleteUseCase.execute()
           .asObservable()
           .flatMap { _ -> Observable<Mutation> in
@@ -234,22 +244,28 @@ extension ProfileSettingReactorImp {
   
   private func createSettings(appVersion: String, isRecent: Bool) -> [ProfileSettingItemModel] {
     return [
-      .init(title: "로그아웃",
-            iconImage: Images.logout.image,
-            subTitle: "",
-            rightText: ""),
-      .init(title: "버전 정보",
-            iconImage: Images.swap.image,
-            subTitle: appVersion,
-            rightText: isRecent ? "최신 버전입니다." : "업데이트 필요"),
-      .init(title: "회원 탈퇴",
-            iconImage: Images.xSquare.image,
-            subTitle: "",
-            rightText: "")
+      .init(
+        title: "로그아웃",
+        iconImage: Images.logout.image,
+        subTitle: "",
+        rightText: "",
+        type: .logout
+      ),
+      .init(
+        title: "버전 정보",
+        iconImage: Images.swap.image,
+        subTitle: appVersion,
+        rightText: isRecent ? "최신 버전입니다." : "업데이트 필요",
+        type: .version
+      ),
+      .init(
+        title: "회원 탈퇴",
+        iconImage: Images.xSquare.image,
+        subTitle: "",
+        rightText: "",
+        type: .withdraw
+      )
     ]
   }
 }
 
-fileprivate enum AuthAction {
-  case logout, withdraw
-}
