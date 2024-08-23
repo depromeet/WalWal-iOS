@@ -3,7 +3,7 @@
 //
 //  FCM
 //
-//  Created by Jiyeon
+//  Created by 이지희
 //
 
 import FCMDomain
@@ -13,16 +13,16 @@ import FCMCoordinator
 import ReactorKit
 import RxSwift
 
-public final class FCMReactorImp: SplashReactor {
+public final class FCMReactorImp: FCMReactor {
   public typealias Action = FCMReactorAction
   public typealias Mutation = FCMReactorMutation
   public typealias State = FCMReactorState
   
   public let initialState: State
-  public let coordinator: any __Coordinator
+  public let coordinator: any FCMCoordinator
   
   public init(
-    coordinator: any __Coordinator
+    coordinator: any FCMCoordinator
   ) {
     self.coordinator = coordinator
     self.initialState = State()

@@ -3,7 +3,7 @@
 //
 //  FCM
 //
-//  Created by Jiyeon
+//  Created by 이지희
 //
 
 
@@ -20,12 +20,12 @@ import RxCocoa
 public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMViewController {
   
   public var disposeBag = DisposeBag()
-  public var __reactor: R
+  public var fcmReactor: R
   
   public init(
       reactor: R
   ) {
-    self.__reactor = reactor
+    self.fcmReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -37,17 +37,17 @@ public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMVie
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    setAttribute()
-    setLayout()
-    self.reactor = __reactor
+    setupAttribute()
+    setupLayout()
+    self.reactor = fcmReactor
   }
     
   
-  public func setAttribute() {
+  public func setupAttribute() {
     
   }
   
-  public func setLayout() {
+  public func setupLayout() {
     
   }
 }

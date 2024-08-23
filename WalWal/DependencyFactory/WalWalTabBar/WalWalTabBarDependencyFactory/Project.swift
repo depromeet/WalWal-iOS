@@ -18,6 +18,7 @@ let project = Project.invertedDualTargetProject(
     .DependencyFactory.Mission.Interface,
     .DependencyFactory.Feed.Interface,
     .DependencyFactory.MyPage.Interface,
+    .DependencyFactory.FCM.Interface,
     
     .Coordinator.WalWalTabBar.Interface,
     .DependencyFactory.Image.Interface
