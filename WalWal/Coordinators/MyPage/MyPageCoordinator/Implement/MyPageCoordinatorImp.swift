@@ -74,8 +74,6 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
             nickname: nickname,
             memberId: memberId
           )
-        case .showRecordDetail:
-          owner.showRecordDetailVC()
         case let .showProfileEdit(nickname, defaultProfile, selectImage, raisePet):
           owner.showProfileEditVC(
             nickname: nickname,

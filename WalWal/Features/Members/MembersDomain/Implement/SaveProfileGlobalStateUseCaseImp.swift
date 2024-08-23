@@ -18,7 +18,7 @@ public class SaveProfileGlobalStateUseCaseImp: SaveProfileGlobalStateUseCase {
     globalState: GlobalState
   ) {
       let globalProfile = GlobalProfileModel(
-        nickname: memberInfo.nickname,
+        memberId: memberInfo.memberId, nickname: memberInfo.nickname,
         profileURL: memberInfo.profileURL,
         raisePet: memberInfo.raisePet
       )
