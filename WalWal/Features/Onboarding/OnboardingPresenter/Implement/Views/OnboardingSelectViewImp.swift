@@ -117,13 +117,11 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
           .marginTop(40.adjustedHeight)
         $0.addItem()
           .direction(.row)
-          .justifyContent(.spaceEvenly)
+          .justifyContent(.spaceBetween)
           .marginTop(80.adjustedHeight)
           .define {
             $0.addItem(dogView)
-              .grow(1)
             $0.addItem(catView)
-              .grow(1)
           }
       }
     nextButton.flex
