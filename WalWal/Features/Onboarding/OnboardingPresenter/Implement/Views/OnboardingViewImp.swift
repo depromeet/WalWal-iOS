@@ -54,10 +54,11 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
       subTitle: "다양한 반려동물을 한 눈에 발견해요",
       image: Images.onboarding2.image
     ),
-    .init(title: "매일 수행한 미션\n언제든지 꺼내봐요!",
-          subTitle: "반려동물과의 함께한 추억을 기억해요",
-          image: Images.onboarding3.image
-         )
+    .init(
+      title: "매일 수행한 미션\n언제든지 꺼내봐요!",
+      subTitle: "반려동물과의 함께한 추억을 기억해요",
+      image: Images.onboarding3.image
+    )
   ]
   
   private lazy var pageControl = UIPageControl().then {
