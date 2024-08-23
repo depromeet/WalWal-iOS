@@ -9,6 +9,8 @@
 
 import UIKit
 import FCMPresenter
+import DesignSystem
+import ResourceKit
 
 import Then
 import PinLayout
@@ -19,8 +21,35 @@ import RxCocoa
 
 public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMViewController {
   
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily
+  
   public var disposeBag = DisposeBag()
   public var fcmReactor: R
+  
+  // MARK: - UI
+  
+  private let rootContainerView = UIView()
+  private let titleLabel = UILabel().then {
+    $0.text = "앗.."
+    $0.font = Fonts.LotteriaChab.Buster_Cute
+    $0.textColor = Colors.black.color
+  }
+  private let subTitelLabel = UILabel().then {
+    $0.text = "아직 알림이 없어요!"
+    $0.font = Fonts.KR.H5.B
+    $0.textColor = Colors.black.color
+  }
+  private let guideLabel = UILabel().then {
+    $0.text = "나와 관련된 알림들을\n이곳에서 확인할 수 있어요!"
+    $0.numberOfLines = 2
+    $0.textAlignment = .center
+    $0.font = Fonts.KR.H7.M
+    $0.textColor = Colors.black.color
+  }
+  private let actionButton = WalWalButton(type: .dark, title: "")
+  
   
   public init(
       reactor: R
@@ -41,14 +70,35 @@ public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMVie
     setupLayout()
     self.reactor = fcmReactor
   }
+  
+  
+  public override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    rootContainerView.pin
+      .all(view.pin.safeArea)
+    rootContainerView.flex
+      .layout()
+  }
+  
     
   
   public func setupAttribute() {
-    
+    view.backgroundColor = Colors.gray150.color
+    view.addSubview(rootContainerView)
   }
   
   public func setupLayout() {
-    
+    rootContainerView.flex
+      .direction(.column)
+      .alignItems(.center)
+      .justifyContent(.center)
+      .define {
+        $0.addItem(titleLabel)
+        $0.addItem(subTitelLabel)
+          .marginTop(20)
+        $0.addItem(guideLabel)
+          .marginTop(4)
+      }
   }
 }
 
