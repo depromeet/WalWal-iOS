@@ -33,10 +33,10 @@ public struct FeedModel {
       )
     }
     if isFeed {
-    globalState.updateFeed(with: globalFeed)
+      globalState.updateFeed(with: globalFeed)
     } else {
       globalState.updateRecords(with: globalFeed)
-  }
+    }
   }
 }
 
