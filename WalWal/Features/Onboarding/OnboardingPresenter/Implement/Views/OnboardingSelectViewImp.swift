@@ -117,13 +117,11 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
           .marginTop(40.adjustedHeight)
         $0.addItem()
           .direction(.row)
-          .justifyContent(.spaceEvenly)
+          .justifyContent(.spaceBetween)
           .marginTop(80.adjustedHeight)
           .define {
             $0.addItem(dogView)
-              .grow(1)
             $0.addItem(catView)
-              .grow(1)
           }
       }
     nextButton.flex
@@ -158,14 +156,15 @@ extension OnboardingSelectViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-//    initState
-//      .map { Reactor.Action.initSelectView }
-//      .bind(to: reactor.action)
-//      .disposed(by: disposeBag)
-    
     nextButton.rx.tapped
       .withLatestFrom(selectPetType)
       .map { Reactor.Action.nextButtonTapped(flow: .showProfile(petType: $0))}
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    navigationBar.leftItems?.first?.rx.tapped
+      .debug()
+      .map { Reactor.Action.tapBackButton }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
@@ -212,12 +211,6 @@ extension OnboardingSelectViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
-    navigationBar.leftItems?.first?.rx.tapped
-      .asDriver()
-      .drive(with: self) { owner, _ in
-        owner.navigationController?.popViewController(animated: true)
-      }
-      .disposed(by: disposeBag)
   }
   
 }

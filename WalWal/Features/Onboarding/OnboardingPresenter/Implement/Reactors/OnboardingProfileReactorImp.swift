@@ -65,6 +65,11 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
       ])
     case let .checkCondition(nickname, profile):
       return checkValidForm(nickname: nickname, profile: profile)
+    case .checkPhotoPermission:
+      return checkPhotoPermission()
+        .map { Mutation.setPhotoPermission(isAllow: $0) }
+    case .tapBackButton:
+      return .just(.moveToBack)
     }
   }
   
@@ -79,6 +84,10 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
       newState.errorMessage = message
     case let .showIndicator(show):
       newState.showIndicator = show
+    case let .setPhotoPermission(isAllow):
+      newState.isGrantedPhoto = isAllow
+    case .moveToBack:
+      coordinator.popViewController(animated: true)
     }
     return newState
   }
@@ -86,6 +95,16 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
 
 
 extension OnboardingProfileReactorImp {
+  
+  private func checkPhotoPermission() -> Observable<Bool> {
+    return PermissionManager.shared.checkPermission(for: .photo)
+      .flatMap { isGranted in
+        if !isGranted {
+          return PermissionManager.shared.requestPhotoPermission()
+        }
+        return Observable.just(isGranted)
+      }
+  }
   
   /// 닉네임 중복 여부 체크 메서드
   private func checkNickname(nickname: String, profile: WalWalProfileModel, petType: String) -> Observable<Mutation> {
