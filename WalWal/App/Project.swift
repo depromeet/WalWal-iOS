@@ -22,8 +22,8 @@ let project = Project(
       bundleId: "olderStoneBed.io.walwal.dev",
       iOSTargetVersion: "16.0.0",
       infoPlistPath: "App/WalWal-Info.plist",
-      excludeResourcePath: "Resources/Release/**",
-      entitlements: "App/Resources/Dev/WalWal.entitlements",
+      removeResource: "Release",
+      entitlements: "App/Resources/Dev/WalWal-Dev.entitlements",
       dependencies: [
         .ThirdParty.KakaoSDKCommon,
         .ThirdParty.FirebaseMessaging,
@@ -54,8 +54,8 @@ let project = Project(
       bundleId: "olderStoneBed.io.walwal",
       iOSTargetVersion: "16.0.0",
       infoPlistPath: "App/WalWal-Info.plist",
-      excludeResourcePath: "Resources/Dev/**",
-      entitlements: "App/Resources/Release/WalWal.entitlements",
+      removeResource: "Dev",
+      entitlements: "App/Resources/Release/WalWal-Release.entitlements",
       dependencies: [
         .ThirdParty.KakaoSDKCommon,
         .ThirdParty.FirebaseMessaging,

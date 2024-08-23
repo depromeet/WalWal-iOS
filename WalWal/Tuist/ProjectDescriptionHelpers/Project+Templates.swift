@@ -25,7 +25,7 @@ extension Target {
     bundleId: String,
     iOSTargetVersion: String,
     infoPlistPath: String,
-    excludeResourcePath: String,
+    removeResource: String,
     entitlements: String,
     dependencies: [TargetDependency] = [],
     settings: Settings
@@ -42,7 +42,7 @@ extension Target {
       resources: [
         .glob(
           pattern: "Resources/**",
-          excluding: [.init(excludeResourcePath)]
+          excluding: ["Resources/\(removeResource)/**"]
         )
       ],
       entitlements: .file(path: .relativeToRoot(entitlements)),
