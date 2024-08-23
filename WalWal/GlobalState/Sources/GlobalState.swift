@@ -66,7 +66,6 @@ public final class GlobalState {
       .disposed(by: disposeBag)
     
     recordList
-      .debug()
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, feed -> Observable<Void> in

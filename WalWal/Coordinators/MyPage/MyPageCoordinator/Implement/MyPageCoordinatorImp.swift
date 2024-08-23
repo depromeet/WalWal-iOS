@@ -139,7 +139,7 @@ extension MyPageCoordinatorImp {
       return
     }
     tabBarViewController.hideCustomTabBar()
-    self.pushViewController(viewController: recordDetailVC, animated: false)
+    self.pushViewController(viewController: recordDetailVC, animated: true)
   }
   
   /// 프로필 설정뷰

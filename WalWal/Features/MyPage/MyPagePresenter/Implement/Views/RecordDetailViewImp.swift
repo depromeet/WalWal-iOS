@@ -72,11 +72,6 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   
   // MARK: - Lifecycle
   
-  public override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    self.tabBarController?.tabBar.isHidden = true
-  }
-  
   public override func viewDidLoad() {
     super.viewDidLoad()
     setAttribute()
@@ -130,7 +125,6 @@ extension RecordDetailViewControllerImp: View {
   
   public func bindState(reactor: R) {
     reactor.state
-      .debug()
       .map {  $0.feedData }
       .observe(on: MainScheduler.instance)
       .subscribe(with: self, onNext: { owner, feed in
