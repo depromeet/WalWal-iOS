@@ -239,7 +239,7 @@ extension OnboardingProfileViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    navigationBar.rightItems?.first?.rx.tapped
+    navigationBar.leftItems?.first?.rx.tapped
       .map { Reactor.Action.tapBackButton }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
@@ -293,7 +293,6 @@ extension OnboardingProfileViewControllerImp: View {
       .asDriver()
       .drive(with: self) { owner, _ in
         owner.view.endEditing(true)
-        owner.navigationController?.popViewController(animated: true)
       }
       .disposed(by: disposeBag)
     
