@@ -31,6 +31,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   // MARK: - UI
   
   private let rootContainer = UIView()
+  private var contentView = UIView()
   private let missionStartView = MissionStartView(
     missionTitle: "반려동물과 함께\n산책한 사진을 찍어요",
     missionImage: ResourceKitAsset.Sample.missionSample.image
@@ -56,6 +57,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   // MARK: - Initialize
   
   public init(reactor: R) {
+    contentView = missionStartView
     self.missionReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
@@ -101,7 +103,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     rootContainer.flex
       .paddingTop(80.adjusted)
       .define {
-        $0.addItem(missionSucessView)
+        $0.addItem(contentView)
           .alignSelf(.center)
         $0.addItem()
           .direction(.columnReverse)
@@ -125,6 +127,18 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private func configureMissionCompleteView(missionImageURL: String) {
     // 미션 완료뷰 이미지 넣기
   }
+  private func updateContentView(_ newContentView: UIView) {
+    rootContainer.removeFromSuperview()
+    contentView.removeFromSuperview()
+    contentView = newContentView
+    
+    view.addSubview(rootContainer)
+    configureLayout()
+    rootContainer.pin
+      .all()
+    rootContainer.flex
+      .layout()
+  }
 }
 
 extension MissionViewControllerImp: View {
@@ -138,17 +152,17 @@ extension MissionViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-      missionStartButton.rx.tapped
+    missionStartButton.rx.tapped
       .map{ Reactor.Action.moveToMissionUpload }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
-      
-      missionStartButton.rx.tapped
-        .map { [weak self] in
-          return Reactor.Action.startMission(self?.missionId ?? 0)
-        }
-        .bind(to: reactor.action)
-        .disposed(by: disposeBag)
+    
+    missionStartButton.rx.tapped
+      .map { [weak self] in
+        return Reactor.Action.startMission(self?.missionId ?? 0)
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -177,6 +191,8 @@ extension MissionViewControllerImp: View {
             owner.missionStartButton.icon = Images.watchL.image
           case .completed:
             owner.isMissionCompleted = true
+            owner.missionSucessView.configureStartView(recordImageURL: state.missionStatus?.imageUrl ?? "")
+            owner.updateContentView(owner.missionSucessView)
             owner.missionStartButton.icon = Images.calendarL.image
           }
         }
@@ -196,6 +212,6 @@ extension MissionViewControllerImp: View {
   }
   
   public func bindEvent() {
-
+    
   }
 }
