@@ -9,21 +9,27 @@
 import Foundation
 import MembersData
 import MembersDomain
+import GlobalState
 
 import RxSwift
 
 public final class MemberInfoUseCaseImp: MemberInfoUseCase {
   private let memberRepository: MembersRepository
+  private let saveProfileGlobalStateUseCase: SaveProfileGlobalStateUseCase
   
-  public init(memberRepository: MembersRepository) {
+  public init(
+    memberRepository: MembersRepository,
+    saveProfileGlobalStateUseCase: SaveProfileGlobalStateUseCase
+  ) {
     self.memberRepository = memberRepository
+    self.saveProfileGlobalStateUseCase = saveProfileGlobalStateUseCase
   }
   
   public func execute() -> Single<MemeberInfo> {
     return memberRepository.profileInfo()
-      .map {
-        let profile = MemeberInfo(dto: $0)
-        profile.saveToGlobalState()
+      .map { info -> MemeberInfo in
+        let profile = MemeberInfo(dto: info)
+        self.saveProfileGlobalStateUseCase.execute(memberInfo: profile, globalState: GlobalState.shared)
         return profile
       }
       .asObservable()

@@ -19,6 +19,8 @@ import ReactorKit
 public enum OnboardingProfileReactorAction {
   case register(nickname: String, profile: WalWalProfileModel, petType: String)
   case checkCondition(nickname: String, profile: WalWalProfileModel)
+  case checkPhotoPermission
+  case tapBackButton
 }
 
 public enum OnboardingProfileReactorMutation {
@@ -26,14 +28,18 @@ public enum OnboardingProfileReactorMutation {
   case invalidNickname(message: String)
   case registerError(message: String)
   case showIndicator(show: Bool)
+  case setPhotoPermission(isAllow: Bool)
+  case moveToBack
 }
 
 public struct OnboardingProfileReactorState {
   public init() { }
   @Pulse public var invalidMessage: String = ""
-  public var buttonEnable: Bool = false
+  @Pulse public var isGrantedPhoto: Bool = false
   @Pulse public var errorMessage: String = ""
+  public var buttonEnable: Bool = false
   public var showIndicator: Bool = false
+  
 }
 
 public protocol OnboardingProfileReactor:
@@ -45,11 +51,11 @@ public protocol OnboardingProfileReactor:
   init(
     coordinator: any OnboardingCoordinator,
     registerUseCase: any RegisterUseCase,
-    nicknameValidUseCase: any NicknameValidUseCase,
     uploadMemberUseCase: UploadMemberUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase,
-    memberInfoUseCase: MemberInfoUseCase
+    memberInfoUseCase: MemberInfoUseCase,
+    checkNicknameUseCase: CheckNicknameUseCase
   )
 }
 

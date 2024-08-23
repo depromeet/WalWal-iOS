@@ -8,31 +8,39 @@
 
 import MyPageDomain
 import MyPageCoordinator
+import DesignSystem
+
+import MembersDomain
+import ImageDomain
 
 import ReactorKit
 import RxSwift
 
 public enum ProfileEditReactorAction {
-  case editProfile(nickname: String, profileURL: String)
-  case checkCondition(nickname: String)
+  case editProfile(nickname: String, profile: WalWalProfileModel)
+  case checkCondition(nickname: String, profile: WalWalProfileModel)
   case checkPhotoPermission
   case tapCancelButton
+  case loadProfile
 }
 
 public enum ProfileEditReactorMutation {
-  case invaildNickname(message: String)
+  case invalidNickname(message: String)
   case buttonEnable(isEnable: Bool)
   case showIndicator(show: Bool)
   case setPhotoPermission(Bool)
   case moveToBack
+  case profileInfo(info: MemberModel)
+  
 }
 
 public struct ProfileEditReactorState {
   public init() { }
   public var buttonEnable: Bool = false
   public var showIndicator: Bool = false
-  public var isGrantedPhoto: Bool = false
-  @Pulse public var invaildMessage: String = ""
+  @Pulse public var isGrantedPhoto: Bool = false
+  @Pulse public var invalidMessage: String = ""
+  public var profileInfo: MemberModel?
 }
 
 
@@ -43,6 +51,11 @@ public protocol ProfileEditReactor: Reactor where Action == ProfileEditReactorAc
   var coordinator: any MyPageCoordinator { get }
   
   init(
-    coordinator: any MyPageCoordinator
+    coordinator: any MyPageCoordinator,
+    editProfileUseCase: EditProfileUseCase,
+    checkNicknameUseCase: CheckNicknameUseCase,
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase,
+    uploadMemberUseCase: UploadMemberUseCase,
+    memberInfoUseCase: MemberInfoUseCase
   )
 }

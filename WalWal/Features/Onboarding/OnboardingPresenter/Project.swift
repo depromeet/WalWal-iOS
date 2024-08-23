@@ -19,13 +19,14 @@ let project = Project.invertedPresenterWithDemoApp(
     
     .Feature.Onboarding.Domain.Interface,
     .Feature.Image.Domain.Interface,
+    .Feature.FCM.Domain.Interface,
     
     .Coordinator.Onboarding.Interface,
+    .DesignSystem
   ],
   implementDependencies: [
     .DependencyFactory.Onboarding.Interface,
     
-    .DesignSystem,
     .Utility
   ],
   demoAppDependencies: [

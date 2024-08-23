@@ -37,8 +37,6 @@ public protocol OnboardingDependencyFactory {
   
   func injectOnboardingRepository() -> OnboardingRepository
   
-  func injectNicknameValidUseCase() -> NicknameValidUseCase
-  
   func injectOnboardingReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingReactor
   func injectOnboardingSelectReactor<T: OnboardingCoordinator>(coordinator: T) -> any OnboardingSelectReactor
   func injectOnboardingProfileReactor<T: OnboardingCoordinator>(
@@ -47,7 +45,8 @@ public protocol OnboardingDependencyFactory {
     uploadMemberUseCase: UploadMemberUseCase,
     registerUseCase: RegisterUseCase,
     userTokensUseCase: UserTokensSaveUseCase,
-    memberInfoUseCase: MemberInfoUseCase
+    memberInfoUseCase: MemberInfoUseCase,
+    checkNicknameUseCase: CheckNicknameUseCase
   ) -> any OnboardingProfileReactor
   
   func injectOnboardingViewController<T: OnboardingReactor>(reactor: T) -> any OnboardingViewController

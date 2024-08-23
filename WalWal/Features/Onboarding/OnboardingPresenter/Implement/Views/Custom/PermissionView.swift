@@ -52,7 +52,7 @@ final class PermissionView {
   private let notiPermissionView = PermissionListView(
     icon: Images.noticeL.image.withTintColor(Color.gray800.color),
     type: "알림",
-    content: "미션 알림 메세지 수신"
+    content: "미션 알림 메시지 수신"
   )
   private let cameraPermissionView = PermissionListView(
     icon: Images.cameraL.image.withTintColor(Color.gray800.color),
@@ -77,16 +77,16 @@ final class PermissionView {
       .marginHorizontal(30.adjustedWidth)
       .define {
         $0.addItem(titleLabel)
-          .marginTop(45.adjustedHeight)
+          .marginTop(44.adjustedHeight)
         
         $0.addItem(contentLabel)
-          .marginTop(8)
+          .marginTop(4)
         
         $0.addItem()
           .direction(.row)
           .justifyContent(.center)
-          .marginTop(40.adjustedHeight)
-          .marginBottom(46.adjustedHeight)
+          .marginTop(37.adjustedHeight)
+          .marginBottom(51.adjustedHeight)
           .define {
             $0.addItem().define {
               $0.addItem(notiPermissionView)
@@ -201,10 +201,10 @@ fileprivate final class PermissionListView: UIView {
           .direction(.row)
           .define {
             $0.addItem(iconImageView)
-              .size(40.adjusted)
+              .size(32.adjusted)
             $0.addItem(typeLabel)
               .marginRight(8)
-              .marginLeft(4)
+              .marginLeft(2)
             $0.addItem(contentLabel)
           }
         

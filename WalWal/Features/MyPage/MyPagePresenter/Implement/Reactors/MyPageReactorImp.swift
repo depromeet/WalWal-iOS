@@ -54,7 +54,11 @@ public final class MyPageReactorImp: MyPageReactor {
     case .didTapSettingButton:
       return Observable.just(.moveToSettingView)
     case .didTapEditButton:
-      return Observable.just(.moveToEditView)
+      return fetchMemberInfoUseCase.execute()
+        .map { MemberModel(global: $0) }
+        .flatMap {
+          Observable.just(.moveToEditView(data: $0))
+        }
     case .loadCalendarData:
       return fetchWalWalCalendarModelsUseCase.execute()
         .map { records -> [WalWalCalendarModel] in
@@ -80,8 +84,13 @@ public final class MyPageReactorImp: MyPageReactor {
       newState.calendarData = calendarData
     case .moveToSettingView:
       coordinator.destination.accept(.showProfileSetting)
-    case .moveToEditView:
-      coordinator.destination.accept(.showProfileEdit)
+    case let .moveToEditView(info):
+      coordinator.destination.accept(.showProfileEdit(
+        nickname: info.nickname,
+        defaultProfile: info.defaultImageName,
+        selectImage: info.profileImage,
+        raisePet: info.raisePet
+      ))
     case let .profileInfo(data):
       newState.profileData = data
     case .moveToRecordDetail(let member, let cursor):

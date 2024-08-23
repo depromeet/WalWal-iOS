@@ -27,8 +27,8 @@ public enum MyPageReactorMutation {
   case setSelectedCalendarItem(WalWalCalendarModel)
   case setCalendarData([WalWalCalendarModel]) // 캘린더 데이터를 설정하는 뮤테이션 추가
   case moveToSettingView
-  case moveToEditView
   case moveToRecordDetail(memberInfo: MemberModel, cursor: String?)
+  case moveToEditView(data: MemberModel)
   case profileInfo(data: MemberModel)
 }
 

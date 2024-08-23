@@ -12,6 +12,7 @@ import FCMDependencyFactory
 import AuthDependencyFactory
 import MembersDependencyFactory
 import FeedDependencyFactory
+import ImageDependencyFactory
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -27,6 +28,7 @@ import FCMDomain
 import AuthDomain
 import MembersDomain
 import FeedDomain
+import ImageDomain
 
 import WalWalNetwork
 
@@ -42,7 +44,8 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: any AuthDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory,
-    feedDependencyFactory: FeedDependencyFactory
+    feedDependencyFactory: FeedDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory
   ) -> any MyPageCoordinator {
     return MyPageCoordinatorImp(
       navigationController: navigationController,
@@ -51,7 +54,8 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
       membersDependencyFactory: membersDependencyFactory,
-      FeedDependencyFactory: feedDependencyFactory
+      FeedDependencyFactory: feedDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory
     )
   }
   
@@ -122,11 +126,37 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     return ProfileSettingViewControllerImp(reactor: reactor)
   }
   
-  public func injectProfileEditReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileEditReactor {
-    return ProfileEditReactorImp(coordinator: coordinator)
+  public func injectProfileEditReactor<T: MyPageCoordinator>(
+    coordinator: T,
+    editProfileUseCase: EditProfileUseCase,
+    checkNicknameUseCase: CheckNicknameUseCase,
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase,
+    uploadMemberUseCase: UploadMemberUseCase,
+    memberInfoUseCase: MemberInfoUseCase
+  ) -> any ProfileEditReactor {
+    return ProfileEditReactorImp(
+      coordinator: coordinator,
+      editProfileUseCase: editProfileUseCase,
+      checkNicknameUseCase: checkNicknameUseCase,
+      fetchMemberInfoUseCase: fetchMemberInfoUseCase,
+      uploadMemberUseCase: uploadMemberUseCase,
+      memberInfoUseCase: memberInfoUseCase
+    )
   }
   
-  public func injectProfileEditViewController<T: ProfileEditReactor>(reactor: T) -> any ProfileEditViewController {
-    return ProfileEditViewControllerImp(reactor: reactor)
+  public func injectProfileEditViewController<T: ProfileEditReactor>(
+    reactor: T,
+    nickname: String,
+    defaultProfile: String?,
+    selectImage: UIImage?,
+    raisePet: String
+  ) -> any ProfileEditViewController {
+    return ProfileEditViewControllerImp(
+      reactor: reactor,
+      nickname: nickname,
+      defaultProfile: defaultProfile,
+      selectImage: selectImage,
+      raisePet: raisePet
+    )
   }
 }

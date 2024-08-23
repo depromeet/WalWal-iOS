@@ -26,6 +26,8 @@ import MembersDomain
 import FeedDependencyFactory
 import FeedDomain
 
+import ImageDependencyFactory
+import ImageDomain
 
 public protocol MyPageDependencyFactory {
   
@@ -35,11 +37,14 @@ public protocol MyPageDependencyFactory {
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory,
-    feedDependencyFactory: FeedDependencyFactory
+    feedDependencyFactory: FeedDependencyFactory,
+    imageDependencyFactory: ImageDependencyFactory
   ) -> any MyPageCoordinator
   
   func injectMyPageRepository() -> MyPageRepository
   func injectFetchWalWalCalendarModelsUseCase() -> FetchWalWalCalendarModelsUseCase
+  
+  // MARK: - MyPage
   
   func injectMyPageReactor<T: MyPageCoordinator>(
     coordinator: T,
@@ -48,7 +53,10 @@ public protocol MyPageDependencyFactory {
   ) -> any MyPageReactor
   func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
   
-  func injectRecordDetailReactor<T: MyPageCoordinator>(
+
+  // MARK: - RecordDetail
+  
+    func injectRecordDetailReactor<T: MyPageCoordinator>(
     coordinator: T,
     fetchUserFeedUseCase: FetchUserFeedUseCase
   ) -> any RecordDetailReactor
@@ -58,8 +66,25 @@ public protocol MyPageDependencyFactory {
     memberNickname: String
   ) -> any RecordDetailViewController
   
-  func injectProfileEditReactor<T: MyPageCoordinator>(coordinator: T) -> any ProfileEditReactor
-  func injectProfileEditViewController<T: ProfileEditReactor>(reactor: T) -> any ProfileEditViewController
+  // MARK: - ProfileEdit
+  
+  func injectProfileEditReactor<T: MyPageCoordinator>(
+    coordinator: T,
+    editProfileUseCase: EditProfileUseCase,
+    checkNicknameUseCase: CheckNicknameUseCase,
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase,
+    uploadMemberUseCase: UploadMemberUseCase,
+    memberInfoUseCase: MemberInfoUseCase
+  ) -> any ProfileEditReactor
+  func injectProfileEditViewController<T: ProfileEditReactor>(
+    reactor: T,
+    nickname: String,
+    defaultProfile: String?,
+    selectImage: UIImage?,
+    raisePet: String
+  ) -> any ProfileEditViewController
+  
+  // MARK: - ProfileSetting
   
   func injectProfileSettingReactor<T: MyPageCoordinator>(
     coordinator: T,

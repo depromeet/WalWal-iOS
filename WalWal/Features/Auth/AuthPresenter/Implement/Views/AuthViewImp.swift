@@ -156,6 +156,14 @@ extension AuthViewControllerImp: View {
       .map { Reactor.Action.kakaoLoginTapped }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    NotificationCenter.default.rx.notification(UIApplication.willEnterForegroundNotification)
+      .map { _ in
+        Reactor.Action.indicatorState(state: false)
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
   }
   
   public func bindState(reactor: R) {
@@ -165,8 +173,7 @@ extension AuthViewControllerImp: View {
       .drive(with: self) { owner, message in
         WalWalToast.shared.show(
           type: .error,
-          message: message,
-          isTabBarExist: false
+          message: message
         )
       }
       .disposed(by: disposeBag)

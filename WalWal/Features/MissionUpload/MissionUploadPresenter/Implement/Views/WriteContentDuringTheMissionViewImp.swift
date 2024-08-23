@@ -59,7 +59,7 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   }
   
   private let uploadButton = WalWalTouchArea(
-    image: Images.arrow.image,
+    image: Images.arrowL.image,
     size: 40
   )
   
@@ -302,8 +302,7 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
       .drive(onNext: { errorMessage in
         WalWalToast.shared.show(
           type: .error,
-          message: errorMessage,
-          isTabBarExist: false
+          message: errorMessage
         )
       })
       .disposed(by: disposeBag)

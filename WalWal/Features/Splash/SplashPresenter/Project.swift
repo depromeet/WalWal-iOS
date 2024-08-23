@@ -19,6 +19,7 @@ let project = Project.invertedPresenterWithDemoApp(
     
     .Feature.Splash.Domain.Interface,
     .Feature.FCM.Domain.Interface,
+    .Feature.Records.Domain.Interface,
     
     .Coordinator.App.Interface,
   ],

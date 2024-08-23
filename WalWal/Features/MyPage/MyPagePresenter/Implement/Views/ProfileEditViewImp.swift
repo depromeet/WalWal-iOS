@@ -28,8 +28,11 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   
   // MARK: - UI
   
-  private let containerView = UIView().then {
-    $0.backgroundColor = Colors.gray150.color
+  private let rootContainerView = UIView().then {
+    $0.backgroundColor = Colors.gray100.color
+  }
+  private let profileContainer = UIView().then {
+    $0.backgroundColor = Colors.gray100.color
   }
   private let navigationBarView = WalWalNavigationBar(
     leftItems: [],
@@ -39,14 +42,19 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   ).then {
     $0.backgroundColor = Colors.white.color
   }
-  private let profileEditView = WalWalProfile(type: .dog)
+  private let seperator = UIView().then {
+    $0.backgroundColor = Colors.gray150.color
+  }
+  private var profileEditView: WalWalProfile
   private let nicknameTextfield = WalWalInputBox(
     defaultState: .active,
     placeholder: "",
     rightIcon: .close,
     isAlwaysKeyboard: true
-  )
-  private let completeButton = WalWalButton(type: .active, title: "완료")
+  ).then {
+    $0.focusOnTextField()
+  }
+  private let completeButton = WalWalButton(type: .disabled, title: "완료")
   
   public var disposeBag = DisposeBag()
   public var profileEditReactor: R
@@ -54,9 +62,19 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   // MARK: - Initializer
   
   public init(
-    reactor: R
+    reactor: R,
+    nickname: String,
+    defaultProfile: String?,
+    selectImage: UIImage?,
+    raisePet: String
   ) {
     self.profileEditReactor = reactor
+    profileEditView = WalWalProfile(
+      type: PetType(rawValue: raisePet) ?? .dog,
+      defaultImage: defaultProfile,
+      userImage: selectImage
+    )
+    nicknameTextfield.rx.text.onNext(nickname)
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -66,11 +84,6 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   
   // MARK: - Lifecycle
   
-  public override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    nicknameTextfield.focusOnTextField()
-  }
-  
   public override func viewDidLoad() {
     self.reactor = profileEditReactor
     super.viewDidLoad()
@@ -79,37 +92,67 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   }
   
   public override func viewDidLayoutSubviews() {
-    view.backgroundColor = Colors.white.color
     super.viewDidLayoutSubviews()
-    containerView.pin
+    let _ = view.pin.keyboardArea.height
+    view.backgroundColor = Colors.white.color
+    
+    rootContainerView.pin
       .all(view.pin.safeArea)
-    containerView.flex
+    rootContainerView.flex
       .layout()
+    
   }
-  
   
   public func configureAttribute() {
     view.backgroundColor = Colors.white.color
+    view.addSubview(rootContainerView)
+    [navigationBarView, profileContainer, completeButton].forEach {
+      rootContainerView.addSubview($0)
+    }
   }
   
   public func configureLayout() {
-    view.addSubview(containerView)
     
-    containerView.flex
-      .direction(.column)
+    rootContainerView.flex
+      .justifyContent(.spaceBetween)
       .define {
         $0.addItem(navigationBarView)
-        $0.addItem(profileEditView)
-          .marginTop(55.adjusted)
-          .marginHorizontal(0)
-        $0.addItem(nicknameTextfield)
-          .marginTop(40.adjusted)
-          .marginHorizontal(20.adjusted)
-          .marginBottom(5.adjusted)
+        $0.addItem(seperator)
+          .height(1)
+          .width(100%)
+        $0.addItem(profileContainer)
+          .justifyContent(.center)
+          .marginTop(50.adjustedHeight)
+          .marginBottom(17.adjustedHeight)
+          .grow(1)
+          .define {
+            $0.addItem(profileEditView)
+              .width(100%)
+            $0.addItem(nicknameTextfield)
+              .marginHorizontal(20.adjustedWidth)
+          }
+        
         $0.addItem(completeButton)
           .marginHorizontal(20.adjusted)
       }
+    
   }
+  
+  private func keyboardLayout() {
+    let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
+    completeButton.flex
+      .marginBottom(keyboardTop+20.adjustedHeight)
+    profileContainer.flex
+      .justifyContent(.spaceBetween)
+      .marginTop(60.adjusted)
+      .marginBottom(17.adjustedHeight)
+    
+    nicknameTextfield.flex
+      .marginTop(45.adjusted)
+    
+    rootContainerView.flex.layout()
+  }
+  
 }
 
 extension ProfileEditViewControllerImp: View {
@@ -123,13 +166,24 @@ extension ProfileEditViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    let nicknameObservable = nicknameTextfield.rx.text.orEmpty
-      .throttle(.milliseconds(350), scheduler: MainScheduler.instance)
-    
-    let input = Observable.combineLatest(nicknameObservable, profileEditView.curProfileItems)
+    let inputValue =  Observable.combineLatest(nicknameTextfield.rx.text.orEmpty, profileEditView.curProfileItems)
+    inputValue
+      .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
+      .map {
+        Reactor.Action.checkCondition(nickname: $0, profile: $1)
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
     
     profileEditView.showPHPicker
       .map { Reactor.Action.checkPhotoPermission }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    completeButton.rx.tapped
+      .withLatestFrom(inputValue) {
+        Reactor.Action.editProfile(nickname: $1.0, profile: $1.1)
+      }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
@@ -140,20 +194,56 @@ extension ProfileEditViewControllerImp: View {
   }
   
   public func bindState(reactor: R) {
-    reactor.state
-      .map { $0.isGrantedPhoto }
-      .distinctUntilChanged()
-      .bind(with: self, onNext: { owner, isAllowed in
+    reactor.pulse(\.$isGrantedPhoto)
+      .asDriver(onErrorJustReturn: false)
+      .skip(1)
+      .drive(with: self) { owner, isAllowed in
         if isAllowed {
           PHPickerManager.shared.presentPicker(vc: owner)
         } else {
-          // 권한 요청 - Alert
+          WalWalAlert.shared.showOkAlert(
+            title: "앨범에 대한 접근 권한이 없습니다",
+            bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
+            okTitle: "확인"
+          )
         }
-      })
+      }
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { return $0.buttonEnable ? .active : .disabled }
+      .bind(to: completeButton.rx.buttonType)
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.showIndicator }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, show in
+        ActivityIndicator.shared.showIndicator.accept(show)
+      }
+      .disposed(by: disposeBag)
+    
   }
   
   public func bindEvent() {
-
+    NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
+      .bind(with: self) { owner, _ in
+        owner.keyboardLayout()
+      }
+      .disposed(by: disposeBag)
+    
+    PHPickerManager.shared.selectedPhoto
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, image in
+        owner.profileEditView.selectedImageData.accept(image)
+      }
+      .disposed(by: disposeBag)
+    
+    WalWalAlert.shared.resultRelay
+      .map { _ in Void() }
+      .bind(to: WalWalAlert.shared.closeAlert)
+      .disposed(by: disposeBag)
   }
 }

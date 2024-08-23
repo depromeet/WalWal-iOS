@@ -3,7 +3,7 @@
 //
 //  FCM
 //
-//  Created by Jiyeon
+//  Created by 이지희
 //
 
 import FCMDomain
@@ -28,9 +28,9 @@ public struct FCMReactorState {
 
 public protocol FCMReactor: Reactor where Action == FCMReactorAction, Mutation == FCMReactorMutation, State == FCMReactorState {
   
-  var coordinator: any __Coordinator { get }
+  var coordinator: any FCMCoordinator { get }
   
   init(
-    coordinator: any __Coordinator
+    coordinator: any FCMCoordinator
   )
 }

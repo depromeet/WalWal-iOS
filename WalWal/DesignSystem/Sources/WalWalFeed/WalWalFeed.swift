@@ -70,27 +70,9 @@ public final class WalWalFeed: UIView {
     walwalBoostCounter: walwalBoostCounter
   )
   
-  private lazy var walwalCell = WalWalEmitterCell(
-    image: ResourceKitAsset.Sample.walwalEmitterDog.image,
-    scale: 0.8,
-    scaleRange: 0.5,
-    lifetime: 2.0,
-    lifetimeRange: 0.5,
-    birthRate: 0,
-    velocity: 800,
-    velocityRange: 50,
-    emissionRange: .pi * 2,
-    spin: 3.14,
-    spinRange: 6.28,
-    alphaSpeed: -0.5
-  )
+  private lazy var walwalCell = WalWalEmitterCell()
   
-  private lazy var walwalEmitter = WalWalEmitterLayer(
-    cell: walwalCell,
-    emitterShape: .sphere,
-    emitterMode: .outline,
-    renderMode: .additive
-  )
+  private lazy var walwalEmitter = WalWalEmitterLayer(cell: walwalCell)
   
   // MARK: - Properties
   

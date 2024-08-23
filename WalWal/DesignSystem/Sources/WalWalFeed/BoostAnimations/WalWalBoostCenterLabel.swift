@@ -19,19 +19,22 @@ final class WalWalBoostCenterLabel {
   private let letterSpacing: CGFloat = -1.0 // 음수 값으로 글자 간격을 좁힘
   private let sideMargin: CGFloat = 20.0
   private let characterOverlap: CGFloat = 8.0 // 글자 간 겹침 정도
-  
+  private var completedAnimationsCount = 0
+
   func updateCenterLabels(
     with text: String,
     in detailView: UIView,
     window: UIWindow,
-    burstMode: WalWalBurstString
+    completion: (() -> Void)? = nil
   ) {
     clearExistingLabels()
     
-    let labelFont = burstMode.font
+    let labelFont = WalWalBurstString.font
     let words = text.split(separator: " ")
     let availableWidth = window.bounds.width - (2 * sideMargin)
     let lines = calculateLines(for: words, with: labelFont, maxWidth: availableWidth)
+    let totalCharacters = lines.flatMap { $0 }.joined().count
+    completedAnimationsCount = 0 // 초기화
     
     let countLabelY = detailView.center.y - 40
     var startY = countLabelY + 60
@@ -57,8 +60,13 @@ final class WalWalBoostCenterLabel {
         window.addSubview(shadowLabel)
         window.addSubview(label)
         
-        let delay = Double(lineIndex * lineText.count + charIndex) * 0.05
-        animateLabel(label, shadowLabel: shadowLabel, delay: delay)
+        let delay = Double(lineIndex * lineText.count + charIndex) * 0.1
+        animateLabel(label, shadowLabel: shadowLabel, delay: delay) {
+          self.completedAnimationsCount += 1
+          if self.completedAnimationsCount == totalCharacters {
+            completion?() // 모든 애니메이션이 완료되면 completion 호출
+          }
+        }
         
         startX += label.bounds.width - characterOverlap
       }
@@ -67,8 +75,8 @@ final class WalWalBoostCenterLabel {
     }
   }
   
-  func disappearLabels(completion: @escaping () -> Void) {
-    let delayBetweenChars: TimeInterval = 0.05
+  func disappearLabels(completion: (() -> Void)? = nil) {
+    let delayBetweenChars: TimeInterval = 0.1
     var completionCount = 0
     
     for (index, (label, shadowLabel)) in zip(centerLabels, centerShadowLabels).enumerated() {
@@ -77,7 +85,7 @@ final class WalWalBoostCenterLabel {
         completionCount += 1
         if completionCount == self.centerLabels.count {
           self.clearExistingLabels()
-          completion()
+          completion?() // 모든 애니메이션이 완료된 후에 completion 호출
         }
       }
     }
@@ -122,7 +130,7 @@ final class WalWalBoostCenterLabel {
     return (label, shadowLabel)
   }
   
-  private func animateLabel(_ label: UILabel, shadowLabel: UILabel, delay: TimeInterval) {
+  private func animateLabel(_ label: UILabel, shadowLabel: UILabel, delay: TimeInterval, completion: @escaping () -> Void) {
     /// 초기 상태 설정
     label.alpha = 1
     shadowLabel.alpha = 1
@@ -132,7 +140,7 @@ final class WalWalBoostCenterLabel {
     /// 랜덤 시작 각도 (-15도에서 15도 사이)
     let startAngle = [CGFloat.pi / 8, -CGFloat.pi / 8].randomElement() ?? CGFloat.pi / 8
     
-    UIView.animateKeyframes(withDuration: 0.3, delay: delay, options: [], animations: {
+    UIView.animateKeyframes(withDuration: 0.5, delay: delay, options: [], animations: {
       
       /// 크기 애니메이션 (팝업 효과)
       UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
@@ -145,6 +153,21 @@ final class WalWalBoostCenterLabel {
         label.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: 0)
         shadowLabel.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: 0)
       }
+    }, completion: { _ in
+      // 흔들림 애니메이션 추가
+      self.addExpandAndWobbleAnimation(to: label)
+      self.addExpandAndWobbleAnimation(to: shadowLabel)
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        completion()
+      }
+    })
+  }
+  
+  /// 등장 후 102%로 확장 및 흔들림 애니메이션 추가
+  private func addExpandAndWobbleAnimation(to label: UILabel) {
+    UIView.animate(withDuration: 0.3, animations: {
+      // 글자 크기를 102%로 살짝 확장
+      label.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
     })
   }
   
@@ -158,7 +181,7 @@ final class WalWalBoostCenterLabel {
     /// 랜덤 시작 각도 (-15도에서 15도 사이)
     let startAngle = [CGFloat.pi / 8, -CGFloat.pi / 8].randomElement() ?? CGFloat.pi / 8
     
-    UIView.animateKeyframes(withDuration: 0.3, delay: delay, options: [], animations: {
+    UIView.animateKeyframes(withDuration: 0.5, delay: delay, options: [], animations: {
       // 첫 번째 키프레임: 약간 커지면서 회전 시작
       UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.3) {
         let transform = CGAffineTransform(scaleX: 1.1, y: 1.1).rotated(by: startAngle / 2)

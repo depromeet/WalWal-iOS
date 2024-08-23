@@ -16,6 +16,42 @@ extension Project {
   private static let organizationName = "olderStoneBed.io"
 }
 
+extension Target {
+  
+  //MARK: - App으로 Project를 만들기 위한 Target 생성
+  public static func makeApp(
+    name: String,
+    platform: Platform,
+    bundleId: String,
+    iOSTargetVersion: String,
+    infoPlistPath: String,
+    removeResource: String,
+    entitlements: String,
+    dependencies: [TargetDependency] = [],
+    settings: Settings
+  ) -> Target {
+    let platform: Platform = platform
+    let appTarget = Target(
+      name: name,
+      platform: platform,
+      product: .app,
+      bundleId: bundleId,
+      deploymentTarget: .iOS(targetVersion: iOSTargetVersion, devices: [.iphone]),
+      infoPlist: .file(path: .relativeToRoot(infoPlistPath)),
+      sources: ["Sources/**"],
+      resources: [
+        .glob(
+          pattern: "Resources/**",
+          excluding: ["Resources/\(removeResource)/**"]
+        )
+      ],
+      entitlements: .file(path: .relativeToRoot(entitlements)),
+      dependencies: dependencies,
+      settings: settings
+    )
+    return appTarget
+  }
+}
 
 //MARK: -
 extension Project {
@@ -50,31 +86,31 @@ extension Project {
                    organizationName: organizationName,
                    targets: targetsForFramework,
                    resourceSynthesizers: .default + [
-                      .custom(name: "Lottie", parser: .json, extensions: ["json"]),
-                    ])
+                    .custom(name: "Lottie", parser: .json, extensions: ["json"]),
+                   ])
   }
   
   //MARK: - 빠르게 UI체크 할 DemoApp (Framework + App) -> Feature 단위로 테스트할 수 있게
-  public static func DemoApp(name: String,
-                             platform: Platform,
-                             iOSTargetVersion: String,
-                             infoPlist: [String: Plist.Value] = [:],
-                             dependencies: [TargetDependency] = []) -> Project {
-    let framework = makeFrameworkTargets(name: name,
-                                         platform: platform,
-                                         iOSTargetVersion: iOSTargetVersion,
-                                         dependencies: dependencies)
-    
-    let demoApp =  makeAppTargets(name: "\(name)DemoApp",
-                                  platform: platform,
-                                  iOSTargetVersion: iOSTargetVersion,
-                                  infoPlist: infoPlist,
-                                  dependencies: [.target(name: name)] + dependencies)
-    return Project(name: name,
-                   organizationName: organizationName,
-                   targets: framework + demoApp)
-  }
-  
+  public static func DemoApp(
+    name: String,
+    platform: Platform,
+    iOSTargetVersion: String,
+    infoPlist: [String: Plist.Value] = [:],
+    dependencies: [TargetDependency] = []) -> Project {
+      let framework = makeFrameworkTargets(name: name,
+                                           platform: platform,
+                                           iOSTargetVersion: iOSTargetVersion,
+                                           dependencies: dependencies)
+      
+      let demoApp =  makeAppTargets(name: "\(name)DemoApp",
+                                    platform: platform,
+                                    iOSTargetVersion: iOSTargetVersion,
+                                    infoPlist: infoPlist,
+                                    dependencies: [.target(name: name)] + dependencies)
+      return Project(name: name,
+                     organizationName: organizationName,
+                     targets: framework + demoApp)
+    }
   
   
   /// 현재 경로 내부의 Implement, Interface 두개의 디렉토리에 각각 Target을 가지는 Project를 만듭니다.
@@ -154,8 +190,8 @@ extension Project {
       sources: ["./DemoApp/Sources/**"],
       resources: ["./DemoApp/Resources/**"],
       dependencies: [
-//        .target(name: "\(name)"),
-//        .target(name: "\(name)Imp"),
+        //        .target(name: "\(name)"),
+        //        .target(name: "\(name)Imp"),
       ] + demoAppDependencies
     )
     

@@ -36,6 +36,8 @@ public final class OnboardingSelectReactorImp: OnboardingSelectReactor {
     case let .nextButtonTapped(flow):
       coordinator.destination.accept(flow)
       return .never()
+    case .tapBackButton:
+      return .just(.moveToBack)
     }
   }
   
@@ -46,6 +48,8 @@ public final class OnboardingSelectReactorImp: OnboardingSelectReactor {
       newState.selectedAnimal = (dog, cat)
     case let .selectCompleteButtonEnable(isEnable):
       newState.selectCompleteButtonEnable = isEnable
+    case .moveToBack:
+      coordinator.popViewController(animated: true)
     }
     return newState
   }

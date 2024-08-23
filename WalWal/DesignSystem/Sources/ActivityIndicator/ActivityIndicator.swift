@@ -34,14 +34,14 @@ public final class ActivityIndicator {
   // MARK: - UI
   
   private let container = UIView().then {
-    $0.backgroundColor = .clear
+    $0.backgroundColor = ResourceKitAsset.Colors.white.color.withAlphaComponent(0)
   }
   
   private var activityIndicator: UIActivityIndicatorView = {
     let indicator = UIActivityIndicatorView(style: .large)
     indicator.translatesAutoresizingMaskIntoConstraints = false
     indicator.hidesWhenStopped = true
-    indicator.color = ResourceKitAsset.Colors.gray200.color
+    indicator.color = ResourceKitAsset.Colors.gray300.color
     return indicator
   }()
   

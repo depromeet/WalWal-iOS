@@ -3,7 +3,7 @@
 //
 //  FCM
 //
-//  Created by Jiyeon
+//  Created by 이지희
 //
 
 import UIKit
@@ -16,8 +16,8 @@ public protocol FCMViewController: UIViewController {
   associatedtype FCMReactorType: FCMReactor
   var disposeBag: DisposeBag { get set }
   
-  func setLayout()
-  func setAttribute()
+  func setupLayout()
+  func setupAttribute()
   func bindAction(reactor: FCMReactorType)
   func bindState(reactor: FCMReactorType)
   func bindEvent()

@@ -118,7 +118,8 @@ private enum SampleDataGenerator {
     let sampleModels = (1...count).map { _ -> WalWalCalendarModel in
       let randomDate = Date(timeIntervalSince1970: .random(in: oneYearAgo.timeIntervalSince1970...today.timeIntervalSince1970))
       let dateString = dateFormatter.string(from: randomDate)
-      let id = "\(dateString)의 이미지 입니당 🐶"
+      let id = "\(dateString)의 이미지 입니당 🐶"                                     
+      let image = UIImage(data: sampleImageData)
       return WalWalCalendarModel(recordId: 1, date: dateString, image: UIImage())
     }
     

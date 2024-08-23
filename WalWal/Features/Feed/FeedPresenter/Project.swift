@@ -20,9 +20,9 @@ let project = Project.invertedPresenterWithDemoApp(
     .Feature.Feed.Domain.Interface,
     
     .Coordinator.Feed.Interface,
+    .DesignSystem,
   ],
   implementDependencies: [
-    .DesignSystem,
     
     .DependencyFactory.Feed.Interface,
   ],
