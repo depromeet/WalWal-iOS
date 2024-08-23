@@ -1,13 +1,12 @@
 //
-//  FetchMissionUseCase.swift
+//  FetchUserFeedUseCaseImp.swift
 //  FeedDomainImp
 //
-//  Created by 이지희 on 8/19/24.
+//  Created by 이지희 on 8/21/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-
-import UIKit
+import Foundation
 import FeedData
 import FeedDomain
 
@@ -15,7 +14,7 @@ import GlobalState
 
 import RxSwift
 
-public final class FetchFeedUseCaseImp: FetchFeedUseCase {
+public final class FetchUserFeedUseCaseImp: FetchUserFeedUseCase {
 
   private let feedRepository: FeedRepository
   
@@ -23,11 +22,11 @@ public final class FetchFeedUseCaseImp: FetchFeedUseCase {
     self.feedRepository = feedRepository
   }
   
-  public func execute(memberId: Int? = nil, cursor: String?, limit: Int) -> Single<FeedModel> {
+  public func execute(memberId: Int, cursor: String?, limit: Int) -> Single<FeedModel> {
     return feedRepository.fetchFeedData(memberId: memberId, cursor: cursor, limit: limit)
       .map { dto in
         let feedModel = FeedModel(dto: dto)
-        feedModel.saveToGlobalState()
+        feedModel.saveToGlobalState(isFeed: false)
         return feedModel
       }
   }

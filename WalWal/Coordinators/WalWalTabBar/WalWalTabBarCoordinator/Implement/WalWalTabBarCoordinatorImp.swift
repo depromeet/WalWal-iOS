@@ -191,6 +191,7 @@ extension WalWalTabBarCoordinatorImp {
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
       membersDependencyFactory: membersDependencyFactory,
+      feedDependencyFactory: feedDependencyFactory,
       imageDependencyFactory: imageDependencyFactory
     )
     myPageCoordinator.start()

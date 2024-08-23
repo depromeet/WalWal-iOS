@@ -49,12 +49,8 @@ public final class MyPageReactorImp: MyPageReactor {
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case let .didSelectCalendarItem(model):
-      return fetchWalWalCalendarModelsUseCase.execute()
-        .map { records -> [WalWalCalendarModel] in
-          self.convertToWalWalCalendarModels(from: records)
-        }
-        .map { Mutation.setCalendarData($0) }
+    case .didSelectCalendarItem(let member, let date):
+      return Observable.just(.moveToRecordDetail(memberInfo: member, cursor: date))
     case .didTapSettingButton:
       return Observable.just(.moveToSettingView)
     case .didTapEditButton:
@@ -82,9 +78,8 @@ public final class MyPageReactorImp: MyPageReactor {
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
-    case let .setSelectedCalendarItem(date):
-      newState.selectedDate = date
-      coordinator.destination.accept(.showRecordDetail)
+    case let .setSelectedCalendarItem(calendar):
+      newState.selectedDate = calendar
     case let .setCalendarData(calendarData):
       newState.calendarData = calendarData
     case .moveToSettingView:
@@ -98,6 +93,8 @@ public final class MyPageReactorImp: MyPageReactor {
       ))
     case let .profileInfo(data):
       newState.profileData = data
+    case .moveToRecordDetail(let member, let cursor):
+      coordinator.destination.accept(.showRecordDetail(nickname: member.nickname, memberId: member.memberId))
     }
     return newState
   }
@@ -108,7 +105,7 @@ extension MyPageReactorImp {
     return records.compactMap { record in
       let image = GlobalState.shared.imageStore[record.imageUrl]
       return WalWalCalendarModel(
-        imageId: record.imageId,
+        recordId: record.recordId,
         date: record.missionDate,
         image: image
       )

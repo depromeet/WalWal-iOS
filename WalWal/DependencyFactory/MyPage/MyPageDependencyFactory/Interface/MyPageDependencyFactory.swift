@@ -23,6 +23,9 @@ import AuthDomain
 import MembersDependencyFactory
 import MembersDomain
 
+import FeedDependencyFactory
+import FeedDomain
+
 import ImageDependencyFactory
 import ImageDomain
 
@@ -34,8 +37,10 @@ public protocol MyPageDependencyFactory {
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory,
+    feedDependencyFactory: FeedDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory
   ) -> any MyPageCoordinator
+  
   func injectMyPageRepository() -> MyPageRepository
   func injectFetchWalWalCalendarModelsUseCase() -> FetchWalWalCalendarModelsUseCase
   
@@ -48,10 +53,18 @@ public protocol MyPageDependencyFactory {
   ) -> any MyPageReactor
   func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
   
+
   // MARK: - RecordDetail
   
-  func injectRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor
-  func injectRecordDetailViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController
+    func injectRecordDetailReactor<T: MyPageCoordinator>(
+    coordinator: T,
+    fetchUserFeedUseCase: FetchUserFeedUseCase
+  ) -> any RecordDetailReactor
+  func injectRecordDetailViewController<T: RecordDetailReactor>(
+    reactor: T,
+    memberId: Int,
+    memberNickname: String
+  ) -> any RecordDetailViewController
   
   // MARK: - ProfileEdit
   

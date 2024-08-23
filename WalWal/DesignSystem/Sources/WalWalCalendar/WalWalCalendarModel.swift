@@ -10,16 +10,16 @@ import Foundation
 import UIKit
 
 public struct WalWalCalendarModel: Equatable {
-  public let imageId: Int
+  public let recordId: Int
   public let date: String
   public let image: UIImage?
   
   public init(
-    imageId: Int,
+    recordId: Int,
     date: String,
     image: UIImage?
   ) {
-    self.imageId = imageId
+    self.recordId = recordId
     self.date = date
     self.image = image
   }
@@ -28,7 +28,7 @@ public struct WalWalCalendarModel: Equatable {
     lhs: WalWalCalendarModel,
     rhs: WalWalCalendarModel
   ) -> Bool {
-    return lhs.imageId == rhs.imageId &&
+    return lhs.recordId == rhs.recordId &&
     lhs.date == rhs.date &&
     lhs.image == rhs.image
   }

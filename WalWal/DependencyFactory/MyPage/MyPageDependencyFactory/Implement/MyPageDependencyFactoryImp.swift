@@ -11,6 +11,7 @@ import MyPageDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
 import MembersDependencyFactory
+import FeedDependencyFactory
 import ImageDependencyFactory
 
 import BaseCoordinator
@@ -26,6 +27,7 @@ import MyPageDataImp
 import FCMDomain
 import AuthDomain
 import MembersDomain
+import FeedDomain
 import ImageDomain
 
 import WalWalNetwork
@@ -42,6 +44,7 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: any AuthDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory,
+    feedDependencyFactory: FeedDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory
   ) -> any MyPageCoordinator {
     return MyPageCoordinatorImp(
@@ -51,6 +54,7 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
       membersDependencyFactory: membersDependencyFactory,
+      FeedDependencyFactory: feedDependencyFactory,
       imageDependencyFactory: imageDependencyFactory
     )
   }
@@ -80,12 +84,24 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     return MyPageViewControllerImp(reactor: reactor)
   }
   
-  public func injectRecordDetailReactor<T: MyPageCoordinator>(coordinator: T) -> any RecordDetailReactor {
-    return RecordDetailReactorImp(coordinator: coordinator)
+  public func injectRecordDetailReactor<T: MyPageCoordinator>(
+    coordinator: T,
+    fetchUserFeedUseCase: FetchUserFeedUseCase
+  ) -> any RecordDetailReactor{
+    return RecordDetailReactorImp(coordinator: coordinator, fetchUserFeedUseCase: fetchUserFeedUseCase)
   }
   
-  public func injectRecordDetailViewController<T: RecordDetailReactor>(reactor: T) -> any RecordDetailViewController {
-    return RecordDetailViewControllerImp(reactor: reactor)
+  public func injectRecordDetailViewController<T: RecordDetailReactor>(
+    reactor: T,
+    memberId: Int,
+    memberNickname: String
+  ) -> any RecordDetailViewController {
+    return RecordDetailViewControllerImp(
+      reactor: reactor,
+      nickname: memberNickname,
+      memberId: memberId,
+      isFeedRecord: false
+    )
   }
   
   public func injectProfileSettingReactor<T: MyPageCoordinator>(

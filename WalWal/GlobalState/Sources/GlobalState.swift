@@ -20,11 +20,12 @@ public final class GlobalState {
   public static let shared = GlobalState()
   
   public private(set) var calendarRecords = BehaviorRelay<[GlobalMissonRecordListModel]>(value: [])
-  public private(set) var profileInfo = BehaviorRelay<GlobalProfileModel>(value: .init(nickname: "", profileURL: "", raisePet: "DOG"))
+  public private(set) var profileInfo = BehaviorRelay<GlobalProfileModel>(value: .init(memberId: 0, nickname: "", profileURL: "", raisePet: "DOG"))
   public private(set) var feedList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
+  public private(set) var recordList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
   
   /// 이미지 저장소 (캐시된 이미지를 저장하는 딕셔너리)
-  public private(set) var imageStore: [String: UIImage] = [:]
+  public private(set) var imageStore: [String?: UIImage] = [:]
   
   private let disposeBag = DisposeBag()
   
@@ -63,6 +64,15 @@ public final class GlobalState {
       }
       .subscribe()
       .disposed(by: disposeBag)
+    
+    recordList
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, feed -> Observable<Void> in
+        return owner.preloadImages(globalState: .recodList(owner.profileInfo.value.memberId))
+      }
+      .subscribe()
+      .disposed(by: disposeBag)
   }
   
   public func updateProfileInfo(data: GlobalProfileModel) {
@@ -96,22 +106,34 @@ public final class GlobalState {
     return imageStore[record.imageUrl]
   }
   
+  /// 피드 정보 업데이트
   public func updateFeed(with newFeeds: [GlobalFeedListModel]) {
-     var currentFeeds = feedList.value
-     let newUniqueFeeds = newFeeds.filter { newFeed in
-       !currentFeeds.contains(where: { $0.recordID == newFeed.recordID }) // 중복 검사 (id가 같으면 중복)
-     }
-     currentFeeds.append(contentsOf: newUniqueFeeds)
-     feedList.accept(currentFeeds)
-   }
+    var currentFeeds = feedList.value
+    let newUniqueFeeds = newFeeds.filter { newFeed in
+      !currentFeeds.contains(where: { $0.recordID == newFeed.recordID }) // 중복 검사 (id가 같으면 중복)
+    }
+    currentFeeds.append(contentsOf: newUniqueFeeds)
+    feedList.accept(currentFeeds)
+  }
   
+  /// 피드 가져오기
   public func getFeeds(forDate date: String) -> [GlobalFeedListModel] {
     return feedList.value.filter {  $0.createdDate == date  }
   }
   
-  public func resetFeeds() {
-    feedList.accept([])
-    imageStore.removeAll()
+  /// 기록 정보 업데이트
+  public func updateRecords(with newRecords: [GlobalFeedListModel]) {
+    var currentRecord = recordList.value
+    let newUniqueRecords = newRecords.filter { newRecord in
+      !currentRecord.contains(where: { $0.recordID == newRecord.recordID }) // 중복 검사 (id가 같으면 중복)
+    }
+    currentRecord.append(contentsOf: newUniqueRecords)
+    recordList.accept(currentRecord)
+  }
+  
+  /// 기록 가져오기
+  public func getRecords(forDate date: String) -> [GlobalFeedListModel] {
+    return recordList.value.filter {  $0.createdDate == date  }
   }
   
   public func getCachedMissionImage(for feed: GlobalFeedListModel) -> UIImage? {
@@ -137,12 +159,17 @@ public final class GlobalState {
     case .feedList:
       let downloadTasks = self.feedList.value.flatMap { feed -> [Observable<Void>] in
         let missionDownload = downloadAndCacheImage(for: feed.missionImage)
-          .catchAndReturn(())
         let profileDownload = downloadAndCacheImage(for: feed.profileImage)
-          .catchAndReturn(())
         return [missionDownload, profileDownload]
       }
-      return Observable.merge(downloadTasks)
+      return Observable.concat(downloadTasks)
+    case .recodList(_):
+      let downloadTasks = self.recordList.value.flatMap { record -> [Observable<Void>] in
+        let missionDownload = downloadAndCacheImage(for: record.missionImage)
+        let profileDownload = downloadAndCacheImage(for: record.profileImage)
+        return [missionDownload, profileDownload]
+      }
+      return Observable.concat(downloadTasks)
     }
   }
   

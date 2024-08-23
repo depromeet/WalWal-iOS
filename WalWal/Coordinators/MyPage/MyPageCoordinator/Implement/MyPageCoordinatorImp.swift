@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import DesignSystem
 import MyPageDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
 import MembersDependencyFactory
+import FeedDependencyFactory
 import ImageDependencyFactory
 
 import BaseCoordinator
@@ -38,6 +40,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   private let fcmDependencyFactory: FCMDependencyFactory
   private let authDependencyFactory: AuthDependencyFactory
   private let membersDependencyFactory: MembersDependencyFactory
+  private let feedDependencyFactory: FeedDependencyFactory
   private let imageDependencyFactory: ImageDependencyFactory
   
   public required init(
@@ -47,6 +50,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     fcmDependencyFactory: FCMDependencyFactory,
     authDependencyFactory: AuthDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory,
+    FeedDependencyFactory: FeedDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory
   ) {
     self.navigationController = navigationController
@@ -55,6 +59,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     self.fcmDependencyFactory = fcmDependencyFactory
     self.authDependencyFactory = authDependencyFactory
     self.membersDependencyFactory = membersDependencyFactory
+    self.feedDependencyFactory = FeedDependencyFactory
     self.imageDependencyFactory = imageDependencyFactory
     bindChildToParentAction()
     bindState()
@@ -64,6 +69,11 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     destination
       .subscribe(with: self, onNext: { owner, flow in
         switch flow {
+        case .showRecordDetail(let nickname, let memberId):
+          owner.showRecordDetailVC(
+            nickname: nickname,
+            memberId: memberId
+          )
         case .showRecordDetail:
           owner.showRecordDetailVC()
         case let .showProfileEdit(nickname, defaultProfile, selectImage, raisePet):
@@ -91,6 +101,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   public func start() {
     let fetchWalWalCalendarModelsUseCase = myPageDependencyFactory.injectFetchWalWalCalendarModelsUseCase()
     let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
+    let fetchUserFeedUseCase = feedDependencyFactory.injectFetchFeedUseCase()
     let reactor = myPageDependencyFactory.injectMyPageReactor(
       coordinator: self,
       fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
@@ -120,10 +131,24 @@ extension MyPageCoordinatorImp {
 
 extension MyPageCoordinatorImp {
   /// 기록 상세뷰
-  fileprivate func showRecordDetailVC() {
-    let reactor = myPageDependencyFactory.injectRecordDetailReactor(coordinator: self)
-    let RecordDetailVC = myPageDependencyFactory.injectRecordDetailViewController(reactor: reactor)
-    self.pushViewController(viewController: RecordDetailVC, animated: false)
+  fileprivate func showRecordDetailVC(
+    nickname: String,
+    memberId: Int
+  ) {
+    let fetchUserFeedUseCase = feedDependencyFactory.injectFetchUserFeedUseCase()
+    let reactor = myPageDependencyFactory.injectRecordDetailReactor(
+      coordinator: self,
+      fetchUserFeedUseCase: fetchUserFeedUseCase)
+    let recordDetailVC = myPageDependencyFactory.injectRecordDetailViewController(
+      reactor: reactor,
+      memberId: memberId,
+      memberNickname: nickname
+    )
+    guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
+      return
+    }
+    tabBarViewController.hideCustomTabBar()
+    self.pushViewController(viewController: recordDetailVC, animated: true)
   }
   
   /// 프로필 설정뷰
@@ -137,12 +162,13 @@ extension MyPageCoordinatorImp {
       kakaoLogoutUseCase: authDependencyFactory.injectKakaoLogoutUseCase(),
       kakaoUnlinkUseCase: authDependencyFactory.injectKakaoUnlinkUseCase()
     )
-    let ProfileSettingVC = myPageDependencyFactory.injectProfileSettingViewController(reactor: reactor)
+
+    let profileSettingVC = myPageDependencyFactory.injectProfileSettingViewController(reactor: reactor)
     guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
       return
     }
     tabBarViewController.hideCustomTabBar()
-    self.pushViewController(viewController: ProfileSettingVC, animated: true)
+    self.pushViewController(viewController: profileSettingVC, animated: true)
   }
   
   /// 프로필 변경뷰

@@ -12,12 +12,14 @@ import GlobalState
 import ResourceKit
 
 public struct MemeberInfo {
+  public let memberId: Int
   public let nickname: String
   public let profileURL: String
   public let raisePet: String
   public var profileImage: UIImage?
   
   public init(global: GlobalProfileModel) {
+    self.memberId = global.memberId
     self.nickname = global.nickname
     self.profileURL = global.profileURL
     self.raisePet = global.raisePet
@@ -29,9 +31,21 @@ public struct MemeberInfo {
   }
   
   public init(dto: MemberDTO) {
+    self.memberId = dto.memberId
     self.nickname = dto.nickname
     self.profileURL = dto.profileImageUrl
     self.raisePet = dto.raisePet
+  }
+  
+  
+  public func saveToGlobalState(globalState: GlobalState = GlobalState.shared) {
+    let globalProfile = GlobalProfileModel(
+      memberId: memberId,
+      nickname: nickname,
+      profileURL: profileURL,
+      raisePet: raisePet
+    )
+    globalState.updateProfileInfo(data: globalProfile)
   }
   
 }

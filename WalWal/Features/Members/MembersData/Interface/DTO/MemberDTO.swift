@@ -9,6 +9,7 @@
 import Foundation
 
 public struct MemberDTO: Decodable {
+  public let memberId: Int
   public let nickname: String
   public let profileImageUrl: String
   public let raisePet: String

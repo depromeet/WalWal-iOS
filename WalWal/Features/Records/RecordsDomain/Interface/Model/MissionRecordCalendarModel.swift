@@ -22,7 +22,7 @@ public struct MissionRecordCalendarModel {
   public func saveToGlobalState(globalState: GlobalState = GlobalState.shared) {
     let globalRecords = self.list.map {
       GlobalMissonRecordListModel(
-        imageId: $0.imageId,
+        recordId: $0.recordId,
         imageUrl: $0.imageUrl,
         missionDate: $0.missionDate
       )

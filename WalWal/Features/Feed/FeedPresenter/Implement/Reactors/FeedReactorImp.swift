@@ -67,14 +67,15 @@ public final class FeedReactorImp: FeedReactor {
     case .feedFetchFailed(let errorMessage):
       newState.feedErrorMessage = errorMessage
     case .feedReachEnd:
+      let globalFeedData = GlobalState.shared.feedList.value
       newState.feedFetchEnded = true
     }
     
     return newState
   }
   
-  private func fetchFeedData(cursor: String?, limit: Int) -> Observable<Mutation> {
-    return fetchFeedUseCase.execute(cursor: cursor, limit: limit)
+  private func fetchFeedData(memberId: Int? = nil, cursor: String?, limit: Int) -> Observable<Mutation> {
+    return fetchFeedUseCase.execute(memberId: memberId, cursor: cursor, limit: limit)
       .asObservable()
       .flatMap { feedModel -> Observable<Mutation> in
         if let nextCursor = feedModel.nextCursor {
@@ -91,8 +92,6 @@ public final class FeedReactorImp: FeedReactor {
         )
       }
   }
-  
-  
   
   private func convertImage(imageURL: String?) -> UIImage? {
     if let imageURL {
