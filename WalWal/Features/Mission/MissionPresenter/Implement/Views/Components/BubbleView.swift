@@ -30,7 +30,7 @@ public final class BubbleView: UIView {
   private let titleLabel = UILabel().then {
     $0.textColor = Colors.walwalOrange.color
     $0.font = Fonts.KR.H6.B
-    $0.numberOfLines = 0
+    $0.numberOfLines = 1
   }
   
   // MARK: - Property
@@ -39,7 +39,6 @@ public final class BubbleView: UIView {
   private var tipHeight: CGFloat = 16
   public var missionCount = BehaviorRelay<Int>(value: 0)
   public var isCompleted = BehaviorRelay<Bool>(value: false)
-  
   private let disposeBag = DisposeBag()
   
   // MARK: - Initializers
@@ -60,7 +59,12 @@ public final class BubbleView: UIView {
   
   override public func layoutSubviews() {
     super.layoutSubviews()
-    configureAttribute()
+    layer.cornerRadius = containerView.bounds.height / 2
+    containerView.pin
+      .all()
+    containerView.flex
+      .layout()
+    
     setTipShape(viewColor: self.backgroundColor ?? .clear, tipWidth: tipWidth, tipHeight: tipHeight)
   }
   
@@ -70,15 +74,10 @@ public final class BubbleView: UIView {
     return false 
   }
   
-  
   private func configureAttribute() {
     self.addSubview(containerView)
-    containerView.pin
-      .all()
-    titleLabel.sizeToFit()
-    containerView.flex
-      .markDirty()
-    layer.cornerRadius = containerView.bounds.height / 2
+    containerView.addSubview(iconImageView)
+    containerView.addSubview(titleLabel)
   }
   
   private func configureLayout() {
@@ -86,26 +85,28 @@ public final class BubbleView: UIView {
       .direction(.row)
       .alignItems(.center)
       .justifyContent(.center)
-      .padding(9.5, 20)
-      .define {
-        if iconImageView.image != nil {
-          $0.addItem(iconImageView)
-            .marginRight(4)
-        }
-        $0.addItem(titleLabel)
-          .height(19)
-      }
+      .paddingVertical(9.5)
+      .shrink(1)
+    
+    iconImageView.flex
+      .marginRight(4)
+      .marginLeft(20)
+    titleLabel.flex
+      .marginRight(20)
   }
   
   private func bind() {
     Observable.combineLatest(missionCount, isCompleted)
-      .map { count, completed -> String in
-        return completed ? "\(count)번째 함께 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
+      .observe(on: MainScheduler.instance)
+      .bind(with: self) { owner, data in
+        let (count, completed) = data
+        owner.titleLabel.text = completed ? "\(count)번째 함께 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
+        owner.titleLabel.flex.markDirty()
+        owner.containerView.flex.markDirty()
+        owner.setNeedsLayout()
       }
-      .bind(to: titleLabel.rx.text)
       .disposed(by: disposeBag)
   }
-  
   
   private func setTipShape(viewColor: UIColor, tipWidth: CGFloat, tipHeight: CGFloat) {
     let tipStartX = (containerView.bounds.width - tipWidth) / 2.0
@@ -127,9 +128,7 @@ public final class BubbleView: UIView {
     let shape = CAShapeLayer()
     shape.path = path
     shape.fillColor = viewColor.cgColor
-    
     self.layer.insertSublayer(shape, at: 0)
-    
   }
   
   func startFloatingAnimation() {

@@ -29,10 +29,10 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   // MARK: - UI
   
   private let rootContainerView = UIView().then {
-    $0.backgroundColor = Colors.gray150.color
+    $0.backgroundColor = Colors.gray100.color
   }
   private let profileContainer = UIView().then {
-    $0.backgroundColor = Colors.gray150.color
+    $0.backgroundColor = Colors.gray100.color
   }
   private let navigationBarView = WalWalNavigationBar(
     leftItems: [],
@@ -41,6 +41,9 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
     rightItemSize: 40
   ).then {
     $0.backgroundColor = Colors.white.color
+  }
+  private let seperator = UIView().then {
+    $0.backgroundColor = Colors.gray150.color
   }
   private var profileEditView: WalWalProfile
   private let nicknameTextfield = WalWalInputBox(
@@ -114,6 +117,8 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
       .justifyContent(.spaceBetween)
       .define {
         $0.addItem(navigationBarView)
+        $0.addItem(seperator)
+          .height(1)
           .width(100%)
         $0.addItem(profileContainer)
           .justifyContent(.center)

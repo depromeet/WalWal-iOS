@@ -88,11 +88,9 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    containerView
-      .pin
+    containerView.pin
       .all(view.pin.safeArea)
-    containerView
-      .flex
+    containerView.flex
       .layout()
   }
   
@@ -107,14 +105,17 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     view.addSubview(containerView)
     
     containerView.flex
-      .direction(.column)
       .justifyContent(.spaceBetween)
       .define { flex in
         flex.addItem(navigationBar)
         flex.addItem(seperator)
           .height(1)
           .width(100%)
-        flex.addItem(calendar)
+        flex.addItem()
+          .grow(1)
+          .define {
+            $0.addItem(calendar)
+          }
         flex.addItem(profileCardView)
       }
   }
