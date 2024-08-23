@@ -50,6 +50,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private var missionId: Int = 0
   private var isMissionCompleted: Bool = false
   private var recordImageURL: String = ""
+  private var isLoading: Bool = true
   
   public var disposeBag = DisposeBag()
   public var missionReactor: R
@@ -70,9 +71,14 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    
-    missionCountBubbleView.startFloatingAnimation()
-    
+    startAnimations()  // 애니메이션 시작
+    setupNotificationObservers()  // Notification Observer 설정
+  }
+  
+  public override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    stopAnimations()  // 애니메이션 중지
+    removeNotificationObservers()  // Notification Observer 해제
   }
   
   public override func viewDidLoad() {
@@ -88,6 +94,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    
     rootContainer.pin
       .all(view.pin.safeArea)
     rootContainer.flex
@@ -125,7 +132,77 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   }
   
   private func configureMissionCompleteView(missionImageURL: String) {
-    // 미션 완료뷰 이미지 넣기
+    if isLoading {
+      missionSucessView.configureStartView(recordImageURL: missionImageURL)
+      rootContainer.removeFromSuperview()
+      contentView.removeFromSuperview()
+      
+      contentView = missionSucessView
+      
+      view.addSubview(rootContainer)
+      
+      rootContainer.flex
+        .paddingTop(-120)
+        .define {
+          $0.addItem(contentView)
+            .alignSelf(.center)
+          $0.addItem()
+            .direction(.columnReverse)
+            .marginTop(17.adjusted)
+            .define {
+              $0.addItem(missionStartButton)
+              $0.addItem(missionCountBubbleView)
+                .alignSelf(.center)
+            }
+        }
+      rootContainer.flex
+        .layout()
+      
+      isLoading = false
+    }
+  }    
+  
+  // MARK: - Animation Control
+  
+  private func startAnimations() {
+    missionCountBubbleView.startFloatingAnimation()
+  }
+  
+  private func stopAnimations() {
+    missionCountBubbleView.stopFloatingAnimation()
+  }
+  
+  // MARK: - Notification Setup
+  
+  private func setupNotificationObservers() {
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(appDidEnterBackground),
+      name: UIApplication.didEnterBackgroundNotification,
+      object: nil
+    )
+    
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(appWillEnterForeground),
+      name: UIApplication.willEnterForegroundNotification,
+      object: nil
+    )
+  }
+  
+  private func removeNotificationObservers() {
+    NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+    NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+  }
+  
+  // MARK: - Notification Handlers
+  
+  @objc private func appDidEnterBackground() {
+    stopAnimations()  // 백그라운드로 진입 시 애니메이션 중지
+  }
+  
+  @objc private func appWillEnterForeground() {
+    startAnimations()  // 포어그라운드로 복귀 시 애니메이션 재개
   }
 }
 
@@ -140,17 +217,17 @@ extension MissionViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-      missionStartButton.rx.tapped
+    missionStartButton.rx.tapped
       .map{ Reactor.Action.moveToMissionUpload }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
-      
-      missionStartButton.rx.tapped
-        .map { [weak self] in
-          return Reactor.Action.startMission(self?.missionId ?? 0)
-        }
-        .bind(to: reactor.action)
-        .disposed(by: disposeBag)
+    
+    missionStartButton.rx.tapped
+      .map { [weak self] in
+        return Reactor.Action.startMission(self?.missionId ?? 0)
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -178,7 +255,7 @@ extension MissionViewControllerImp: View {
           case .inProgress:
             owner.missionStartButton.icon = Images.watchL.image
           case .completed:
-            owner.missionSucessView.configureStartView(recordImageURL: state.missionStatus?.imageUrl ?? "")
+            owner.configureMissionCompleteView(missionImageURL: state.missionStatus?.imageUrl ?? "")
             owner.contentView = owner.missionSucessView
             owner.isMissionCompleted = true
             owner.missionStartButton.icon = Images.calendarL.image
@@ -200,6 +277,6 @@ extension MissionViewControllerImp: View {
   }
   
   public func bindEvent() {
-
+    
   }
 }
