@@ -40,9 +40,6 @@ final class KakaoLoginManager {
               } else if let oauthToken = oauthToken {
                   print("====kakao login success====")
                   single(.success(oauthToken.accessToken))
-              } else {
-                print("ERROR")
-                single(.failure(NSError(domain: "", code: 400)))
               }
           }
         

@@ -158,7 +158,6 @@ extension AuthViewControllerImp: View {
       .disposed(by: disposeBag)
     
     NotificationCenter.default.rx.notification(UIApplication.willEnterForegroundNotification)
-      .debug()
       .map { _ in
         Reactor.Action.indicatorState(state: false)
       }
