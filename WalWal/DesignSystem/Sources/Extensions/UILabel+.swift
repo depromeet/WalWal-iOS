@@ -125,3 +125,33 @@ public extension UILabel {
     attributedText = attributedString
   }
 }
+
+//
+//  UILabel+.swift
+//  DesignSystem
+//
+//  Created by 이지희 on 8/23/24.
+//  Copyright © 2024 olderStoneBed.io. All rights reserved.
+//
+
+import UIKit
+
+public extension UILabel {
+  /// 폰트 변경 함수
+  func asFont(targetString: String, font: UIFont) {
+    let fullText = text ?? ""
+    let attributedString = NSMutableAttributedString(string: fullText)
+    let range = (fullText as NSString).range(of: targetString)
+    attributedString.addAttribute(.font, value: font, range: range)
+    attributedText = attributedString
+  }
+  
+  /// 색상 변경 함수
+  func asColor(targetString: String, color: UIColor) {
+    let fullText = text ?? ""
+    let attributedString = NSMutableAttributedString(string: fullText)
+    let range = (fullText as NSString).range(of: targetString)
+    attributedString.addAttribute(.foregroundColor, value: color, range: range)
+    attributedText = attributedString
+  }
+}
