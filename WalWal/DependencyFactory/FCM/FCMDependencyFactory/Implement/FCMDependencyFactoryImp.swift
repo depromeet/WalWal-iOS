@@ -23,14 +23,18 @@ import FCMDomain
 import FCMDomainImp
 
 public class FCMDependencyFactoryImp: FCMDependencyFactory {
-
+  
   public init() { }
   
   public func injectFCMCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator
   ) -> any FCMCoordinator {
-    return FCMCoordinatorImp(navigationController: navigationController, parentCoordinator: parentCoordinator, fcmDependencyFactory: self)
+    return FCMCoordinatorImp(
+      navigationController: navigationController,
+      parentCoordinator: parentCoordinator,
+      fcmDependencyFactory: self
+    )
   }
   
   public func injectFCMReactor<T>(coordinator: T) -> any FCMReactor where T : FCMCoordinator {
