@@ -71,9 +71,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     
     missionCountBubbleView.startFloatingAnimation()
     
-    DispatchQueue.main.asyncAfter(deadline: .now()+3) {
-      self.missionCountBubbleView.missionCount.accept(305)
-    }
   }
   
   public override func viewDidLoad() {
