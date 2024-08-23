@@ -14,11 +14,13 @@ import ReactorKit
 public enum OnboardingSelectReactorAction {
   case selectAnimal(dog: Bool, cat: Bool)
   case nextButtonTapped(flow: OnboardingCoordinatorFlow)
+  case tapBackButton
 }
 
 public enum OnboardingSelectReactorMutation {
   case selectAnimal(dog: Bool, cat: Bool)
   case selectCompleteButtonEnable(_ isEnable: Bool)
+  case moveToBack
 }
 
 public struct OnboardingSelectReactorState {

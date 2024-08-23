@@ -75,7 +75,8 @@ private extension AppDelegate {
     /// APNS에 Device Token 등록
     application.registerForRemoteNotifications()
     /// KakaoSDK 등록
-    KakaoSDK.initSDK(appKey: "29e3431e2dc66a607f511c0a05f0963b")
+    let KakaoAppKey = Bundle.main.infoDictionary?["KakaoAppKey"] as? String ?? ""
+    KakaoSDK.initSDK(appKey: KakaoAppKey)
   }
 }
 

@@ -79,7 +79,7 @@ final class DescriptionView: UIView {
           .alignSelf(.center)
           .marginTop(8)
           .marginHorizontal(8)
-          .aspectRatio(332/249)
+          .aspectRatio(332.adjustedWidth/249.adjustedHeight)
       }
   }
 }

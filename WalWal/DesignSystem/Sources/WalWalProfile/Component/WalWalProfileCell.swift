@@ -37,7 +37,7 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
   }
   private let profileImageView = UIImageView().then {
     $0.backgroundColor = Color.white.color
-    $0.contentMode = .scaleAspectFit
+    $0.contentMode = .scaleAspectFill
   }
   private let inActiveimageView = UIImageView().then {
     $0.image = Assets.inactiveImage.image

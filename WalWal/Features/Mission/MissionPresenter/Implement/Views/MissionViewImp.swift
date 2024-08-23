@@ -70,6 +70,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     super.viewDidAppear(animated)
     
     missionCountBubbleView.startFloatingAnimation()
+    
   }
   
   public override func viewDidLoad() {
@@ -166,7 +167,6 @@ extension MissionViewControllerImp: View {
         
         owner.isMissionCompleted = state.isMissionStarted
         owner.missionCountBubbleView.isCompleted.accept(state.missionStatus?.statusMessage == .completed)
-        
         owner.missionStartButton.title = state.buttonText
         if let status = state.missionStatus {
           owner.recordImageURL = status.imageUrl

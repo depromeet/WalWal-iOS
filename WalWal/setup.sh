@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# 1. 홈 디렉토리에 walwal_fetch.sh 파일을 생성한다.
+# 1. 홈 디렉토리에 필요한 스크립트 파일들을 생성한다.
 touch ~/walwal_fetch.sh
 
 # 2. walwal_fetch.sh 파일을 만들고 아래의 내용을 추가한다. (TestProjects를 삭제하고 Carthage를 이용하여 PinLayout을 빌드)
@@ -15,7 +15,7 @@ rm -rf Tuist/Dependencies/Carthage/Checkouts/PinLayout/TestProjects
 carthage build PinLayout --project-directory Tuist/Dependencies --platform iOS --use-xcframeworks --no-use-binaries --use-netrc --cache-builds --verbose
 tuist fetch' > ~/walwal_fetch.sh
 
-# 스크립트 파일을 실행 가능하도록 설정한다.
+# 스크립트 파일들을 실행 가능하도록 설정한다.
 chmod +x ~/walwal_fetch.sh
 chmod +x ~/.zshrc
 
@@ -30,10 +30,9 @@ echo 'walwal() {
     elif [ "$1" = "edit" ]; then
         tuist edit
     else
-        echo "Invalid command."
+        echo "Invalid command. Available commands: fetch, generate (dev/release), clean, edit"
     fi
 }' >> ~/.zshrc
 
 # .zshrc 파일을 다시 로드하여 변경 사항을 즉시 적용한다.
 source ~/.zshrc
-

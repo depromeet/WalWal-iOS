@@ -16,18 +16,29 @@ import WalWalNetwork
 
 public class MembersDependencyFactoryImp: MembersDependencyFactory {
   
-  public init() {
-    
-  }
+  public init() { }
   
   public func injectMembersRepository() -> MembersRepository {
     let networkService = NetworkService()
     return MembersRepositoryImp(networkService: networkService)
   }
   public func injectMemberInfoUseCase() -> MemberInfoUseCase {
-    return MemberInfoUseCaseImp(memberRepository: injectMembersRepository())
+    return MemberInfoUseCaseImp(
+      memberRepository: injectMembersRepository(),
+      saveProfileGlobalStateUseCase: injectSaveProfileGlobalStateUseCase()
+    )
   }
   public func injectFetchMemberInfoUseCase() -> FetchMemberInfoUseCase {
     return FetchMemberInfoUseCaseImp()
+  }
+  public func injectCheckNicknameUseCase() -> CheckNicknameUseCase {
+    return CheckNicknameUseCaseImp(membersRepository: injectMembersRepository())
+  }
+  public func injectEditProfileUseCase() -> EditProfileUseCase {
+    return EditProfileUseCaseImp(membersRepository: injectMembersRepository())
+  }
+  
+  public func injectSaveProfileGlobalStateUseCase() -> SaveProfileGlobalStateUseCase {
+    return SaveProfileGlobalStateUseCaseImp()
   }
 }

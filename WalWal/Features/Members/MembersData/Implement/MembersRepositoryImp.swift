@@ -9,6 +9,7 @@
 import Foundation
 import WalWalNetwork
 import MembersData
+import LocalStorage
 
 import RxSwift
 
@@ -26,5 +27,22 @@ public final class MembersRepositoryImp: MembersRepository {
       .compactMap { $0 }
       .asObservable()
       .asSingle()
+  }
+  
+  public func checkValidNickname(nickname: String) -> Single<Void> {
+    let isTemporaryUser: Bool = KeychainWrapper.shared.accessToken == nil
+    let body = NicknameCheckBody(nickname: nickname)
+    let endpoint = MembersEndPoint<EmptyResponse>.checkNickname(body: body)
+    return networkService.request(
+      endpoint: endpoint,
+      isNeedInterceptor: !isTemporaryUser)
+    .map { _ in return () }
+  }
+  
+  public func editProfile(nickname: String, profileImage: String) -> Single<Void> {
+    let body = EditProfileBody(nickname: nickname, profileImageUrl: profileImage)
+    let endpoint = MembersEndPoint<EmptyResponse>.editProfile(body: body)
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
+      .map { _ in return Void() }
   }
 }

@@ -18,6 +18,7 @@ import AuthDependencyFactory
 import RecordsDependencyFactory
 import ImageDependencyFactory
 import MembersDependencyFactory
+import ImageDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -171,15 +172,16 @@ extension WalWalTabBarCoordinatorImp {
     return feedCoordinator
   }
   
-  /// fileprivate func startNotification() {
-  /// print("알림 탭 선택")
-  /// let notificationCoordinator = notificationDependencyFactory.makenotificationCoordinator(
-  ///   navigationController: navigationController,
-  ///   parentCoordinator: self
-  /// )
-  /// childCoordinator = notificationCoordinator
-  /// notificationCoordinator.start()
-  /// }
+  fileprivate func startNotification(navigationController: UINavigationController) -> any BaseCoordinator {
+    print("알림 탭 선택")
+    let fcmCoordinator = fcmDependencyFactory.injectFCMCoordinator(
+      navigationController: navigationController,
+      parentCoordinator: self
+    )
+    childCoordinator = fcmCoordinator
+    fcmCoordinator.start()
+    return fcmCoordinator
+  }
   
   fileprivate func startMyPage(navigationController: UINavigationController) -> any BaseCoordinator{
     print("마이페이지 탭 선택")
@@ -188,7 +190,8 @@ extension WalWalTabBarCoordinatorImp {
       parentCoordinator: self,
       fcmDependencyFactory: fcmDependencyFactory,
       authDependencyFactory: authDependencyFactory,
-      membersDependencyFactory: membersDependencyFactory
+      membersDependencyFactory: membersDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory
     )
     myPageCoordinator.start()
     return myPageCoordinator
@@ -234,7 +237,7 @@ private extension WalWalTabBarCoordinatorImp {
     case .startFeed:
       return startFeed(navigationController: navigationController)
     case .startNotification:
-      return startMission(navigationController: navigationController)
+      return startNotification(navigationController: navigationController)
     case .startMyPage:
       return startMyPage(navigationController: navigationController)
     }

@@ -41,6 +41,7 @@ enum CoordinatorStr: String {
   case mission = "Mission"
   case feed = "Feed"
   case myPage = "MyPage"
+  case fcm = "FCM"
   case missionUpload = "MissionUpload"
 }
 
@@ -127,6 +128,7 @@ extension TargetDependency {
     public struct Onboarding: WalWalDependency { }
     public struct Mission: WalWalDependency { }
     public struct MyPage: WalWalDependency { }
+    public struct FCM: WalWalDependency { }
     public struct Feed: WalWalDependency { }
     public struct MissionUpload: WalWalDependency { }
   }
@@ -171,6 +173,7 @@ extension TargetDependency {
     public struct FCM: WalWalDependency {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
     }
     
     public struct Records: WalWalDependency {
@@ -348,6 +351,10 @@ public extension TargetDependency.Feature.Feed.Data {
   static let Interface = Self.project(name: .feed, layer: .data, isInterface: true)
   static let Implement = Self.project(name: .feed, layer: .data, isInterface: false)
 }
+public extension TargetDependency.Feature.FCM.Presenter {
+  static let Interface = Self.project(name: .fcm, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .fcm, layer: .presenter, isInterface: false)
+}
 
 public extension TargetDependency.Feature.FCM.Domain {
   static let Interface = Self.project(name: .fcm, layer: .domain, isInterface: true)
@@ -444,6 +451,12 @@ public extension TargetDependency.Coordinator.MissionUpload {
   static let Interface = Self.project(name: .missionUpload, isInterface: true)
   static let Implement = Self.project(name: .missionUpload, isInterface: false)
 }
+
+public extension TargetDependency.Coordinator.FCM {
+  static let Interface = Self.project(name: .fcm, isInterface: true)
+  static let Implement = Self.project(name: .fcm, isInterface: false)
+}
+
 
 public extension TargetDependency.ThirdParty {
   private static func framework(name: String) -> TargetDependency {

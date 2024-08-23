@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol OnboardingRepository {
-  func checkValidNickname(nickname: String) -> Single<Void>
+  
 }

@@ -20,8 +20,9 @@ final public class UploadMemberUseCaseImp: UploadMemberUseCase {
     self.imageRepository = imageRepository
   }
 
-  public func execute(nickname: String, type: String, image: Data) -> Single<Void> {
-    imageRepository.uploadMemberImage(nickname: nickname, type: type, image: image)
+  public func execute(nickname: String, type: String, image: Data) -> Single<UploadComplete> {
+    return imageRepository.uploadMemberImage(nickname: nickname, type: type, image: image)
+      .map { UploadComplete(dto: $0) }
   }
 }
 

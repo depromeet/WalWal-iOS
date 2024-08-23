@@ -33,26 +33,34 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
   // MARK: - UI
   
   private let rootContainer = UIView()
-  private let descriptionView1 = DescriptionView(
-    mainTitle: "반려동물과 함께하는\n데일리 미션",
-    subText: "반려동물과 함께 미션을 수행해요",
-    image: Images.onboarding1.image
-  )
-  private let descriptionView2 = DescriptionView(
-    mainTitle: "귀여운 반려동물\n피드에서 모아보세요!",
-    subText: "다양한 반려동물을 한 눈에 발견해요",
-    image: Images.onboarding2.image
-  )
-  private let descriptionView3 = DescriptionView(
-    mainTitle: "매일 수행한 미션\n언제든지 꺼내봐요!",
-    subText: "반려동물과의 함께한 추억을 기억해요",
-    image: Images.onboarding3.image
-  )
-  private lazy var scrollView = UIScrollView().then {
-    $0.isPagingEnabled = true
+  private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout()).then {
+    $0.backgroundColor = Colors.white.color
+    $0.register(DescriptionCell.self)
     $0.showsHorizontalScrollIndicator = false
+    $0.decelerationRate = .fast
+    $0.contentInsetAdjustmentBehavior = .never
+    $0.isPagingEnabled = true
     $0.bounces = false
   }
+  
+  private let cellData: [DescriptionModel] = [
+    .init(
+      title: "반려동물과 함께하는\n데일리 미션",
+      subTitle: "반려동물과 함께 미션을 수행해요",
+      image: Images.onboarding1.image
+    ),
+    .init(
+      title: "귀여운 반려동물\n피드에서 모아보세요!",
+      subTitle: "다양한 반려동물을 한 눈에 발견해요",
+      image: Images.onboarding2.image
+    ),
+    .init(
+      title: "매일 수행한 미션\n언제든지 꺼내봐요!",
+      subTitle: "반려동물과의 함께한 추억을 기억해요",
+      image: Images.onboarding3.image
+    )
+  ]
+  
   private lazy var pageControl = UIPageControl().then {
     $0.numberOfPages = 3
     $0.currentPage = 0
@@ -90,13 +98,6 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
       .all(view.pin.safeArea)
     rootContainer.flex
       .layout()
-    
-    scrollView.contentSize = CGSize(
-      width: scrollView.frame.width * 3,
-      height: scrollView.frame.height
-    )
-    scrollView.flex
-      .layout(mode: .adjustHeight)
   }
   
   public func configureAttribute() {
@@ -112,8 +113,9 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
           .marginBottom(99.adjustedHeight)
           .grow(1)
           .define {
-            $0.addItem(scrollView)
-              .alignSelf(.center)
+            $0.addItem(collectionView)
+              .width(375.adjustedWidth)
+              .height(367.adjustedHeight)
             $0.addItem(pageControl)
               .marginTop(22.adjustedHeight)
               .height(5)
@@ -121,22 +123,16 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
         $0.addItem(nextButton)
           .marginBottom(30.adjustedHeight)
           .marginHorizontal(20)
-          .height(56)
       }
     
-    scrollView.flex
-      .direction(.row)
-      .define {
-        $0.addItem(descriptionView1)
-          .width(100%)
-          .height(80%)
-        $0.addItem(descriptionView2)
-          .width(100%)
-          .height(80%)
-        $0.addItem(descriptionView3)
-          .width(100%)
-          .height(80%)
-      }
+  }
+  
+  private func collectionViewLayout() -> UICollectionViewLayout {
+    let layout = UICollectionViewFlowLayout()
+    layout.minimumLineSpacing = 0
+    layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: 367.adjustedHeight)
+    layout.scrollDirection = .horizontal
+    return layout
   }
 }
 
@@ -161,15 +157,21 @@ extension OnboardingViewControllerImp: View {
   }
   
   public func bindEvent() {
-    scrollView.rx.setDelegate(self)
+    
+    collectionView.rx.contentOffset
+      .withUnretained(self)
+      .map { owner, contentOffset -> Int in
+        guard owner.collectionView.frame.width > 0 else { return 0 }
+        let page = Int(round(contentOffset.x / owner.collectionView.frame.width))
+        return page
+      }
+      .bind(to: pageControl.rx.currentPage)
       .disposed(by: disposeBag)
     
-    scrollView.rx.didScroll
-      .asDriver()
-      .drive(with: self) { owner, _ in
-        guard owner.scrollView.frame.width > 0 else { return }
-        let pageIndex = round(owner.scrollView.contentOffset.x / owner.scrollView.frame.width)
-        owner.pageControl.currentPage = Int(pageIndex)
+    
+    Observable.just(cellData)
+      .bind(to: collectionView.rx.items(DescriptionCell.self)) { index, data, cell in
+        cell.configData(data: data)
       }
       .disposed(by: disposeBag)
   }

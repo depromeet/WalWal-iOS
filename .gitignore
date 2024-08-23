@@ -124,7 +124,6 @@ iOSInjectionProject/
 Packages
 xcuserdata
 *.xcodeproj
-*.xcconfig
 
 ### Xcode ###
 
@@ -141,5 +140,6 @@ xcuserdata
 
 *.appiconset
 *.p8
+*.xcconfig
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,xcode,swift,swiftpackagemanager
