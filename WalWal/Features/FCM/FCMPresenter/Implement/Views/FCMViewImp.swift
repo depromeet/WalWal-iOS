@@ -43,7 +43,9 @@ public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMVie
   }
   private let guideLabel = UILabel().then {
     $0.text = "나와 관련된 알림들을\n이곳에서 확인할 수 있어요!"
-    $0.font = Fonts.KR.H5.B
+    $0.numberOfLines = 2
+    $0.textAlignment = .center
+    $0.font = Fonts.KR.H7.M
     $0.textColor = Colors.black.color
   }
   private let actionButton = WalWalButton(type: .dark, title: "")
@@ -88,7 +90,7 @@ public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMVie
   public func setupLayout() {
     rootContainerView.flex
       .direction(.column)
-      .alignSelf(.center)
+      .alignItems(.center)
       .justifyContent(.center)
       .define {
         $0.addItem(titleLabel)
