@@ -18,6 +18,7 @@ import RxSwift
 public enum AuthReactorAction {
   case appleLoginTapped(authCode: String)
   case kakaoLoginTapped
+  case indicatorState(state: Bool)
 }
 
 public enum AuthReactorMutation {

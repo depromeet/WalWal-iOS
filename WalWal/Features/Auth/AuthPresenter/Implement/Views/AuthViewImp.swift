@@ -156,6 +156,15 @@ extension AuthViewControllerImp: View {
       .map { Reactor.Action.kakaoLoginTapped }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    NotificationCenter.default.rx.notification(UIApplication.willEnterForegroundNotification)
+      .debug()
+      .map { _ in
+        Reactor.Action.indicatorState(state: false)
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
   }
   
   public func bindState(reactor: R) {

@@ -33,17 +33,22 @@ final class KakaoLoginManager {
   func kakaoLogin() -> Single<String> {
       return Single<String>.create { single in
           let loginCompletion: (OAuthToken?, Error?) -> Void = { oauthToken, error in
+            
               if let error = error {
                   print("====kakao login error====")
                   single(.failure(error))
               } else if let oauthToken = oauthToken {
                   print("====kakao login success====")
                   single(.success(oauthToken.accessToken))
+              } else {
+                print("ERROR")
+                single(.failure(NSError(domain: "", code: 400)))
               }
           }
         
           if UserApi.isKakaoTalkLoginAvailable() {
               UserApi.shared.loginWithKakaoTalk(completion: loginCompletion)
+            
           } else {
               UserApi.shared.loginWithKakaoAccount(completion: loginCompletion)
           }

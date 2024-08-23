@@ -67,6 +67,8 @@ public final class AuthReactorImp: AuthReactor {
         .just(.showIndicator(show: true)),
         kakaoLogin()
       ])
+    case let .indicatorState(state):
+      return .just(.showIndicator(show: state))
     }
   }
   
