@@ -15,6 +15,12 @@ let project = Project(
     .remote(url: "https://github.com/firebase/firebase-ios-sdk.git",
             requirement: .upToNextMajor(from: "10.25.0"))
   ],
+  settings: .settings(
+    configurations: [
+      .debug(name: .debug),
+      .release(name: .release)
+    ]
+  ),
   targets: [
     .makeApp(
       name: "DEV-WalWalApp",
