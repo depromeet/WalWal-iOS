@@ -190,13 +190,19 @@ extension ProfileEditViewControllerImp: View {
   
   public func bindState(reactor: R) {
     reactor.pulse(\.$isGrantedPhoto)
-      .bind(with: self, onNext: { owner, isAllowed in
+      .asDriver(onErrorJustReturn: false)
+      .skip(1)
+      .drive(with: self) { owner, isAllowed in
         if isAllowed {
           PHPickerManager.shared.presentPicker(vc: owner)
         } else {
-          // TODO: - alert 띄우기
+          WalWalAlert.shared.showOkAlert(
+            title: "앨범에 대한 접근 권한이 없습니다",
+            bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
+            okTitle: "확인"
+          )
         }
-      })
+      }
       .disposed(by: disposeBag)
     
     reactor.state
@@ -228,6 +234,11 @@ extension ProfileEditViewControllerImp: View {
       .drive(with: self) { owner, image in
         owner.profileEditView.selectedImageData.accept(image)
       }
+      .disposed(by: disposeBag)
+    
+    WalWalAlert.shared.resultRelay
+      .map { _ in Void() }
+      .bind(to: WalWalAlert.shared.closeAlert)
       .disposed(by: disposeBag)
   }
 }

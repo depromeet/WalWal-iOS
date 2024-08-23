@@ -233,6 +233,16 @@ extension OnboardingProfileViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
+    profileSelectView.showPHPicker
+      .observe(on: MainScheduler.instance)
+      .map { Reactor.Action.checkPhotoPermission }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    navigationBar.rightItems?.first?.rx.tapped
+      .map { Reactor.Action.tapBackButton }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -247,6 +257,22 @@ extension OnboardingProfileViewControllerImp: View {
     reactor.state
       .map { return $0.buttonEnable ? .active : .disabled }
       .bind(to: nextButton.rx.buttonType)
+      .disposed(by: disposeBag)
+    
+    reactor.pulse(\.$isGrantedPhoto)
+      .asDriver(onErrorJustReturn: false)
+      .skip(1)
+      .drive(with: self) { owner, isAllowed in
+        if isAllowed {
+          PHPickerManager.shared.presentPicker(vc: owner)
+        } else {
+          WalWalAlert.shared.showOkAlert(
+            title: "앨범에 대한 접근 권한이 없습니다",
+            bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
+            okTitle: "확인"
+          )
+        }
+      }
       .disposed(by: disposeBag)
   }
   
@@ -271,12 +297,6 @@ extension OnboardingProfileViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
-    profileSelectView.showPHPicker
-      .bind(with: self) { owner, _ in
-        PHPickerManager.shared.presentPicker(vc: owner)
-      }
-      .disposed(by: disposeBag)
-    
     PHPickerManager.shared.selectedPhoto
       .asDriver(onErrorJustReturn: nil)
       .compactMap { $0 }
@@ -294,6 +314,10 @@ extension OnboardingProfileViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
-    
+    WalWalAlert.shared.resultRelay
+      .map { _ in Void() }
+      .observe(on: MainScheduler.instance)
+      .bind(to: WalWalAlert.shared.closeAlert)
+      .disposed(by: disposeBag)
   }
 }
