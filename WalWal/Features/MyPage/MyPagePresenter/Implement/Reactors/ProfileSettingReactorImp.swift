@@ -182,10 +182,6 @@ extension ProfileSettingReactorImp {
           .just(.moveToAuth)
         ])
       }
-      .catch { error in
-        print(error.localizedDescription)
-        return .just(.setLoading(false))
-      }
   }
   
   
