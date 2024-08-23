@@ -50,7 +50,7 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   public var recordDetailReactor: R
   
   private let dummyData: [WalWalFeedModel] = [ ]
-
+  
   public init(
     reactor: R,
     nickname: String,
@@ -62,7 +62,7 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
     
     self.recordDetailReactor = reactor
     self.feed = WalWalFeed(feedData: dummyData, isFeed: false)
-
+    
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -119,6 +119,19 @@ extension RecordDetailViewControllerImp: View {
   public func bindAction(reactor: R) {
     navigationBar.leftItems?[0].rx.tapped
       .map { Reactor.Action.tapBackButton }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    feed.scrollEndReached
+      .skip(1)
+      .withLatestFrom(reactor.state.map { $0.feedFetchEnded })
+      .filter { !$0 }
+      .map { [weak self] _ in
+        Reactor.Action.loadFeed(
+          memberId: self?.memberId ?? 0,
+          cursorDate: reactor.currentState.nextCursor
+        )
+      }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }

@@ -51,6 +51,9 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .loadFeed(let memberId, let cursorDate):
+      if currentState.feedFetchEnded {
+        return .empty()
+      }
       return fetchFeedData(memberId: memberId, cursor: cursorDate, limit: 10)
     case .tapBackButton:
       return .just(Mutation.moveToBack)
@@ -63,11 +66,10 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
     case .fetchUseFeed(memberId: _, nextCursor: let nextCursor):
       let globalRecordModel = GlobalState.shared.recordList.value
       newState.nextCursor = nextCursor
-      if globalRecordModel.count < 10 {
-        newState.feedFetchEnded = true
-      }
       newState.feedData = convertFeedModel(feedList: globalRecordModel)
     case .userFeedReachEnd:
+      let globalRecordModel = GlobalState.shared.recordList.value
+      newState.feedData = convertFeedModel(feedList: globalRecordModel)
       newState.feedFetchEnded = true
     case .userFeedFetchFailed(let error):
       newState.feedErrorMessage = error
@@ -90,9 +92,6 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
         if let nextCursor = feedModel.nextCursor {
           return .just(Mutation.fetchUseFeed(memberId: memberId, nextCursor: nextCursor))
         } else {
-          if feedModel.list.count < limit {
-            return .just(Mutation.fetchUseFeed(memberId: memberId, nextCursor: ""))
-          }
           return .just(Mutation.userFeedReachEnd)
         }
       }

@@ -23,10 +23,6 @@ public final class WalWalFeed: UIView {
   let refreshLoading = PublishRelay<Bool>()
   public let scrollEndReached = PublishRelay<Bool>()
   
-  private var isNearBottomEdge: Bool {
-    return collectionView.contentOffset.y + collectionView.frame.size.height + 20 >= collectionView.contentSize.height
-  }
-  
   
   // MARK: - UI
   
@@ -191,15 +187,11 @@ public final class WalWalFeed: UIView {
       .bind(to: feedData)
       .disposed(by: disposeBag)
     
-    
-    collectionView.rx.didEndDragging
-      .observe(on: MainScheduler.instance)
+    collectionView.rx.contentOffset
       .distinctUntilChanged()
-      .map { [weak self] _ in
-        return self?.isNearBottomEdge ?? false
-      }
-      .filter { $0 }
-      .bind(to: scrollEndReached)
+      .map(isNearBottom)
+      .filter{ $0 }
+      .bind(to: scrollEndReached )
       .disposed(by: disposeBag)
   }
   
@@ -221,6 +213,11 @@ public final class WalWalFeed: UIView {
     var updatedFeedData = feedData.value
     updatedFeedData[indexPath.item] = feedModel
     feedData.accept(updatedFeedData)
+  }
+  
+  // MARK: - Scroll
+  private func isNearBottom(_: CGPoint) -> Bool {
+    return collectionView.isNearBottom()
   }
 }
 
@@ -278,11 +275,5 @@ extension WalWalFeed: UICollectionViewDataSource {
 extension WalWalFeed: UICollectionViewDelegateFlowLayout {
   public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
     return CGSize(width: collectionView.bounds.width, height: headerHeight)
-  }
-  
-  public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-      if isNearBottomEdge {
-          scrollEndReached.accept(true)
-      }
   }
 }
