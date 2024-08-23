@@ -26,6 +26,7 @@ extension Target {
     iOSTargetVersion: String,
     infoPlistPath: String,
     excludeResourcePath: String,
+    entitlements: String,
     dependencies: [TargetDependency] = [],
     settings: Settings
   ) -> Target {
@@ -44,6 +45,7 @@ extension Target {
           excluding: [.init(excludeResourcePath)]
         )
       ],
+      entitlements: .file(path: .relativeToRoot(entitlements)),
       dependencies: dependencies,
       settings: settings
     )

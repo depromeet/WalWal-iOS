@@ -23,6 +23,7 @@ let project = Project(
       iOSTargetVersion: "16.0.0",
       infoPlistPath: "App/WalWal-Info.plist",
       excludeResourcePath: "Resources/Release/**",
+      entitlements: "App/Resources/Dev/WalWal.entitlements",
       dependencies: [
         .ThirdParty.KakaoSDKCommon,
         .ThirdParty.FirebaseMessaging,
@@ -54,6 +55,7 @@ let project = Project(
       iOSTargetVersion: "16.0.0",
       infoPlistPath: "App/WalWal-Info.plist",
       excludeResourcePath: "Resources/Dev/**",
+      entitlements: "App/Resources/Release/WalWal.entitlements",
       dependencies: [
         .ThirdParty.KakaoSDKCommon,
         .ThirdParty.FirebaseMessaging,
