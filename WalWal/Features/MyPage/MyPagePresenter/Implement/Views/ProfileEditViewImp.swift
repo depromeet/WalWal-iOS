@@ -56,8 +56,11 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   }
   private let completeButton = WalWalButton(type: .disabled, title: "완료")
   
+  // MARK: - Properties
+  
   public var disposeBag = DisposeBag()
   public var profileEditReactor: R
+  private let maxNicknameLength: Int = 14
   
   // MARK: - Initializer
   
@@ -224,6 +227,14 @@ extension ProfileEditViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
+    reactor.pulse(\.$invalidMessage)
+      .asDriver(onErrorJustReturn: "")
+      .filter {
+        !$0.isEmpty
+      }
+      .drive(nicknameTextfield.rx.errorMessage)
+      .disposed(by: disposeBag)
+    
   }
   
   public func bindEvent() {
@@ -244,6 +255,18 @@ extension ProfileEditViewControllerImp: View {
     WalWalAlert.shared.resultRelay
       .map { _ in Void() }
       .bind(to: WalWalAlert.shared.closeAlert)
+      .disposed(by: disposeBag)
+    
+    nicknameTextfield.rx.text.orEmpty
+      .asDriver()
+      .drive(with: self) { owner, text in
+        if text.count > owner.maxNicknameLength {
+          owner.nicknameTextfield.cutText(
+            length: owner.maxNicknameLength,
+            text: text
+          )
+        }
+      }
       .disposed(by: disposeBag)
   }
 }
