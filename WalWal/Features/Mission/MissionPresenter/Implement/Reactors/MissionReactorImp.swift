@@ -48,29 +48,14 @@ public final class MissionReactorImp: MissionReactor {
   }
   
   public func transform(action: Observable<Action>) -> Observable<Action> {
-    let initialLoadAction = Observable.just(Action.loadMissionInfo)
-    let initialPermissionCheck = Observable.just(Action.checkPermission)
-    
-    return Observable.merge(action, initialLoadAction, initialPermissionCheck)
+    let initialAction = Observable.just(Action.loadInitialData)
+    return Observable.merge(action, initialAction)
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .startMission(let missionId):
-      startMission()
-      return startMission(id: missionId)
-    case .loadMissionInfo:
-      return Observable.concat([
-        Observable.just( Mutation.setLoading(true)),
-        fetchMissionDataAndCount(),
-        Observable.just(Mutation.setLoading(false))
-      ])
-    case .checkPermission:
-      return checkNotificationPermission()
-        .map { Mutation.setNotiPermission($0) }
-    
-    case .startTimer:
-      return startMissionTimer()
+    case .loadInitialData:
+      return loadAllMissionData()
     case .moveToMissionUpload:
       return Observable.just(Mutation.startMissionUpload)
     }
@@ -79,34 +64,16 @@ public final class MissionReactorImp: MissionReactor {
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
-    case .setMission(let mission):
+      
+    // MARK: - 미션탭 처음 들어오면 실행되는 Flow!
+    case let .fetchTodayMissionData(mission):
       newState.mission = mission
-    case .setLoading(let isLoading):
-      newState.isLoading = isLoading
-    case .missionStarted(let missionStartModel):
-      newState.isMissionStarted = true
-      newState.recordId = missionStartModel.recordId
-    case .setMissionStatus(let status):
-      newState.isMissionStarted = status.statusMessage == .inProgress || status.statusMessage == .completed
-      newState.missionStatus = status
-      switch status.statusMessage {
-      case .notCompleted:
-        newState.buttonText = "미션 시작하기"
-      case .inProgress:
-        startTimerObservable()
-      case .completed:
-        newState.buttonText = "내 미션 기록 보기"
-      }
-    case .setMissionCount(let count):
-      newState.totalMissionCount = count
-    case .missionLoadFailed:
-      newState.isLoading = false
-    case .setButtionText(let text):
-      newState.buttonText = text
-    case .setNotiPermission(let isAllow):
-      newState.isAllowNoti = isAllow
-    case .setCamPermission(let isAllow):
-      newState.isAllowCamera = isAllow
+    case let .fetchRecordStatusData(recordStatus):
+      newState.recordStatus = recordStatus
+    case let .fetchCompletedRecordsTotalCountData(totalCount):
+      newState.totalCompletedRecordsCount = totalCount
+    case .loadInitialDataFlowFailed(let loadInitialDataFlowFailed):
+      newState.loadInitialDataFlowFailed = loadInitialDataFlowFailed
     case .startMissionUpload:
       let recordId = newState.recordId
       guard let mission = newState.mission else { return newState }
@@ -120,60 +87,44 @@ public final class MissionReactorImp: MissionReactor {
     return newState
   }
   
-  public func fetchMissionDataAndCount() -> Observable<Mutation> {
+  private func loadAllMissionData() -> Observable<Mutation> {
     return fetchMissionData()
-      .flatMap { mutation -> Observable<Mutation> in
-        if case let .setMission(mission) = mutation {
-          return self.checkMissionStatus(id: mission.id)
-            .map { status in
-              return Mutation.setMissionStatus(status)
-            }
-            .startWith(mutation)
-        }
-        return Observable.just(mutation)
+      .withUnretained(self)
+      .flatMap { owner, mission -> Observable<Mutation> in
+        return Observable.concat([
+          Observable.just(Mutation.fetchTodayMissionData(mission)),
+          owner.fetchRecordStatus(missionId: mission.id),
+          owner.fetchCompletedTotalRecordsCount()
+        ])
       }
-      .flatMap { mutation -> Observable<Mutation> in
-        return self.fetchMissionCount()
-          .startWith(mutation)
+      .catch { error in
+        return Observable.just(Mutation.loadInitialDataFlowFailed(error))
       }
   }
   
-  private func fetchMissionData() -> Observable<Mutation> {
+  /// missions/today 정보 가져오기
+  private func fetchMissionData() -> Observable<MissionModel> {
     return todayMissionUseCase.execute()
       .asObservable()
-      .map { mission in
-        return Mutation.setMission(mission)
-      }
+  }
+  
+  /// records/status 호출
+  private func fetchRecordStatus(missionId: Int) -> Observable<Mutation> {
+    return checkRecordStatusUseCase.execute(missionId: missionId)
+      .asObservable()
+      .map { return Mutation.fetchRecordStatusData($0) }
       .catch { error in
-        return Observable.just(Mutation.missionLoadFailed(error))
+        return Observable.just(Mutation.loadInitialDataFlowFailed(error))
       }
   }
   
-  private func checkMissionStatus(id: Int) -> Observable<MissionRecordStatusModel> {
-    return checkRecordStatusUseCase.execute(missionId: id)
+  /// records/completed/total 호출
+  private func fetchCompletedTotalRecordsCount() -> Observable<Mutation> {
+    return checkCompletedTotalRecordsUseCase.execute(memberId: nil)
       .asObservable()
+      .map { return Mutation.fetchCompletedRecordsTotalCountData($0.totalCount) }
       .catch { error in
-        return Observable.error(error)
-      }
-  }
-  
-  private func fetchMissionCount() -> Observable<Mutation> {
-    return checkCompletedTotalRecordsUseCase.execute()
-      .asObservable()
-      .map {
-        return Mutation.setMissionCount($0.totalCount)
-      }
-      .catch { error in
-        return Observable.just(Mutation.missionLoadFailed(error))
-      }
-  }
-  
-  private func startMission(id: Int) -> Observable<Mutation> {
-    return startRecordUseCase.execute(missionId: id)
-      .asObservable()
-      .map { return Mutation.missionStarted($0) }
-      .catch { error in
-        return Observable.just(Mutation.missionLoadFailed(error))
+        return Observable.just(Mutation.loadInitialDataFlowFailed(error))
       }
   }
   
@@ -193,29 +144,30 @@ public final class MissionReactorImp: MissionReactor {
   }
   
   
-  private func startMissionTimer() -> Observable<Mutation> {
-    let timerObservable = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
-      .startWith(0)
-      .map { _ in return self.calculateTimeRemainingUntilMidnight() }
-      .flatMap { time -> Observable<Mutation> in
-        return Observable.from([Mutation.setButtionText(time)])
-      }
-    return timerObservable
-  }
-  private func startTimerObservable() {
-    timerDisposeBag = DisposeBag()
-    
-    Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
-      .startWith(0)
-      .map { [weak self] _ in
-        self?.calculateTimeRemainingUntilMidnight() ?? "00:00:00"
-      }
-      .map { Mutation.setButtionText($0) }
-      .subscribe(with: self, onNext: { owner, mutation in
-        owner.action.onNext(.startTimer)
-      })
-      .disposed(by: timerDisposeBag)
-  }
+//  private func startMissionTimer() -> Observable<Mutation> {
+//    let timerObservable = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+//      .startWith(0)
+//      .map { _ in return self.calculateTimeRemainingUntilMidnight() }
+//      .flatMap { time -> Observable<Mutation> in
+//        return Observable.from([Mutation.setButtionText(time)])
+//      }
+//    return timerObservable
+//  }
+//  
+//  private func startTimerObservable() {
+//    timerDisposeBag = DisposeBag()
+//    
+//    Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+//      .startWith(0)
+//      .map { [weak self] _ in
+//        self?.calculateTimeRemainingUntilMidnight() ?? "00:00:00"
+//      }
+//      .map { Mutation.setButtionText($0) }
+//      .subscribe(with: self, onNext: { owner, mutation in
+//        owner.action.onNext(.startTimer)
+//      })
+//      .disposed(by: timerDisposeBag)
+//  }
   
   
   /// 알림 권한 확인

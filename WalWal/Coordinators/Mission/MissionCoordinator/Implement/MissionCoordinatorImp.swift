@@ -109,7 +109,7 @@ extension MissionCoordinatorImp {
           /// Mission Data를 Fetch하는 로직 reactor에 호출
           popViewController(animated: true)
           childCoordinator = nil
-          baseReactor?.action.onNext(.loadMissionInfo)
+          baseReactor?.action.onNext(.loadInitialData)
           print("Fetch메서드 재호출")
         }
       }
