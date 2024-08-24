@@ -29,6 +29,7 @@ import FCMDomain
 
 import RecordsDomain
 import MembersDomain
+import MissionDomain
 
 public protocol SplashDependencyFactory {
   
@@ -58,6 +59,8 @@ public protocol SplashDependencyFactory {
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    checkRecordStatusUseCase: CheckRecordStatusUseCase,
+    todayMissionUseCase: TodayMissionUseCase,
     memberInfoUseCase: MemberInfoUseCase
   ) -> any SplashReactor
   

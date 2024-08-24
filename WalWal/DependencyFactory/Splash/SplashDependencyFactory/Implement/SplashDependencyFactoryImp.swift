@@ -35,6 +35,7 @@ import SplashPresenterImp
 
 import FCMDomain
 import RecordsDomain
+import MissionDomain
 import MembersDomain
 
 public class SplashDependencyFactoryImp: SplashDependencyFactory {
@@ -89,6 +90,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    checkRecordStatusUseCase: CheckRecordStatusUseCase,
+    todayMissionUseCase: TodayMissionUseCase,
     memberInfoUseCase: MemberInfoUseCase
   ) -> any SplashReactor {
     return SplashReactorImp(
@@ -98,6 +101,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       fcmSaveUseCase: fcmSaveUseCase,
       checkRecordCalendarUseCase: checkRecordCalendarUseCase,
       removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
+      checkRecordStatusUseCase: checkRecordStatusUseCase,
+      todayMissionUseCase: todayMissionUseCase,
       memberInfoUseCase: memberInfoUseCase
     )
   }

@@ -10,6 +10,7 @@ import SplashDomain
 import FCMDomain
 import RecordsDomain
 import MembersDomain
+import MissionDomain
 import AppCoordinator
 
 import ReactorKit
@@ -42,6 +43,8 @@ public protocol SplashReactor:
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    checkRecordStatusUseCase: CheckRecordStatusUseCase,
+    todayMissionUseCase: TodayMissionUseCase,
     memberInfoUseCase: MemberInfoUseCase
   )
 }

@@ -11,6 +11,7 @@ import SplashPresenter
 import FCMDomain
 import RecordsDomain
 import MembersDomain
+import MissionDomain
 import AppCoordinator
 
 import ReactorKit
@@ -24,6 +25,8 @@ public final class SplashReactorImp: SplashReactor {
   public let initialState: State
   public let coordinator: any AppCoordinator
   
+  private let todayMissionUseCase: TodayMissionUseCase
+  private let checkRecordStatusUseCase: CheckRecordStatusUseCase
   private let checkTokenUseCase: CheckTokenUsecase
   private let checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase
   private let fcmSaveUseCase: FCMSaveUseCase
@@ -39,6 +42,8 @@ public final class SplashReactorImp: SplashReactor {
     fcmSaveUseCase: FCMSaveUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    checkRecordStatusUseCase: CheckRecordStatusUseCase,
+    todayMissionUseCase: TodayMissionUseCase,
     memberInfoUseCase: MemberInfoUseCase
   ) {
     self.coordinator = coordinator
@@ -48,6 +53,8 @@ public final class SplashReactorImp: SplashReactor {
     self.checkRecordCalendarUseCase = checkRecordCalendarUseCase
     self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
     self.memberInfoUseCase = memberInfoUseCase
+    self.checkRecordStatusUseCase = checkRecordStatusUseCase
+    self.todayMissionUseCase = todayMissionUseCase
     self.initialState = State()
   }
   
@@ -97,6 +104,8 @@ extension SplashReactorImp {
     return saveFCMToken()
       .flatMap { _ in self.checkRecordCalendar() }
       .flatMap { _ in self.fetchProfileInfo() }
+      .flatMap({ _ in self.fetchTodayMission() })
+      .flatMap({ id in self.fetchMissionStatus(missionId: id) })
       .map { _ in .startMain }
       .catchAndReturn(.startAuth)
   }
@@ -132,6 +141,18 @@ extension SplashReactorImp {
   
   private func fetchProfileInfo() -> Observable<Void> {
     return memberInfoUseCase.execute()
+      .asObservable()
+      .map { _ in Void() }
+  }
+  
+  private func fetchTodayMission() -> Observable<Int> {
+    return todayMissionUseCase.execute()
+      .asObservable()
+      .map { $0.id }
+  }
+  
+  private func fetchMissionStatus(missionId: Int) -> Observable<Void> {
+    return checkRecordStatusUseCase.execute(missionId: missionId)
       .asObservable()
       .map { _ in Void() }
   }
