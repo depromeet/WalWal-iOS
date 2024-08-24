@@ -30,7 +30,7 @@ public final class WalWalFeed: UIView {
     
     let flowLayout = UICollectionViewFlowLayout()
     flowLayout.itemSize = UICollectionViewFlowLayout.automaticSize
-    flowLayout.estimatedItemSize = .init(width: 343, height: 480)
+    flowLayout.sectionInset = .init(top: 20, left: 0, bottom: 20, right: 0)
     flowLayout.minimumLineSpacing = 14
     flowLayout.headerReferenceSize = .init(width: 0, height: headerHeight)
     $0.collectionViewLayout = flowLayout
@@ -253,7 +253,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
     let width = collectionView.bounds.width - 40
     let content = feedData.value[indexPath.row].contents
     
-    let lineHeight: Int = content.count / 36
+    let lineHeight: Int = content.count / 40
     let lineBreakCount = content.filter { $0 == "\n" }.count
     let totalLineCount = lineHeight + lineBreakCount
     
