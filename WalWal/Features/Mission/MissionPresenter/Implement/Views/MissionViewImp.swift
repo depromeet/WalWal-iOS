@@ -71,14 +71,14 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    startAnimations()  // 애니메이션 시작
-    setupNotificationObservers()  // Notification Observer 설정
+    startAnimations()
+    setupNotificationObservers()
   }
   
   public override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
-    stopAnimations()  // 애니메이션 중지
-    removeNotificationObservers()  // Notification Observer 해제
+    stopAnimations()
+    removeNotificationObservers()
   }
   
   public override func viewDidLoad() {

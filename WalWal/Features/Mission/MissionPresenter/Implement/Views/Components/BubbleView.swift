@@ -40,7 +40,7 @@ public final class BubbleView: UIView {
   public var missionCount = BehaviorRelay<Int>(value: 0)
   public var isCompleted = BehaviorRelay<Bool>(value: false)
   private let disposeBag = DisposeBag()
-  private var isFirstLayout: Bool = true
+  private var tipView: CAShapeLayer? = nil
   
   // MARK: - Initializers
   
@@ -72,7 +72,7 @@ public final class BubbleView: UIView {
   // MARK: - Method
   
   override public func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-    return false 
+    return false
   }
   
   private func configureAttribute() {
@@ -101,7 +101,7 @@ public final class BubbleView: UIView {
       .observe(on: MainScheduler.instance)
       .bind(with: self) { owner, data in
         let (count, completed) = data
-        owner.titleLabel.text = completed ? "\(count)번째 함께 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
+        owner.titleLabel.text = completed ? "\(count)번째 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
         owner.titleLabel.flex.markDirty()
         owner.containerView.flex.markDirty()
         owner.setNeedsLayout()
@@ -126,11 +126,16 @@ public final class BubbleView: UIView {
     path.addArc(tangent1End: point3, tangent2End: point1, radius: radius)
     path.closeSubpath()
     
+    
     let shape = CAShapeLayer()
     shape.path = path
     shape.fillColor = viewColor.cgColor
-    isFirstLayout ? self.layer.insertSublayer(shape, at: 0) :     self.layer.replaceSublayer(shape, with: shape)
-    isFirstLayout = false
+    if tipView == nil {
+      tipView = shape
+      self.layer.insertSublayer(shape, at: 0)
+    } else {
+      tipView?.path = path
+    }
   }
   
   func startFloatingAnimation() {
