@@ -153,6 +153,14 @@ extension ProfileSettingViewControllerImp: View {
         ActivityIndicator.shared.showIndicator.accept(show)
       }
       .disposed(by: disposeBag)
+    
+    reactor.pulse(\.$errorMessage)
+      .asDriver(onErrorJustReturn: "")
+      .compactMap { $0 }
+      .drive(with: self) { owner, message in
+        WalWalToast.shared.show(type: .error, message: message)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

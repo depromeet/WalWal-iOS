@@ -30,6 +30,7 @@ public enum ProfileSettingReactorMutation {
   case setSettingItemModel([ProfileSettingItemModel])
   case moveToAuth
   case moveToBack
+  case errorMessage(msg: String)
 }
 
 public struct ProfileSettingReactorState {
@@ -37,6 +38,7 @@ public struct ProfileSettingReactorState {
   public var appVersionString: String
   public var isRecent: Bool
   public var settings: [ProfileSettingItemModel]
+  @Pulse public var errorMessage: String?
   
   public init(
     isLoading: Bool = false,

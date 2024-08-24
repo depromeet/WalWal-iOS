@@ -106,6 +106,8 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       }
       tabBarViewController.showCustomTabBar()
       coordinator.popViewController(animated: true)
+    case let .errorMessage(msg):
+      newState.errorMessage = msg
     }
     return newState
   }
@@ -154,6 +156,7 @@ extension ProfileSettingReactorImp {
           .flatMap { _ -> Observable<Mutation> in
             return .concat([
               .just(.setLoading(false)),
+              .just(.errorMessage(msg: "탈퇴를 완료하지 못했어요")),
               .just(.moveToAuth)
             ])
           }
@@ -207,6 +210,7 @@ extension ProfileSettingReactorImp {
         let _ = self.tokenDeleteUseCase.execute()
         return .concat([
           .just(.setLoading(false)),
+          .just(.errorMessage(msg: "탈퇴를 완료하지 못했어요")),
           .just(.moveToAuth)
         ])
       }
