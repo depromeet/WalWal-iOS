@@ -117,6 +117,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
           .width(100%)
         flex.addItem()
           .grow(1)
+          .shrink(1)
           .define {
             $0.addItem(calendar)
           }
