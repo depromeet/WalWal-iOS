@@ -127,7 +127,8 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
         missionTitle: feed.missionTitle,
         profileImage: profileImage,
         missionImage: missionImage,
-        boostCount: feed.boostCount
+        boostCount: feed.boostCount, 
+        contents: feed.contents ?? ""
       )
     }
   }
