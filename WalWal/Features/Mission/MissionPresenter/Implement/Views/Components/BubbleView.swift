@@ -40,6 +40,7 @@ public final class BubbleView: UIView {
   public var missionCount = BehaviorRelay<Int>(value: 0)
   public var isCompleted = BehaviorRelay<Bool>(value: false)
   private let disposeBag = DisposeBag()
+  private var isFirstLayout: Bool = true
   
   // MARK: - Initializers
   
@@ -128,7 +129,8 @@ public final class BubbleView: UIView {
     let shape = CAShapeLayer()
     shape.path = path
     shape.fillColor = viewColor.cgColor
-    self.layer.insertSublayer(shape, at: 0)
+    isFirstLayout ? self.layer.insertSublayer(shape, at: 0) :     self.layer.replaceSublayer(shape, with: shape)
+    isFirstLayout = false
   }
   
   func startFloatingAnimation() {

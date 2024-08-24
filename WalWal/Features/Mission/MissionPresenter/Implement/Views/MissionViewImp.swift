@@ -94,7 +94,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    
     rootContainer.pin
       .all(view.pin.safeArea)
     rootContainer.flex
@@ -107,14 +106,19 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   }
   
   public func configureLayout() {
+    missionStartView.flex.isIncludedInLayout(!isMissionCompleted)
+    missionSucessView.flex.isIncludedInLayout(isMissionCompleted)
+     
     rootContainer.flex
       .paddingTop(80.adjusted)
       .define {
-        $0.addItem(contentView)
+        $0.addItem(missionStartView)
+          .alignSelf(.center)
+        $0.addItem(missionSucessView)
           .alignSelf(.center)
         $0.addItem()
           .direction(.columnReverse)
-          .marginTop(17.adjusted)
+          .marginBottom(30.adjusted)
           .define {
             $0.addItem(missionStartButton)
               .marginHorizontal(20.adjusted)
@@ -132,35 +136,23 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   }
   
   private func configureMissionCompleteView(missionImageURL: String) {
-    if isLoading {
-      missionSucessView.configureStartView(recordImageURL: missionImageURL)
-      rootContainer.removeFromSuperview()
-      contentView.removeFromSuperview()
-      
-      contentView = missionSucessView
-      
-      view.addSubview(rootContainer)
-      
-      rootContainer.flex
-        .paddingTop(-120)
-        .define {
-          $0.addItem(contentView)
-            .alignSelf(.center)
-          $0.addItem()
-            .direction(.columnReverse)
-            .marginTop(17.adjusted)
-            .define {
-              $0.addItem(missionStartButton)
-              $0.addItem(missionCountBubbleView)
-                .alignSelf(.center)
-            }
-        }
-      rootContainer.flex
-        .layout()
-      
-      isLoading = false
-    }
-  }    
+    missionSucessView.configureStartView(recordImageURL: missionImageURL)
+    missionStartView.flex.isIncludedInLayout(false)
+    missionSucessView.flex.isIncludedInLayout(true)
+    
+    missionStartView.isHidden = true
+    
+    missionStartView.flex
+      .markDirty()
+    missionSucessView.flex
+      .markDirty()
+    
+    rootContainer.flex
+      .markDirty()
+    
+    rootContainer.flex
+      .layout()
+  }
   
   // MARK: - Animation Control
   
