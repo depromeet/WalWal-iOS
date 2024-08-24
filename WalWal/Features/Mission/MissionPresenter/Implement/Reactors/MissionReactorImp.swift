@@ -57,7 +57,11 @@ public final class MissionReactorImp: MissionReactor {
     case .loadInitialData:
       return loadAllMissionData()
     case .moveToMissionUpload:
-      return Observable.just(Mutation.startMissionUpload)
+      guard let mission = currentState.mission else { return .empty() }
+      return startRecord(missionId: mission.id)
+        .map { Mutation.fetchRecordId($0) }
+        .concat(Observable.just(Mutation.startMissionUploadProcess))
+        .catch { error in Observable.just(Mutation.moveToMissionUploadFailed(error)) }
     }
   }
   
@@ -74,15 +78,20 @@ public final class MissionReactorImp: MissionReactor {
       newState.totalCompletedRecordsCount = totalCount
     case .loadInitialDataFlowFailed(let loadInitialDataFlowFailed):
       newState.loadInitialDataFlowFailed = loadInitialDataFlowFailed
-    case .startMissionUpload:
-      let recordId = newState.recordId
+    
+    // MARK: - 미션 시작하기를 누르면 실행되는 Flow!
+    case let .fetchRecordId(recordId):
+      newState.recordId = recordId
+    case.startMissionUploadProcess:
       guard let mission = newState.mission else { return newState }
       coordinator.destination.accept(
         .startMissionUpload(
-          recordId: recordId,
+          recordId: newState.recordId,
           missionId: mission.id
         )
       )
+    case let .moveToMissionUploadFailed(error):
+      newState.missionUploadError = error
     }
     return newState
   }
@@ -127,6 +136,14 @@ public final class MissionReactorImp: MissionReactor {
         return Observable.just(Mutation.loadInitialDataFlowFailed(error))
       }
   }
+  
+  /// records/start 호출
+  private func startRecord(missionId: Int) -> Observable<Int> {
+    return startRecordUseCase.execute(missionId: missionId)
+      .asObservable()
+      .map { $0.recordId }
+  }
+  
   
   // MARK: - MissionTimer
   private func calculateTimeRemainingUntilMidnight() -> String {
