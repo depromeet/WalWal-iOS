@@ -67,6 +67,10 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
       .layout()
   }
   
+  public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    feed.collectionView.collectionViewLayout.invalidateLayout()
+  }
+  
   // MARK: - Layout
   
   public func configureAttribute() {
