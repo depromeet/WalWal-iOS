@@ -152,6 +152,7 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
     
     nicknameTextfield.flex
       .marginTop(45.adjusted)
+      .height(72)
     
     rootContainerView.flex.layout()
   }
