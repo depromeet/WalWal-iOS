@@ -96,6 +96,7 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     case let .setSettingItemModel(setting):
       newState.settings = setting
     case .moveToAuth:
+      GlobalState.shared.resetRecords()
       coordinator.startAuth()
     case let .setIsRecentVersion(isRecent):
       newState.isRecent = isRecent

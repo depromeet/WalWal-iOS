@@ -124,7 +124,8 @@ extension AuthReactorImp {
     return saveFCMToken()
       .withUnretained(self)
       .flatMap { owner, _ in
-        owner.checkRecordCalendar()
+        GlobalState.shared.resetRecords()
+        return owner.checkRecordCalendar()
       }
       .withUnretained(self)
       .flatMap { owner, _ in

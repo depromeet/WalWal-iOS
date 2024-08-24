@@ -128,13 +128,11 @@ public final class MissionReactorImp: MissionReactor {
             .map { status in
               return Mutation.setMissionStatus(status)
             }
-            .startWith(mutation)
         }
         return Observable.just(mutation)
       }
       .flatMap { mutation -> Observable<Mutation> in
         return self.fetchMissionCount()
-          .startWith(mutation)
       }
   }
   
