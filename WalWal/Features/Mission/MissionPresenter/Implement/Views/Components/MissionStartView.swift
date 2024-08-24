@@ -13,6 +13,8 @@ import DesignSystem
 import FlexLayout
 import PinLayout
 import Then
+import RxSwift
+import RxCocoa
 
 final class MissionStartView: UIView {
   
@@ -40,7 +42,10 @@ final class MissionStartView: UIView {
   
   // MARK: - Initializers
   
-  init(missionTitle: String, missionImage: UIImage) {
+  init(
+    missionTitle: String,
+    missionImage: UIImage
+  ) {
     super.init(frame: .zero)
     titleLabel.text = missionTitle
     missionImageView.image = missionImage /// 데이터 통신하면서 String 타입으로 수정 예정
@@ -82,5 +87,13 @@ final class MissionStartView: UIView {
   func configureStartView(title: String, missionImageURL: String) {
     self.titleLabel.text = title
     self.missionImageView.kf.setImage(with: URL(string: missionImageURL))
+  }
+}
+
+extension Reactive where Base: MissionStartView {
+  var configureStartView: Binder<(title: String, missionImageURL: String)> {
+    return Binder(base) { view, data in
+      view.configureStartView(title: data.title, missionImageURL: data.missionImageURL)
+    }
   }
 }
