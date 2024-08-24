@@ -26,7 +26,7 @@ public enum MissionReactorMutation {
   case setMission(MissionModel)
   case setLoading(Bool)
   case missionLoadFailed(Error)
-  case missionStarted
+  case missionStarted(MissionRecordStartModel)
   case setMissionStatus(MissionRecordStatusModel)
   case setMissionCount(Int)
   case setButtionText(String)
@@ -43,6 +43,7 @@ public struct MissionReactorState {
   public var missionStatus: MissionRecordStatusModel?
   public var totalMissionCount : Int = 0
   public var buttonText: String = "미션 시작하기" // 초기값
+  public var recordId: Int = 0
   public var isAllowNoti: Bool = false
   public var isAllowCamera: Bool = false
   

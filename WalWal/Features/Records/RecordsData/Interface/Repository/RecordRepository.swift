@@ -12,7 +12,7 @@ import RxSwift
 
 public protocol RecordRepository {
   func saveRecord(missionId: Int, content: String) -> Single<Void>
-  func startRecord(missionId: Int) -> Single<Void>
+  func startRecord(missionId: Int) -> Single<MissionRecordStartDTO>
   func checkRecordStatus(missionId: Int) -> Single<MissionRecordStatusDTO>
   func checkCalendarRecords(cursor: String, limit: Int) -> Single<MissionRecordCalendarDTO>
   func checkCompletedTotalRecords() -> Single<MissionRecordTotalCountDTO>

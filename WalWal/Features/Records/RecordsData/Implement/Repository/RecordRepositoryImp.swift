@@ -27,11 +27,13 @@ public final class RecordRepositoryImp: RecordRepository {
       .map { _ in return }
   }
   
-  public func startRecord(missionId: Int) -> Single<Void> {
+  public func startRecord(missionId: Int) -> Single<MissionRecordStartDTO> {
     let body = StartRecordBody(missionId: missionId)
-    let endPoint = RecordEndpoint<EmptyResponse>.startRecord(body: body)
+    let endPoint = RecordEndpoint<MissionRecordStartDTO>.startRecord(body: body)
     return networkService.request(endpoint: endPoint, isNeedInterceptor: true)
-      .map { _ in return }
+      .compactMap{ $0 }
+      .asObservable()
+      .asSingle()
   }
   
   public func checkRecordStatus(missionId: Int) -> Single<MissionRecordStatusDTO> {

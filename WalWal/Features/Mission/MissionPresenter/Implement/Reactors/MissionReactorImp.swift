@@ -56,6 +56,9 @@ public final class MissionReactorImp: MissionReactor {
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
+    case .startMission(let missionId):
+      startMission()
+      return startMission(id: missionId)
     case .loadMissionInfo:
       return Observable.concat([
         Observable.just( Mutation.setLoading(true)),
@@ -65,9 +68,7 @@ public final class MissionReactorImp: MissionReactor {
     case .checkPermission:
       return checkNotificationPermission()
         .map { Mutation.setNotiPermission($0) }
-    case let .startMission(id):
-      startMission()
-      return startMission(id: id)
+    
     case .startTimer:
       return startMissionTimer()
     case .moveToMissionUpload:
@@ -82,8 +83,9 @@ public final class MissionReactorImp: MissionReactor {
       newState.mission = mission
     case .setLoading(let isLoading):
       newState.isLoading = isLoading
-    case .missionStarted:
+    case .missionStarted(let missionStartModel):
       newState.isMissionStarted = true
+      newState.recordId = missionStartModel.recordId
     case .setMissionStatus(let status):
       newState.isMissionStarted = status.statusMessage == .inProgress || status.statusMessage == .completed
       newState.missionStatus = status
@@ -106,9 +108,14 @@ public final class MissionReactorImp: MissionReactor {
     case .setCamPermission(let isAllow):
       newState.isAllowCamera = isAllow
     case .startMissionUpload:
-      guard let missionState = newState.missionStatus else { return newState }
+      let recordId = newState.recordId
       guard let mission = newState.mission else { return newState }
-      coordinator.destination.accept(.startMissionUpload(recordId: missionState.recordId, missionId: mission.id))
+      coordinator.destination.accept(
+        .startMissionUpload(
+          recordId: recordId,
+          missionId: mission.id
+        )
+      )
     }
     return newState
   }
@@ -164,9 +171,7 @@ public final class MissionReactorImp: MissionReactor {
   private func startMission(id: Int) -> Observable<Mutation> {
     return startRecordUseCase.execute(missionId: id)
       .asObservable()
-      .map { _ in
-        return Mutation.missionStarted
-      }
+      .map { return Mutation.missionStarted($0) }
       .catch { error in
         return Observable.just(Mutation.missionLoadFailed(error))
       }
