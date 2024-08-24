@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import GlobalState
 import RecordsData
 
 public struct MissionRecordStatusModel {
@@ -18,6 +19,16 @@ public struct MissionRecordStatusModel {
     self.recordId = dto.recordId ?? 0
     self.imageUrl = dto.imageUrl ?? ""
     self.statusMessage = StatusMessage(rawValue: dto.status) ?? .notCompleted
+  }
+  
+  public func saveToGlobalState(globalState: GlobalState = GlobalState.shared) {
+    let globalMissionStatus = GlobalMissionStatusModel(
+      recordId: recordId,
+      missionStatus: statusMessage.rawValue,
+      recordImage: imageUrl
+    )
+    
+    globalState.updateMissionStatus(with: globalMissionStatus)
   }
 }
 

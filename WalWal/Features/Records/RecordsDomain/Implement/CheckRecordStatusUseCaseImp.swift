@@ -21,7 +21,11 @@ public final class CheckRecordStatusUseCaseImp: CheckRecordStatusUseCase {
   
   public func execute(missionId: Int) -> Single<MissionRecordStatusModel> {
     return recordRepository.checkRecordStatus(missionId: missionId)
-      .map{ MissionRecordStatusModel(dto: $0) }
+      .map{
+        let status = MissionRecordStatusModel(dto: $0)
+        status.saveToGlobalState()
+        return status
+      }
       .asObservable()
       .asSingle()
   }

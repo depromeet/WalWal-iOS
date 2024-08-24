@@ -23,6 +23,8 @@ public final class GlobalState {
   public private(set) var profileInfo = BehaviorRelay<GlobalProfileModel>(value: .init(memberId: 0, nickname: "", profileURL: "", raisePet: "DOG"))
   public private(set) var feedList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
   public private(set) var recordList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
+  public private(set) var missionStatus = BehaviorRelay<GlobalMissionStatusModel>(value: .init(recordId: 0, missionStatus: "NOT COMPLETED", recordImage: ""))
+  public private(set) var todaymission = BehaviorRelay<GlobalTodayMissionModel>(value: .init(missionId: 0, missionTitle: "", missionImage: ""))
   
   /// 이미지 저장소 (캐시된 이미지를 저장하는 딕셔너리)
   public private(set) var imageStore: [String?: UIImage] = [:]
@@ -134,6 +136,15 @@ public final class GlobalState {
   /// 기록 가져오기
   public func getRecords(forDate date: String) -> [GlobalFeedListModel] {
     return recordList.value.filter {  $0.createdDate == date  }
+  }
+  
+  /// 미션 정보 업데이트
+  public func updateMissionStatus(with newStatus: GlobalMissionStatusModel) {
+    self.missionStatus.accept(newStatus)
+  }
+  
+  public func updateTodayMission(with todayMission: GlobalTodayMissionModel) {
+    self.todaymission.accept(todayMission)
   }
   
   public func getCachedMissionImage(for feed: GlobalFeedListModel) -> UIImage? {

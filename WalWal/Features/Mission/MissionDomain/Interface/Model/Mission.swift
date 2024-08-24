@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import GlobalState
 
 import MissionData
 
@@ -19,5 +20,15 @@ public struct MissionModel {
     self.id = dto.id
     self.title = dto.title
     self.imageURL = dto.illustrationURL
+  }
+  
+  public func saveToGlobalState(globalState: GlobalState = GlobalState.shared) {
+    let globalTodayMission = GlobalTodayMissionModel(
+      missionId: id,
+      missionTitle: title,
+      missionImage: imageURL
+    )
+    
+    globalState.updateTodayMission(with: globalTodayMission)
   }
 }

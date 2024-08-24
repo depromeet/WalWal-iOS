@@ -23,7 +23,9 @@ public final class TodayMissionUseCaseImp: TodayMissionUseCase {
   public func execute() -> Single<MissionModel> {
     return missionDataRepository.loadMissionInfo()
       .map {
-        MissionModel(dto: $0)
+        let missionModel = MissionModel(dto: $0)
+        missionModel.saveToGlobalState()
+        return missionModel
       }
       .asObservable()
       .asSingle()
