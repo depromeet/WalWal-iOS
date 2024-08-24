@@ -39,13 +39,13 @@ final class WalWalFeedCell: UICollectionViewCell {
   override func layoutSubviews() {
     super.layoutSubviews()
     layoutCell()
-    feedView.layoutSubviews()
   }
   
   override func prepareForReuse() {
     super.prepareForReuse()
-    layoutCell()
-    feedView.layoutSubviews()
+    feedView.maxLength = 55
+    feedView.isContentExpanded = false 
+    feedView.contentLabel.numberOfLines = 2
   }
   
   // MARK: - Methods
@@ -53,6 +53,15 @@ final class WalWalFeedCell: UICollectionViewCell {
   func configureCell(feedData: WalWalFeedModel) {
     feedView.configureFeed(feedData: feedData)
     contentView.backgroundColor = .clear
+    
+    feedView.layoutSubviews()
+    
+    feedView.flex
+      .markDirty()
+    
+    layoutCell()
+    
+    invalidateIntrinsicContentSize()
   }
   
   private func setAttributes() {
@@ -61,12 +70,13 @@ final class WalWalFeedCell: UICollectionViewCell {
   
   private func layoutCell() {
     feedView.pin
-      .center()
+      .all()
     
     feedView.flex
       .layout(mode: .adjustHeight)
     
     contentView.flex
       .layout(mode: .adjustHeight)
+    
   }
 }

@@ -59,17 +59,12 @@ final class WalWalFeedCellView: UIView {
     $0.image = Images.fireDef.image
   }
   
-  private let contentLabel = UILabel().then {
+  let contentLabel = UILabel().then {
     $0.textColor = Colors.black.color
     $0.font = Fonts.KR.B2
     $0.translatesAutoresizingMaskIntoConstraints = false
-    $0.numberOfLines = 0
-  }
-  
-  private let moreButton = UIButton().then {
-    $0.setTitle("더 보기", for: .normal)
-    $0.setTitleColor(Colors.gray500.color, for: .normal)
-    $0.titleLabel?.font = Fonts.KR.B2
+    $0.numberOfLines = 2
+    $0.lineBreakMode = .byCharWrapping
   }
   
   private let boostCountLabel = UILabel().then {
@@ -88,10 +83,16 @@ final class WalWalFeedCellView: UIView {
     $0.textColor = Colors.gray500.color
   }
   
+  var isContentExpanded = false
+  var maxLength = 55
+  private var contents = ""
+  private let disposeBag = DisposeBag()
+  
   // MARK: - Initializers
   
   override init(frame: CGRect) {
     super.init(frame: frame)
+    bind()
     setAttributes()
     setLayouts()
   }
@@ -104,19 +105,20 @@ final class WalWalFeedCellView: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    containerView.pin
-      .all()
     boostCountLabel.flex
-      .markDirty()
-    
-    boostLabelView.flex
       .markDirty()
     
     missionDateLabel.flex
       .markDirty()
     
-    feedContentView.flex
+    boostLabelView.flex
       .markDirty()
+    
+    contentLabel.flex
+      .markDirty()
+    
+    containerView.pin
+      .all()
     
     containerView.flex
       .layout(mode: .adjustHeight)
@@ -124,6 +126,14 @@ final class WalWalFeedCellView: UIView {
   }
   
   // MARK: - Methods
+  
+  private func bind() {
+    contentLabel.rx.tapped
+      .subscribe(onNext: { [weak self] in
+        self?.toggleContent()
+      })
+      .disposed(by: disposeBag) // DisposeBag에 추가
+  }
   
   func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false) {
     userNickNameLabel.text = feedData.nickname
@@ -157,13 +167,14 @@ final class WalWalFeedCellView: UIView {
     
     missionDateLabel.attributedText = attributedString
     
-    /// 더보기 버튼 구현
-    //    guard let contentTextLength = self.contentLabel.text?.count else { return }
-    //    if contentTextLength > 30 {
-    //      DispatchQueue.main.async {
-    //        self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
-    //      }
-    //    }
+    contents = feedData.contents
+    
+    guard let contentTextLength = self.contentLabel.text?.count else { return }
+    if contentTextLength > maxLength {
+      DispatchQueue.main.async {
+        self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
+      }
+    }
   }
   
   private func setAttributes() {
@@ -191,6 +202,8 @@ final class WalWalFeedCellView: UIView {
   }
   
   private func setLayouts() {
+    contentLabel.flex.isIncludedInLayout(contentLabel.text != "")
+    
     containerView.flex
       .define {
         $0.addItem(profileHeaderView)
@@ -228,6 +241,7 @@ final class WalWalFeedCellView: UIView {
           .size(343)
           .position(.relative)
         $0.addItem(contentLabel)
+          .minHeight(16)
           .marginHorizontal(16)
           .marginTop(14)
         $0.addItem(boostLabelView)
@@ -248,4 +262,11 @@ final class WalWalFeedCellView: UIView {
         $0.addItem(missionDateLabel)
       }
   }
+  
+  private func toggleContent() {
+    contentLabel.numberOfLines = 4
+    contentLabel.text = contents
+    setNeedsLayout()
+  }
+  
 }
