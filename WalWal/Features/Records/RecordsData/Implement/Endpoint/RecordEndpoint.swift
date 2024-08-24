@@ -19,7 +19,7 @@ enum RecordEndpoint<T>: APIEndpoint where T: Decodable {
   case startRecord(body: StartRecordBody)
   case checkRecordStatus(query: CheckRecordStatusQuery)
   case checkCalendarRecords(query: CalendarRecordQuery)
-  case checkCompletedTotalRecords
+  case checkCompletedTotalRecords(query: CheckCompletedTotalRecordsQuery?)
 }
 
 extension RecordEndpoint {
@@ -61,7 +61,10 @@ extension RecordEndpoint {
       return .requestWithbody(body)
     case .checkRecordStatus(let query):
       return .requestQuery(query)
-    case .checkCompletedTotalRecords:
+    case .checkCompletedTotalRecords(let query):
+      if query != nil {
+        return .requestQuery(query)
+      }
       return .requestPlain
     }
   }

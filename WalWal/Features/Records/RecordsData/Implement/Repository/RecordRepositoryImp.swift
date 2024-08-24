@@ -54,8 +54,9 @@ public final class RecordRepositoryImp: RecordRepository {
       .asSingle()
   }
   
-  public func checkCompletedTotalRecords() -> Single<MissionRecordTotalCountDTO> {
-    let endPoint = RecordEndpoint<MissionRecordTotalCountDTO>.checkCompletedTotalRecords
+  public func checkCompletedTotalRecords(memberId: Int?) -> Single<MissionRecordTotalCountDTO> {
+    let query = memberId != nil ? CheckCompletedTotalRecordsQuery(memberId: memberId!) : nil
+    let endPoint = RecordEndpoint<MissionRecordTotalCountDTO>.checkCompletedTotalRecords(query: query)
     return networkService.request(endpoint: endPoint, isNeedInterceptor: true)
       .compactMap{ $0 }
       .asObservable()

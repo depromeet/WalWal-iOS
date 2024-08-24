@@ -15,5 +15,5 @@ public protocol RecordRepository {
   func startRecord(missionId: Int) -> Single<MissionRecordStartDTO>
   func checkRecordStatus(missionId: Int) -> Single<MissionRecordStatusDTO>
   func checkCalendarRecords(cursor: String, limit: Int) -> Single<MissionRecordCalendarDTO>
-  func checkCompletedTotalRecords() -> Single<MissionRecordTotalCountDTO>
+  func checkCompletedTotalRecords(memberId: Int?) -> Single<MissionRecordTotalCountDTO>
 }
