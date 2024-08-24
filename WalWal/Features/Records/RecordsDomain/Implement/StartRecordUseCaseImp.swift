@@ -19,7 +19,10 @@ public final class StartRecordUseCaseImp: StartRecordUseCase {
     self.recordRepository = recordRepository
   }
   
-  public func execute(missionId: Int) -> Single<Void> {
+  public func execute(missionId: Int) -> Single<MissionRecordStartModel> {
     return recordRepository.startRecord(missionId: missionId)
+      .map { MissionRecordStartModel(dto: $0) }
+      .asObservable()
+      .asSingle()
   }
 }

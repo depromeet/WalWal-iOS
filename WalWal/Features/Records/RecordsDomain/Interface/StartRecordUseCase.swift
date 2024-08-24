@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol StartRecordUseCase {
-  func execute(missionId: Int) -> Single<Void>
+  func execute(missionId: Int) -> Single<MissionRecordStartModel>
 }
