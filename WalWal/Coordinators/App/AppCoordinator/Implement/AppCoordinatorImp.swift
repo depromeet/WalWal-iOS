@@ -187,7 +187,6 @@ extension AppCoordinatorImp {
       navigationController: navigationController,
       parentCoordinator: self,
       fcmDependencyFactory: fcmDependencyFactory,
-      recordsDependencyFactory: recordsDependencyFactory,
       membersDependencyFactory: memberDependencyFactory
     )
     childCoordinator = authCoordinator

@@ -32,7 +32,6 @@ public final class AuthCoordinatorImp: AuthCoordinator {
   
   private let authDependencyFactory: AuthDependencyFactory
   private let fcmDependencyFactory: FCMDependencyFactory
-  private let recordsDependencyFactory: RecordsDependencyFactory
   private let membersDependencyFactory: MembersDependencyFactory
   
   public required init(
@@ -40,14 +39,12 @@ public final class AuthCoordinatorImp: AuthCoordinator {
     parentCoordinator: (any BaseCoordinator)?,
     authDependencyFactory: AuthDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.authDependencyFactory = authDependencyFactory
     self.fcmDependencyFactory = fcmDependencyFactory
-    self.recordsDependencyFactory = recordsDependencyFactory
     self.membersDependencyFactory = membersDependencyFactory
     bindChildToParentAction()
     bindState()

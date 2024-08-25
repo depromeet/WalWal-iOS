@@ -26,7 +26,6 @@ public protocol AuthDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     fcmDependencyFactory: FCMDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory
   ) -> any AuthCoordinator
   

@@ -37,7 +37,6 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     fcmDependencyFactory: FCMDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory
   ) -> any AuthCoordinator {
     return AuthCoordinatorImp(
@@ -45,7 +44,6 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
       parentCoordinator: parentCoordinator,
       authDependencyFactory: self,
       fcmDependencyFactory: fcmDependencyFactory,
-      recordsDependencyFactory: recordsDependencyFactory,
       membersDependencyFactory: membersDependencyFactory
     )
   }
