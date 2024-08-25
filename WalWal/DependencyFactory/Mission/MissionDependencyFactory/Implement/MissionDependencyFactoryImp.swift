@@ -65,6 +65,8 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
     todayMissionUseCase: TodayMissionUseCase,
     checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
     checkRecordStatusUseCase: CheckRecordStatusUseCase,
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     startRecordUseCase: StartRecordUseCase
   ) -> any MissionReactor where T : MissionCoordinator {
     return MissionReactorImp(
@@ -72,6 +74,8 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
       todayMissionUseCase: todayMissionUseCase,
       checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
       checkRecordStatusUseCase: checkRecordStatusUseCase,
+      checkRecordCalendarUseCase: checkRecordCalendarUseCase,
+      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
       startRecordUseCase: startRecordUseCase
     )
   }

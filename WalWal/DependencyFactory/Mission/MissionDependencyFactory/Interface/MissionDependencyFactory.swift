@@ -36,6 +36,8 @@ public protocol MissionDependencyFactory {
     todayMissionUseCase: TodayMissionUseCase,
     checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
     checkRecordStatusUseCase: CheckRecordStatusUseCase,
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     startRecordUseCase: StartRecordUseCase
   ) -> any MissionReactor
   func injectMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController

@@ -26,7 +26,6 @@ public protocol AuthDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     fcmDependencyFactory: FCMDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory
   ) -> any AuthCoordinator
   
@@ -46,8 +45,6 @@ public protocol AuthDependencyFactory {
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase,
     kakaoLoginUseCase: KakaoLoginUseCase,
-    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     memberInfoUseCase: MemberInfoUseCase
   ) -> any AuthReactor
   func injectAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController

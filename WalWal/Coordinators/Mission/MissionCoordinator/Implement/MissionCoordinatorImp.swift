@@ -86,6 +86,8 @@ public final class MissionCoordinatorImp: MissionCoordinator {
       todayMissionUseCase: missionDependencyFactory.injectTodayMissionUseCase(),
       checkCompletedTotalRecordsUseCase: recordDependencyFactory.injectCheckCompletedTotalRecordsUseCase(),
       checkRecordStatusUseCase: recordDependencyFactory.injectCheckRecordStatusUseCase(),
+      checkRecordCalendarUseCase: recordDependencyFactory.injectCheckCalendarRecordsUseCase(),
+      removeGlobalCalendarRecordsUseCase: recordDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase(),
       startRecordUseCase: recordDependencyFactory.injectStartRecordUseCase()
     )
     let missionVC = missionDependencyFactory.injectMissionViewController(reactor: reactor)

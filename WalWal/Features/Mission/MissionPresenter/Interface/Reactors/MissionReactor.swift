@@ -60,9 +60,11 @@ public protocol MissionReactor: Reactor where Action == MissionReactorAction, Mu
   
   init(
     coordinator: any MissionCoordinator,
-    todayMissionUseCase: any TodayMissionUseCase,
-    checkCompletedTotalRecordsUseCase: any CheckCompletedTotalRecordsUseCase,
-    checkRecordStatusUseCase: any CheckRecordStatusUseCase,
-    startRecordUseCase: any StartRecordUseCase
-  ) 
+    todayMissionUseCase: TodayMissionUseCase,
+    checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
+    checkRecordStatusUseCase: CheckRecordStatusUseCase,
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
+    startRecordUseCase: StartRecordUseCase
+  )
 }

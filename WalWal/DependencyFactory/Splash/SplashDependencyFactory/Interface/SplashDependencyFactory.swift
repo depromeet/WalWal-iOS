@@ -56,8 +56,6 @@ public protocol SplashDependencyFactory {
     checkTokenUseCase: CheckTokenUsecase,
     checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
-    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     memberInfoUseCase: MemberInfoUseCase
   ) -> any SplashReactor
   

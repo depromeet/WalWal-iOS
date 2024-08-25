@@ -25,10 +25,12 @@ public final class MissionReactorImp: MissionReactor {
   
   public let initialState: State
   public let coordinator: any MissionCoordinator
-  public let todayMissionUseCase: TodayMissionUseCase
-  public let checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase
-  public let checkRecordStatusUseCase: CheckRecordStatusUseCase
-  public let startRecordUseCase: StartRecordUseCase
+  private let todayMissionUseCase: TodayMissionUseCase
+  private let checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase
+  private let checkRecordStatusUseCase: CheckRecordStatusUseCase
+  private let checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
+  private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
+  private let startRecordUseCase: StartRecordUseCase
   
   private let disposeBag = DisposeBag()
   
@@ -37,12 +39,16 @@ public final class MissionReactorImp: MissionReactor {
     todayMissionUseCase: TodayMissionUseCase,
     checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
     checkRecordStatusUseCase: CheckRecordStatusUseCase,
+    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
+    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     startRecordUseCase: StartRecordUseCase
   ) {
     self.coordinator = coordinator
     self.todayMissionUseCase = todayMissionUseCase
     self.checkCompletedTotalRecordsUseCase = checkCompletedTotalRecordsUseCase
     self.checkRecordStatusUseCase = checkRecordStatusUseCase
+    self.checkRecordCalendarUseCase = checkRecordCalendarUseCase
+    self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
     self.startRecordUseCase = startRecordUseCase
     self.initialState = State()
   }
@@ -118,9 +124,10 @@ public final class MissionReactorImp: MissionReactor {
   }
   
   private func loadAllMissionData() -> Observable<Mutation> {
-    return fetchMissionData()
-      .withUnretained(self)
-      .flatMap { owner, mission -> Observable<Mutation> in
+    return checkRecordCalendar()
+      .flatMap { _ in self.fetchMissionData()}
+      .flatMap { [weak self] mission -> Observable<Mutation> in
+        guard let owner = self else { return .empty() }
         return Observable.concat([
           Observable.just(Mutation.fetchTodayMissionData(mission)),
           owner.fetchRecordStatus(missionId: mission.id),
@@ -165,6 +172,28 @@ public final class MissionReactorImp: MissionReactor {
       .map { $0.recordId }
   }
   
+  /// 캘린더 정보도 여기서 업뎃 치자
+  private func checkRecordCalendar() -> Observable<Void> {
+    /// 우선 저장되어 있는 GlobalRecords 지우고, 새로운 calendar fetch
+    return removeGlobalCalendarRecordsUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ in owner.fetchCalendarRecords(cursor: "2024-01-01", limit: 30) }
+  }
+  
+  /// records/calendar 호출
+  private func fetchCalendarRecords(cursor: String, limit: Int) -> Observable<Void> {
+    return checkRecordCalendarUseCase.execute(cursor: cursor, limit: limit)
+      .asObservable()
+      .flatMap { calendarModel -> Observable<Void> in
+        if let nextCursor = calendarModel.nextCursor.nextCursor {
+          return self.fetchCalendarRecords(cursor: nextCursor, limit: limit)
+        } else {
+          return .just(Void())
+        }
+      }
+      .catch { error in return .just(Void()) }
+  }
   
   // MARK: - MissionTimer
   

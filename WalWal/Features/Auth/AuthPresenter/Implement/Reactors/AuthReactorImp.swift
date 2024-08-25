@@ -30,8 +30,6 @@ public final class AuthReactorImp: AuthReactor {
   private let fcmSaveUseCase: FCMSaveUseCase
   private let userTokensSaveUseCase: UserTokensSaveUseCase
   private let kakaoLoginUseCase: KakaoLoginUseCase
-  private let checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
-  private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   private let memberInfoUseCase: MemberInfoUseCase
   
   public init(
@@ -40,8 +38,6 @@ public final class AuthReactorImp: AuthReactor {
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase,
     kakaoLoginUseCase: KakaoLoginUseCase,
-    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     memberInfoUseCase: MemberInfoUseCase
   ) {
     self.coordinator = coordinator
@@ -50,8 +46,6 @@ public final class AuthReactorImp: AuthReactor {
     self.fcmSaveUseCase = fcmSaveUseCase
     self.userTokensSaveUseCase = userTokensSaveUseCase
     self.kakaoLoginUseCase = kakaoLoginUseCase
-    self.checkRecordCalendarUseCase = checkRecordCalendarUseCase
-    self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
     self.memberInfoUseCase = memberInfoUseCase
   }
   
@@ -124,11 +118,6 @@ extension AuthReactorImp {
     return saveFCMToken()
       .withUnretained(self)
       .flatMap { owner, _ in
-        GlobalState.shared.resetRecords()
-        return owner.checkRecordCalendar()
-      }
-      .withUnretained(self)
-      .flatMap { owner, _ in
         owner.fetchProfileInfo()
       }
       .withUnretained(self)
@@ -146,27 +135,6 @@ extension AuthReactorImp {
   private func saveFCMToken() -> Observable<Void> {
     return fcmSaveUseCase.execute()
       .asObservable()
-  }
-  
-  private func checkRecordCalendar() -> Observable<Void> {
-    return removeGlobalCalendarRecordsUseCase.execute()
-      .asObservable()
-      .withUnretained(self)
-      .flatMap { owner, _ in owner.fetchCalendarRecords(cursor: "2024-01-01", limit: 10) }
-  }
-  
-  private func fetchCalendarRecords(cursor: String, limit: Int) -> Observable<Void> {
-    return checkRecordCalendarUseCase.execute(cursor: cursor, limit: limit)
-      .asObservable()
-      .withUnretained(self)
-      .flatMap { owner, calendarModel -> Observable<Void> in
-        if let nextCursor = calendarModel.nextCursor.nextCursor {
-          return owner.fetchCalendarRecords(cursor: nextCursor, limit: limit)
-        } else {
-          return .just(Void())
-        }
-      }
-      .catch { error in return .just(Void()) }
   }
   
   private func fetchProfileInfo() -> Observable<Void> {

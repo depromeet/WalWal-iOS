@@ -87,8 +87,6 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     checkTokenUseCase: CheckTokenUsecase,
     checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
-    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     memberInfoUseCase: MemberInfoUseCase
   ) -> any SplashReactor {
     return SplashReactorImp(
@@ -96,8 +94,6 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       checkTokenUseCase: checkTokenUseCase,
       checkIsFirstLoadedUseCase: checkIsFirstLoadedUseCase,
       fcmSaveUseCase: fcmSaveUseCase,
-      checkRecordCalendarUseCase: checkRecordCalendarUseCase,
-      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
       memberInfoUseCase: memberInfoUseCase
     )
   }

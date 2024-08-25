@@ -27,8 +27,6 @@ public final class SplashReactorImp: SplashReactor {
   private let checkTokenUseCase: CheckTokenUsecase
   private let checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase
   private let fcmSaveUseCase: FCMSaveUseCase
-  private let checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
-  private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   private let memberInfoUseCase: MemberInfoUseCase
   private let disposeBag = DisposeBag()
   
@@ -37,16 +35,12 @@ public final class SplashReactorImp: SplashReactor {
     checkTokenUseCase: CheckTokenUsecase,
     checkIsFirstLoadedUseCase: CheckIsFirstLoadedUseCase,
     fcmSaveUseCase: FCMSaveUseCase,
-    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     memberInfoUseCase: MemberInfoUseCase
   ) {
     self.coordinator = coordinator
     self.checkTokenUseCase = checkTokenUseCase
     self.checkIsFirstLoadedUseCase = checkIsFirstLoadedUseCase
     self.fcmSaveUseCase = fcmSaveUseCase
-    self.checkRecordCalendarUseCase = checkRecordCalendarUseCase
-    self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
     self.memberInfoUseCase = memberInfoUseCase
     self.initialState = State()
   }
@@ -95,7 +89,6 @@ extension SplashReactorImp {
   private func performPostAuthenticationTasks() -> Observable<Mutation> {
     // FCM 토큰 저장, 기록 캘린더 확인, 프로필 정보 조회를 순차적으로 처리
     return saveFCMToken()
-      .flatMap { _ in self.checkRecordCalendar() }
       .flatMap { _ in self.fetchProfileInfo() }
       .map { _ in .startMain }
       .catchAndReturn(.startAuth)
@@ -107,27 +100,6 @@ extension SplashReactorImp {
       .do(onNext: { _ in
         print("FCM 토큰 저장 완료")
       })
-  }
-  
-  private func checkRecordCalendar() -> Observable<Void> {
-    /// 우선 저장되어 있는 GlobalRecords 지우고, 새로운 calendar fetch
-    return removeGlobalCalendarRecordsUseCase.execute()
-      .asObservable()
-      .withUnretained(self)
-      .flatMap { owner, _ in owner.fetchCalendarRecords(cursor: "2024-01-01", limit: 30) }
-  }
-  
-  private func fetchCalendarRecords(cursor: String, limit: Int) -> Observable<Void> {
-    return checkRecordCalendarUseCase.execute(cursor: cursor, limit: limit)
-      .asObservable()
-      .flatMap { calendarModel -> Observable<Void> in
-        if let nextCursor = calendarModel.nextCursor.nextCursor {
-          return self.fetchCalendarRecords(cursor: nextCursor, limit: limit)
-        } else {
-          return .just(Void())
-        }
-      }
-      .catch { error in return .just(Void()) }
   }
   
   private func fetchProfileInfo() -> Observable<Void> {
