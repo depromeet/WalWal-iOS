@@ -26,11 +26,13 @@ public final class WalWalFeed: UIView {
   
   // MARK: - UI
   
-  public private(set) var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
-    let flowLayout = UICollectionViewFlowLayout()
-    flowLayout.itemSize = CGSize(width: 342, height: 470)
-    flowLayout.minimumLineSpacing = 14
+  public private(set) lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
     
+    let flowLayout = UICollectionViewFlowLayout()
+    flowLayout.itemSize = UICollectionViewFlowLayout.automaticSize
+    flowLayout.sectionInset = .init(top: 20.adjusted, left: 0, bottom: 20.adjusted, right: 0)
+    flowLayout.minimumLineSpacing = 14.adjusted
+    flowLayout.headerReferenceSize = .init(width: 0, height: headerHeight)
     $0.collectionViewLayout = flowLayout
     $0.backgroundColor = .clear
     $0.register(
@@ -42,10 +44,8 @@ public final class WalWalFeed: UIView {
       forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
       withReuseIdentifier: FeedHeaderView.identifier
     )
-    $0.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 24, right: 0)
     $0.showsHorizontalScrollIndicator = false
     $0.alwaysBounceVertical = true
-    
   }
   
   // MARK: - Property
@@ -87,7 +87,7 @@ public final class WalWalFeed: UIView {
     isFeed: Bool = true
   ) {
     self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
-    self.headerHeight = isFeed ? 71 : 0
+    self.headerHeight = isFeed ? 71.adjusted : 0
     super.init(frame: .zero)
     
     configureView()
@@ -105,10 +105,11 @@ public final class WalWalFeed: UIView {
     flex.layout()
   }
   
+  
   // MARK: - Setup Methods
   
   private func configureView() {
-    setupView()
+    setupCollectionView()
     setupGestureHandler()
     setupBindings()
     setLayouts()
@@ -120,10 +121,8 @@ public final class WalWalFeed: UIView {
     gestureHandler?.setupLongPressGesture(for: collectionView)
   }
   
-  private func setupView() {
-    addSubview(collectionView)
+  private func setupCollectionView() {
     collectionView.dataSource = self
-    collectionView.delegate = self
     
     walwalIndicator.endRefreshing()
     collectionView.refreshControl = walwalIndicator
@@ -149,7 +148,6 @@ public final class WalWalFeed: UIView {
         self?.refreshLoading.accept(true)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-          // 여기에 데이터 로드 완료 시 호출할 로직 추가
           self?.feedData.accept(self?.feedData.value ?? [])
           self?.refreshLoading.accept(false)
         }
@@ -175,6 +173,10 @@ public final class WalWalFeed: UIView {
       .filter{ $0 }
       .bind(to: scrollEndReached )
       .disposed(by: disposeBag)
+    
+    collectionView.rx
+      .setDelegate(self)
+      .disposed(by: disposeBag)
   }
   
   private func setLayouts() {
@@ -182,7 +184,6 @@ public final class WalWalFeed: UIView {
       $0.addItem(collectionView)
         .grow(1)
     }
-    
   }
   
   // MARK: - Boost Count Update
@@ -218,15 +219,8 @@ extension WalWalFeed: GestureHandlerDelegate {
   }
 }
 
-// MARK: - Array Extension
-
-extension Array {
-  subscript(safe index: Index) -> Element? {
-    return indices.contains(index) ? self[index] : nil
-  }
-}
-
 // MARK: - UICollectionViewDataSource
+
 extension WalWalFeed: UICollectionViewDataSource {
   public func numberOfSections(in collectionView: UICollectionView) -> Int {
     return 1
@@ -255,7 +249,28 @@ extension WalWalFeed: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension WalWalFeed: UICollectionViewDelegateFlowLayout {
-  public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-    return CGSize(width: collectionView.bounds.width, height: headerHeight)
+  public func collectionView(
+    _ collectionView: UICollectionView,
+    layout collectionViewLayout: UICollectionViewLayout,
+    sizeForItemAt indexPath: IndexPath) -> CGSize {
+    let width = collectionView.bounds.width - 40
+    let content = feedData.value[indexPath.row].contents
+    
+    let lineHeight: Int = content.count / 40
+    let lineBreakCount = content.filter { $0 == "\n" }.count
+    let totalLineCount = lineHeight + lineBreakCount
+    
+    let height: CGFloat = CGFloat(480 + (16 * totalLineCount))
+    
+    return CGSize(width: width, height: height)
+  }
+}
+
+
+// MARK: - Array Extension
+
+extension Array {
+  subscript(safe index: Index) -> Element? {
+    return indices.contains(index) ? self[index] : nil
   }
 }

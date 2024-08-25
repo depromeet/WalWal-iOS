@@ -28,7 +28,6 @@ final class WalWalFeedCell: UICollectionViewCell {
   override init(frame: CGRect) {
     super.init(frame: frame)
     setAttributes()
-    setLayouts()
   }
   
   required init?(coder: NSCoder) {
@@ -44,31 +43,40 @@ final class WalWalFeedCell: UICollectionViewCell {
   
   override func prepareForReuse() {
     super.prepareForReuse()
-    layoutCell()
+    feedView.maxLength = 55
+    feedView.isContentExpanded = false 
+    feedView.contentLabel.numberOfLines = 2
   }
   
   // MARK: - Methods
   
   func configureCell(feedData: WalWalFeedModel) {
     feedView.configureFeed(feedData: feedData)
+    contentView.backgroundColor = .clear
+    
+    feedView.layoutSubviews()
+    
+    feedView.flex
+      .markDirty()
+    
+    layoutCell()
+    
+    invalidateIntrinsicContentSize()
   }
   
   private func setAttributes() {
     contentView.addSubview(feedView)
   }
   
-  private func setLayouts() {
-    contentView.flex
-      .grow(1)
-      .define {
-        $0.addItem(feedView)
-      }
-  }
-  
   private func layoutCell() {
     feedView.pin
       .all()
+    
     feedView.flex
-      .layout()
+      .layout(mode: .adjustHeight)
+    
+    contentView.flex
+      .layout(mode: .adjustHeight)
+    
   }
 }
