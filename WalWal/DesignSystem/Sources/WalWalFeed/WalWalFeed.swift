@@ -249,7 +249,10 @@ extension WalWalFeed: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension WalWalFeed: UICollectionViewDelegateFlowLayout {
-  public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+  public func collectionView(
+    _ collectionView: UICollectionView,
+    layout collectionViewLayout: UICollectionViewLayout,
+    sizeForItemAt indexPath: IndexPath) -> CGSize {
     let width = collectionView.bounds.width - 40
     let content = feedData.value[indexPath.row].contents
     
