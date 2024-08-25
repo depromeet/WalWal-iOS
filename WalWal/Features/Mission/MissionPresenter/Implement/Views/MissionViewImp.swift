@@ -170,12 +170,16 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private func updateButtonState(for status: StatusMessage?) {
     switch status {
     case .notCompleted:
+      isMissionCompleted = false
       missionStartButton.isEnabled = true
     case .inProgress:
+      isMissionCompleted = false
       missionStartButton.isEnabled = true
     case .completed:
-      missionStartButton.isEnabled = false /// 이후에 기록으로 이동시켜야함
+      isMissionCompleted = true
+      missionStartButton.isEnabled = true /// 이후에 기록으로 이동시켜야함
     case .none:
+      isMissionCompleted = false
       missionStartButton.isEnabled = false
     }
   }
@@ -212,7 +216,13 @@ extension MissionViewControllerImp: View {
   public func bindAction(reactor: R) {
     
     missionStartButton.rx.tapped
-      .map { Reactor.Action.moveToMissionUpload }
+      .map {
+        if !self.isMissionCompleted {
+          return Reactor.Action.moveToMissionUpload
+        } else {
+          return Reactor.Action.moveToMyPage
+        }
+      }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     

@@ -43,6 +43,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   private var tabCoordinators: [Flow: any BaseCoordinator] = [:]
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
+  private let forceMoveTab = PublishRelay<Flow>()
   
   public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var missionDependencyFactory: MissionDependencyFactory
@@ -101,6 +102,12 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
         owner.tabBarController.selectedIndex = flow.rawValue
       })
       .disposed(by: disposeBag)
+    
+    self.forceMoveTab
+      .subscribe(with: self) { owner, flow in
+        owner.tabBarController.forceMoveTab.accept(flow.rawValue)
+      }
+      .disposed(by: disposeBag)
   }
   
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
@@ -108,6 +115,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   public func handleChildEvent<T: ParentAction>(_ event: T) {
     if let mypageEvent = event as? MyPageCoordinatorAction {
       handleMypageEvent(.requireParentAction(mypageEvent))
+    } else if let missionEvent = event as? MissionCoordinatorAction {
+      handleMissionEvent(.requireParentAction(missionEvent))
     }
   }
   
@@ -121,12 +130,15 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
 // MARK: - Handle Child Actions
 
 extension WalWalTabBarCoordinatorImp {
-  fileprivate func missionEvent(_ event: CoordinatorEvent<MissionCoordinatorAction>) {
+  fileprivate func handleMissionEvent(_ event: CoordinatorEvent<MissionCoordinatorAction>) {
     switch event {
     case .finished:
       childCoordinator = nil
     case .requireParentAction(let action):
-      switch action { }
+      switch action { 
+      case .startMyPage:
+        self.forceMoveTab.accept(.startMyPage)
+      }
     }
   }
   

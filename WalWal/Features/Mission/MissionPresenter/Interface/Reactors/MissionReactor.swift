@@ -19,6 +19,7 @@ public enum MissionReactorAction {
   case moveToMissionUpload
   case startTimer
   case stopTimer
+  case moveToMyPage
 }
 
 public enum MissionReactorMutation {
@@ -33,6 +34,7 @@ public enum MissionReactorMutation {
   case fetchRecordId(Int) /// recordId를 저장
   case startMissionUploadProcess
   case moveToMissionUploadFailed(Error) /// 미션 업로드 화면으로 이동 실패
+  case moveToMyPage
 }
 
 
