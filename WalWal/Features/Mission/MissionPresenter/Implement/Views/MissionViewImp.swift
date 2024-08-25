@@ -174,7 +174,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     case .inProgress:
       missionStartButton.isEnabled = true
     case .completed:
-      missionStartButton.isEnabled = false
+      missionStartButton.isEnabled = false /// 이후에 기록으로 이동시켜야함
     case .none:
       missionStartButton.isEnabled = false
     }

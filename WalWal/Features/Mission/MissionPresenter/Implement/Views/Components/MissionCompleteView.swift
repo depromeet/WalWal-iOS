@@ -47,6 +47,7 @@ final class MissionCompleteView: UIView {
   
   private let guideLabel = UILabel().then {
     $0.text = "미션 기록에서 그 동안 쌓은 추억을 확인해보세요."
+    $0.textAlignment = .center
     $0.font = Fonts.KR.H7.M
     $0.textColor = Colors.gray700.color
   }
