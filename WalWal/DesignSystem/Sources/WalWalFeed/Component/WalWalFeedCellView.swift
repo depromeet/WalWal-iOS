@@ -8,6 +8,7 @@
 
 import UIKit
 import ResourceKit
+import Utility
 
 import Then
 import FlexLayout
@@ -58,20 +59,23 @@ final class WalWalFeedCellView: UIView {
     $0.image = Images.fireDef.image
   }
   
-  private let boostCountLabel = UILabel().then {
+  let contentLabel = UILabel().then {
+    $0.textColor = Colors.black.color
     $0.font = Fonts.KR.B2
+    $0.translatesAutoresizingMaskIntoConstraints = false
+    $0.numberOfLines = 2
+    $0.lineBreakMode = .byCharWrapping
+  }
+  
+  private let boostCountLabel = UILabel().then {
+    $0.font = Fonts.EN.B2
     $0.textColor = Colors.gray500.color
   }
   
   private let boostLabel = UILabel().then {
     $0.text = "부스터"
-    $0.font = Fonts.EN.Caption
+    $0.font = Fonts.KR.B2
     $0.textColor = Colors.gray500.color
-  }
-  
-  private let seperatorCircle = UIView().then {
-    $0.backgroundColor = Colors.gray500.color
-    $0.layer.cornerRadius = 1
   }
   
   private let missionDateLabel = UILabel().then {
@@ -79,10 +83,16 @@ final class WalWalFeedCellView: UIView {
     $0.textColor = Colors.gray500.color
   }
   
+  var isContentExpanded = false
+  var maxLength = 55
+  private var contents = ""
+  private let disposeBag = DisposeBag()
+  
   // MARK: - Initializers
   
   override init(frame: CGRect) {
     super.init(frame: frame)
+    bind()
     setAttributes()
     setLayouts()
   }
@@ -95,13 +105,35 @@ final class WalWalFeedCellView: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
+    boostCountLabel.flex
+      .markDirty()
+    
+    missionDateLabel.flex
+      .markDirty()
+    
+    boostLabelView.flex
+      .markDirty()
+    
+    contentLabel.flex
+      .markDirty()
+    
     containerView.pin
       .all()
+    
     containerView.flex
-      .layout()
+      .layout(mode: .adjustHeight)
+    
   }
   
   // MARK: - Methods
+  
+  private func bind() {
+    contentLabel.rx.tapped
+      .subscribe(onNext: { [weak self] in
+        self?.toggleContent()
+      })
+      .disposed(by: disposeBag) // DisposeBag에 추가
+  }
   
   func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false) {
     userNickNameLabel.text = feedData.nickname
@@ -114,8 +146,10 @@ final class WalWalFeedCellView: UIView {
     boostIconImageView.image = isBoostImage
     boostCountLabel.textColor = isBoostColor
     boostLabel.textColor = isBoostColor
+    contentLabel.text = feedData.contents
+    contentLabel.sizeToFit()
     
-    let missionDate = feedData.date
+    let missionDate = feedData.date.toFormattedDate() ?? feedData.date
     let attributedString = NSMutableAttributedString(string: missionDate)
     
     let numberFont = Fonts.EN.Caption // 숫자에 적용할 폰트
@@ -125,13 +159,22 @@ final class WalWalFeedCellView: UIView {
     
     let numberPattern = "[0-9]"
     if let regex = try? NSRegularExpression(pattern: numberPattern, options: []) {
-        let matches = regex.matches(in: missionDate, options: [], range: NSRange(location: 0, length: missionDate.count))
-        for match in matches {
-            attributedString.addAttribute(.font, value: numberFont, range: match.range)
-        }
+      let matches = regex.matches(in: missionDate, options: [], range: NSRange(location: 0, length: missionDate.count))
+      for match in matches {
+        attributedString.addAttribute(.font, value: numberFont, range: match.range)
+      }
     }
     
     missionDateLabel.attributedText = attributedString
+    
+    contents = feedData.contents
+    
+    guard let contentTextLength = self.contentLabel.text?.count else { return }
+    if contentTextLength > maxLength {
+      DispatchQueue.main.async {
+        self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
+      }
+    }
   }
   
   private func setAttributes() {
@@ -159,11 +202,15 @@ final class WalWalFeedCellView: UIView {
   }
   
   private func setLayouts() {
+    contentLabel.flex.isIncludedInLayout(contentLabel.text != "")
+    
     containerView.flex
       .define {
         $0.addItem(profileHeaderView)
-          .margin(20, 20)
+          .marginHorizontal(16)
+          .marginVertical(15)
         $0.addItem(feedContentView)
+          .marginBottom(20)
       }
     
     profileHeaderView.flex
@@ -186,31 +233,40 @@ final class WalWalFeedCellView: UIView {
       }
     
     feedContentView.flex
+      .width(100%)
       .direction(.column)
       .justifyContent(.center)
       .define {
         $0.addItem(missionImageView)
           .size(343)
           .position(.relative)
+        $0.addItem(contentLabel)
+          .minHeight(16)
+          .marginHorizontal(16)
+          .marginTop(14)
         $0.addItem(boostLabelView)
-          .grow(1)
-          .marginTop(15)
-          .marginLeft(20)
-          .marginBottom(16)
+          .marginTop(8)
+          .marginHorizontal(16)
       }
     
     boostLabelView.flex
+      .width(100%)
       .direction(.row)
       .alignItems(.center)
       .define {
         $0.addItem(boostIconImageView)
         $0.addItem(boostCountLabel)
+          .marginRight(1)
         $0.addItem(boostLabel)
-          .marginRight(4)
-        $0.addItem(seperatorCircle)
-          .size(2)
+          .marginRight(8)
         $0.addItem(missionDateLabel)
-          .marginLeft(4)
       }
   }
+  
+  private func toggleContent() {
+    contentLabel.numberOfLines = 4
+    contentLabel.text = contents
+    setNeedsLayout()
+  }
+  
 }

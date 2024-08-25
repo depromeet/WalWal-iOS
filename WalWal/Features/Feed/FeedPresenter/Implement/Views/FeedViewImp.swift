@@ -67,6 +67,10 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
       .layout()
   }
   
+  public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    feed.collectionView.collectionViewLayout.invalidateLayout()
+  }
+  
   // MARK: - Layout
   
   public func configureAttribute() {
@@ -96,6 +100,7 @@ extension FeedViewControllerImp: View {
   public func bindAction(reactor: R) {
     feed.scrollEndReached
       .skip(1)
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .map { _ in Reactor.Action.loadFeedData(cursor: reactor.currentState.nextCursor) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)

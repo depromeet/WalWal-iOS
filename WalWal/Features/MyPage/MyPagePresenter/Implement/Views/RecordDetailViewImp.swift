@@ -87,6 +87,10 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
       .layout()
   }
   
+  public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    feed.collectionView.collectionViewLayout.invalidateLayout()
+  }
+  
   // MARK: - Methods
   
   public func setAttribute() {

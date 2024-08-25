@@ -36,8 +36,7 @@ final class FeedHeaderView: UICollectionReusableView {
     addSubview(guideLabel)
     
     guideLabel.pin
-      .hCenter()
-      .top(20)
+      .center()
       .sizeToFit()
   }
 }

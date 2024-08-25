@@ -16,6 +16,7 @@ public struct WalWalFeedModel {
   var profileImage: UIImage?
   var missionImage: UIImage?
   var boostCount: Int
+  var contents: String
   
   public init(
     id: Int,
@@ -24,7 +25,8 @@ public struct WalWalFeedModel {
     missionTitle: String,
     profileImage: UIImage?,
     missionImage: UIImage?,
-    boostCount: Int
+    boostCount: Int,
+    contents: String
   ) {
     self.id = id
     self.date = date
@@ -33,6 +35,7 @@ public struct WalWalFeedModel {
     self.profileImage = profileImage
     self.missionImage = missionImage
     self.boostCount = boostCount
+    self.contents = contents
   }
 }
 

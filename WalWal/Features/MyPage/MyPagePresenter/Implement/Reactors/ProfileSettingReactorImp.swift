@@ -66,18 +66,27 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
         fetchAppVersion(),
         Observable.just(.setLoading(false))
       ])
-    case .logout:
-      return .concat([
-        .just(.setLoading(true)),
-        logoutFlow()
-      ])
-    case .withdraw:
-      return .concat([
-        .just(.setLoading(true)),
-        withdrawFlow()
-      ])
     case .tapBackButton:
       return Observable.just(.moveToBack)
+    case .movePrivacyTab:
+      return .just(.moveToPrivacyInfo)
+    case let .settingAction(type):
+      if type == .logout {
+        return .concat([
+          .just(.setLoading(true)),
+          logoutFlow()
+        ])
+      } else if type == .withdraw {
+        return .concat([
+          .just(.setLoading(true)),
+          withdrawFlow()
+        ])
+      } else if type == .privacy {
+        return .just(.moveToPrivacyInfo)
+      } else if type == .service {
+        return .just(.moveToService)
+      }
+      return .never()
     }
   }
   
@@ -108,6 +117,10 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       coordinator.popViewController(animated: true)
     case let .errorMessage(msg):
       newState.errorMessage = msg
+    case .moveToPrivacyInfo:
+      coordinator.destination.accept(.showPrivacyInfoPage)
+    case .moveToService:
+      coordinator.destination.accept(.showServiceInfoPage)
     }
     return newState
   }
@@ -245,6 +258,18 @@ extension ProfileSettingReactorImp {
   
   private func createSettings(appVersion: String, isRecent: Bool) -> [ProfileSettingItemModel] {
     return [
+      .init(
+        title: "서비스 이용 약관",
+        subTitle: "",
+        rightText: "",
+        type: .service
+      ),
+      .init(
+        title: "개인정보 처리 방침",
+        subTitle: "",
+        rightText: "",
+        type: .privacy
+      ),
       .init(
         title: "로그아웃",
         subTitle: "",
