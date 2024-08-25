@@ -222,7 +222,6 @@ final class WalWalFeedCellView: UIView {
           .size(40)
         $0.addItem(profileInfoView)
           .marginLeft(10)
-          .width(180)
       }
     
     profileInfoView.flex
