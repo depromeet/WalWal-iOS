@@ -78,6 +78,8 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       ])
     case .tapBackButton:
       return Observable.just(.moveToBack)
+    case .movePrivacyTab:
+      return .just(.moveToPrivacyInfo)
     }
   }
   
@@ -108,6 +110,8 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       coordinator.popViewController(animated: true)
     case let .errorMessage(msg):
       newState.errorMessage = msg
+    case .moveToPrivacyInfo:
+      coordinator.destination.accept(.showPrivacyInfoPage)
     }
     return newState
   }
@@ -256,6 +260,12 @@ extension ProfileSettingReactorImp {
         subTitle: appVersion,
         rightText: isRecent ? "최신 버전입니다." : "업데이트 필요",
         type: .version
+      ),
+      .init(
+        title: "개인정보 처리 방침",
+        subTitle: "",
+        rightText: "",
+        type: .privacy
       ),
       .init(
         title: "회원 탈퇴",

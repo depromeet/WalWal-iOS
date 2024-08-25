@@ -21,6 +21,7 @@ public enum ProfileSettingReactorAction {
   case logout
   case withdraw
   case tapBackButton
+  case movePrivacyTab
 }
 
 public enum ProfileSettingReactorMutation {
@@ -31,6 +32,7 @@ public enum ProfileSettingReactorMutation {
   case moveToAuth
   case moveToBack
   case errorMessage(msg: String)
+  case moveToPrivacyInfo
 }
 
 public struct ProfileSettingReactorState {

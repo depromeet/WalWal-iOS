@@ -18,6 +18,7 @@ import FlexLayout
 import ReactorKit
 import RxSwift
 import RxCocoa
+import SafariServices
 
 public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UIViewController, ProfileSettingViewController {
   
@@ -50,6 +51,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   
   private let logoutAction = PublishRelay<Void>()
   private let withdrawAction = PublishRelay<Void>()
+  private let movePrivacyAction = PublishRelay<Void>()
   
   // MARK: - Initializer
   
@@ -130,6 +132,11 @@ extension ProfileSettingViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
+    movePrivacyAction
+      .map { Reactor.Action.movePrivacyTab }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
   }
   
   public func bindState(reactor: R) {
@@ -175,6 +182,8 @@ extension ProfileSettingViewControllerImp: View {
             cancelTitle: "계속 이용하기",
             okTitle: "회원 탈퇴"
           )
+        } else if item.type == .privacy {
+          owner.movePrivacyAction.accept(())
         }
       }
       .disposed(by: disposeBag)

@@ -14,6 +14,7 @@ import AuthDependencyFactory
 import MembersDependencyFactory
 import FeedDependencyFactory
 import ImageDependencyFactory
+import SafariServices
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -83,6 +84,8 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
           )
         case .showProfileSetting:
           owner.showProfileSettingVC()
+        case .showPrivacyInfoPage:
+          owner.showPrivacyPageVC()
         }
       })
       .disposed(by: disposeBag)
@@ -128,6 +131,14 @@ extension MyPageCoordinatorImp {
 // MARK: - Create and Start(Show) with Flow(View)
 
 extension MyPageCoordinatorImp {
+  
+  private func showPrivacyPageVC() {
+    let urlString = "https://gifted-tennis-45a.notion.site/057c47b69f03491ab05bc216ed92b820"
+    guard let url = URL(string: urlString) else { return }
+    let safariVC = SFSafariViewController(url: url)
+    self.presentViewController(viewController: safariVC, style: .fullScreen)
+  }
+  
   /// 기록 상세뷰
   fileprivate func showRecordDetailVC(
     nickname: String,
