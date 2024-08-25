@@ -36,6 +36,11 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private let buttonContainer = UIView()
   private let bubbleContainer = UIView()
   
+  private let splashForLoading = UIImageView().then {
+    $0.image = Images.splash.image
+    $0.contentMode = .scaleAspectFit
+  }
+  
   private let missionStartView = MissionStartView(
     missionTitle: "반려동물과 함께\n산책한 사진을 찍어요",
     missionImage: ResourceKitAsset.Sample.missionSample.image
@@ -104,11 +109,18 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
       .all(view.pin.safeArea)
     rootContainer.flex
       .layout()
+    
+    splashForLoading.pin
+      .all()
+    splashForLoading.flex
+      .layout()
   }
   
   public func configureAttribute() {
+    guard let window = UIWindow.key else { return }
     view.backgroundColor = Colors.white.color
     view.addSubview(rootContainer)
+    window.addSubview(splashForLoading)
   }
   
   public func configureLayout() {
@@ -311,6 +323,13 @@ extension MissionViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.state
+      .map { $0.loadInitialDataFlowEnded }
+      .subscribe(with: self, onNext: { owner, isLoadInitialDataFlowEnded in
+        owner.splashForLoading.isHidden = isLoadInitialDataFlowEnded
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.state
       .map { $0.loadInitialDataFlowFailed }
       .compactMap { $0 }
       .subscribe(onNext: { error in
@@ -335,7 +354,7 @@ extension MissionViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map { $0.loadInitialDataFlowFailed }
+      .map { $0.missionUploadError }
       .compactMap { $0 }
       .subscribe(onNext: { error in
         WalWalToast.shared.show(type: .error, message: error.localizedDescription)

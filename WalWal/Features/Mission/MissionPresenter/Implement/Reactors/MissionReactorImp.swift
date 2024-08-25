@@ -12,6 +12,7 @@ import MissionCoordinator
 import MissionDomain
 import RecordsDomain
 import Utility
+import DesignSystem
 
 import ReactorKit
 import RxSwift
@@ -83,6 +84,7 @@ public final class MissionReactorImp: MissionReactor {
       
     // MARK: - 미션탭 처음 들어오면 실행되는 Flow!
     case let .fetchTodayMissionData(mission):
+      newState.loadInitialDataFlowEnded = false
       newState.mission = mission
     case let .fetchRecordStatusData(recordStatus):
       newState.recordStatus = recordStatus
@@ -101,6 +103,8 @@ public final class MissionReactorImp: MissionReactor {
       newState.buttonTitle = status.statusMessage.description
     case let .fetchCompletedRecordsTotalCountData(totalCount):
       newState.totalCompletedRecordsCount = totalCount
+    case .loadInitialDataFlowEnded:
+      newState.loadInitialDataFlowEnded = true
     case .loadInitialDataFlowFailed(let loadInitialDataFlowFailed):
       newState.loadInitialDataFlowFailed = loadInitialDataFlowFailed
     
@@ -128,10 +132,11 @@ public final class MissionReactorImp: MissionReactor {
       .flatMap { _ in self.fetchMissionData()}
       .flatMap { [weak self] mission -> Observable<Mutation> in
         guard let owner = self else { return .empty() }
-        return Observable.concat([
-          Observable.just(Mutation.fetchTodayMissionData(mission)),
+        return .concat([
+          .just(Mutation.fetchTodayMissionData(mission)),
           owner.fetchRecordStatus(missionId: mission.id),
-          owner.fetchCompletedTotalRecordsCount()
+          owner.fetchCompletedTotalRecordsCount(),
+          .just(Mutation.loadInitialDataFlowEnded)
         ])
       }
       .catch { error in

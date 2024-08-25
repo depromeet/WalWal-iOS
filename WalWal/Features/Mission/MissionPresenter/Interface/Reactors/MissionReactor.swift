@@ -26,6 +26,7 @@ public enum MissionReactorMutation {
   case fetchTodayMissionData(MissionModel) /// 오늘의 미션 불러오기
   case fetchRecordStatusData(MissionRecordStatusModel) /// 현재 미션 수행 상태
   case fetchCompletedRecordsTotalCountData(Int)
+  case loadInitialDataFlowEnded /// 최초 네트워크 통신 흐름 종료
   case loadInitialDataFlowFailed(Error) /// 최초 네트워크 통신 흐름 실패 여부
   
   case updateTimerText(String)
@@ -43,6 +44,7 @@ public struct MissionReactorState {
   public var recordId: Int = 0
   public var recordStatus: MissionRecordStatusModel?
   public var totalCompletedRecordsCount: Int = 0
+  public var loadInitialDataFlowEnded: Bool = false
   public var loadInitialDataFlowFailed: Error?
   public var missionUploadError: Error?
   
