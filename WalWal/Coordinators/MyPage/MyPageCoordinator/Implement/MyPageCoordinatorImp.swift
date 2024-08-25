@@ -136,7 +136,7 @@ extension MyPageCoordinatorImp {
   
   /// 개인정보 처리 방침 페이지
   private func showPrivacyPageVC() {
-    let urlString = "https://gifted-tennis-45a.notion.site/057c47b69f03491ab05bc216ed92b820"
+    let urlString = "https://walwal.oopy.io/057c47b6-9f03-491a-b05b-c216ed92b820"
     guard let url = URL(string: urlString) else { return }
     let safariVC = SFSafariViewController(url: url)
     self.presentViewController(viewController: safariVC, style: .fullScreen)
@@ -144,7 +144,7 @@ extension MyPageCoordinatorImp {
   
   /// 서비스 이용 약관 페이지
   private func showServicePageVC() {
-    let urlString = "https://gifted-tennis-45a.notion.site/b693c6415f5c4752854b2506bc4e1b5b"
+    let urlString = "https://walwal.oopy.io/b693c641-5f5c-4752-854b-2506bc4e1b5b"
     guard let url = URL(string: urlString) else { return }
     let safariVC = SFSafariViewController(url: url)
     self.presentViewController(viewController: safariVC, style: .fullScreen)
