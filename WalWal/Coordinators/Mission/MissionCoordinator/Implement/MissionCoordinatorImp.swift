@@ -62,7 +62,7 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   public func bindState() {
     destination
       .subscribe(with: self, onNext: { owner, flow in
-        switch flow { 
+        switch flow {
         case .startMissionUpload(let recordId, let missionId):
           owner.startMissionUpload(recordId: recordId, missionId: missionId)
         }
@@ -99,21 +99,21 @@ public final class MissionCoordinatorImp: MissionCoordinator {
 
 extension MissionCoordinatorImp {
   
-    fileprivate func handleMissionUploadEvent(_ event: CoordinatorEvent<MissionUploadCoordinatorAction>) {
-      switch event {
-      case .finished:
+  fileprivate func handleMissionUploadEvent(_ event: CoordinatorEvent<MissionUploadCoordinatorAction>) {
+    switch event {
+    case .finished:
+      childCoordinator = nil
+    case .requireParentAction(let action):
+      switch action {
+      case .willFetchMissionData:
+        /// Mission Data를 Fetch하는 로직 reactor에 호출
+        popViewController(animated: true)
         childCoordinator = nil
-      case .requireParentAction(let action):
-        switch action {
-        case .willFetchMissionData:
-          /// Mission Data를 Fetch하는 로직 reactor에 호출
-          popViewController(animated: true)
-          childCoordinator = nil
-          baseReactor?.action.onNext(.loadInitialData)
-          print("Fetch메서드 재호출")
-        }
+        baseReactor?.action.onNext(.loadInitialData)
+        print("Fetch메서드 재호출")
       }
     }
+  }
 }
 
 // MARK: - Create and Start(Show) with Flow(View)
