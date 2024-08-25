@@ -143,7 +143,7 @@ extension WalWalBoostGenerator {
   
   private func createOverlayView(frame: CGRect) -> UIView {
     let overlayView = UIView(frame: frame)
-    overlayView.backgroundColor = Colors.white.color
+    overlayView.backgroundColor = Colors.gray150.color
     return overlayView
   }
   
