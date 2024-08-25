@@ -126,7 +126,9 @@ public final class FeedReactorImp: FeedReactor {
       return .just(nil)
     }
     
-    if let cachedImage = GlobalState.shared.imageStore[imageURL] {
+    if let defaultImage = DefaultProfile(rawValue: imageURL) {
+      return .just(defaultImage.image) // 기본 이미지 반환
+    } else if let cachedImage = GlobalState.shared.imageStore[imageURL] {
       return .just(cachedImage)
     } else {
       return GlobalState.shared.downloadAndCacheImage(for: imageURL)

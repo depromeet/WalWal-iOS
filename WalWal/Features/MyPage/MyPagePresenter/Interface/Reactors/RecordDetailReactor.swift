@@ -22,8 +22,8 @@ public enum RecordDetailReactorAction {
 }
 
 public enum RecordDetailReactorMutation {
-  case fetchUseFeed(memberId: Int, nextCursor: String?)
-  case userFeedReachEnd
+  case fetchUseFeed(memberId: Int, nextCursor: String?, newRecord: [WalWalFeedModel])
+  case userFeedReachEnd(newRecord: [WalWalFeedModel])
   case userFeedFetchFailed(errorMessage: String)
   case moveToBack
 }
