@@ -19,8 +19,8 @@ public final class CheckCompletedTotalRecordsUseCaseImp: CheckCompletedTotalReco
     self.recordRepository = recordRepository
   }
   
-  public func execute() -> Single<MissionRecordTotalCountModel> {
-    return recordRepository.checkCompletedTotalRecords()
+  public func execute(memberId: Int?) -> Single<MissionRecordTotalCountModel> {
+    return recordRepository.checkCompletedTotalRecords(memberId: memberId)
       .map { MissionRecordTotalCountModel(dto: $0) }
       .asObservable()
       .asSingle()

@@ -10,6 +10,7 @@
 import UIKit
 import MissionPresenter
 import MissionDomain
+import RecordsDomain
 import Utility
 import ResourceKit
 import DesignSystem
@@ -31,12 +32,19 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   // MARK: - UI
   
   private let rootContainer = UIView()
+  private let missionContainer = UIView()
+  private let buttonContainer = UIView()
+  private let bubbleContainer = UIView()
+  
   private let missionStartView = MissionStartView(
     missionTitle: "반려동물과 함께\n산책한 사진을 찍어요",
     missionImage: ResourceKitAsset.Sample.missionSample.image
   )
-  private let missionSucessView = MissionCompleteView()
+  
+  private let missionCompletedView = MissionCompleteView()
+  
   private lazy var missionCountBubbleView = BubbleView()
+  
   private let missionStartButton = WalWalButton_Icon(
     type: .active,
     title: "미션 시작하기",
@@ -66,11 +74,9 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   // MARK: - Lifecycle
   
-  public override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    
+  public override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
     missionCountBubbleView.startFloatingAnimation()
-    
   }
   
   public override func viewDidLoad() {
@@ -98,32 +104,98 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   }
   
   public func configureLayout() {
-    rootContainer.flex
-      .paddingTop(80.adjusted)
-      .define {
-        $0.addItem(missionSucessView)
-          .alignSelf(.center)
-        $0.addItem()
-          .direction(.columnReverse)
-          .marginTop(17.adjusted)
-          .define {
-            $0.addItem(missionStartButton)
-              .marginHorizontal(20.adjusted)
-            $0.addItem(missionCountBubbleView)
-              .marginBottom(-8.adjusted)
-              .alignSelf(.center)
-          }
-      }
+    rootContainer.flex.define {
+      $0.addItem(missionContainer)
+        .width(100%)
+        .height(450.adjusted)
+        .marginTop(40.adjustedHeight)
+      
+      $0.addItem(buttonContainer)
+        .width(100%)
+        .position(.absolute)
+        .bottom(30)
+      
+      $0.addItem(bubbleContainer)
+        .width(100%)
+        .height(60.adjusted)  // 버블의 예상 높이에 따라 조정
+        .position(.absolute)
+        .bottom(70.adjusted)  // 버튼 컨테이너 위에 위치하도록 조정
+    }
+    
+    missionContainer.flex.define {
+      $0.addItem(missionStartView)
+        .position(.absolute)
+        .all(0)
+      
+      $0.addItem(missionCompletedView)
+        .position(.absolute)
+        .all(0)
+    }
+    
+    buttonContainer.flex.define {
+      $0.addItem(missionStartButton)
+        .marginHorizontal(20.adjusted)
+    }
+    
+    bubbleContainer.flex.define {
+      $0.addItem(missionCountBubbleView)
+        .position(.absolute)
+        .alignSelf(.center)
+        .bottom(0)
+    }
   }
+  
   
   // MARK: - Method
   
-  private func setMissionData(_ model: MissionModel) {
+  private func configureMissionProcessing(_ model: MissionModel) {
+    print("미션 시작 페이지 업데이트")
     self.missionStartView.configureStartView(title: model.title, missionImageURL: model.imageURL)
   }
   
-  private func configureMissionCompleteView(missionImageURL: String) {
-    // 미션 완료뷰 이미지 넣기
+  private func configureMissionStatus(_ status: MissionRecordStatusModel) {
+    switch status.statusMessage {
+    case .completed:
+      print("미션 완료 페이지 업데이트")
+      self.missionCompletedView.configureStartView(recordImageURL: status.imageUrl)
+      self.missionStartView.isHidden = true
+      self.missionCompletedView.isHidden = false
+    case .notCompleted, .inProgress:
+      self.missionStartView.isHidden = false
+      self.missionCompletedView.isHidden = true
+    }
+    self.missionContainer.flex.layout()
+  }
+  
+  private func updateButtonState(for status: StatusMessage?) {
+    switch status {
+    case .notCompleted:
+      missionStartButton.isEnabled = true
+    case .inProgress:
+      missionStartButton.isEnabled = true
+    case .completed:
+      missionStartButton.isEnabled = false /// 이후에 기록으로 이동시켜야함
+    case .none:
+      missionStartButton.isEnabled = false
+    }
+  }
+  
+  private func updateButtonIcon(for status: StatusMessage?) {
+    switch status {
+    case .notCompleted:
+      missionStartButton.icon = Images.flagS.image
+    case .inProgress:
+      missionStartButton.icon = Images.watchS.image
+    case .completed:
+      missionStartButton.icon = Images.calendarS.image
+    case .none:
+      missionStartButton.icon = Images.flagS.image
+    }
+  }
+  
+  private func updateBubbleViewTitle(for status: StatusMessage?) {
+    let isCompleted = status == .completed ? true : false
+    missionCountBubbleView.isCompleted.accept(isCompleted)
   }
 }
 
@@ -138,67 +210,90 @@ extension MissionViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-      missionStartButton.rx.tapped
-        .map { [weak self] in
-          return Reactor.Action.startMission(self?.missionId ?? 0)
-        }
-        .bind(to: reactor.action)
-        .disposed(by: disposeBag)
-  }
-  
-  public func bindState(reactor: R) {
     
-    reactor.state
-      .map{ $0.isMissionStarted }
-      .filter { $0 }
-      .map{ _ in Reactor.Action.moveToMissionUpload}
+    missionStartButton.rx.tapped
+      .map { Reactor.Action.moveToMissionUpload }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
     reactor.state
-      .map {  $0.totalMissionCount  }
-      .subscribe(with: self) { owner, count in
-        owner.missionCount = count
-        owner.missionCountBubbleView.missionCount.accept(count)
-      }
+      .map { $0.isTimerRunning }
+      .distinctUntilChanged()
+      .filter { $0 }
+      .map { _ in Reactor.Action.startTimer }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
     reactor.state
-      .observe(on: MainScheduler.instance)
-      .map { $0 }
-      .subscribe(with: self, onNext: { owner, state in
-        
-        owner.isMissionCompleted = state.isMissionStarted
-        owner.missionCountBubbleView.isCompleted.accept(state.missionStatus?.statusMessage == .completed)
-        owner.missionStartButton.title = state.buttonText
-        if let status = state.missionStatus {
-          owner.recordImageURL = status.imageUrl
-          switch status.statusMessage {
-          case .notCompleted:
-            owner.isMissionCompleted = false
-          case .inProgress:
-            owner.missionStartButton.icon = Images.watchL.image
-          case .completed:
-            owner.isMissionCompleted = true
-            owner.missionStartButton.icon = Images.calendarL.image
-          }
-        }
+      .map { $0.isTimerRunning }
+      .distinctUntilChanged()
+      .filter { !$0 }
+      .map { _ in Reactor.Action.stopTimer }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+  }
+  
+  public func bindState(reactor: R) {
+    reactor.state
+      .compactMap { $0.mission }
+      .distinctUntilChanged()
+      .compactMap { $0 }
+      .subscribe(with: self, onNext: { owner, mission in
+        owner.configureMissionProcessing(mission)
       })
       .disposed(by: disposeBag)
     
     reactor.state
-      .map { $0.mission }
-      .subscribe(with: self) { owner, mission in
-        
-        if let mission {
-          owner.missionId = mission.id
-          owner.setMissionData(mission)
-        }
-      }
+      .compactMap { $0.recordStatus }
+      .distinctUntilChanged()
+      .compactMap { $0 }
+      .subscribe(with: self, onNext: { owner, status in
+        owner.configureMissionStatus(status)
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.totalCompletedRecordsCount }
+      .distinctUntilChanged()
+      .bind(to: missionCountBubbleView.missionCount)
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.loadInitialDataFlowFailed }
+      .compactMap { $0 }
+      .subscribe(onNext: { error in
+        WalWalToast.shared.show(type: .error, message: error.localizedDescription)
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.buttonTitle }
+      .distinctUntilChanged()
+      .bind(to: missionStartButton.rx.title)
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.recordStatus?.statusMessage }
+      .distinctUntilChanged()
+      .subscribe(with: self, onNext: { owner, status in
+        owner.updateButtonState(for: status)
+        owner.updateButtonIcon(for: status)
+        owner.updateBubbleViewTitle(for: status)
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.loadInitialDataFlowFailed }
+      .compactMap { $0 }
+      .subscribe(onNext: { error in
+        WalWalToast.shared.show(type: .error, message: error.localizedDescription)
+      })
       .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
-
+    
   }
+  
+  
 }

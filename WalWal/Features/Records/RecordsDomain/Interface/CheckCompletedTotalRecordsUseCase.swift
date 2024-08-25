@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol CheckCompletedTotalRecordsUseCase {
-  func execute() -> Single<MissionRecordTotalCountModel>
+  func execute(memberId: Int?) -> Single<MissionRecordTotalCountModel>
 }

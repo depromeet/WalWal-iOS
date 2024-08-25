@@ -9,19 +9,27 @@
 import Foundation
 import RecordsData
 
-public struct MissionRecordStatusModel {
-  public let recordId: Int
+public struct MissionRecordStatusModel: Equatable, Hashable {
   public let imageUrl: String
   public let statusMessage: StatusMessage
   
   public init(dto: MissionRecordStatusDTO) {
-    self.recordId = dto.recordId ?? 0
     self.imageUrl = dto.imageUrl ?? ""
     self.statusMessage = StatusMessage(rawValue: dto.status) ?? .notCompleted
   }
+  
+  public static func == (lhs: MissionRecordStatusModel, rhs: MissionRecordStatusModel) -> Bool {
+    return lhs.imageUrl == rhs.imageUrl 
+    && lhs.statusMessage == rhs.statusMessage
+  }
+  
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(imageUrl)
+    hasher.combine(statusMessage)
+  }
 }
 
-public enum StatusMessage: String {
+public enum StatusMessage: String, Equatable, Hashable {
   case notCompleted = "NOT_COMPLETED"
   case inProgress = "IN_PROGRESS"
   case completed = "COMPLETED"
@@ -29,11 +37,11 @@ public enum StatusMessage: String {
   public var description: String {
     switch self {
     case .notCompleted:
-      return "Not Completed"
+      return "미션 시작하기"
     case .inProgress:
-      return "In Progress"
+      return "남았어요!"
     case .completed:
-      return "Completed"
+      return "내 미션 기록 보기"
     }
   }
 }

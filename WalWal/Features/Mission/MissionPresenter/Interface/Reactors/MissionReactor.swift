@@ -15,37 +15,37 @@ import ReactorKit
 import RxSwift
 
 public enum MissionReactorAction {
-  case loadMissionInfo
-  case startMission(Int)
-  case startTimer
+  case loadInitialData
   case moveToMissionUpload
-  case checkPermission
+  case startTimer
+  case stopTimer
 }
 
 public enum MissionReactorMutation {
-  case setMission(MissionModel)
-  case setLoading(Bool)
-  case missionLoadFailed(Error)
-  case missionStarted(MissionRecordStartModel)
-  case setMissionStatus(MissionRecordStatusModel)
-  case setMissionCount(Int)
-  case setButtionText(String)
-  case setNotiPermission(Bool)
-  case setCamPermission(Bool)
-  case startMissionUpload
+  case fetchTodayMissionData(MissionModel) /// 오늘의 미션 불러오기
+  case fetchRecordStatusData(MissionRecordStatusModel) /// 현재 미션 수행 상태
+  case fetchCompletedRecordsTotalCountData(Int)
+  case loadInitialDataFlowFailed(Error) /// 최초 네트워크 통신 흐름 실패 여부
+  
+  case updateTimerText(String)
+  case stopTimer
+  
+  case fetchRecordId(Int) /// recordId를 저장
+  case startMissionUploadProcess
+  case moveToMissionUploadFailed(Error) /// 미션 업로드 화면으로 이동 실패
 }
 
 
 public struct MissionReactorState {
   public var mission: MissionModel?
-  public var isLoading: Bool = false
-  public var isMissionStarted: Bool = false
-  public var missionStatus: MissionRecordStatusModel?
-  public var totalMissionCount : Int = 0
-  public var buttonText: String = "미션 시작하기" // 초기값
   public var recordId: Int = 0
-  public var isAllowNoti: Bool = false
-  public var isAllowCamera: Bool = false
+  public var recordStatus: MissionRecordStatusModel?
+  public var totalCompletedRecordsCount: Int = 0
+  public var loadInitialDataFlowFailed: Error?
+  public var missionUploadError: Error?
+  
+  public var isTimerRunning: Bool = false
+  public var buttonTitle: String = "미션 시작하기"
   
   public init() {
     

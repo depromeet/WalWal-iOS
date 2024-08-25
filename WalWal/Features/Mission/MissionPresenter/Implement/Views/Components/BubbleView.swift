@@ -100,7 +100,7 @@ public final class BubbleView: UIView {
       .observe(on: MainScheduler.instance)
       .bind(with: self) { owner, data in
         let (count, completed) = data
-        owner.titleLabel.text = completed ? "\(count)번째 함께 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
+        owner.titleLabel.text = completed ? "\(count)번째 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
         owner.titleLabel.flex.markDirty()
         owner.containerView.flex.markDirty()
         owner.setNeedsLayout()

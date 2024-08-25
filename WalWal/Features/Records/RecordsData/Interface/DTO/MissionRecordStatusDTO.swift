@@ -9,7 +9,6 @@
 import Foundation
 
 public struct MissionRecordStatusDTO: Decodable {
-  public let recordId: Int?
   public let imageUrl: String?
   public let status: String
 }
