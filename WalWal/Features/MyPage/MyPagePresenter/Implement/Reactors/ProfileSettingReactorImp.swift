@@ -96,6 +96,7 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     case let .setSettingItemModel(setting):
       newState.settings = setting
     case .moveToAuth:
+      GlobalState.shared.resetRecords()
       coordinator.startAuth()
     case let .setIsRecentVersion(isRecent):
       newState.isRecent = isRecent
@@ -105,6 +106,8 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       }
       tabBarViewController.showCustomTabBar()
       coordinator.popViewController(animated: true)
+    case let .errorMessage(msg):
+      newState.errorMessage = msg
     }
     return newState
   }
@@ -153,7 +156,7 @@ extension ProfileSettingReactorImp {
           .flatMap { _ -> Observable<Mutation> in
             return .concat([
               .just(.setLoading(false)),
-              .just(.moveToAuth)
+              .just(.errorMessage(msg: "탈퇴를 완료하지 못했어요"))
             ])
           }
       }
@@ -206,7 +209,7 @@ extension ProfileSettingReactorImp {
         let _ = self.tokenDeleteUseCase.execute()
         return .concat([
           .just(.setLoading(false)),
-          .just(.moveToAuth)
+          .just(.errorMessage(msg: "탈퇴를 완료하지 못했어요"))
         ])
       }
   }
