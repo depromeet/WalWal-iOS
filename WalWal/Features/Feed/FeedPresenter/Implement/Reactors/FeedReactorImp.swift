@@ -63,64 +63,77 @@ public final class FeedReactorImp: FeedReactor {
     var newState = state
     
     switch mutation {
-    case .feedLoadEnded(let nextCursor):
-      let globalFeedModel = GlobalState.shared.feedList.value
+    case .feedLoadEnded(let nextCursor, let feedData):
+      newState.feedData = feedData
       newState.nextCursor = nextCursor
-      newState.feedData = convertFeedModel(feedList: globalFeedModel)
     case .feedFetchFailed(let errorMessage):
       newState.feedErrorMessage = errorMessage
-    case .feedReachEnd:
-      let globalFeedData = GlobalState.shared.feedList.value
-      newState.feedData = convertFeedModel(feedList: globalFeedData)
+    case .feedReachEnd(let feedData):
+      newState.feedData = feedData
       newState.feedFetchEnded = true
     }
     
     return newState
   }
   
+  private func convertFeedModel(feedList: [GlobalFeedListModel]) -> Observable<[WalWalFeedModel]> {
+    let feedObservables = feedList.map { feed -> Observable<WalWalFeedModel?> in
+      return Observable.zip(
+        convertImage(imageURL: feed.missionImage),
+        convertImage(imageURL: feed.profileImage)
+      )
+      .map { missionImage, profileImage in
+        let profileImageOrDefault = profileImage ?? ResourceKitAsset.Assets.yellowDog.image
+        return WalWalFeedModel(
+          id: feed.recordID,
+          date: feed.createdDate,
+          nickname: feed.authorNickname,
+          missionTitle: feed.missionTitle,
+          profileImage: profileImageOrDefault,
+          missionImage: missionImage,
+          boostCount: feed.boostCount,
+          contents: feed.contents ?? ""
+        )
+      }
+    }
+    
+    return Observable.zip(feedObservables)
+      .map { $0.compactMap { $0 } }
+  }
+  
   private func fetchFeedData(memberId: Int? = nil, cursor: String?, limit: Int) -> Observable<Mutation> {
     return fetchFeedUseCase.execute(memberId: memberId, cursor: cursor, limit: limit)
       .asObservable()
-      .flatMap { feedModel -> Observable<Mutation> in
-        if let nextCursor = feedModel.nextCursor {
-          return .just(Mutation.feedLoadEnded(nextCursor: nextCursor))
-        } else {
-          return .just(Mutation.feedReachEnd)
-        }
+      .withUnretained(self)
+      .flatMap { owner, feedModel -> Observable<Mutation> in
+        let cursor = feedModel.nextCursor
+        return owner.convertFeedModel(feedList: GlobalState.shared.feedList.value)
+          .map { feedData in
+            if let cursor {
+              return Mutation.feedLoadEnded(nextCursor: cursor, feedData: feedData)
+            } else {
+              return Mutation.feedReachEnd(feedData: feedData)
+            }
+          }
       }
       .catch { error in
-        return .just(
-          Mutation.feedFetchFailed(
-            error: error.localizedDescription
-          )
-        )
+        return .just(Mutation.feedFetchFailed(error: error.localizedDescription))
       }
   }
   
-  private func convertImage(imageURL: String?) -> UIImage? {
-    if let imageURL {
-      guard let image = GlobalState.shared.imageStore[imageURL] else { return nil }
-      return image
+  private func convertImage(imageURL: String?) -> Observable<UIImage?> {
+    guard let imageURL = imageURL else {
+      return .just(nil)
+    }
+    
+    if let cachedImage = GlobalState.shared.imageStore[imageURL] {
+      return .just(cachedImage)
     } else {
-      return nil
+      return GlobalState.shared.downloadAndCacheImage(for: imageURL)
+        .map { _ in
+          GlobalState.shared.imageStore[imageURL]
+        }
     }
   }
   
-  private func convertFeedModel(feedList: [GlobalFeedListModel]) -> [WalWalFeedModel]{
-    return feedList.compactMap { feed in
-      let missionImage = convertImage(imageURL: feed.missionImage)
-      
-      let profileImage = convertImage(imageURL: feed.profileImage) ?? ResourceKitAsset.Assets.yellowDog.image
-      return WalWalFeedModel(
-        id: feed.recordID,
-        date: feed.createdDate,
-        nickname: feed.authorNickname,
-        missionTitle: feed.missionTitle,
-        profileImage: profileImage,
-        missionImage: missionImage,
-        boostCount: feed.boostCount,
-        contents: feed.contents ?? ""
-      )
-    }
-  }
 }
