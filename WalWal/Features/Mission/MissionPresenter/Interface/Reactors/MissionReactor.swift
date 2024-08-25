@@ -17,6 +17,8 @@ import RxSwift
 public enum MissionReactorAction {
   case loadInitialData
   case moveToMissionUpload
+  case startTimer
+  case stopTimer
 }
 
 public enum MissionReactorMutation {
@@ -24,6 +26,9 @@ public enum MissionReactorMutation {
   case fetchRecordStatusData(MissionRecordStatusModel) /// 현재 미션 수행 상태
   case fetchCompletedRecordsTotalCountData(Int)
   case loadInitialDataFlowFailed(Error) /// 최초 네트워크 통신 흐름 실패 여부
+  
+  case updateTimerText(String)
+  case stopTimer
   
   case fetchRecordId(Int) /// recordId를 저장
   case startMissionUploadProcess
@@ -38,6 +43,9 @@ public struct MissionReactorState {
   public var totalCompletedRecordsCount: Int = 0
   public var loadInitialDataFlowFailed: Error?
   public var missionUploadError: Error?
+  
+  public var isTimerRunning: Bool = false
+  public var buttonTitle: String = "미션 시작하기"
   
   public init() {
     

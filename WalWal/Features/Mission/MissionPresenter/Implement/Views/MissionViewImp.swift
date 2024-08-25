@@ -166,6 +166,37 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     }
     self.missionContainer.flex.layout()
   }
+  
+  private func updateButtonState(for status: StatusMessage?) {
+    switch status {
+    case .notCompleted:
+      missionStartButton.isEnabled = true
+    case .inProgress:
+      missionStartButton.isEnabled = true
+    case .completed:
+      missionStartButton.isEnabled = false
+    case .none:
+      missionStartButton.isEnabled = false
+    }
+  }
+  
+  private func updateButtonIcon(for status: StatusMessage?) {
+    switch status {
+    case .notCompleted:
+      missionStartButton.icon = Images.flagS.image
+    case .inProgress:
+      missionStartButton.icon = Images.watchS.image
+    case .completed:
+      missionStartButton.icon = Images.calendarS.image
+    case .none:
+      missionStartButton.icon = Images.flagS.image
+    }
+  }
+  
+  private func updateBubbleViewTitle(for status: StatusMessage?) {
+    let isCompleted = status == .completed ? true : false
+    missionCountBubbleView.isCompleted.accept(isCompleted)
+  }
 }
 
 extension MissionViewControllerImp: View {
@@ -184,7 +215,22 @@ extension MissionViewControllerImp: View {
       .map { Reactor.Action.moveToMissionUpload }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
-
+    
+    reactor.state
+      .map { $0.isTimerRunning }
+      .distinctUntilChanged()
+      .filter { $0 }
+      .map { _ in Reactor.Action.startTimer }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.isTimerRunning }
+      .distinctUntilChanged()
+      .filter { !$0 }
+      .map { _ in Reactor.Action.stopTimer }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -210,6 +256,30 @@ extension MissionViewControllerImp: View {
       .map { $0.totalCompletedRecordsCount }
       .distinctUntilChanged()
       .bind(to: missionCountBubbleView.missionCount)
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.loadInitialDataFlowFailed }
+      .compactMap { $0 }
+      .subscribe(onNext: { error in
+        WalWalToast.shared.show(type: .error, message: error.localizedDescription)
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.buttonTitle }
+      .distinctUntilChanged()
+      .bind(to: missionStartButton.rx.title)
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.recordStatus?.statusMessage }
+      .distinctUntilChanged()
+      .subscribe(with: self, onNext: { owner, status in
+        owner.updateButtonState(for: status)
+        owner.updateButtonIcon(for: status)
+        owner.updateBubbleViewTitle(for: status)
+      })
       .disposed(by: disposeBag)
     
     reactor.state

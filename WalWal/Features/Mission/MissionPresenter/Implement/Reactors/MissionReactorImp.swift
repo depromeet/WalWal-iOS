@@ -62,6 +62,10 @@ public final class MissionReactorImp: MissionReactor {
         .map { Mutation.fetchRecordId($0) }
         .concat(Observable.just(Mutation.startMissionUploadProcess))
         .catch { error in Observable.just(Mutation.moveToMissionUploadFailed(error)) }
+    case .startTimer:
+      return startTimer()
+    case .stopTimer:
+      return .just(Mutation.stopTimer)
     }
   }
   
@@ -74,6 +78,19 @@ public final class MissionReactorImp: MissionReactor {
       newState.mission = mission
     case let .fetchRecordStatusData(recordStatus):
       newState.recordStatus = recordStatus
+      if case .inProgress = recordStatus.statusMessage {
+        newState.isTimerRunning = true
+      } else {
+        newState.isTimerRunning = false
+        newState.buttonTitle = recordStatus.statusMessage.description
+      }
+    case let .updateTimerText(text):
+      guard newState.recordStatus != nil else { return newState }
+      newState.buttonTitle = text
+    case .stopTimer:
+      newState.isTimerRunning = false
+      guard let status = newState.recordStatus else { return newState }
+      newState.buttonTitle = status.statusMessage.description
     case let .fetchCompletedRecordsTotalCountData(totalCount):
       newState.totalCompletedRecordsCount = totalCount
     case .loadInitialDataFlowFailed(let loadInitialDataFlowFailed):
@@ -146,46 +163,27 @@ public final class MissionReactorImp: MissionReactor {
   
   
   // MARK: - MissionTimer
+  
+  private func startTimer() -> Observable<Mutation> {
+    timerDisposeBag = DisposeBag()
+    return Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+      .map { _ in Mutation.updateTimerText(self.calculateTimeRemainingUntilMidnight()) }
+      .take(until: self.state.filter { $0.recordStatus?.statusMessage != .inProgress })
+      .do(onDispose: { [weak self] in
+        self?.timerDisposeBag = DisposeBag()
+      })
+  }
+  
   private func calculateTimeRemainingUntilMidnight() -> String {
     let calendar = Calendar.current
     let now = Date()
     let midnight = calendar.startOfDay(for: now).addingTimeInterval(86400)
-    
     let components = calendar.dateComponents([.hour, .minute, .second], from: now, to: midnight)
-    
     guard let hour = components.hour, let minute = components.minute, let second = components.second else {
       return "남은 시간 계산 실패"
     }
-    
     return String(format: "%02d:%02d:%02d 남았어요!", hour, minute, second)
   }
-  
-  
-//  private func startMissionTimer() -> Observable<Mutation> {
-//    let timerObservable = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
-//      .startWith(0)
-//      .map { _ in return self.calculateTimeRemainingUntilMidnight() }
-//      .flatMap { time -> Observable<Mutation> in
-//        return Observable.from([Mutation.setButtionText(time)])
-//      }
-//    return timerObservable
-//  }
-//  
-//  private func startTimerObservable() {
-//    timerDisposeBag = DisposeBag()
-//    
-//    Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
-//      .startWith(0)
-//      .map { [weak self] _ in
-//        self?.calculateTimeRemainingUntilMidnight() ?? "00:00:00"
-//      }
-//      .map { Mutation.setButtionText($0) }
-//      .subscribe(with: self, onNext: { owner, mutation in
-//        owner.action.onNext(.startTimer)
-//      })
-//      .disposed(by: timerDisposeBag)
-//  }
-  
   
   /// 알림 권한 확인
   private func checkNotificationPermission() -> Observable<Bool> {
