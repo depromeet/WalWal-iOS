@@ -80,7 +80,7 @@ let project = Project(
       ],
       settings: .settings(
         configurations: [
-          .debug(name: .release, xcconfig: "../Config/Release.xcconfig")
+          .release(name: .release, xcconfig: "../Config/Release.xcconfig")
         ]
       )
     )
