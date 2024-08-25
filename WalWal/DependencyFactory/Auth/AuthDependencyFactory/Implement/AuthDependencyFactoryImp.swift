@@ -92,8 +92,6 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase,
     kakaoLoginUseCase: KakaoLoginUseCase,
-    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     memberInfoUseCase: MemberInfoUseCase
   ) -> any AuthReactor {
     return AuthReactorImp(
@@ -102,8 +100,6 @@ public class AuthDependencyFactoryImp: AuthDependencyFactory {
       fcmSaveUseCase: fcmSaveUseCase,
       userTokensSaveUseCase: userTokensSaveUseCase,
       kakaoLoginUseCase: kakaoLoginUseCase,
-      checkRecordCalendarUseCase: checkRecordCalendarUseCase,
-      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
       memberInfoUseCase: memberInfoUseCase
     )
   }

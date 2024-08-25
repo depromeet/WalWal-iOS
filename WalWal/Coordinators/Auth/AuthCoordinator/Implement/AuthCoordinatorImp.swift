@@ -67,8 +67,6 @@ public final class AuthCoordinatorImp: AuthCoordinator {
     let fcmSaveUseCase = fcmDependencyFactory.injectFCMSaveUseCase()
     let userTokensSaveUseCase = authDependencyFactory.injectUserTokensUseCase()
     let kakaoLoginUseCase = authDependencyFactory.injectKakaoLoginUseCase()
-    let checkRecordCalendarUseCase = recordsDependencyFactory.injectCheckCalendarRecordsUseCase()
-    let removeGlobalCalendarRecordsUseCase = recordsDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase()
     let memberInfoUseCase = membersDependencyFactory.injectMemberInfoUseCase()
     
     let reactor = authDependencyFactory.injectAuthReactor(
@@ -77,8 +75,6 @@ public final class AuthCoordinatorImp: AuthCoordinator {
       fcmSaveUseCase: fcmSaveUseCase,
       userTokensSaveUseCase: userTokensSaveUseCase,
       kakaoLoginUseCase: kakaoLoginUseCase,
-      checkRecordCalendarUseCase: checkRecordCalendarUseCase,
-      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
       memberInfoUseCase: memberInfoUseCase
     )
     let authVC = authDependencyFactory.injectAuthViewController(reactor: reactor)

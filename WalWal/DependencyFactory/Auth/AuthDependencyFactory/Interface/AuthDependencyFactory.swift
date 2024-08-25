@@ -46,8 +46,6 @@ public protocol AuthDependencyFactory {
     fcmSaveUseCase: FCMSaveUseCase,
     userTokensSaveUseCase: UserTokensSaveUseCase,
     kakaoLoginUseCase: KakaoLoginUseCase,
-    checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
-    removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     memberInfoUseCase: MemberInfoUseCase
   ) -> any AuthReactor
   func injectAuthViewController<T: AuthReactor>(reactor: T) -> any AuthViewController
