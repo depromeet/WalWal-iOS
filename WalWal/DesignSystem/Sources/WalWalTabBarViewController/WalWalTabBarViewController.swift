@@ -32,6 +32,7 @@ public final class WalWalTabBarViewController: UITabBarController {
   // MARK: - Properties
   
   public private(set) var selectedFlow = PublishRelay<Int>()
+  public let forceMoveTab = PublishRelay<Int>()
   
   private let disposeBag = DisposeBag()
   
@@ -99,6 +100,10 @@ extension WalWalTabBarViewController {
       .subscribe(with: self, onNext: { owner, index in
         owner.selectedFlow.accept(index)
       })
+      .disposed(by: disposeBag)
+    
+    forceMoveTab
+      .bind(to: customTabBar.moveIndex)
       .disposed(by: disposeBag)
   }
 }

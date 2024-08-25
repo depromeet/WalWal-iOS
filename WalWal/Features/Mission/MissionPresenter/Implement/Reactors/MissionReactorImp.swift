@@ -66,6 +66,8 @@ public final class MissionReactorImp: MissionReactor {
       return startTimer()
     case .stopTimer:
       return .just(Mutation.stopTimer)
+    case .moveToMyPage:
+      return .just(.moveToMyPage)
     }
   }
   
@@ -109,6 +111,8 @@ public final class MissionReactorImp: MissionReactor {
       )
     case let .moveToMissionUploadFailed(error):
       newState.missionUploadError = error
+    case .moveToMyPage:
+      coordinator.startMyPage()
     }
     return newState
   }

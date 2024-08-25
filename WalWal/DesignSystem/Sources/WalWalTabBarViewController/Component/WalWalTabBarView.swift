@@ -36,6 +36,7 @@ final class WalWalTabBarView: UIView {
   // MARK: - Properties
   
   let selectedIndex = BehaviorRelay<Int>(value: 0)
+  let moveIndex = PublishRelay<Int>()
   
   private let disposeBag = DisposeBag()
   
@@ -87,6 +88,11 @@ extension WalWalTabBarView {
   }
   
   private func bind() {
+    
+    moveIndex
+      .bind(to: selectedIndex)
+      .disposed(by: disposeBag)
+    
     Observable.merge(
       tabBarItems.enumerated().map { index, item in
         item.rx.tapped.map { index }
