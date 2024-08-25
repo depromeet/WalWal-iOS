@@ -149,6 +149,7 @@ public final class WalWalFeed: UIView {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
           self?.feedData.accept(self?.feedData.value ?? [])
+          self?.collectionView.reloadData()
           self?.refreshLoading.accept(false)
         }
       }

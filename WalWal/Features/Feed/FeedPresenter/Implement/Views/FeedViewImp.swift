@@ -104,6 +104,11 @@ extension FeedViewControllerImp: View {
       .map { _ in Reactor.Action.loadFeedData(cursor: reactor.currentState.nextCursor) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    feed.refreshLoading
+      .map { _ in Reactor.Action.loadFeedData(cursor: nil) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {

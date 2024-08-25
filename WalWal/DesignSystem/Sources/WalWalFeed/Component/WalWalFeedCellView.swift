@@ -237,7 +237,7 @@ final class WalWalFeedCellView: UIView {
       .justifyContent(.center)
       .define {
         $0.addItem(missionImageView)
-          .size(343)
+          .alignItems(.center)
           .position(.relative)
         $0.addItem(contentLabel)
           .minHeight(16)
