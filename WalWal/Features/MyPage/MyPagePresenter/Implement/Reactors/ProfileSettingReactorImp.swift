@@ -259,12 +259,6 @@ extension ProfileSettingReactorImp {
   private func createSettings(appVersion: String, isRecent: Bool) -> [ProfileSettingItemModel] {
     return [
       .init(
-        title: "로그아웃",
-        subTitle: "",
-        rightText: "",
-        type: .logout
-      ),
-      .init(
         title: "서비스 이용 약관",
         subTitle: "",
         rightText: "",
@@ -275,6 +269,12 @@ extension ProfileSettingReactorImp {
         subTitle: "",
         rightText: "",
         type: .privacy
+      ),
+      .init(
+        title: "로그아웃",
+        subTitle: "",
+        rightText: "",
+        type: .logout
       ),
       .init(
         title: "버전 정보",
