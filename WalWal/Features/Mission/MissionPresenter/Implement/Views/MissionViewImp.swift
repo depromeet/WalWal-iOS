@@ -77,7 +77,15 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   public override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     missionCountBubbleView.startFloatingAnimation()
+    setupNotificationObservers()
   }
+  
+  public override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    missionCountBubbleView.stopFloatingAnimation()
+    removeNotificationObservers()
+  }
+  
   
   public override func viewDidLoad() {
     super.viewDidLoad()
@@ -197,6 +205,40 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     let isCompleted = status == .completed ? true : false
     missionCountBubbleView.isCompleted.accept(isCompleted)
   }
+  
+  // MARK: - Notification Setup
+  
+  private func setupNotificationObservers() {
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(appDidEnterBackground),
+      name: UIApplication.didEnterBackgroundNotification,
+      object: nil
+    )
+    
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(appWillEnterForeground),
+      name: UIApplication.willEnterForegroundNotification,
+      object: nil
+    )
+  }
+  
+  private func removeNotificationObservers() {
+    NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+    NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+  }
+  
+  // MARK: - Notification Handlers
+  
+  @objc private func appDidEnterBackground() {
+    missionCountBubbleView.stopFloatingAnimation()
+  }
+  
+  @objc private func appWillEnterForeground() {
+    missionCountBubbleView.startFloatingAnimation()
+  }
+  
 }
 
 extension MissionViewControllerImp: View {
