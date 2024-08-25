@@ -48,10 +48,13 @@ public final class FeedReactorImp: FeedReactor {
     /// 기존 액션 스트림과 초기 액션 스트림을 병합
     return Observable.merge(initialLoadAction, action)
   }
-
+  
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .loadFeedData(let cursor):
+      if currentState.feedFetchEnded {
+        return .empty()
+      }
       return fetchFeedData(cursor: cursor, limit: 10)
     }
   }
@@ -68,6 +71,7 @@ public final class FeedReactorImp: FeedReactor {
       newState.feedErrorMessage = errorMessage
     case .feedReachEnd:
       let globalFeedData = GlobalState.shared.feedList.value
+      newState.feedData = convertFeedModel(feedList: globalFeedData)
       newState.feedFetchEnded = true
     }
     
