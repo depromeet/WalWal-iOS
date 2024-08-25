@@ -66,20 +66,27 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
         fetchAppVersion(),
         Observable.just(.setLoading(false))
       ])
-    case .logout:
-      return .concat([
-        .just(.setLoading(true)),
-        logoutFlow()
-      ])
-    case .withdraw:
-      return .concat([
-        .just(.setLoading(true)),
-        withdrawFlow()
-      ])
     case .tapBackButton:
       return Observable.just(.moveToBack)
     case .movePrivacyTab:
       return .just(.moveToPrivacyInfo)
+    case let .settingAction(type):
+      if type == .logout {
+        return .concat([
+          .just(.setLoading(true)),
+          logoutFlow()
+        ])
+      } else if type == .withdraw {
+        return .concat([
+          .just(.setLoading(true)),
+          withdrawFlow()
+        ])
+      } else if type == .privacy {
+        return .just(.moveToPrivacyInfo)
+      } else if type == .service {
+        return .just(.moveToService)
+      }
+      return .never()
     }
   }
   
@@ -112,6 +119,8 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
       newState.errorMessage = msg
     case .moveToPrivacyInfo:
       coordinator.destination.accept(.showPrivacyInfoPage)
+    case .moveToService:
+      coordinator.destination.accept(.showServiceInfoPage)
     }
     return newState
   }
@@ -256,16 +265,22 @@ extension ProfileSettingReactorImp {
         type: .logout
       ),
       .init(
-        title: "버전 정보",
-        subTitle: appVersion,
-        rightText: isRecent ? "최신 버전입니다." : "업데이트 필요",
-        type: .version
+        title: "서비스 이용 약관",
+        subTitle: "",
+        rightText: "",
+        type: .service
       ),
       .init(
         title: "개인정보 처리 방침",
         subTitle: "",
         rightText: "",
         type: .privacy
+      ),
+      .init(
+        title: "버전 정보",
+        subTitle: appVersion,
+        rightText: isRecent ? "최신 버전입니다." : "업데이트 필요",
+        type: .version
       ),
       .init(
         title: "회원 탈퇴",

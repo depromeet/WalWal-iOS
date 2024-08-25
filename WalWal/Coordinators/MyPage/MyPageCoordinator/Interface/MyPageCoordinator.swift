@@ -23,6 +23,7 @@ public enum MyPageCoordinatorFlow: CoordinatorFlow {
   )
   case showProfileSetting
   case showPrivacyInfoPage
+  case showServiceInfoPage
 }
 
 public protocol MyPageCoordinator: BaseCoordinator

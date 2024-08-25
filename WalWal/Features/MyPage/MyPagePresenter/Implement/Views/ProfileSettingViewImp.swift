@@ -52,6 +52,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   private let logoutAction = PublishRelay<Void>()
   private let withdrawAction = PublishRelay<Void>()
   private let movePrivacyAction = PublishRelay<Void>()
+  private let settingAction = PublishRelay<SettingType>()
   
   // MARK: - Initializer
   
@@ -122,13 +123,8 @@ extension ProfileSettingViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    logoutAction
-      .map { Reactor.Action.logout }
-      .bind(to: reactor.action)
-      .disposed(by: disposeBag)
-    
     withdrawAction
-      .map { Reactor.Action.withdraw }
+      .map { Reactor.Action.settingAction(type: .withdraw) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
@@ -137,6 +133,10 @@ extension ProfileSettingViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
+    settingAction
+      .map { Reactor.Action.settingAction(type: $0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -173,17 +173,15 @@ extension ProfileSettingViewControllerImp: View {
   public func bindEvent() {
     settingTableView.rx.modelSelected(ProfileSettingItemModel.self)
       .bind(with: self) { owner, item in
-        if item.type == .logout {
-          owner.logoutAction.accept(())
-        } else if item.type == .withdraw {
+        if item.type == .withdraw {
           WalWalAlert.shared.show(
             title: "회원 탈퇴",
             bodyMessage: "회원 탈퇴 시, 계정은 삭제되며 기록된 내용은 복구되지 않습니다.",
             cancelTitle: "계속 이용하기",
             okTitle: "회원 탈퇴"
           )
-        } else if item.type == .privacy {
-          owner.movePrivacyAction.accept(())
+        } else {
+          owner.settingAction.accept(item.type)
         }
       }
       .disposed(by: disposeBag)

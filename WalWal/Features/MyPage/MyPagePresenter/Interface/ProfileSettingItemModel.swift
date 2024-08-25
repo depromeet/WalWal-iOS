@@ -31,4 +31,5 @@ public enum SettingType {
   case version
   case withdraw
   case privacy
+  case service
 }

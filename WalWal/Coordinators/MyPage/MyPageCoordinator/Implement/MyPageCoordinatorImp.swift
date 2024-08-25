@@ -86,6 +86,8 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
           owner.showProfileSettingVC()
         case .showPrivacyInfoPage:
           owner.showPrivacyPageVC()
+        case .showServiceInfoPage:
+          owner.showServicePageVC()
         }
       })
       .disposed(by: disposeBag)
@@ -132,8 +134,17 @@ extension MyPageCoordinatorImp {
 
 extension MyPageCoordinatorImp {
   
+  /// 개인정보 처리 방침 페이지
   private func showPrivacyPageVC() {
     let urlString = "https://gifted-tennis-45a.notion.site/057c47b69f03491ab05bc216ed92b820"
+    guard let url = URL(string: urlString) else { return }
+    let safariVC = SFSafariViewController(url: url)
+    self.presentViewController(viewController: safariVC, style: .fullScreen)
+  }
+  
+  /// 서비스 이용 약관 페이지
+  private func showServicePageVC() {
+    let urlString = "https://gifted-tennis-45a.notion.site/b693c6415f5c4752854b2506bc4e1b5b"
     guard let url = URL(string: urlString) else { return }
     let safariVC = SFSafariViewController(url: url)
     self.presentViewController(viewController: safariVC, style: .fullScreen)
