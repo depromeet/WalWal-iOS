@@ -101,11 +101,16 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
     view.addSubview(containerView)
     
     containerView.flex
-      .direction(.column)
+      .justifyContent(.spaceBetween)
       .define { flex in
         flex.addItem(navigationBar)
-        flex.addItem(feed)
+          .shrink(1)
+        flex.addItem()
           .grow(1)
+          .define {
+            $0.addItem(feed)
+              .grow(1)
+          }
       }
   }
 }
