@@ -159,14 +159,18 @@ public final class GlobalState {
     case .feedList:
       let downloadTasks = self.feedList.value.flatMap { feed -> [Observable<Void>] in
         let missionDownload = downloadAndCacheImage(for: feed.missionImage)
+          .catchAndReturn(())
         let profileDownload = downloadAndCacheImage(for: feed.profileImage)
+          .catchAndReturn(())
         return [missionDownload, profileDownload]
       }
       return Observable.concat(downloadTasks)
     case .recodList(_):
       let downloadTasks = self.recordList.value.flatMap { record -> [Observable<Void>] in
         let missionDownload = downloadAndCacheImage(for: record.missionImage)
+          .catchAndReturn(())
         let profileDownload = downloadAndCacheImage(for: record.profileImage)
+          .catchAndReturn(())
         return [missionDownload, profileDownload]
       }
       return Observable.concat(downloadTasks)
