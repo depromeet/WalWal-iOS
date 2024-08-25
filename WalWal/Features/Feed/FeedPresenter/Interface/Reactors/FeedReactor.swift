@@ -20,8 +20,8 @@ public enum FeedReactorAction {
 
 public enum FeedReactorMutation {
   case feedFetchFailed(error: String)
-  case feedReachEnd
-  case feedLoadEnded(nextCursor: String?)
+  case feedReachEnd(feedData: [WalWalFeedModel])
+  case feedLoadEnded(nextCursor: String?, feedData: [WalWalFeedModel])
 }
 
 public struct FeedReactorState {

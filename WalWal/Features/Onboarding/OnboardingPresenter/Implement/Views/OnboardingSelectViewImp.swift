@@ -163,7 +163,6 @@ extension OnboardingSelectViewControllerImp: View {
       .disposed(by: disposeBag)
     
     navigationBar.leftItems?.first?.rx.tapped
-      .debug()
       .map { Reactor.Action.tapBackButton }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
