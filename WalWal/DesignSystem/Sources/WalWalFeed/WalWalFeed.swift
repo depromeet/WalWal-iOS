@@ -191,8 +191,7 @@ public final class WalWalFeed: UIView {
   private func updateBoostCount(for gesture: UILongPressGestureRecognizer) {
     let point = gesture.location(in: collectionView)
     guard let indexPath = collectionView.indexPathForItem(at: point),
-          var feedModel = feedData.value[safe: indexPath.item] else { return }
-    feedModel.boostCount += walwalBoostGenerater.getCurrentCount()
+          let feedModel = feedData.value[safe: indexPath.item] else { return }
     var updatedFeedData = feedData.value
     updatedFeedData[indexPath.item] = feedModel
     feedData.accept(updatedFeedData)
