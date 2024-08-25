@@ -82,7 +82,10 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     containerView.pin
-      .all(view.pin.safeArea)
+      .top(view.pin.safeArea)
+      .bottom()
+      .left()
+      .right()
     containerView.flex
       .layout()
   }
