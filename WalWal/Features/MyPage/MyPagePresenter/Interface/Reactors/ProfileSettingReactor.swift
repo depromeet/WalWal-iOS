@@ -18,9 +18,9 @@ import RxSwift
 public enum ProfileSettingReactorAction {
   
   case viewDidLoad
-  case logout
-  case withdraw
   case tapBackButton
+  case movePrivacyTab
+  case settingAction(type: SettingType)
 }
 
 public enum ProfileSettingReactorMutation {
@@ -31,6 +31,8 @@ public enum ProfileSettingReactorMutation {
   case moveToAuth
   case moveToBack
   case errorMessage(msg: String)
+  case moveToPrivacyInfo
+  case moveToService
 }
 
 public struct ProfileSettingReactorState {

@@ -22,6 +22,8 @@ public enum MyPageCoordinatorFlow: CoordinatorFlow {
     raisePet: String
   )
   case showProfileSetting
+  case showPrivacyInfoPage
+  case showServiceInfoPage
 }
 
 public protocol MyPageCoordinator: BaseCoordinator

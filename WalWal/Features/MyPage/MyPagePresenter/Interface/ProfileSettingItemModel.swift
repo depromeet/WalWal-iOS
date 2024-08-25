@@ -30,4 +30,6 @@ public enum SettingType {
   case logout
   case version
   case withdraw
+  case privacy
+  case service
 }

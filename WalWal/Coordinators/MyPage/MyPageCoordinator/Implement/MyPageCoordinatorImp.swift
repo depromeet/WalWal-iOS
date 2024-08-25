@@ -14,6 +14,7 @@ import AuthDependencyFactory
 import MembersDependencyFactory
 import FeedDependencyFactory
 import ImageDependencyFactory
+import SafariServices
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -83,6 +84,10 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
           )
         case .showProfileSetting:
           owner.showProfileSettingVC()
+        case .showPrivacyInfoPage:
+          owner.showPrivacyPageVC()
+        case .showServiceInfoPage:
+          owner.showServicePageVC()
         }
       })
       .disposed(by: disposeBag)
@@ -128,6 +133,23 @@ extension MyPageCoordinatorImp {
 // MARK: - Create and Start(Show) with Flow(View)
 
 extension MyPageCoordinatorImp {
+  
+  /// 개인정보 처리 방침 페이지
+  private func showPrivacyPageVC() {
+    let urlString = "https://walwal.oopy.io/057c47b6-9f03-491a-b05b-c216ed92b820"
+    guard let url = URL(string: urlString) else { return }
+    let safariVC = SFSafariViewController(url: url)
+    self.presentViewController(viewController: safariVC, style: .fullScreen)
+  }
+  
+  /// 서비스 이용 약관 페이지
+  private func showServicePageVC() {
+    let urlString = "https://walwal.oopy.io/b693c641-5f5c-4752-854b-2506bc4e1b5b"
+    guard let url = URL(string: urlString) else { return }
+    let safariVC = SFSafariViewController(url: url)
+    self.presentViewController(viewController: safariVC, style: .fullScreen)
+  }
+  
   /// 기록 상세뷰
   fileprivate func showRecordDetailVC(
     nickname: String,
