@@ -63,13 +63,11 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
-    case .fetchUseFeed(memberId: _, nextCursor: let nextCursor):
-      let globalRecordModel = GlobalState.shared.recordList.value
+    case .fetchUseFeed(memberId: _, nextCursor: let nextCursor, let record):
       newState.nextCursor = nextCursor
-      newState.feedData = convertFeedModel(feedList: globalRecordModel)
-    case .userFeedReachEnd:
-      let globalRecordModel = GlobalState.shared.recordList.value
-      newState.feedData = convertFeedModel(feedList: globalRecordModel)
+      newState.feedData = record
+    case .userFeedReachEnd(let record):
+      newState.feedData = record
       newState.feedFetchEnded = true
     case .userFeedFetchFailed(let error):
       newState.feedErrorMessage = error
@@ -88,12 +86,17 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
   private func fetchFeedData(memberId: Int, cursor: String?, limit: Int) -> Observable<Mutation> {
     return fetchUserFeedUseCase.execute(memberId: memberId, cursor: cursor, limit: limit)
       .asObservable()
-      .flatMap { feedModel -> Observable<Mutation> in
-        if let nextCursor = feedModel.nextCursor {
-          return .just(Mutation.fetchUseFeed(memberId: memberId, nextCursor: nextCursor))
-        } else {
-          return .just(Mutation.userFeedReachEnd)
-        }
+      .withUnretained(self)
+      .flatMap { owner, feedModel -> Observable<Mutation> in
+        let cursor = feedModel.nextCursor
+        return owner.convertFeedModel(feedList: GlobalState.shared.recordList.value)
+          .map { feedData in
+            if let cursor {
+              return Mutation.fetchUseFeed(memberId: memberId, nextCursor: cursor, newRecord: feedData)
+            } else {
+              return Mutation.userFeedReachEnd(newRecord: feedData)
+            }
+          }
       }
       .catch { error in
         return .just(
@@ -104,32 +107,45 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       }
   }
   
-  
-  
-  private func convertImage(imageURL: String?) -> UIImage? {
-    if let imageURL {
-      guard let image = GlobalState.shared.imageStore[imageURL] else { return nil }
-      return image
-    } else {
-      return nil
+  private func convertFeedModel(feedList: [GlobalFeedListModel]) -> Observable<[WalWalFeedModel]> {
+    let feedObservables = feedList.map { feed -> Observable<WalWalFeedModel?> in
+      return Observable.zip(
+        convertImage(imageURL: feed.missionImage),
+        convertImage(imageURL: feed.profileImage)
+      )
+      .map { missionImage, profileImage in
+        let profileImageOrDefault = profileImage ?? ResourceKitAsset.Assets.yellowDog.image
+        return WalWalFeedModel(
+          id: feed.recordID,
+          date: feed.createdDate,
+          nickname: feed.authorNickname,
+          missionTitle: feed.missionTitle,
+          profileImage: profileImageOrDefault,
+          missionImage: missionImage,
+          boostCount: feed.boostCount,
+          contents: feed.contents ?? ""
+        )
+      }
     }
+    
+    return Observable.zip(feedObservables)
+      .map { $0.compactMap { $0 } }
   }
   
-  private func convertFeedModel(feedList: [GlobalFeedListModel]) -> [WalWalFeedModel]{
-    return feedList.compactMap { feed in
-      let missionImage = convertImage(imageURL: feed.missionImage)
-      
-      let profileImage = convertImage(imageURL: feed.profileImage) ?? ResourceKitAsset.Assets.yellowDog.image
-      return WalWalFeedModel(
-        id: feed.recordID,
-        date: feed.createdDate,
-        nickname: feed.authorNickname,
-        missionTitle: feed.missionTitle,
-        profileImage: profileImage,
-        missionImage: missionImage,
-        boostCount: feed.boostCount, 
-        contents: feed.contents ?? ""
-      )
+  private func convertImage(imageURL: String?) -> Observable<UIImage?> {
+    guard let imageURL = imageURL else {
+      return .just(nil)
+    }
+    
+    if let defaultImage = DefaultProfile(rawValue: imageURL) {
+      return .just(defaultImage.image) // 기본 이미지 반환
+    } else if let cachedImage = GlobalState.shared.imageStore[imageURL] {
+      return .just(cachedImage)
+    } else {
+      return GlobalState.shared.downloadAndCacheImage(for: imageURL)
+        .map { _ in
+          GlobalState.shared.imageStore[imageURL]
+        }
     }
   }
 }
