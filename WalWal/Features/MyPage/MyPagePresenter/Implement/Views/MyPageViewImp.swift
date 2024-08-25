@@ -63,8 +63,15 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   private var memberInfo: MemberModel = .init(global: GlobalState.shared.profileInfo.value)
   
   public init(
-    reactor: R
+    reactor: R,
+    memberId: Int? = nil,
+    nickname: String? = nil
   ) {
+    if let nickname {
+      navigationBar.configure(leftItems: [.darkBack], title: nickname, rightItems: [])
+      
+    }
+    
     self.mypageReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
@@ -182,7 +189,7 @@ extension MyPageViewControllerImp: View {
       .bind(with: self) { owner, data in
         var image: UIImage?
         if let imgName = data.defaultImageName,
-            let defaultImage = DefaultProfile(rawValue: imgName) {
+           let defaultImage = DefaultProfile(rawValue: imgName) {
           image = defaultImage.image
         }
         owner.profileCardView.changeProfileInfo(

@@ -80,8 +80,17 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     )
   }
   
-  public func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController {
-    return MyPageViewControllerImp(reactor: reactor)
+  public func injectMyPageViewController<T: MyPageReactor>(
+    reactor: T,
+    memberId: Int? = nil,
+    nickName: String? = nil
+  ) -> any MyPageViewController {
+    
+    return MyPageViewControllerImp(
+      reactor: reactor,
+      memberId: memberId,
+      nickname: nickName
+    )
   }
   
   public func injectRecordDetailReactor<T: MyPageCoordinator>(

@@ -51,7 +51,11 @@ public protocol MyPageDependencyFactory {
     fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
     fetchMemberInfoUseCase: FetchMemberInfoUseCase
   ) -> any MyPageReactor
-  func injectMyPageViewController<T: MyPageReactor>(reactor: T) -> any MyPageViewController
+  func injectMyPageViewController<T: MyPageReactor>(
+    reactor: T,
+    memberId: Int?,
+    nickName: String?
+  ) -> any MyPageViewController
   
 
   // MARK: - RecordDetail

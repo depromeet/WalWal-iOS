@@ -23,6 +23,7 @@ import ImageDependencyFactory
 import BaseCoordinator
 import WalWalTabBarCoordinator
 import MissionCoordinator
+import FeedCoordinator
 import MyPageCoordinator
 
 import RxSwift
@@ -135,7 +136,7 @@ extension WalWalTabBarCoordinatorImp {
     case .finished:
       childCoordinator = nil
     case .requireParentAction(let action):
-      switch action { 
+      switch action {
       case .startMyPage:
         self.forceMoveTab.accept(.startMyPage)
       }
@@ -150,6 +151,18 @@ extension WalWalTabBarCoordinatorImp {
       switch action {
       case .startAuth:
         startAuth()
+      }
+    }
+  }
+  
+  fileprivate func handleFeedEvent(_ event: CoordinatorEvent<FeedCoordinatorAction>) {
+    switch event {
+    case .finished:
+      childCoordinator = nil
+    case .requireParentAction(let action):
+      switch action {
+      case .startProfile(let id, let nickname):
+        startOtherProfile(memberId: id, nickName: nickname)
       }
     }
   }
@@ -209,6 +222,23 @@ extension WalWalTabBarCoordinatorImp {
     )
     myPageCoordinator.start()
     return myPageCoordinator
+  }
+  
+  fileprivate func startOtherProfile(
+    memberId: Int,
+    nickName: String
+  ) {
+    print("다른 사람 프로필로 이동")
+    let profileCoordinator = myPageDependencyFactory.makeMyPageCoordinator(
+      navigationController: navigationController,
+      parentCoordinator: self,
+      fcmDependencyFactory: fcmDependencyFactory,
+      authDependencyFactory: authDependencyFactory,
+      membersDependencyFactory: membersDependencyFactory,
+      feedDependencyFactory: feedDependencyFactory,
+      imageDependencyFactory: imageDependencyFactory
+    )
+    profileCoordinator.startProfile(memberId: memberId, nickName: nickName)
   }
 }
 

@@ -10,7 +10,7 @@ import UIKit
 
 import FeedDependencyFactory
 import RecordsDependencyFactory
-
+import MyPageDependencyFactory
 import BaseCoordinator
 import FeedCoordinator
 
@@ -32,16 +32,19 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   
   public var feedDependencyFactory: FeedDependencyFactory
   public var recordsDependencyFactory: RecordsDependencyFactory
+  public var mypageDependencyFactory: MyPageDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     feedDependencyFactory: FeedDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory,
+    mypageDepencyFactory: MyPageDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.feedDependencyFactory = feedDependencyFactory
+    self.mypageDependencyFactory = mypageDepencyFactory
     self.recordsDependencyFactory = recordsDependencyFactory
     bindChildToParentAction()
     bindState()
@@ -118,5 +121,7 @@ extension FeedCoordinatorImp {
 // MARK: - Feed(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
 extension FeedCoordinatorImp {
-  
+  public func startProfile(memberId: Int, nickName: String) {
+    requireParentAction(.startProfile(memberId: memberId, nickName: nickName))
+  }
 }

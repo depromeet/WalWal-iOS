@@ -34,4 +34,9 @@ public protocol MyPageCoordinator: BaseCoordinator
 where Flow == MyPageCoordinatorFlow,
       Action == MyPageCoordinatorAction{
   func startAuth()
+  
+  func startProfile(
+    memberId: Int,
+    nickName: String
+  )
 }

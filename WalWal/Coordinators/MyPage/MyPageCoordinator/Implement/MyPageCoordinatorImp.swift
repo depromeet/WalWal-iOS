@@ -105,15 +105,38 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   public func start() {
     let fetchWalWalCalendarModelsUseCase = myPageDependencyFactory.injectFetchWalWalCalendarModelsUseCase()
     let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
-    let fetchUserFeedUseCase = feedDependencyFactory.injectFetchFeedUseCase()
     let reactor = myPageDependencyFactory.injectMyPageReactor(
       coordinator: self,
       fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
       fetchMemberInfoUseCase: fetchMemberInfoUseCase
     )
-    let myPageVC = myPageDependencyFactory.injectMyPageViewController(reactor: reactor)
+    let myPageVC = myPageDependencyFactory.injectMyPageViewController(
+      reactor: reactor,
+      memberId: nil,
+      nickName: nil
+    )
     self.baseViewController = myPageVC
     self.pushViewController(viewController: myPageVC, animated: false)
+  }
+  
+  public func startProfile(
+    memberId: Int,
+    nickName: String
+  ) {
+    let fetchWalWalCalendarModelsUseCase = myPageDependencyFactory.injectFetchWalWalCalendarModelsUseCase()
+    let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
+    let reactor = myPageDependencyFactory.injectMyPageReactor(
+      coordinator: self,
+      fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
+      fetchMemberInfoUseCase: fetchMemberInfoUseCase
+    )
+    let profileVC = myPageDependencyFactory.injectMyPageViewController(
+      reactor: reactor,
+      memberId: memberId,
+      nickName: nickName
+    )
+    self.baseViewController = profileVC
+    self.pushViewController(viewController: profileVC, animated: false)
   }
 }
 
