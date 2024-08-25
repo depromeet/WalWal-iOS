@@ -20,7 +20,7 @@ public final class WalWalFeed: UIView {
   
   private typealias Colors = ResourceKitAsset.Colors
   let walwalIndicator = WalWalLoadingIndicator(frame: .zero)
-  let refreshLoading = PublishRelay<Bool>()
+  public let refreshLoading = PublishRelay<Bool>()
   public let scrollEndReached = PublishRelay<Bool>()
   
   
@@ -258,7 +258,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
     
     let lineHeight: Int = content.count / 40
     let lineBreakCount = content.filter { $0 == "\n" }.count
-    let totalLineCount = lineHeight + lineBreakCount
+    let totalLineCount = min(3, lineHeight + lineBreakCount)
     
     let height: CGFloat = CGFloat(480 + (16 * totalLineCount))
     
