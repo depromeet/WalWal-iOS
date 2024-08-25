@@ -34,7 +34,7 @@ public final class BubbleView: UIView {
   }
   
   // MARK: - Property
-  
+  private var tipView: CAShapeLayer? = nil
   private var tipWidth: CGFloat = 16
   private var tipHeight: CGFloat = 16
   public var missionCount = BehaviorRelay<Int>(value: 0)
@@ -127,8 +127,13 @@ public final class BubbleView: UIView {
     
     let shape = CAShapeLayer()
     shape.path = path
-    shape.fillColor = viewColor.cgColor
-    self.layer.insertSublayer(shape, at: 0)
+    shape.fillColor = viewColor.cgColor   
+    if tipView == nil {
+      tipView = shape
+      self.layer.insertSublayer(shape, at: 0)
+    } else {
+      tipView?.path = path
+    }
   }
   
   func startFloatingAnimation() {
