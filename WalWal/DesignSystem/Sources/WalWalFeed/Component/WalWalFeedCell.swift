@@ -13,7 +13,7 @@ import FlexLayout
 import PinLayout
 import RxSwift
 
-final class WalWalFeedCell: UICollectionViewCell {
+public final class WalWalFeedCell: UICollectionViewCell {
   
   private typealias Images = ResourceKitAsset.Images
   private typealias Colors = ResourceKitAsset.Colors
@@ -55,7 +55,7 @@ final class WalWalFeedCell: UICollectionViewCell {
     layoutCell()
   }
   
-  override func prepareForReuse() {
+  public override func prepareForReuse() {
     super.prepareForReuse()
     feedView.maxLength = 55
     feedView.isExpanded = false

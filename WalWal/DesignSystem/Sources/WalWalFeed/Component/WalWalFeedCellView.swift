@@ -14,7 +14,7 @@ import FlexLayout
 import PinLayout
 import RxSwift
 
-final class WalWalFeedCellView: UIView {
+public final class WalWalFeedCellView: UIView {
   
   private typealias Images = ResourceKitAsset.Sample
   private typealias Colors = ResourceKitAsset.Colors
@@ -38,14 +38,17 @@ final class WalWalFeedCellView: UIView {
     $0.layer.cornerRadius = 20
     $0.contentMode = .scaleAspectFill
     $0.clipsToBounds = true
+    $0.isUserInteractionEnabled = false
   }
   
   private let userNickNameLabel = CustomLabel(font: Fonts.KR.H7.B).then {
     $0.textColor = Colors.black.color
+    $0.isUserInteractionEnabled = false
   }
   
   private let missionLabel = CustomLabel(font: Fonts.KR.B2).then {
     $0.textColor = Colors.gray700.color
+    $0.isUserInteractionEnabled = false
   }
   
   private let missionImageView = UIImageView().then {
@@ -81,10 +84,16 @@ final class WalWalFeedCellView: UIView {
   private let disposeBag = DisposeBag()
   private let moreTappedSubject = PublishSubject<Bool>()
   
+  // MARK: - Property
+  var feedData: WalWalFeedModel?
+  
+  private let profileTappedSubject = PublishSubject<WalWalFeedModel>()
+  public var profileTapped: Observable<WalWalFeedModel> {
+    return profileTappedSubject.asObservable()
+  }
   public var moreTapped: Observable<Bool> {
     return moreTappedSubject.asObservable()
   }
-  
   public var isExpanded: Bool = false
   
   // MARK: - Initializers
@@ -102,7 +111,7 @@ final class WalWalFeedCellView: UIView {
   
   // MARK: - Lifecycle
   
-  override func layoutSubviews() {
+  public override func layoutSubviews() {
     super.layoutSubviews()
     
     missionDateLabel.flex
@@ -128,21 +137,22 @@ final class WalWalFeedCellView: UIView {
     
   }
   
+  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+      let view = super.hitTest(point, with: event)
+      return view === self ? nil : view
+  }
+  
   // MARK: - Methods
   
   private func bind() {
     contentLabel.rx.tapped
-      .withUnretained(self)
-      .compactMap { _ in
-        self.isExpanded.toggle()
-        self.toggleContent()
-        return self.isExpanded
-      }
-      .bind(to: moreTappedSubject)
-      .disposed(by: disposeBag)
+      .subscribe(onNext: { [weak self] in
+        self?.toggleContent()
+      })
+      .disposed(by: disposeBag) // DisposeBag에 추가
   }
   
-  func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false, isAlreadyExpanded: Bool = false) {
+  func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false) {
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = sanitizeContent(feedData.missionTitle)
     profileImageView.image = feedData.profileImage
