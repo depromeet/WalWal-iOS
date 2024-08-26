@@ -64,9 +64,8 @@ final class PetView: UIView {
     $0.clipsToBounds = true
     $0.contentMode = .scaleAspectFill
   }
-  private let typeLabel = UILabel().then {
+  private let typeLabel = CustomLabel(font: Font.H6.M).then {
     $0.textColor = Color.gray700.color
-    $0.font = Font.H6.M
   }
   
   // MARK: - Initialize
@@ -94,7 +93,7 @@ final class PetView: UIView {
         flex.addItem(petView)
           .size(160.adjustedWidth)
         flex.addItem(typeLabel)
-          .marginTop(20)
+          .marginTop(20.adjustedHeight)
       }
   }
   
@@ -104,7 +103,7 @@ final class PetView: UIView {
       .all()
     petImage.pin
       .center()
-      .size(80%)
+      .size(90%)
     containerView.flex
       .layout(mode: .adjustHeight)
     

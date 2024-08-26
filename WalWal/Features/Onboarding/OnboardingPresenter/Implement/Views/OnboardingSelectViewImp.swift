@@ -41,10 +41,11 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   )
   private let contentContainer = UIView()
   private let progressView = ProgressView(index: 1)
-  private let titleLabel = UILabel().then {
-    $0.text = "어떤 반려동물을\n키우고 계신가요?"
+  private let titleLabel = CustomLabel(
+    text: "어떤 반려동물을\n키우고 계신가요?",
+    font: Font.H3
+  ).then {
     $0.numberOfLines = 2
-    $0.font = Font.H3
     $0.textColor = Color.black.color
   }
   private let dogView = PetView(petType: .dog)
@@ -99,8 +100,8 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   
   public func configureLayout() {
     rootContainer.flex
-      .justifyContent(.center)
-      
+      .justifyContent(.spaceBetween)
+    
     navigationBar.flex
       .width(100%)
     
@@ -127,7 +128,7 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
     nextButton.flex
       .marginHorizontal(20.adjustedWidth)
       .marginBottom(30.adjustedHeight)
-      .height(56)
+      .height(58)
   }
 }
 
