@@ -131,7 +131,7 @@ final class WalWalFeedCellView: UIView {
   private func bind() {
     contentLabel.rx.tapped
       .withUnretained(self)
-      .compactMap { _ in 
+      .compactMap { _ in
         self.isExpanded.toggle()
         self.toggleContent()
         return self.isExpanded
@@ -153,24 +153,7 @@ final class WalWalFeedCellView: UIView {
     boostLabel.textColor = isBoostColor
     contents = sanitizeContent(feedData.contents)
     contentLabel.text = contents
-    
-    let missionDate = feedData.date.toFormattedDate() ?? feedData.date
-    let attributedString = NSMutableAttributedString(string: missionDate)
-    
-    let numberFont = Fonts.EN.Caption // 숫자에 적용할 폰트
-    let defaultFont = Fonts.KR.B2 // 기본 폰트
-    
-    attributedString.addAttribute(.font, value: defaultFont, range: NSRange(location: 0, length: missionDate.count))
-    
-    let numberPattern = "[0-9]"
-    if let regex = try? NSRegularExpression(pattern: numberPattern, options: []) {
-      let matches = regex.matches(in: missionDate, options: [], range: NSRange(location: 0, length: missionDate.count))
-      for match in matches {
-        attributedString.addAttribute(.font, value: numberFont, range: match.range)
-      }
-    }
-    
-    missionDateLabel.attributedText = attributedString
+    missionDateLabel.attributedText = setupDateLabel(to: feedData.date)
     
     /// 부스트 애니메이션 시 이미 열려 있었으면 더보기 X
     if !isAlreadyExpanded  {
@@ -294,6 +277,28 @@ final class WalWalFeedCellView: UIView {
     
     return NSAttributedString(string: text, attributes: attributes)
   }
+  
+  private func setupDateLabel(to text: String) -> NSAttributedString {
+    
+    let missionDate = text.toFormattedDate() ?? text
+    let attributedString = NSMutableAttributedString(string: missionDate)
+    
+    let numberFont = Fonts.EN.Caption
+    let defaultFont = Fonts.KR.B2
+    
+    attributedString.addAttribute(.font, value: defaultFont, range: NSRange(location: 0, length: missionDate.count))
+    
+    let numberPattern = "[0-9]"
+    if let regex = try? NSRegularExpression(pattern: numberPattern, options: []) {
+      let matches = regex.matches(in: missionDate, options: [], range: NSRange(location: 0, length: missionDate.count))
+      for match in matches {
+        attributedString.addAttribute(.font, value: numberFont, range: match.range)
+      }
+    }
+    
+    return attributedString
+  }
+  
 }
 
 extension String {
