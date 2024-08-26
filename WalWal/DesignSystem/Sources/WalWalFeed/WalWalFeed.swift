@@ -199,6 +199,8 @@ public final class WalWalFeed: UIView {
           let feedModel = feedData.value[safe: indexPath.item] else { return }
     var updatedFeedData = feedData.value
     updatedFeedData[indexPath.item] = feedModel
+    
+    collectionView.collectionViewLayout.invalidateLayout()
     feedData.accept(updatedFeedData)
   }
   
@@ -266,7 +268,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
       let content = model.contents
       
       var lineHeight: Int
-      var baseHeight: CGFloat = 484.adjusted
+      let baseHeight: CGFloat = 480.adjusted
       
       if isExpanded {
         lineHeight = content.count / 35
