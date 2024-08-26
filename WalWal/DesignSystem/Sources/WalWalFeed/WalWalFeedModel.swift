@@ -8,11 +8,10 @@
 
 import UIKit
 
-public struct WalWalFeedModel: Equatable {
+  public var authorId: Int
   public let recordId: Int
-  var authorId: Int
+  public var nickname: String
   var date: String
-  var nickname: String
   var missionTitle: String
   var profileImage: UIImage?
   var missionImage: UIImage?
