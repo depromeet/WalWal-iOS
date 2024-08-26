@@ -34,17 +34,16 @@ final class PermissionView {
     $0.backgroundColor = Color.white.color
     $0.layer.cornerRadius = 20.adjusted
   }
-  private let titleLabel = UILabel().then {
-    $0.text = "시작하기 전에"
+  private let titleLabel = CustomLabel(text: "시작하기 전에", font:  Font.H4).then {
     $0.textAlignment = .center
-    $0.font = Font.H4
     $0.textColor = Color.black.color
   }
-  private let contentLabel = UILabel().then {
-    $0.text = "원활한 서비스 이용을 위해\n필수 동의가 필요한 내용을 확인해주세요."
+  private let contentLabel = CustomLabel(
+    text: "원활한 서비스 이용을 위해\n필수 동의가 필요한 내용을 확인해주세요.",
+    font: Font.B1
+  ).then {
     $0.textAlignment = .center
     $0.numberOfLines = 2
-    $0.font = Font.B1
     $0.textColor = Color.gray600.color
   }
   private let confirmButton = WalWalButton(type: .active, title: "확인했어요")
@@ -71,13 +70,15 @@ final class PermissionView {
   private func configureLayout() {
     alertContainer.addSubview(containerView)
     alertContainer.flex
-      .justifyContent(.center)
+      .justifyContent(.spaceAround)
     
     containerView.flex
       .marginHorizontal(30.adjustedWidth)
+      .paddingTop(44.adjustedHeight)
+      .paddingBottom(20.adjustedHeight)
       .define {
         $0.addItem(titleLabel)
-          .marginTop(44.adjustedHeight)
+          .height(26)
         
         $0.addItem(contentLabel)
           .marginTop(4)
@@ -90,19 +91,18 @@ final class PermissionView {
           .define {
             $0.addItem().define {
               $0.addItem(notiPermissionView)
-                .height(40.adjustedHeight)
+                .height(32.adjustedHeight)
               $0.addItem(cameraPermissionView)
-                .marginVertical(8)
-                .height(40.adjustedHeight)
+                .marginVertical(16.adjustedHeight)
+                .height(32.adjustedHeight)
               $0.addItem(photoPermissionView)
-                .height(40.adjustedHeight)
+                .height(32.adjustedHeight)
             }
           }
         
         $0.addItem(confirmButton)
-          .marginHorizontal(20)
-          .marginBottom(20)
-          .height(56)
+          .marginHorizontal(20.adjustedHeight)
+          .height(56.adjustedHeight)
       }
     
     containerView.flex
@@ -166,12 +166,10 @@ fileprivate final class PermissionListView: UIView {
   private let iconImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFit
   }
-  private let typeLabel = UILabel().then {
-    $0.font = Font.H6.M
+  private let typeLabel = CustomLabel(font: Font.H6.M).then {
     $0.textColor = Color.gray800.color
   }
-  private let contentLabel = UILabel().then {
-    $0.font = Font.B1
+  private let contentLabel = CustomLabel(font: Font.B1).then {
     $0.textColor = Color.gray600.color
   }
   
@@ -201,7 +199,7 @@ fileprivate final class PermissionListView: UIView {
           .direction(.row)
           .define {
             $0.addItem(iconImageView)
-              .size(32.adjusted)
+              .size(32)
             $0.addItem(typeLabel)
               .marginRight(8)
               .marginLeft(2)
