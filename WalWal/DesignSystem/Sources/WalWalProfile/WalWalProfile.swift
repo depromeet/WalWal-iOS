@@ -63,7 +63,7 @@ public final class WalWalProfile: UIView {
   
   // MARK: - UI
   
-  private let profileSize: CGFloat = 170.adjusted
+  private let profileSize: CGFloat = 173.adjusted
   private let viewWidth: CGFloat = UIScreen.main.bounds.width
   private let marginItems: CGFloat
   private let inActiveProfileSize: CGFloat = 140.adjusted

@@ -42,23 +42,29 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   private let profileContainer = UIView()
   private let progressView = ProgressView(index: 2)
   private let titleView = UIView()
-  private let titleLabel = UILabel().then {
-    $0.text = "왈왈에서 사용할\n프로필을 만들어주세요"
+  private let titleLabel = CustomLabel(
+    text: "왈왈에서 사용할\n프로필을 만들어주세요",
+    font: Font.H3
+  ).then {
     $0.numberOfLines = 2
-    $0.font = Font.H3
     $0.textColor = Color.black.color
   }
-  private let subTitleLabel = UILabel().then {
-    $0.text = "반려동물 사진을 직접 추가해보세요!"
-    $0.font = Font.B1
+  private let subTitleLabel = CustomLabel(
+    text: "반려동물 사진을 직접 추가해보세요!",
+    font: Font.B1
+  ).then {
     $0.textColor = Color.gray600.color
   }
-  private lazy var profileSelectView = WalWalProfile(type: PetType(rawValue: petType) ?? .dog)
+  private lazy var profileSelectView = WalWalProfile(
+    type: PetType(rawValue: petType) ?? .dog
+  )
   private let nicknameTextField = WalWalInputBox(
     defaultState: .active,
     placeholder: "닉네임을 입력해주세요",
     rightIcon: .close
-  )
+  ).then {
+    $0.backgroundColor = .green
+  }
   private let nextButton = WalWalButton(type: .disabled, title: "다음")
   
   // MARK: - Initialize
@@ -129,18 +135,21 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   
   public func configureLayout() {
     
+    rootContainer.flex
+      .justifyContent(.start)
+    
     navigationBar.flex
       .width(100%)
     
     progressView.flex
-      .marginTop(24.adjusted)
+      .marginTop(24.adjustedHeight)
       .marginHorizontal(20)
     contentContainer.flex
-      .justifyContent(.center)
+      .justifyContent(.start)
     
     titleView.flex
       .marginHorizontal(20.adjustedWidth)
-      .marginTop(40.adjusted)
+      .marginTop(38.adjustedHeight)
       .define {
         $0.addItem(titleLabel)
         $0.addItem(subTitleLabel)
@@ -149,17 +158,16 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
       
     profileContainer.flex
       .justifyContent(.start)
+      .marginTop(65.adjustedHeight)
       .grow(1)
       .define {
         $0.addItem(profileSelectView)
           .alignItems(.center)
-          .marginTop(70.adjustedHeight)
           .width(100%)
-        
         $0.addItem(nicknameTextField)
-          .justifyContent(.center)
-          .marginTop(32.adjustedHeight)
+          .marginTop(31.adjustedHeight)
           .marginHorizontal(20.adjustedWidth)
+        
       }
     nextButton.flex
       .marginHorizontal(20.adjustedWidth)
@@ -168,23 +176,14 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   private func updateKeyboardLayout() {
     
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
-    let scrollOffset = titleView.frame.height + 40.adjustedHeight + 70.adjustedHeight/2
+    let scrollOffset = titleView.frame.height + 40.adjustedHeight + 65.adjustedHeight/2
     
     nextButton.pin
       .bottom(keyboardTop + 20.adjustedHeight)
     
     scrollView.contentOffset.y += scrollOffset
-    nicknameTextField.pin
-      .bottom(20.adjustedHeight)
-      .height(72)
     profileContainer.pin
       .above(of: nextButton)
-      .bottom(10)
-    profileSelectView.pin
-      .above(of: nicknameTextField)
-      .bottom(32.adjustedHeight)
-      .below(of: progressView)
-      .top(54.adjustedHeight)
     
     view.layoutIfNeeded()
   }
@@ -200,7 +199,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     }
     nextButton.pin
       .bottom(30.adjustedHeight)
-      .height(56)
+      .height(58)
     view.layoutIfNeeded()
   }
 }
