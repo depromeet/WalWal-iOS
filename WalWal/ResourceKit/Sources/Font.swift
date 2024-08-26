@@ -86,6 +86,20 @@ extension ResourceKitFontFamily {
     else if font == Self.LotteriaChab.H3 { return 50 }
     else { return 0 }
   }
+  
+  public static func lineHeightPercent(of font: ResourceKitFontConvertible.Font) -> CGFloat? {
+    if font == KR.H2 || font == KR.H6.B || font == KR.H6.M || font == KR.B2 {
+      return 130
+    } else {
+      return nil
+    }
+  }
+  
+  public static func spacingPercent(of font: ResourceKitFontConvertible.Font) -> CGFloat {
+    if font == Self.KR.B1 || font == Self.KR.B2 || font == Self.KR.Caption { return 0 }
+    else if font == Self.EN.B1 || font == Self.EN.B2 || font == Self.EN.Caption { return 0 }
+    else { return -2.5 }
+  }
 }
 
 
