@@ -207,7 +207,7 @@ final class WalWalFeedCellView: UIView {
       .width(100%)
       .define {
         $0.addItem(profileImageView)
-          .size(40)
+          .size(40.adjusted)
         $0.addItem(profileInfoView)
           .marginLeft(10.adjusted)
       }

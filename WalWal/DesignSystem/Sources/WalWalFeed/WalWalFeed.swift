@@ -46,6 +46,7 @@ public final class WalWalFeed: UIView {
       withReuseIdentifier: FeedHeaderView.identifier
     )
     $0.showsHorizontalScrollIndicator = false
+    $0.showsVerticalScrollIndicator = false
     $0.alwaysBounceVertical = true
   }
   
@@ -88,7 +89,7 @@ public final class WalWalFeed: UIView {
     isFeed: Bool = true
   ) {
     self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
-    self.headerHeight = isFeed ? 71.adjusted : 0
+    self.headerHeight = isFeed ? 63.adjusted : 0
     super.init(frame: .zero)
     
     configureView()
@@ -260,7 +261,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
     _ collectionView: UICollectionView,
     layout collectionViewLayout: UICollectionViewLayout,
     sizeForItemAt indexPath: IndexPath) -> CGSize {
-      let width = collectionView.bounds.width - 40
+      let width = (collectionView.bounds.width - 32).adjusted
       let model = feedData.value[indexPath.row]
       let cell = collectionView.cellForItem(at: indexPath) as? WalWalFeedCell
       let isExpanded = cell?.feedView.isExpanded ?? false
