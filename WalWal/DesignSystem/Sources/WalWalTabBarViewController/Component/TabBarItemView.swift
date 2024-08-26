@@ -112,7 +112,7 @@ extension TabBarItemView {
     : item.icon
     titleLabel.textColor = isSelected
     ? Colors.black.color
-    : Colors.gray200.color
+    : Colors.gray300.color
   }
 }
 

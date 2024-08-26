@@ -21,6 +21,10 @@ final class WalWalTabBarView: UIView {
   
   private let containerView = UIView()
   
+  private let deviderView = UIView().then {
+    $0.backgroundColor = ResourceKitAsset.Colors.gray200.color
+  }
+  
   private let missionItemView = TabBarItemView(with: .mission)
   
   private let feedItemView = TabBarItemView(with: .feed)
@@ -70,21 +74,25 @@ extension WalWalTabBarView {
   private func configureViews() {
     addSubview(containerView)
     
-    containerView.flex.define { flex in
-      flex.addItem()
-        .direction(.row)
-        .justifyContent(.spaceEvenly)
-        .alignItems(.center)
-        .height(68)
-        .define { flex in
-          tabBarItems.forEach { itemView in
-            flex.addItem(itemView)
-              .grow(1)
-              .shrink(1)
-              .basis(0)
+    containerView.flex
+      .direction(.column)
+      .define { flex in
+        flex.addItem(deviderView)
+          .height(1)
+        flex.addItem()
+          .direction(.row)
+          .justifyContent(.spaceEvenly)
+          .alignItems(.center)
+          .height(67)
+          .define { flex in
+            tabBarItems.forEach { itemView in
+              flex.addItem(itemView)
+                .grow(1)
+                .shrink(1)
+                .basis(0)
+            }
           }
-        }
-    }
+      }
   }
   
   private func bind() {

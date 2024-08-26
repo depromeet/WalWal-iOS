@@ -124,16 +124,19 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   }
   
   public func configureLayout() {
-    rootContainer.flex.define {
+    rootContainer.flex
+      .direction(.column)
+      .alignItems(.start)
+      .define {
       $0.addItem(missionContainer)
         .width(100%)
         .height(450.adjusted)
-        .marginTop(40.adjustedHeight)
+        .marginTop(40)
       
       $0.addItem(buttonContainer)
         .width(100%)
         .position(.absolute)
-        .bottom(30)
+        .bottom(30.adjusted)
       
       $0.addItem(bubbleContainer)
         .width(100%)
