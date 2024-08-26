@@ -252,11 +252,3 @@ extension WalWalProfile: UICollectionViewDelegateFlowLayout {
     }
   }
 }
-
-extension Int {
-  var adjusted: CGFloat {
-    let ratio: CGFloat = UIScreen.main.bounds.width / 375
-    let ratioH: CGFloat = UIScreen.main.bounds.height / 812
-    return ratio <= ratioH ? CGFloat(self) * ratio : CGFloat(self) * ratioH
-  }
-}
