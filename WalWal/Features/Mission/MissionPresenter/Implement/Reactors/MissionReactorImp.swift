@@ -209,7 +209,7 @@ public final class MissionReactorImp: MissionReactor {
   
   /// records/calendar 호출
   private func fetchCalendarRecords(cursor: String, limit: Int) -> Observable<Void> {
-    return checkRecordCalendarUseCase.execute(cursor: cursor, limit: limit)
+    return checkRecordCalendarUseCase.execute(cursor: cursor, limit: limit, memberId: nil)
       .asObservable()
       .flatMap { calendarModel -> Observable<Void> in
         if let nextCursor = calendarModel.nextCursor.nextCursor {

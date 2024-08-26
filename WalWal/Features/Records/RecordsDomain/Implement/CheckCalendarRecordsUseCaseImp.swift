@@ -20,8 +20,8 @@ public final class CheckCalendarRecordsUseCaseImp: CheckCalendarRecordsUseCase {
     self.recordRepository = recordRepository
   }
   
-  public func execute(cursor: String, limit: Int) -> Single<MissionRecordCalendarModel> {
-    return recordRepository.checkCalendarRecords(cursor: cursor, limit: limit)
+  public func execute(cursor: String, limit: Int, memberId: Int? = nil) -> Single<MissionRecordCalendarModel> {
+    return recordRepository.checkCalendarRecords(cursor: cursor, limit: limit, memberId: memberId)
       .map{
         let calendarModel = MissionRecordCalendarModel(dto: $0)
         calendarModel.saveToGlobalState()
