@@ -6,7 +6,6 @@
 //  Created by 이지희
 //
 
-
 import UIKit
 import MissionPresenter
 import MissionDomain
@@ -32,15 +31,17 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   // MARK: - UI
   
   private let rootContainer = UIView()
-  private let missionContainer = UIView()
-  private let buttonContainer = UIView()
-  private let bubbleContainer = UIView()
+  private let missionContainerWrapper = UIView()
+  private let buttonContainerWrapper = UIView()
+  private let bubbleContainerWrapper = UIView()
   
+  private let splashContainer = UIView()
   private let splashForLoading = UIImageView().then {
     $0.image = Images.splash.image
     $0.contentMode = .scaleAspectFit
   }
   
+  private let missionContainer = UIView()
   private let missionStartView = MissionStartView(
     missionTitle: "반려동물과 함께\n산책한 사진을 찍어요",
     missionImage: ResourceKitAsset.Sample.missionSample.image
@@ -48,13 +49,15 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   private let missionCompletedView = MissionCompleteView()
   
-  private lazy var missionCountBubbleView = BubbleView()
-  
+  private let buttonContainer = UIView()
   private let missionStartButton = WalWalButton_Icon(
     type: .active,
     title: "미션 시작하기",
-    icon:Images.flagS.image
+    icon: Images.flagS.image
   )
+  
+  private let bubbleContainer = UIView()
+  private lazy var missionCountBubbleView = BubbleView()
   
   // MARK: - Properties
   
@@ -91,7 +94,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     removeNotificationObservers()
   }
   
-  
   public override func viewDidLoad() {
     super.viewDidLoad()
     configureAttribute()
@@ -110,65 +112,80 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     rootContainer.flex
       .layout()
     
-    splashForLoading.pin
+    splashContainer.pin
       .all()
-    splashForLoading.flex
+    splashContainer.flex
       .layout()
   }
   
   public func configureAttribute() {
     guard let window = UIWindow.key else { return }
-    view.backgroundColor = UIColor.init(hex: 0xFAFAFA)
+    view.backgroundColor = UIColor(hex: 0xFAFAFA)
     view.addSubview(rootContainer)
-    window.addSubview(splashForLoading)
+    window.addSubview(splashContainer)
   }
   
   public func configureLayout() {
     rootContainer.flex
-      .direction(.column)
-      .alignItems(.start)
-      .define {
-      $0.addItem(missionContainer)
-        .width(100%)
-        .height(450.adjusted)
-      
-      $0.addItem(buttonContainer)
-        .width(100%)
-        .position(.absolute)
-        .bottom(30.adjusted)
-      
-      $0.addItem(bubbleContainer)
-        .width(100%)
-        .height(60.adjusted)  // 버블의 예상 높이에 따라 조정
-        .position(.absolute)
-        .bottom(70.adjusted)  // 버튼 컨테이너 위에 위치하도록 조정
-    }
+      .define { flex in
+        flex.addItem(missionContainer)
+          .width(100%)
+          .grow(1)
+        flex.addItem(buttonContainerWrapper)
+          .width(100%)
+          .position(.absolute)
+          .bottom(30.adjusted)
+        flex.addItem(bubbleContainerWrapper)
+          .width(100%)
+          .height(60.adjusted)
+          .position(.absolute)
+          .bottom(70.adjusted)
+      }
     
-    missionContainer.flex.define {
-      $0.addItem(missionStartView)
-        .position(.absolute)
-        .top(80)
-        .alignSelf(.center)
-      
-      $0.addItem(missionCompletedView)
-        .position(.absolute)
-        .top(95)
-        .alignSelf(.center)
-    }
+    missionContainer.flex
+      .define { flex in
+        flex.addItem(missionStartView)
+          .position(.absolute)
+          .top(80)
+          .alignSelf(.center)
+        flex.addItem(missionCompletedView)
+          .position(.absolute)
+          .top(95)
+          .alignSelf(.center)
+      }
     
-    buttonContainer.flex.define {
-      $0.addItem(missionStartButton)
-        .marginHorizontal(20.adjusted)
-    }
+    buttonContainerWrapper.flex
+      .define { flex in
+        flex.addItem(buttonContainer)
+          .grow(1)
+      }
     
-    bubbleContainer.flex.define {
-      $0.addItem(missionCountBubbleView)
-        .position(.absolute)
-        .alignSelf(.center)
-        .bottom(0)
-    }
+    buttonContainer.flex
+      .define { flex in
+        flex.addItem(missionStartButton)
+          .marginHorizontal(20.adjusted)
+      }
+    
+    bubbleContainerWrapper.flex
+      .define { flex in
+        flex.addItem(bubbleContainer)
+          .grow(1)
+      }
+    
+    bubbleContainer.flex
+      .define { flex in
+        flex.addItem(missionCountBubbleView)
+          .position(.absolute)
+          .alignSelf(.center)
+          .bottom(0)
+      }
+    
+    splashContainer.flex
+      .define { flex in
+        flex.addItem(splashForLoading)
+          .grow(1)
+      }
   }
-  
   
   // MARK: - Method
   

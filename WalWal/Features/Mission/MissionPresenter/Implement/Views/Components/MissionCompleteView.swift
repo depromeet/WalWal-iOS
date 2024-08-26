@@ -77,7 +77,6 @@ final class MissionCompleteView: UIView {
     rootContainer.flex
       .define {
         $0.addItem(recordImageView)
-          .marginTop(10.adjusted)
           .size(260.adjusted)
           .alignSelf(.center)
         $0.addItem(SucessIconImageView)
