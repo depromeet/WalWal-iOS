@@ -247,7 +247,7 @@ final class WalWalFeedCellView: UIView {
       .justifyContent(.center)
       .define {
         $0.addItem(missionImageView)
-          .size(343)
+          .height(343.adjusted)
           .alignItems(.center)
           .position(.relative)
         $0.addItem(contentLabel)
@@ -273,7 +273,7 @@ final class WalWalFeedCellView: UIView {
       }
   }
   
-  private func toggleContent() {
+  func toggleContent() {
     contentLabel.numberOfLines = 4
     contentLabel.text = contents
     setNeedsLayout()
