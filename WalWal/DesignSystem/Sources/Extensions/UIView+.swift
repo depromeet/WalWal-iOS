@@ -19,7 +19,7 @@ extension Reactive where Base: UIView {
     let event: Observable<Void> = base.rx.tapGesture()
       .when(.recognized)
       .throttle(
-        .milliseconds(400),
+        .milliseconds(1000),
         latest: false,
         scheduler: MainScheduler.instance
       )
