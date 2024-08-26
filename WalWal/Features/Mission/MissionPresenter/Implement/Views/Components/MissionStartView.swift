@@ -26,12 +26,12 @@ final class MissionStartView: UIView {
   
   private let rootContainer = UIView()
   private let titleContainer = UIView()
-  private let todayMissionLabel = UILabel().then {
+  private let todayMissionLabel = CustomLabel(font: Fonts.KR.H6.B).then {
     $0.text = "오늘의 미션"
     $0.textColor = Colors.walwalOrange.color
     $0.font = Fonts.KR.H6.B
   }
-  private let titleLabel = UILabel().then {
+  private let titleLabel = CustomLabel(font: Fonts.KR.H2).then {
     $0.font = Fonts.KR.H2
     $0.textColor = Colors.black.color
     $0.numberOfLines = 2

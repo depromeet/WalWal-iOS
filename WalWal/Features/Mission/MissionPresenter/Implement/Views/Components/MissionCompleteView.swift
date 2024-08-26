@@ -8,6 +8,7 @@
 
 import UIKit
 import Utility
+import DesignSystem
 import ResourceKit
 
 import Then
@@ -37,7 +38,7 @@ final class MissionCompleteView: UIView {
   private let SucessIconImageView = UIImageView().then {
     $0.image = Images.succes.image
   }
-  private let missionCompletedLabel = UILabel().then {
+  private let missionCompletedLabel = CustomLabel(font: Fonts.KR.H2).then {
     $0.text = "소중한 추억을\n쌓아가고 있어요!"
     $0.font = Fonts.KR.H2
     $0.textColor = Colors.black.color
@@ -45,7 +46,7 @@ final class MissionCompleteView: UIView {
     $0.textAlignment = .center
   }
   
-  private let guideLabel = UILabel().then {
+  private let guideLabel = CustomLabel(font: Fonts.KR.H7.M).then {
     $0.text = "미션 기록에서 그 동안 쌓은 추억을 확인해보세요."
     $0.textAlignment = .center
     $0.font = Fonts.KR.H7.M
