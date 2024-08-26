@@ -25,6 +25,7 @@ final class MissionStartView: UIView {
   // MARK: - UI
   
   private let rootContainer = UIView()
+  private let titleContainer = UIView()
   private let todayMissionLabel = UILabel().then {
     $0.text = "오늘의 미션"
     $0.textColor = Colors.walwalOrange.color
@@ -71,15 +72,20 @@ final class MissionStartView: UIView {
   
   private func configureLayout() {
     rootContainer.flex
-      .define {
-        $0.addItem(todayMissionLabel)
-          .alignSelf(.center)
-        $0.addItem(titleLabel)
-          .marginTop(14.adjusted)
-          .marginHorizontal(20.adjusted)
-        $0.addItem(missionImageView)
-          .marginTop(14.adjusted)
-          .marginHorizontal(0)
+      .direction(.column)
+      .define { flex in
+        flex.addItem(titleContainer)
+          .direction(.column)
+          .marginHorizontal(20)
+          .define { flex in
+            flex.addItem(todayMissionLabel)
+              .alignSelf(.center)
+            flex.addItem(titleLabel)
+              .marginTop(4.adjusted)
+          }
+        flex.addItem(missionImageView)
+          .marginTop(24.adjusted)
+          .width(100%)
           .height(330.adjusted)
       }
   }
