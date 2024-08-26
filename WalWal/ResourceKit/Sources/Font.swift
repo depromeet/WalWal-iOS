@@ -84,7 +84,15 @@ extension ResourceKitFontFamily {
     else if font == Self.LotteriaChab.H1 { return 50 }
     else if font == Self.LotteriaChab.H2 { return 50 }
     else if font == Self.LotteriaChab.H3 { return 50 }
-    else { return 0 }
+    else if font == Self.KR.H1 { return 38 }
+    else if font == Self.KR.H2 { return 33 }
+    else if font == Self.KR.H3 { return 29 }
+    else if font == Self.KR.H4 { return 24 }
+    else if font == Self.KR.H5.B || font == Self.KR.H5.M { return 21 }
+    else if font == Self.KR.H6.B || font == Self.KR.H6.M || font == Self.EN.H1 { return 19 }
+    else if font == Self.KR.B2 || font == Self.EN.Caption{ return 14 }
+    else if font == Self.KR.Caption { return 12 }
+    else { return 17 }
   }
   
   public static func lineHeightPercent(of font: ResourceKitFontConvertible.Font) -> CGFloat? {
