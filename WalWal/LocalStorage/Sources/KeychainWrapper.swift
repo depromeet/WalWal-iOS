@@ -14,7 +14,7 @@ public final class KeychainWrapper {
   
   // MARK: - Key
   
-  public let userKey = "kr.co.walwal.user"
+  public let userKey = Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String ?? "olderStoneBed.io.walwal"
   public let UUIDKey = "kr.co.walwal.uuid"
   
   // MARK: - deviceUUID
