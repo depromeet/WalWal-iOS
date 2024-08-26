@@ -8,7 +8,6 @@
 
 import UIKit
 import ResourceKit
-import Utility
 
 import Then
 import FlexLayout
@@ -269,5 +268,32 @@ final class WalWalFeedCellView: UIView {
   
   private func sanitizeContent(_ content: String) -> String {
     return content.replacingOccurrences(of: "\n", with: "")
+  }
+  
+  private func applyLineHeight(to text: String, lineHeight: CGFloat) -> NSAttributedString {
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.minimumLineHeight = lineHeight
+    paragraphStyle.maximumLineHeight = lineHeight
+    paragraphStyle.lineBreakMode = .byTruncatingTail
+    
+    let attributes: [NSAttributedString.Key: Any] = [
+      .paragraphStyle: paragraphStyle,
+      .font: Fonts.KR.B2,
+      .foregroundColor: Colors.black.color
+    ]
+    
+    return NSAttributedString(string: text, attributes: attributes)
+  }
+}
+
+extension String {
+  func toFormattedDate() -> String? {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    guard let date = dateFormatter.date(from: self) else {
+      return nil
+    }
+    dateFormatter.dateFormat = "yyyy년 M월 d일"
+    return dateFormatter.string(from: date)
   }
 }
