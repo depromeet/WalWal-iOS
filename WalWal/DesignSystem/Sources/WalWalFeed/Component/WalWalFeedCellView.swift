@@ -217,10 +217,10 @@ final class WalWalFeedCellView: UIView {
     containerView.flex
       .define {
         $0.addItem(profileHeaderView)
-          .marginHorizontal(16)
-          .marginVertical(15)
+          .marginHorizontal(16.adjusted)
+          .marginVertical(15.adjusted)
         $0.addItem(feedContentView)
-          .marginBottom(20)
+          .marginBottom(20.adjusted)
       }
     
     profileHeaderView.flex
@@ -231,13 +231,13 @@ final class WalWalFeedCellView: UIView {
         $0.addItem(profileImageView)
           .size(40)
         $0.addItem(profileInfoView)
-          .marginLeft(10)
+          .marginLeft(10.adjusted)
       }
     
     profileInfoView.flex
       .define {
         $0.addItem(userNickNameLabel)
-          .marginBottom(2)
+          .marginBottom(2.adjusted)
         $0.addItem(missionLabel)
       }
     
@@ -251,12 +251,12 @@ final class WalWalFeedCellView: UIView {
           .alignItems(.center)
           .position(.relative)
         $0.addItem(contentLabel)
-          .minHeight(16)
-          .marginHorizontal(16)
-          .marginTop(14)
+          .minHeight(16.adjusted)
+          .marginHorizontal(16.adjusted)
+          .marginTop(14.adjusted)
         $0.addItem(boostLabelView)
-          .marginTop(8)
-          .marginHorizontal(16)
+          .marginTop(8.adjusted)
+          .marginHorizontal(16.adjusted)
       }
     
     boostLabelView.flex
@@ -266,9 +266,9 @@ final class WalWalFeedCellView: UIView {
       .define {
         $0.addItem(boostIconImageView)
         $0.addItem(boostCountLabel)
-          .marginRight(1)
+          .marginRight(1.adjusted)
         $0.addItem(boostLabel)
-          .marginRight(8)
+          .marginRight(8.adjusted)
         $0.addItem(missionDateLabel)
       }
   }
