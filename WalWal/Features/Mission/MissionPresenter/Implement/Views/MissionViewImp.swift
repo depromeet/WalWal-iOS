@@ -346,7 +346,7 @@ extension MissionViewControllerImp: View {
     reactor.state
       .map { $0.loadInitialDataFlowEnded }
       .subscribe(with: self, onNext: { owner, isLoadInitialDataFlowEnded in
-        owner.splashForLoading.isHidden = isLoadInitialDataFlowEnded
+        owner.splashContainer.isHidden = isLoadInitialDataFlowEnded
       })
       .disposed(by: disposeBag)
     
