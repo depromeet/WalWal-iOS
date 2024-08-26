@@ -118,6 +118,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
       handleMypageEvent(.requireParentAction(mypageEvent))
     } else if let missionEvent = event as? MissionCoordinatorAction {
       handleMissionEvent(.requireParentAction(missionEvent))
+    } else if let feedEvent = event as? FeedCoordinatorAction {
+      handleFeedEvent(.requireParentAction(feedEvent))
     }
   }
   
@@ -218,7 +220,8 @@ extension WalWalTabBarCoordinatorImp {
       authDependencyFactory: authDependencyFactory,
       membersDependencyFactory: membersDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
-      imageDependencyFactory: imageDependencyFactory
+      imageDependencyFactory: imageDependencyFactory,
+      recordsDependencyFactory: recordDependencyFactory
     )
     myPageCoordinator.start()
     return myPageCoordinator
@@ -228,7 +231,6 @@ extension WalWalTabBarCoordinatorImp {
     memberId: Int,
     nickName: String
   ) {
-    print("다른 사람 프로필로 이동")
     let profileCoordinator = myPageDependencyFactory.makeMyPageCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
@@ -236,7 +238,8 @@ extension WalWalTabBarCoordinatorImp {
       authDependencyFactory: authDependencyFactory,
       membersDependencyFactory: membersDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
-      imageDependencyFactory: imageDependencyFactory
+      imageDependencyFactory: imageDependencyFactory,
+      recordsDependencyFactory: recordDependencyFactory
     )
     profileCoordinator.startProfile(memberId: memberId, nickName: nickName)
   }

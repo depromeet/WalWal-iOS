@@ -14,6 +14,7 @@ import AuthDependencyFactory
 import MembersDependencyFactory
 import FeedDependencyFactory
 import ImageDependencyFactory
+import RecordsDependencyFactory
 import SafariServices
 
 import BaseCoordinator
@@ -43,6 +44,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   private let membersDependencyFactory: MembersDependencyFactory
   private let feedDependencyFactory: FeedDependencyFactory
   private let imageDependencyFactory: ImageDependencyFactory
+  private let recordsDependencyFactory: RecordsDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
@@ -52,7 +54,8 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     authDependencyFactory: AuthDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory,
     FeedDependencyFactory: FeedDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
+    recordsDependencyFactory: RecordsDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -62,6 +65,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     self.membersDependencyFactory = membersDependencyFactory
     self.feedDependencyFactory = FeedDependencyFactory
     self.imageDependencyFactory = imageDependencyFactory
+    self.recordsDependencyFactory = recordsDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -105,15 +109,21 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   public func start() {
     let fetchWalWalCalendarModelsUseCase = myPageDependencyFactory.injectFetchWalWalCalendarModelsUseCase()
     let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
-    let reactor = myPageDependencyFactory.injectMyPageReactor(
+    let checkCompletedTotalRecordsUseCase = recordsDependencyFactory.injectCheckCompletedTotalRecordsUseCase()
+    let checkCalendarRecordsUseCase = recordsDependencyFactory.injectCheckCalendarRecordsUseCase()
+    let reactor = myPageDependencyFactory.injectMyPageReactor (
       coordinator: self,
       fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
-      fetchMemberInfoUseCase: fetchMemberInfoUseCase
+      fetchMemberInfoUseCase: fetchMemberInfoUseCase,
+      checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
+      checkCalendarRecordsUseCase: checkCalendarRecordsUseCase,
+      memberId: nil
     )
     let myPageVC = myPageDependencyFactory.injectMyPageViewController(
       reactor: reactor,
       memberId: nil,
-      nickName: nil
+      nickName: nil,
+      isOther: false
     )
     self.baseViewController = myPageVC
     self.pushViewController(viewController: myPageVC, animated: false)
@@ -125,15 +135,21 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   ) {
     let fetchWalWalCalendarModelsUseCase = myPageDependencyFactory.injectFetchWalWalCalendarModelsUseCase()
     let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
+    let checkCompletedTotalRecordsUseCase = recordsDependencyFactory.injectCheckCompletedTotalRecordsUseCase()
+    let checkCalendarRecordsUseCase = recordsDependencyFactory.injectCheckCalendarRecordsUseCase()
     let reactor = myPageDependencyFactory.injectMyPageReactor(
       coordinator: self,
       fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
-      fetchMemberInfoUseCase: fetchMemberInfoUseCase
+      fetchMemberInfoUseCase: fetchMemberInfoUseCase,
+      checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
+      checkCalendarRecordsUseCase: checkCalendarRecordsUseCase,
+      memberId: memberId
     )
     let profileVC = myPageDependencyFactory.injectMyPageViewController(
       reactor: reactor,
       memberId: memberId,
-      nickName: nickName
+      nickName: nickName,
+      isOther: true
     )
     self.baseViewController = profileVC
     self.pushViewController(viewController: profileVC, animated: false)

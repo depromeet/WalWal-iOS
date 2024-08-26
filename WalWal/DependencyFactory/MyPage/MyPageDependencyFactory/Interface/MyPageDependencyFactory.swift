@@ -29,6 +29,9 @@ import FeedDomain
 import ImageDependencyFactory
 import ImageDomain
 
+import RecordsDependencyFactory
+import RecordsDomain
+
 public protocol MyPageDependencyFactory {
   
   func makeMyPageCoordinator(
@@ -38,7 +41,8 @@ public protocol MyPageDependencyFactory {
     authDependencyFactory: AuthDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
+    recordsDependencyFactory: RecordsDependencyFactory
   ) -> any MyPageCoordinator
   
   func injectMyPageRepository() -> MyPageRepository
@@ -49,12 +53,16 @@ public protocol MyPageDependencyFactory {
   func injectMyPageReactor<T: MyPageCoordinator>(
     coordinator: T,
     fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
-    fetchMemberInfoUseCase: FetchMemberInfoUseCase
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase,
+    checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
+    checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase,
+    memberId: Int?
   ) -> any MyPageReactor
   func injectMyPageViewController<T: MyPageReactor>(
     reactor: T,
     memberId: Int?,
-    nickName: String?
+    nickName: String?,
+    isOther: Bool
   ) -> any MyPageViewController
   
 

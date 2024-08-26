@@ -13,6 +13,7 @@ import AuthDependencyFactory
 import MembersDependencyFactory
 import FeedDependencyFactory
 import ImageDependencyFactory
+import RecordsDependencyFactory
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -29,6 +30,7 @@ import AuthDomain
 import MembersDomain
 import FeedDomain
 import ImageDomain
+import RecordsDomain
 
 import WalWalNetwork
 
@@ -45,7 +47,8 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     authDependencyFactory: any AuthDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
+    recordsDependencyFactory: RecordsDependencyFactory
   ) -> any MyPageCoordinator {
     return MyPageCoordinatorImp(
       navigationController: navigationController,
@@ -55,7 +58,8 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
       authDependencyFactory: authDependencyFactory,
       membersDependencyFactory: membersDependencyFactory,
       FeedDependencyFactory: feedDependencyFactory,
-      imageDependencyFactory: imageDependencyFactory
+      imageDependencyFactory: imageDependencyFactory,
+      recordsDependencyFactory: recordsDependencyFactory
     )
   }
   
@@ -71,25 +75,33 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   public func injectMyPageReactor<T: MyPageCoordinator>(
     coordinator: T,
     fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
-    fetchMemberInfoUseCase: FetchMemberInfoUseCase
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase,
+    checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
+    checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase,
+    memberId: Int? = nil
   ) -> any MyPageReactor {
     return MyPageReactorImp(
       coordinator: coordinator,
       fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
-      fetchMemberInfoUseCase: fetchMemberInfoUseCase
+      fetchMemberInfoUseCase: fetchMemberInfoUseCase,
+      checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
+      checkCalendarRecordsUseCase: checkCalendarRecordsUseCase,
+      memberId: memberId
     )
   }
   
   public func injectMyPageViewController<T: MyPageReactor>(
     reactor: T,
     memberId: Int? = nil,
-    nickName: String? = nil
+    nickName: String? = nil,
+    isOther: Bool = false
   ) -> any MyPageViewController {
     
     return MyPageViewControllerImp(
       reactor: reactor,
       memberId: memberId,
-      nickname: nickName
+      nickname: nickName,
+      isOther: isOther
     )
   }
   
