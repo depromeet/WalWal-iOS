@@ -12,6 +12,7 @@ import UIKit
 
 public final class CameraManager: NSObject {
   private var captureSession: AVCaptureSession
+  public private(set) var captureDevice: AVCaptureDevice?
   private var currentCameraPosition: AVCaptureDevice.Position
   private var photoOutput: AVCapturePhotoOutput
   
@@ -35,6 +36,8 @@ public final class CameraManager: NSObject {
       captureSession.commitConfiguration()
       return
     }
+    
+    captureDevice = camera
     
     captureSession.inputs.forEach { captureSession.removeInput($0) }
     if captureSession.canAddInput(input) {

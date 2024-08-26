@@ -84,6 +84,7 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
     super.viewDidLoad()
     configureAttribute()
     configureLayout()
+    configurePinchGesture()
     self.reactor = self.cameraShootingDuringTheMissionReactor
     
     cameraManager.attachPreview(to: previewView) // previewView에 카메라 프리뷰 연결
@@ -157,6 +158,28 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
             flex.addItem(switchCameraButton).size(48)
           }
       }
+  }
+  
+  private func configurePinchGesture() {
+    let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchAction))
+    self.cameraPreviewView.addGestureRecognizer(pinchGesture)
+  }
+  
+  @objc private func pinchAction(_ sender: UIPinchGestureRecognizer) {
+    guard let device = self.cameraManager.captureDevice else { return }
+    
+    do {
+      try device.lockForConfiguration()
+      defer { device.unlockForConfiguration() }
+      
+      let maxZoomFactor = device.activeFormat.videoMaxZoomFactor
+      let pinchVelocityDividerFactor: CGFloat = 10.0
+      
+      let desiredZoomFactor = device.videoZoomFactor + atan2(sender.velocity, pinchVelocityDividerFactor)
+      device.videoZoomFactor = max(1.0, min(desiredZoomFactor, maxZoomFactor))
+    } catch {
+      print("Error locking configuration")
+    }
   }
 }
 
