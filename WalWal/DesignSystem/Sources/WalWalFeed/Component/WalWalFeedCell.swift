@@ -20,7 +20,7 @@ final class WalWalFeedCell: UICollectionViewCell {
   private typealias Fonts = ResourceKitFontFamily
   
   // MARK: - Components
-  private let feedView = WalWalFeedCellView()
+  public private(set) var feedView = WalWalFeedCellView()
   static let identifier = "WalWalFeedCell"
   
   // MARK: - Initializers

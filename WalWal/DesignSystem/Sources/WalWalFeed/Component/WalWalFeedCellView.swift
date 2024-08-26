@@ -64,7 +64,7 @@ final class WalWalFeedCellView: UIView {
     $0.font = Fonts.KR.B2
     $0.translatesAutoresizingMaskIntoConstraints = false
     $0.numberOfLines = 2
-    $0.lineBreakMode = .byCharWrapping
+    $0.lineBreakStrategy = .hangulWordPriority
   }
   
   private let boostCountLabel = UILabel().then {
@@ -85,7 +85,7 @@ final class WalWalFeedCellView: UIView {
   
   var isContentExpanded = false
   var maxLength = 55
-  private var contents = ""
+  public private(set) var contents = ""
   private let disposeBag = DisposeBag()
   
   // MARK: - Initializers
@@ -146,8 +146,8 @@ final class WalWalFeedCellView: UIView {
     boostIconImageView.image = isBoostImage
     boostCountLabel.textColor = isBoostColor
     boostLabel.textColor = isBoostColor
-    contentLabel.text = feedData.contents
-    contentLabel.sizeToFit()
+    contents = sanitizeContent(feedData.contents)
+    contentLabel.text = contents
     
     let missionDate = feedData.date.toFormattedDate() ?? feedData.date
     let attributedString = NSMutableAttributedString(string: missionDate)
@@ -166,8 +166,6 @@ final class WalWalFeedCellView: UIView {
     }
     
     missionDateLabel.attributedText = attributedString
-    
-    contents = feedData.contents
     
     guard let contentTextLength = self.contentLabel.text?.count else { return }
     if contentTextLength > maxLength {
@@ -269,4 +267,7 @@ final class WalWalFeedCellView: UIView {
     setNeedsLayout()
   }
   
+  private func sanitizeContent(_ content: String) -> String {
+    return content.replacingOccurrences(of: "\n", with: "")
+  }
 }
