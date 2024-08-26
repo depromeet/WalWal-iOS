@@ -16,6 +16,7 @@ import RxSwift
 
 public enum FeedReactorAction {
   case loadFeedData(cursor: String?)
+  case refresh(cursor: String?)
 }
 
 public enum FeedReactorMutation {

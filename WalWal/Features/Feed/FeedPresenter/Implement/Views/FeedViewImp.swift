@@ -106,7 +106,10 @@ extension FeedViewControllerImp: View {
       .disposed(by: disposeBag)
     
     feed.refreshLoading
-      .map { _ in Reactor.Action.loadFeedData(cursor: nil) }
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+      .debug()
+      .filter { $0 }
+      .map { _ in Reactor.Action.refresh(cursor: nil) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }

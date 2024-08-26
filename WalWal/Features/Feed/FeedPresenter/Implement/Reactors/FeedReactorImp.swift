@@ -56,6 +56,11 @@ public final class FeedReactorImp: FeedReactor {
         return .empty()
       }
       return fetchFeedData(cursor: cursor, limit: 10)
+    case .refresh(cursor: let cursor):
+      let initialFeedData: [WalWalFeedModel] = [] // 초기화할 feedData
+      let nextCursor: String? = nil // 초기 커서 설정
+      return Observable.just(.feedLoadEnded(nextCursor: nextCursor, feedData: initialFeedData))
+        .concat(fetchFeedData(cursor: cursor, limit: 10))
     }
   }
   

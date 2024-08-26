@@ -151,12 +151,9 @@ public final class WalWalFeed: UIView {
     walwalIndicator.rx.controlEvent(.valueChanged)
       .bind { [weak self] _ in
         self?.refreshLoading.accept(true)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-          self?.feedData.accept(self?.feedData.value ?? [])
-          self?.collectionView.reloadData()
-          self?.refreshLoading.accept(false)
-        }
+        self?.feedData.accept(self?.feedData.value ?? [])
+        self?.collectionView.reloadData()
+        self?.refreshLoading.accept(false)
       }
       .disposed(by: disposeBag)
     
