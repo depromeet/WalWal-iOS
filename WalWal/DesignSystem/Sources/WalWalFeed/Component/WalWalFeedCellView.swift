@@ -82,10 +82,16 @@ final class WalWalFeedCellView: UIView {
     $0.textColor = Colors.gray500.color
   }
   
-  var isContentExpanded = false
   var maxLength = 55
   public private(set) var contents = ""
   private let disposeBag = DisposeBag()
+  private let moreTappedSubject = PublishSubject<Bool>()
+  
+  public var moreTapped: Observable<Bool> {
+    return moreTappedSubject.asObservable()
+  }
+  
+  public var isExpanded: Bool = false
   
   // MARK: - Initializers
   
@@ -116,6 +122,9 @@ final class WalWalFeedCellView: UIView {
     contentLabel.flex
       .markDirty()
     
+    feedContentView.flex
+      .markDirty()
+    
     containerView.pin
       .all()
     
@@ -128,10 +137,14 @@ final class WalWalFeedCellView: UIView {
   
   private func bind() {
     contentLabel.rx.tapped
-      .subscribe(onNext: { [weak self] in
-        self?.toggleContent()
-      })
-      .disposed(by: disposeBag) // DisposeBag에 추가
+      .withUnretained(self)
+      .compactMap { _ in 
+        self.isExpanded.toggle()
+        self.toggleContent()
+        return self.isExpanded
+      }
+      .bind(to: moreTappedSubject)
+      .disposed(by: disposeBag)
   }
   
   func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false) {
@@ -146,7 +159,7 @@ final class WalWalFeedCellView: UIView {
     boostCountLabel.textColor = isBoostColor
     boostLabel.textColor = isBoostColor
     contents = sanitizeContent(feedData.contents)
-    contentLabel.text = contents
+    contentLabel.attributedText = applyLineHeight(to: contents, lineHeight: 16)
     
     let missionDate = feedData.date.toFormattedDate() ?? feedData.date
     let attributedString = NSMutableAttributedString(string: missionDate)

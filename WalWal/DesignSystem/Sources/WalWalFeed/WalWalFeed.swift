@@ -249,9 +249,6 @@ extension WalWalFeed: UICollectionViewDataSource {
     return UICollectionReusableView()
   }
   
-  public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    let cell = collectionView.cellForItem(at: indexPath) as! WalWalFeedCell
-  }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -264,7 +261,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
       let width = collectionView.bounds.width - 40
       let model = feedData.value[indexPath.row]
       let cell = collectionView.cellForItem(at: indexPath) as? WalWalFeedCell
-      let isExpanded = cell?.feedView.isContentExpanded ?? false
+      let isExpanded = cell?.feedView.isExpanded ?? false
       
       let content = model.contents
       
@@ -275,7 +272,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
       } else {
         lineHeight = max(0, min(2, (content.count / 35) - 1))
       }
-      let baseHeight: CGFloat = 480
+      let baseHeight: CGFloat = 486
       let height: CGFloat =  baseHeight + CGFloat(16 * lineHeight)
       
       return CGSize(width: width, height: height)

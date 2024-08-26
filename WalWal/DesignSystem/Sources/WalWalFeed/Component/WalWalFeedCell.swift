@@ -22,6 +22,7 @@ final class WalWalFeedCell: UICollectionViewCell {
   // MARK: - Components
   public private(set) var feedView = WalWalFeedCellView()
   static let identifier = "WalWalFeedCell"
+  private let disposeBag = DisposeBag()
   
   // MARK: - Initializers
   
@@ -36,6 +37,19 @@ final class WalWalFeedCell: UICollectionViewCell {
   
   // MARK: - Lifecycle
   
+  override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+    setNeedsLayout()
+    layoutIfNeeded()
+    
+    let size = contentView.systemLayoutSizeFitting(layoutAttributes.size)
+    var frame = layoutAttributes.frame
+    frame.size.height = ceil(size.height)
+    layoutAttributes.frame = frame
+    
+    return layoutAttributes
+  }
+  
+  
   override func layoutSubviews() {
     super.layoutSubviews()
     layoutCell()
@@ -44,7 +58,7 @@ final class WalWalFeedCell: UICollectionViewCell {
   override func prepareForReuse() {
     super.prepareForReuse()
     feedView.maxLength = 55
-    feedView.isContentExpanded = false 
+    feedView.isExpanded = false
     feedView.contentLabel.numberOfLines = 2
   }
   
@@ -53,6 +67,18 @@ final class WalWalFeedCell: UICollectionViewCell {
   func configureCell(feedData: WalWalFeedModel) {
     feedView.configureFeed(feedData: feedData)
     contentView.backgroundColor = .clear
+    
+    feedView.moreTapped
+      .subscribe(onNext: { [weak self] isExpanded in
+        guard let self = self else { return }
+        self.feedView.isExpanded = true
+        
+        if let collectionView = superview as? UICollectionView {
+          collectionView.collectionViewLayout.invalidateLayout()
+        }
+        self.setNeedsLayout()
+      })
+      .disposed(by: disposeBag)
     
     feedView.layoutSubviews()
     
