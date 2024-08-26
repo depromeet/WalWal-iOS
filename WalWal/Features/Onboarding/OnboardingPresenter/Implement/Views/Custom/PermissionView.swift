@@ -73,8 +73,9 @@ final class PermissionView {
       .justifyContent(.spaceAround)
     
     containerView.flex
+      .justifyContent(.spaceBetween)
       .marginHorizontal(30.adjustedWidth)
-      .paddingTop(44.adjustedHeight)
+      .paddingTop(42.adjustedHeight)
       .paddingBottom(20.adjustedHeight)
       .define {
         $0.addItem(titleLabel)
@@ -84,22 +85,20 @@ final class PermissionView {
           .marginTop(4)
         
         $0.addItem()
-          .direction(.row)
           .justifyContent(.center)
+          .alignItems(.start)
           .marginTop(37.adjustedHeight)
           .marginBottom(51.adjustedHeight)
+          .marginLeft(57.adjustedWidth)
           .define {
-            $0.addItem().define {
-              $0.addItem(notiPermissionView)
-                .height(32.adjustedHeight)
-              $0.addItem(cameraPermissionView)
-                .marginVertical(16.adjustedHeight)
-                .height(32.adjustedHeight)
-              $0.addItem(photoPermissionView)
-                .height(32.adjustedHeight)
-            }
+            $0.addItem(notiPermissionView)
+              .height(32.adjustedHeight)
+            $0.addItem(cameraPermissionView)
+              .marginVertical(16.adjustedHeight)
+              .height(32.adjustedHeight)
+            $0.addItem(photoPermissionView)
+              .height(32.adjustedHeight)
           }
-        
         $0.addItem(confirmButton)
           .marginHorizontal(20.adjustedHeight)
           .height(56.adjustedHeight)
@@ -190,10 +189,11 @@ fileprivate final class PermissionListView: UIView {
   }
   
   private func setLayout() {
+    self.pin.all()
     self.flex
       .direction(.row)
-      .justifyContent(.start)
-      .alignItems(.start)
+      .justifyContent(.center)
+      .alignItems(.center)
       .define {
         $0.addItem()
           .direction(.row)
