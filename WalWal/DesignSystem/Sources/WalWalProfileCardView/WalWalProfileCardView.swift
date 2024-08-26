@@ -41,15 +41,34 @@ public final class WalWalProfileCardView: UIView {
   private let chipContainer = UIView()
   fileprivate let actionChip: WalWalChip
   
+  private let missionCountView = UIView().then {
+    $0.backgroundColor = Colors.gray150.color
+    $0.layer.cornerRadius = 10
+    $0.clipsToBounds = true
+  }
+  private let missionIconImageView = UIImageView().then {
+    $0.image = Images.missionStartIcon.image
+  }
+  private lazy var missionCountLabel = UILabel().then {
+    $0.font = Fonts.KR.B1
+    $0.textColor = Colors.black.color
+    
+    $0.text = "반려동물과 \(missionCount)개 미션을 수행하고 있어요!"
+    $0.asColor(targetString: "\(missionCount)개", color: Colors.walwalOrange.color)
+  }
+  
+  
   // MARK: - Properties
   
   private let profileImage: UIImage
   private let name: String
+  private var missionCount = 0
   private let subDescription: String
   private let chipStyle: WalWalChip.ChipStyle
   private let selectedChipStyle: WalWalChip.ChipStyle
   private let chipTitle: String?
   private let selectedChipTitle: String?
+  private let isOther: Bool
   
   private let disposeBag = DisposeBag()
   
@@ -72,7 +91,9 @@ public final class WalWalProfileCardView: UIView {
     chipStyle: WalWalChip.ChipStyle,
     chipTitle: String? = nil,
     selectedChipStyle: WalWalChip.ChipStyle = WalWalChip.ChipStyle.none,
-    selectedChipTitle: String? = nil
+    selectedChipTitle: String? = nil,
+    isOther: Bool = false,
+    missionCount: Int? = nil
   ) {
     self.chipStyle = chipStyle
     self.selectedChipStyle = selectedChipStyle
@@ -87,6 +108,8 @@ public final class WalWalProfileCardView: UIView {
       style: chipStyle,
       selectedStyle: selectedChipStyle
     )
+    self.missionCount = missionCount ?? 0
+    self.isOther = isOther
     super.init(frame: .zero)
     configureLayout()
     configureAttributes()
@@ -110,6 +133,8 @@ public final class WalWalProfileCardView: UIView {
   
   private func configureLayout() {
     addSubview(containerView)
+    let height = isOther ? 200 : 100
+    missionCountView.flex.isIncludedInLayout(isOther)
     
     containerView.flex.define { flex in
       flex.addItem()
@@ -168,6 +193,7 @@ public final class WalWalProfileCardView: UIView {
     nickname: String,
     image: UIImage?,
     raisePet: String,
+    missionCount: Int = 0,
     subDescription: String? = nil
   ) {
     nameLabel.text = nickname
@@ -177,6 +203,21 @@ public final class WalWalProfileCardView: UIView {
       profileImageView.image = raisePet == "DOG" ? DefaultProfile.yellowDog.image : DefaultProfile.yellowCat.image
     }
     subDescriptionLabel.text = subDescription
+    
+    missionCountLabel.text = "반려동물과 \(missionCount)개 미션을 수행하고 있어요!"
+    missionCountLabel.asColor(
+      targetString: "\(missionCount)",
+      color: Colors.walwalOrange.color
+    )
+    
+    missionCountLabel.flex
+      .markDirty()
+    
+    missionCountView.flex
+      .markDirty()
+    
+    containerView.flex
+      .layout()
   }
 }
 
