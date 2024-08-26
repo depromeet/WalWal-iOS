@@ -10,6 +10,7 @@ import MyPageDomain
 import MyPageCoordinator
 import DesignSystem
 import MembersDomain
+import RecordsDomain
 import FeedDomain
 
 import ReactorKit
@@ -21,6 +22,10 @@ public enum MyPageReactorAction {
   case didTapEditButton
   case loadCalendarData
   case loadProfileInfo
+  
+  case loadMemberCalendar(memberId: Int)
+  case loadMissionCount(memberId: Int)
+  case didTapBackButton
 }
 
 public enum MyPageReactorMutation {
@@ -30,6 +35,8 @@ public enum MyPageReactorMutation {
   case moveToRecordDetail(memberInfo: MemberModel, calendar: WalWalCalendarModel)
   case moveToEditView(data: MemberModel)
   case profileInfo(data: MemberModel)
+  case setMissionCount(missionCount: Int)
+  case moveToBack
 }
 
 public struct MyPageReactorState {
@@ -37,6 +44,7 @@ public struct MyPageReactorState {
   public var selectedDate: WalWalCalendarModel = .init(recordId: 0, date: "", image: nil)
   public var calendarData: [WalWalCalendarModel] = [] // 캘린더 데이터를 저장할 상태 추가
   public var profileData: MemberModel? = nil
+  public var missionCount: Int = 0
 }
 
 public protocol MyPageReactor: Reactor where Action == MyPageReactorAction, Mutation == MyPageReactorMutation, State == MyPageReactorState {
@@ -46,6 +54,9 @@ public protocol MyPageReactor: Reactor where Action == MyPageReactorAction, Muta
   init(
     coordinator: any MyPageCoordinator,
     fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase,
-    fetchMemberInfoUseCase: FetchMemberInfoUseCase
+    fetchMemberInfoUseCase: FetchMemberInfoUseCase,
+    checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
+    checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase,
+    memberId: Int?
   )
 }
