@@ -39,13 +39,11 @@ final class WalWalFeedCellView: UIView {
     $0.clipsToBounds = true
   }
   
-  private let userNickNameLabel = UILabel().then {
-    $0.font = Fonts.KR.H7.B
+  private let userNickNameLabel = CustomLabel(font: Fonts.KR.H7.B).then {
     $0.textColor = Colors.black.color
   }
   
-  private let missionLabel = UILabel().then {
-    $0.font = Fonts.KR.B2
+  private let missionLabel = CustomLabel(font: Fonts.KR.B2).then {
     $0.textColor = Colors.gray700.color
   }
   
@@ -58,27 +56,22 @@ final class WalWalFeedCellView: UIView {
     $0.image = Images.fireDef.image
   }
   
-  let contentLabel = UILabel().then {
+  let contentLabel = CustomLabel(font: Fonts.KR.B2).then {
     $0.textColor = Colors.black.color
-    $0.font = Fonts.KR.B2
     $0.translatesAutoresizingMaskIntoConstraints = false
     $0.numberOfLines = 2
     $0.lineBreakStrategy = .hangulWordPriority
   }
   
-  private let boostCountLabel = UILabel().then {
-    $0.font = Fonts.EN.B2
+  private let boostCountLabel = CustomLabel(font: Fonts.EN.B2).then {
     $0.textColor = Colors.gray500.color
   }
   
-  private let boostLabel = UILabel().then {
-    $0.text = "부스터"
-    $0.font = Fonts.KR.B2
+  private let boostLabel = CustomLabel(text: "부스터", font: Fonts.KR.B2).then {
     $0.textColor = Colors.gray500.color
   }
   
-  private let missionDateLabel = UILabel().then {
-    $0.font = Fonts.KR.B2
+  private let missionDateLabel = CustomLabel(font: Fonts.KR.B2).then {
     $0.textColor = Colors.gray500.color
   }
   
@@ -147,9 +140,9 @@ final class WalWalFeedCellView: UIView {
       .disposed(by: disposeBag)
   }
   
-  func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false) {
+  func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false, isAlreadyExpanded: Bool = false) {
     userNickNameLabel.text = feedData.nickname
-    missionLabel.text = feedData.missionTitle
+    missionLabel.text = sanitizeContent(feedData.missionTitle)
     profileImageView.image = feedData.profileImage
     missionImageView.image = feedData.missionImage
     boostCountLabel.text = "\(feedData.boostCount)"
@@ -159,7 +152,7 @@ final class WalWalFeedCellView: UIView {
     boostCountLabel.textColor = isBoostColor
     boostLabel.textColor = isBoostColor
     contents = sanitizeContent(feedData.contents)
-    contentLabel.attributedText = applyLineHeight(to: contents, lineHeight: 16)
+    contentLabel.text = contents
     
     let missionDate = feedData.date.toFormattedDate() ?? feedData.date
     let attributedString = NSMutableAttributedString(string: missionDate)
@@ -179,10 +172,13 @@ final class WalWalFeedCellView: UIView {
     
     missionDateLabel.attributedText = attributedString
     
-    guard let contentTextLength = self.contentLabel.text?.count else { return }
-    if contentTextLength > maxLength {
-      DispatchQueue.main.async {
-        self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
+    /// 부스트 애니메이션 시 이미 열려 있었으면 더보기 X
+    if !isAlreadyExpanded  {
+      if contents.count > maxLength {
+        DispatchQueue.main.async {
+          self.contentLabel.configureSpacing(text: self.contentLabel.text, font: Fonts.KR.B2)
+          self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
+        }
       }
     }
   }
@@ -212,7 +208,6 @@ final class WalWalFeedCellView: UIView {
   }
   
   private func setLayouts() {
-    contentLabel.flex.isIncludedInLayout(contentLabel.text != "")
     
     containerView.flex
       .define {
@@ -235,10 +230,12 @@ final class WalWalFeedCellView: UIView {
       }
     
     profileInfoView.flex
+      .width(100%)
       .define {
         $0.addItem(userNickNameLabel)
           .marginBottom(2.adjusted)
         $0.addItem(missionLabel)
+          .grow(1)
       }
     
     feedContentView.flex
@@ -280,7 +277,7 @@ final class WalWalFeedCellView: UIView {
   }
   
   private func sanitizeContent(_ content: String) -> String {
-    return content.replacingOccurrences(of: "\n", with: "")
+    return content.replacingOccurrences(of: "\n", with: " ")
   }
   
   private func applyLineHeight(to text: String, lineHeight: CGFloat) -> NSAttributedString {
