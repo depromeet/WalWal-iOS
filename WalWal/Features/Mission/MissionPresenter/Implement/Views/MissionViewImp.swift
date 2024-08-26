@@ -118,7 +118,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public func configureAttribute() {
     guard let window = UIWindow.key else { return }
-    view.backgroundColor = Colors.white.color
+    view.backgroundColor = UIColor.init(hex: 0xFAFAFA)
     view.addSubview(rootContainer)
     window.addSubview(splashForLoading)
   }
