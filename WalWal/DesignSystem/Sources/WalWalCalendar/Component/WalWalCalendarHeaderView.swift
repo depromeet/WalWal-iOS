@@ -23,10 +23,13 @@ final class WalWalCalendarHeaderView: UIView {
   private typealias Fonts = ResourceKitFontFamily
   
   // MARK: - UI
-  private let containerView = UIView()
+  private let rootContainer = UIView()
   
-  private let monthLabel = UILabel().then {
-    $0.font = Fonts.KR.H6.B
+  private let leftButtonContainer = UIView()
+  private let centerLabelContainer = UIView()
+  private let rightButtonContainer = UIView()
+  
+  private let monthLabel = CustomLabel(font: Fonts.KR.H6.B).then {
     $0.textColor = Colors.black.color
     $0.textAlignment = .center
   }
@@ -74,29 +77,47 @@ final class WalWalCalendarHeaderView: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    containerView.pin.all()
-    containerView.flex.layout()
+    rootContainer.pin.all()
+    rootContainer.flex.layout()
   }
   
   // MARK: - Methods
   
   private func setLayouts() {
-    addSubview(containerView)
+    addSubview(rootContainer)
     
-    containerView
-      .flex
-      .direction(.row)
+    rootContainer.flex
       .justifyContent(.center)
       .alignItems(.center)
+      .direction(.row)
+      .define { flex in
+        flex.addItem(leftButtonContainer)
+          .size(20)
+        flex.addItem(centerLabelContainer)
+          .marginHorizontal(16)
+        flex.addItem(rightButtonContainer)
+          .size(20)
+      }
+    
+    leftButtonContainer.flex
       .define { flex in
         flex.addItem(prevButton)
-          .size(Const.buttonSize)
-        flex.addItem(monthLabel)
-          .grow(1)
-          .shrink(1)
-        flex.addItem(nextButton)
-          .size(Const.buttonSize)
+          .width(100%)
+          .height(100%)
+          .alignSelf(.center)
       }
+    
+    centerLabelContainer.flex
+      .define { flex in
+        flex.addItem(monthLabel)
+      }
+    
+    rightButtonContainer.flex.define { flex in
+      flex.addItem(nextButton)
+        .width(100%)
+        .height(100%)
+        .alignSelf(.center)
+    }
   }
   
   private func bind() {
@@ -132,7 +153,6 @@ final class WalWalCalendarHeaderView: UIView {
 
 private extension WalWalCalendarHeaderView {
   enum Const {
-    static let buttonSize: CGFloat = 44
     static let dateFormatter: DateFormatter = {
       let formatter = DateFormatter()
       formatter.dateFormat = "yyyy년 M월"
