@@ -131,7 +131,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
       $0.addItem(missionContainer)
         .width(100%)
         .height(450.adjusted)
-        .marginTop(40)
       
       $0.addItem(buttonContainer)
         .width(100%)
@@ -148,11 +147,13 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     missionContainer.flex.define {
       $0.addItem(missionStartView)
         .position(.absolute)
-        .all(0)
+        .top(80)
+        .alignSelf(.center)
       
       $0.addItem(missionCompletedView)
         .position(.absolute)
-        .all(0)
+        .top(95)
+        .alignSelf(.center)
     }
     
     buttonContainer.flex.define {
