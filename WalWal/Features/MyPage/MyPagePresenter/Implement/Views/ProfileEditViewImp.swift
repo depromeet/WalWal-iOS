@@ -125,36 +125,40 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
           .width(100%)
         $0.addItem(profileContainer)
           .justifyContent(.center)
-          .marginTop(50.adjustedHeight)
-          .marginBottom(17.adjustedHeight)
+          .marginTop(60.adjustedHeight)
           .grow(1)
           .define {
             $0.addItem(profileEditView)
               .width(100%)
             $0.addItem(nicknameTextfield)
               .marginHorizontal(20.adjustedWidth)
+              .marginTop(45.adjustedHeight)
+              .height(72)
           }
         
         $0.addItem(completeButton)
-          .marginHorizontal(20.adjusted)
+          .marginHorizontal(20.adjustedHeight)
       }
     
   }
   
   private func keyboardLayout() {
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
-    completeButton.flex
-      .marginBottom(keyboardTop+20.adjustedHeight)
+    
+    profileContainer.flex.markDirty()
     profileContainer.flex
-      .justifyContent(.spaceBetween)
-      .marginTop(60.adjusted)
-      .marginBottom(17.adjustedHeight)
-    
+      .justifyContent(.start)
+      .marginTop(60.adjustedHeight)
     nicknameTextfield.flex
-      .marginTop(45.adjusted)
       .height(72)
-    
+      .marginBottom(5)
+      
     rootContainerView.flex.layout()
+    
+    completeButton.pin
+      .height(58)
+      .bottom(keyboardTop + 20.adjustedHeight)
+    view.layoutIfNeeded()
   }
   
 }
