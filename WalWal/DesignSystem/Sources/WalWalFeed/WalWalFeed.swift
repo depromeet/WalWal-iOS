@@ -289,7 +289,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
     _ collectionView: UICollectionView,
     layout collectionViewLayout: UICollectionViewLayout,
     sizeForItemAt indexPath: IndexPath) -> CGSize {
-      let width = (collectionView.bounds.width - 32).adjusted
+      let width = collectionView.bounds.width - 32.adjusted
       let model = feedData.value[indexPath.row]
       let cell = collectionView.cellForItem(at: indexPath) as? WalWalFeedCell
       let isExpanded = cell?.feedView.isExpanded ?? false
@@ -297,7 +297,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
       let content = model.contents
       
       var lineHeight: Int
-      let baseHeight: CGFloat = 480.adjusted
+      let baseHeight: CGFloat = 486.adjusted
       
       if isExpanded {
         lineHeight = content.count / 35
