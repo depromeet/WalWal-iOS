@@ -185,7 +185,7 @@ final class WalWalCalendarMonthView: UIView {
   
   private static func createLayout() -> UICollectionViewLayout {
     let layout = UICollectionViewFlowLayout()
-    layout.minimumInteritemSpacing = 7.adjusted
+    layout.minimumInteritemSpacing = Const.interitemSpacing
     layout.minimumLineSpacing = 18.adjusted
     layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: Const.sectionTopInset, right: 0)
     return layout
