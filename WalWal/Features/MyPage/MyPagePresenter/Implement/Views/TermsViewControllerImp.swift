@@ -68,8 +68,8 @@ public final class TermsViewControllerImp<R: TermsReactor>: UIViewController, Te
     view.backgroundColor = ResourceKitAsset.Colors.white.color
     textView.text = LegalText.serviceTerms
     textView.applyFormattedText(termType.text)
-    setAttribute()
-    setLayout()
+    configureAttribute()
+    configureLayout()
   }
   
   // MARK: - Layout
@@ -78,19 +78,18 @@ public final class TermsViewControllerImp<R: TermsReactor>: UIViewController, Te
     super.viewDidLayoutSubviews()
     rootContainer.pin
       .all(view.pin.safeArea)
-    
     rootContainer.flex
       .layout()
   }
   
-  public func setAttribute() {
+  public func configureAttribute() {
     view.addSubview(rootContainer)
     [navigationBar, textView].forEach {
       rootContainer.addSubview($0)
     }
   }
   
-  public func setLayout() {
+  public func configureLayout() {
     rootContainer.flex
       .justifyContent(.start)
     
