@@ -51,12 +51,12 @@ public final class WalWalProfile: UIView {
   
   private lazy var profileItem: [WalWalProfileModel] = [
     WalWalProfileModel(
-      profileType: .defaultImage,
-      defaultImage: defaultImages[defaultImageIndex]
-    ),
-    WalWalProfileModel(
       profileType: .selectImage,
       selectImage: userSelectImage
+    ),
+    WalWalProfileModel(
+      profileType: .defaultImage,
+      defaultImage: defaultImages[defaultImageIndex]
     )
   ]
   private var disposeBag = DisposeBag()
@@ -111,7 +111,7 @@ public final class WalWalProfile: UIView {
     super.init(frame: .zero)
     setLayout()
     bind()
-    focusIndex.accept(IndexPath(item: userImage != nil ? 1 : 0, section: 0))
+    focusIndex.accept(IndexPath(item: defaultImage != nil ? 1 : 0, section: 0))
   }
   
   @available(*, unavailable)
@@ -194,8 +194,8 @@ public final class WalWalProfile: UIView {
       .bind(with: self) { owner, result in
         let (cell, photo) = result
         cell.changeProfileImage(photo)
-        owner.profileItem[1].selectImage = photo
-        owner.curProfileItems.accept(owner.profileItem[1])
+        owner.profileItem[0].selectImage = photo
+        owner.curProfileItems.accept(owner.profileItem[0])
       }
       .disposed(by: disposeBag)
     
