@@ -61,6 +61,8 @@ public final class MissionReactorImp: MissionReactor {
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
+    case .refreshMissionData:
+      return loadMidnightMissionData()
     case .loadInitialData:
       return loadAllMissionData()
     case .moveToMissionUpload:
@@ -130,6 +132,22 @@ public final class MissionReactorImp: MissionReactor {
   private func loadAllMissionData() -> Observable<Mutation> {
     return checkRecordCalendar()
       .flatMap { _ in self.fetchMissionData()}
+      .flatMap { [weak self] mission -> Observable<Mutation> in
+        guard let owner = self else { return .empty() }
+        return .concat([
+          .just(Mutation.fetchTodayMissionData(mission)),
+          owner.fetchRecordStatus(missionId: mission.id),
+          owner.fetchCompletedTotalRecordsCount(),
+          .just(Mutation.loadInitialDataFlowEnded)
+        ])
+      }
+      .catch { error in
+        return Observable.just(Mutation.loadInitialDataFlowFailed(error))
+      }
+  }
+  
+  private func loadMidnightMissionData() -> Observable<Mutation> {
+    return fetchMissionData()
       .flatMap { [weak self] mission -> Observable<Mutation> in
         guard let owner = self else { return .empty() }
         return .concat([
@@ -219,6 +237,9 @@ public final class MissionReactorImp: MissionReactor {
     let components = calendar.dateComponents([.hour, .minute, .second], from: now, to: midnight)
     guard let hour = components.hour, let minute = components.minute, let second = components.second else {
       return "남은 시간 계산 실패"
+    }
+    if hour == 0 && minute == 0 && second == 0 {
+      action.onNext(.refreshMissionData)
     }
     return String(format: "%02d:%02d:%02d 남았어요!", hour, minute, second)
   }

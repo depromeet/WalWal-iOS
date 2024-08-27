@@ -20,6 +20,7 @@ public enum MissionReactorAction {
   case startTimer
   case stopTimer
   case moveToMyPage
+  case refreshMissionData
 }
 
 public enum MissionReactorMutation {
