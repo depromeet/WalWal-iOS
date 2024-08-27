@@ -51,9 +51,9 @@ final class WalWalCalendarWeekdayView: UIView {
     let today = Calendar.current.component(.weekday, from: Date()) - 1
     
     weekdayLabels = Weekday.allCases.enumerated().map { index, weekday in
-      UILabel().then {
+      CustomLabel(font: Fonts.KR.H7.B).then {
         $0.text = weekday.shortName
-        $0.font = Fonts.KR.B1
+        $0.font = Fonts.KR.H7.B
         $0.textAlignment = .center
         $0.textColor = index == today ? Const.todayColor : Const.defaultColor
       }
@@ -66,11 +66,12 @@ final class WalWalCalendarWeekdayView: UIView {
     containerView
       .flex
       .direction(.row)
-      .justifyContent(.spaceAround)
+      .justifyContent(.spaceBetween)
       .define { flex in
         weekdayLabels.forEach { label in
           flex.addItem(label)
-            .grow(1)
+            .size(44)
+            .marginHorizontal(2.5)
         }
       }
   }
@@ -80,7 +81,7 @@ final class WalWalCalendarWeekdayView: UIView {
 
 private extension WalWalCalendarWeekdayView {
   enum Const {
-    static let todayColor = Colors.gray700.color
+    static let todayColor = Colors.black.color
     static let defaultColor = Colors.gray500.color
   }
   
