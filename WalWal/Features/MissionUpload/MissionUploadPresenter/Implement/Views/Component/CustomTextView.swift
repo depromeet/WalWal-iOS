@@ -23,6 +23,7 @@ final class StyledTextInputView: UIView {
   
   // MARK: - UI Components
   
+  private let textViewContainer = UIView()
   public private(set) var textView = UITextView().then {
     $0.backgroundColor = .clear
     $0.font = Fonts.KR.H6.B
@@ -30,12 +31,6 @@ final class StyledTextInputView: UIView {
     $0.isScrollEnabled = true
     $0.textContainerInset = .zero
     $0.textContainer.lineFragmentPadding = 0
-  }
-  
-  private lazy var characterCountLabel = UILabel().then {
-    $0.font = Fonts.EN.Caption
-    $0.textColor = Colors.white.color.withAlphaComponent(0.2)
-    $0.text = "0/\(maxCharacterCount)"
   }
   
   // MARK: - Properties
@@ -71,19 +66,19 @@ final class StyledTextInputView: UIView {
   // MARK: - View Configuration
   
   private func configureView() {
-    flex.define { flex in
+    addSubview(textViewContainer)
+    
+    textViewContainer.flex.define { flex in
       flex.addItem(textView)
-        .height(160)  // 4줄 x 40pt
-      flex.addItem(characterCountLabel)
-        .width(40)
-        .alignSelf(.end)
-        .marginTop(4)
+        .height(100%)
+        .width(100%)
     }
   }
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    flex.layout(mode: .adjustHeight)
+    textViewContainer.pin.all()
+    textViewContainer.flex.layout()
   }
   
   // MARK: - Bindings
@@ -110,15 +105,6 @@ final class StyledTextInputView: UIView {
         return isPlaceholderVisible ? self.stylePlaceholderText() : self.styleText(text)
       }
       .bind(to: textView.rx.attributedText)
-      .disposed(by: disposeBag)
-    
-    /// 텍스트뷰 글자수 체크 라벨
-    textRelay
-      .map { [weak self] text -> String in
-        guard let self = self else { return "" }
-        return "\(text.count)/\(self.maxCharacterCount)"
-      }
-      .bind(to: characterCountLabel.rx.text)
       .disposed(by: disposeBag)
     
     textView.rx.text.orEmpty
