@@ -22,8 +22,6 @@ public final class MissionReactorImp: MissionReactor {
   public typealias Mutation = MissionReactorMutation
   public typealias State = MissionReactorState
   
-  private var timerDisposeBag = DisposeBag()
-  
   public let initialState: State
   public let coordinator: any MissionCoordinator
   private let todayMissionUseCase: TodayMissionUseCase
@@ -33,6 +31,8 @@ public final class MissionReactorImp: MissionReactor {
   private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   private let startRecordUseCase: StartRecordUseCase
   
+  private var lastUpdateDate: Date?
+  private var timerDisposeBag = DisposeBag()
   private let disposeBag = DisposeBag()
   
   public init(
@@ -77,6 +77,8 @@ public final class MissionReactorImp: MissionReactor {
       return .just(Mutation.stopTimer)
     case .moveToMyPage:
       return .just(.moveToMyPage)
+    case .appWillEnterForeground:
+      return checkAndUpdateMissionIfNeeded()
     }
   }
   
@@ -130,6 +132,7 @@ public final class MissionReactorImp: MissionReactor {
   }
   
   private func loadAllMissionData() -> Observable<Mutation> {
+    lastUpdateDate = Date()
     return checkRecordCalendar()
       .flatMap { _ in self.fetchMissionData()}
       .flatMap { [weak self] mission -> Observable<Mutation> in
@@ -218,18 +221,6 @@ public final class MissionReactorImp: MissionReactor {
       .catch { error in return .just(Void()) }
   }
   
-  // MARK: - MissionTimer
-  
-  private func startTimer() -> Observable<Mutation> {
-    timerDisposeBag = DisposeBag()
-    return Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
-      .map { _ in Mutation.updateTimerText(self.calculateTimeRemainingUntilMidnight()) }
-      .take(until: self.state.filter { $0.recordStatus?.statusMessage != .inProgress })
-      .do(onDispose: { [weak self] in
-        self?.timerDisposeBag = DisposeBag()
-      })
-  }
-  
   private func calculateTimeRemainingUntilMidnight() -> String {
     let calendar = Calendar.current
     let now = Date()
@@ -242,6 +233,27 @@ public final class MissionReactorImp: MissionReactor {
       action.onNext(.refreshMissionData)
     }
     return String(format: "%02d:%02d:%02d 남았어요!", hour, minute, second)
+  }
+  
+  private func checkAndUpdateMissionIfNeeded() -> Observable<Mutation> {
+    let calendar = Calendar.current, now = Date()
+    if let lastUpdate = lastUpdateDate, !calendar.isDate(lastUpdate, inSameDayAs: now) {
+      lastUpdateDate = now
+      return loadMidnightMissionData()
+    }
+    return .empty()
+  }
+  
+  // MARK: - MissionTimer
+  
+  private func startTimer() -> Observable<Mutation> {
+    timerDisposeBag = DisposeBag()
+    return Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+      .map { _ in Mutation.updateTimerText(self.calculateTimeRemainingUntilMidnight()) }
+      .take(until: self.state.filter { $0.recordStatus?.statusMessage != .inProgress })
+      .do(onDispose: { [weak self] in
+        self?.timerDisposeBag = DisposeBag()
+      })
   }
   
   /// 알림 권한 확인

@@ -21,6 +21,7 @@ public enum MissionReactorAction {
   case stopTimer
   case moveToMyPage
   case refreshMissionData
+  case appWillEnterForeground
 }
 
 public enum MissionReactorMutation {
