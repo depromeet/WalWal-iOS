@@ -50,4 +50,8 @@ public class RecordsDependencyFactoryImp: RecordsDependencyFactory {
   public func injectStartRecordUseCase() -> any StartRecordUseCase {
     return StartRecordUseCaseImp(recordRepository: injectRecordsRepository())
   }
+  
+  public func injectUpdateRecordUseCase() -> any UpdateBoostCountUseCase {
+    return UpdateBoostCountUseCaseImp(recordRepository: injectRecordsRepository())
+  }
 }

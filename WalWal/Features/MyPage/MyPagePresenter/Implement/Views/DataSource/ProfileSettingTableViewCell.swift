@@ -24,15 +24,15 @@ final class ProfileSettingTableViewCell: UITableViewCell, ReusableView {
   // MARK: - UI
   
   private let containerView = UIView()
-  private let titleLabel = UILabel().then {
+  private let titleLabel = CustomLabel(font: FontKR.H6.M).then {
     $0.font = FontKR.H6.M
     $0.textColor = AssetColor.gray700.color
   }
-  private let subTitleLabel = UILabel().then {
+  private let subTitleLabel = CustomLabel(font: FontKR.Caption).then {
     $0.font = FontKR.Caption
     $0.textColor = AssetColor.gray500.color
   }
-  private let rightLabel = UILabel().then {
+  private let rightLabel = CustomLabel(font: FontKR.B2).then {
     $0.font = FontKR.B2
     $0.textColor = AssetColor.gray600.color
     $0.textAlignment = .right

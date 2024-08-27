@@ -32,21 +32,21 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
   public var cameraShootingDuringTheMissionReactor: R
   
   private let rootFlexContainer = UIView()
-  private let navigationContainer = UIView()
-  private let shotContainerView = UIView()
   
+  private let navigationContainer = UIView()
   private let closeButton = WalWalTouchArea(
     image: Images.closeL.image,
     size: 40
   )
   
+  private let cameraContainer = UIView()
   private let cameraPreviewView = UIView().then {
     $0.clipsToBounds = true
     $0.layer.cornerRadius = 20
   }
-  
   private let previewView = UIView()
   
+  private let noticeContainer = UIView()
   private let noticeLabelChip = WalWalChip(
     text: "반려동물과 함께 산책한 사진을 찍어요!",
     opacity: 0.9,
@@ -54,15 +54,16 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
     style: .semiFilled
   )
   
+  private let controlContainer = UIView()
   private var captureButton = WalWalTouchArea(
     image: Assets.cameraCapture.image,
     size: 74
   )
-  
   private var switchCameraButton = WalWalTouchArea(
     image: Assets.cameraPosSwipe.image,
     size: 48
   )
+  
   
   private let cameraManager: CameraManager
   
@@ -106,58 +107,68 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
   // MARK: - Methods
   
   public func configureAttribute() {
-    view.backgroundColor = Colors.black.color
+    view.backgroundColor = UIColor(hex: 0x1b1b1b)
     
     view.addSubview(rootFlexContainer)
-    [navigationContainer, cameraPreviewView, noticeLabelChip].forEach {
+    [navigationContainer, cameraContainer, noticeContainer, controlContainer].forEach {
       rootFlexContainer.addSubview($0)
     }
     
+    navigationContainer.addSubview(closeButton)
+    
+    cameraContainer.addSubview(cameraPreviewView)
     cameraPreviewView.addSubview(previewView)
     previewView.frame = cameraPreviewView.bounds
     previewView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    
+    noticeContainer.addSubview(noticeLabelChip)
+    
+    controlContainer.addSubview(captureButton)
+    controlContainer.addSubview(switchCameraButton)
   }
   
   public func configureLayout() {
-    
-    rootFlexContainer.flex
-      .direction(.column)
-      .define { flex in
-        flex.addItem(navigationContainer)
-          .direction(.row)
-          .justifyContent(.start)
-          .marginTop(26)
-          .marginHorizontal(10)
-          .define { flex in
-            flex.addItem(closeButton).size(40)
-          }
-        
-        flex.addItem(cameraPreviewView)
-          .alignSelf(.center)
-          .marginTop(70)
-          .aspectRatio(1)
-          .width(100%)
-          .maxWidth(UIScreen.main.bounds.width - 16)
-        
-        flex.addItem(noticeLabelChip)
-          .alignSelf(.center)
-          .marginTop(20)
-        
-        // 하단 여백을 위한 빈 공간
-        flex.addItem().grow(1)
-        
-        flex.addItem(shotContainerView)
-          .direction(.row)
-          .justifyContent(.spaceBetween)
-          .alignItems(.center)
-          .marginBottom(36)
-          .marginHorizontal(40)
-          .define { flex in
-            flex.addItem().size(48)
-            flex.addItem(captureButton).size(74)
-            flex.addItem(switchCameraButton).size(48)
-          }
-      }
+    rootFlexContainer.flex.define { flex in
+      flex.addItem(navigationContainer)
+        .direction(.row)
+        .justifyContent(.start)
+        .marginTop(26)
+        .marginHorizontal(10)
+        .define { flex in
+          flex.addItem(closeButton).size(40)
+        }
+      
+      flex.addItem(cameraContainer)
+        .alignSelf(.center)
+        .marginTop(70)
+        .aspectRatio(1)
+        .width(100%)
+        .maxWidth(UIScreen.main.bounds.width - 16)
+        .define { flex in
+          flex.addItem(cameraPreviewView).grow(1)
+        }
+      
+      flex.addItem(noticeContainer)
+        .alignSelf(.center)
+        .marginTop(20)
+        .define { flex in
+          flex.addItem(noticeLabelChip)
+        }
+      
+      flex.addItem().grow(1) // 하단 여백을 위한 빈 공간
+      
+      flex.addItem(controlContainer)
+        .direction(.row)
+        .justifyContent(.spaceBetween)
+        .alignItems(.center)
+        .marginBottom(36)
+        .marginHorizontal(40)
+        .define { flex in
+          flex.addItem().size(48)
+          flex.addItem(captureButton).size(74)
+          flex.addItem(switchCameraButton).size(48)
+        }
+    }
   }
   
   private func configurePinchGesture() {

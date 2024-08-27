@@ -76,13 +76,12 @@ public final class WalWalAlert {
     $0.backgroundColor = Colors.white.color
     $0.layer.cornerRadius = 20
   }
-  private let titleLabel = UILabel().then {
-    $0.font = FontsKR.H4
+  private let titleLabel = CustomLabel(font: FontsKR.H4).then {
     $0.textColor = Colors.black.color
     $0.numberOfLines = 2
     $0.textAlignment = .center
   }
-  private let bodyLabel = UILabel().then {
+  private let bodyLabel = CustomLabel(font: FontsKR.B1).then {
     $0.font = FontsKR.B1
     $0.textColor = Colors.gray600.color
     $0.numberOfLines = 2
@@ -174,19 +173,21 @@ public final class WalWalAlert {
       .all()
     
     alertView.flex
-      .width(315.adjusted)
+      .width(315.adjustedWidth)
       .define {
         $0.addItem(titleLabel)
-          .marginTop(44)
+          .marginTop(44.adjustedHeight)
           .marginHorizontal(30)
         $0.addItem(bodyLabel)
-          .marginTop(6)
-          .marginHorizontal(30)
+          .marginTop(6.adjustedHeight)
+          .marginHorizontal(30.adjustedWidth)
         $0.addItem(cancelButton)
-          .marginTop(30)
+          .height(58)
+          .marginTop(30.adjustedHeight)
           .marginHorizontal(20)
           .marginBottom(closeButtonMargin)
         $0.addItem(okButton)
+          .height(58)
           .marginBottom(20)
           .marginHorizontal(20)
       }

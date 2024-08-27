@@ -23,7 +23,7 @@ let workspace = Workspace(
     ),
     Scheme(
       name: "PROD-WalWal",
-      buildAction: .buildAction(targets: [.project(path: "./App", target: "PROD-WalWalApp")]),
+      buildAction: .buildAction(targets: [.project(path: "./App", target: "WalWal")]),
       runAction: .runAction(configuration: .release),
       archiveAction: .archiveAction(configuration: .release),
       profileAction: .profileAction(configuration: .release),

@@ -30,14 +30,16 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   private typealias Fonts = ResourceKitFontFamily
   
   private let rootFlexContainer = UIView()
-  private let navigationContainer = UIView()
-  private let uploadContainer = UIView()
   
+  // 네비게이션 컨테이너
+  private let navigationContainer = UIView()
   private let backButton = WalWalTouchArea(
     image: Images.backL.image,
     size: 40
   )
   
+  // 이미지 프리뷰 컨테이너
+  private let imagePreviewContainer = UIView()
   private lazy var previewImageView = UIImageView().then {
     $0.image = capturedImage
     $0.contentMode = .scaleAspectFill
@@ -45,13 +47,24 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
     $0.layer.cornerRadius = 20
   }
   
+  // 콘텐츠 입력 컨테이너
+  private let contentInputContainer = UIView()
   private lazy var contentTextView = StyledTextInputView(
-    placeholderText: "오늘의 산책은 어땠나요?",
+    placeholderText: "함께한 추억을 기록해주세요",
     maxCharacterCount: 80
   ).then {
     $0.layer.cornerRadius = 20
   }
   
+  private let characterCountContainer = UIView()
+  private lazy var characterCountLabel = UILabel().then {
+    $0.font = Fonts.EN.Caption
+    $0.textColor = Colors.white.color.withAlphaComponent(0.2)
+    $0.text = "0/80"
+  }
+  
+  // 업로드 버튼 컨테이너
+  private let uploadContainer = UIView()
   private let uploadButtonLabel = UILabel().then {
     $0.text = "피드에 자랑하기"
     $0.font = Fonts.KR.H3
@@ -100,24 +113,30 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
     self.reactor = self.writeContentDuringTheMissionReactor
   }
   
-  public override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
+  public override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    rootFlexContainer.pin
+      .all(view.pin.safeArea)
+    rootFlexContainer.flex
+      .layout()
+    uploadContainer.flex
+      .layout()
+    uploadContainer.pin
+      .bottomCenter(view.pin.safeArea.bottom + 50)
+      .width(100%)
+      .height(50)
+    
     if isFirstAppearance {
       contentTextView.textView.becomeFirstResponder()
       isFirstAppearance = false
     }
-  }
-  
-  public override func viewDidLayoutSubviews() {
-    super.viewDidLayoutSubviews()
-    
     updateLayout()
   }
   
   // MARK: - Methods
   
   public func configureAttribute() {
-    view.backgroundColor = Colors.black.color
+    view.backgroundColor = UIColor(hex: 0x1b1b1b)
   }
   
   public func configureLayout() {
@@ -126,54 +145,46 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
       view.addSubview($0)
     }
     
-    [navigationContainer, previewImageView, contentTextView].forEach {
-      rootFlexContainer.addSubview($0)
-    }
-    
-    [uploadButtonLabel, uploadButton].forEach {
-      uploadContainer.addSubview($0)
-    }
-    
-    layoutView()
-  }
-  
-  private func layoutView() {
-    rootFlexContainer.pin
-      .all(view.pin.safeArea)
-    
     let isKeyboardVisible = keyboardHeight > 0
-    let previewImageHeight: CGFloat = isKeyboardVisible ? 160 : 240
+    let previewImageHeight: CGFloat = isKeyboardVisible ? 160.adjusted : 240.adjusted
+    let imagePreviewContainerMarginTop: CGFloat = isKeyboardVisible ? 15.adjusted : 50.adjusted
+    let contentInputMarginTop: CGFloat = isKeyboardVisible ? 40.adjusted : 50.adjusted
     
     rootFlexContainer.flex
-      .direction(.column)
       .define { flex in
         flex.addItem(navigationContainer)
-          .direction(.row)
-          .justifyContent(.start)
+          .height(40)
           .marginTop(26)
           .marginHorizontal(10)
-          .define { flex in
-            flex.addItem(backButton)
-              .size(40)
-          }
-        
-        flex.addItem(previewImageView)
+        flex.addItem(imagePreviewContainer)
           .alignSelf(.center)
-          .marginTop(20)
-          .marginHorizontal(10)
-          .aspectRatio(1)
+          .marginTop(imagePreviewContainerMarginTop)
+          .aspectRatio(1.0)
           .width(previewImageHeight)
-        
-        flex.addItem(contentTextView)
-          .marginTop(20)
-          .marginHorizontal(15)
-          .height(170)
+        flex.addItem(contentInputContainer)
+          .alignSelf(.center)
+          .marginTop(contentInputMarginTop)
+          .marginHorizontal(30)
+          .height(150.adjusted)
+          .width(315.adjusted)
       }
     
-    uploadContainer.pin
-      .bottomCenter(view.pin.safeArea.bottom + 30)
-      .width(190)
-      .height(50)
+    navigationContainer.flex.define { flex in
+      flex.addItem(backButton).size(40)
+    }
+    
+    imagePreviewContainer.flex.define { flex in
+      flex.addItem(previewImageView).grow(1)
+    }
+    
+    contentInputContainer.flex
+      .define { flex in
+        flex.addItem(contentTextView).grow(1)
+        flex.addItem(characterCountLabel)
+          .alignSelf(.end)
+          .marginTop(6)
+          .width(40)
+      }
     
     uploadContainer.flex
       .direction(.row)
@@ -181,19 +192,13 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
       .alignItems(.center)
       .define { flex in
         flex.addItem(uploadButtonLabel)
-        flex.addItem(uploadButton)
-          .size(40)
+        flex.addItem(uploadButton).size(40)
       }
-    
-    rootFlexContainer.flex
-      .layout()
-    uploadContainer.flex
-      .layout()
   }
   
   private func updateLayout() {
     UIView.animate(withDuration: 0.3) {
-      self.layoutView()
+      self.configureLayout()
       self.view.layoutIfNeeded()
     }
   }
@@ -339,6 +344,14 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
         owner.keyboardHeight = 0
         owner.updateLayout()
       }
+      .disposed(by: disposeBag)
+    
+    contentTextView.textRelay
+      .map { [weak self] text -> String in
+        guard let self = self else { return "" }
+        return "\(text.count)/80"
+      }
+      .bind(to: characterCountLabel.rx.text)
       .disposed(by: disposeBag)
   }
 }
