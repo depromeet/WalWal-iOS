@@ -37,7 +37,8 @@ let project = Project(
         .ThirdParty.Then,
         .ThirdParty.Kingfisher,
         .ThirdParty.Lottie,
-        .ResourceKit
+        .ResourceKit,
+        .GlobalState
       ]),
     Target(
       name: "DesignSystemDemoApp",
