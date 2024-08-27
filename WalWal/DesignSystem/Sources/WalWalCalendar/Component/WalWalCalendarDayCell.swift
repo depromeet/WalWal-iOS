@@ -33,7 +33,7 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
   
   private let dateLabel = CustomLabel(font: Fonts.KR.B1).then {
     $0.textAlignment = .center
-    $0.font = Fonts.KR.B1
+    $0.font = Fonts.EN.Caption
   }
   
   private let flowerImageView = UIImageView().then {
@@ -83,7 +83,7 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     index: Int
   ) {
     setDateLabel(for: date)
-    setBackgroundImage(image, isCurrentMonth: isCurrentMonth)
+    setBackgroundImage(image, isCurrentMonth: isCurrentMonth, isToday: date == today)
     setColors(for: date, isCurrentMonth: isCurrentMonth, today: today)
     setDashBorder(for: date, today: today, isCurrentMonth: isCurrentMonth)
     setFlower(showFlower: showFlower, index: index, isCurrentMonth: isCurrentMonth)
@@ -164,9 +164,9 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     dateLabel.text = "\(day)"
   }
   
-  private func setBackgroundImage(_ image: UIImage?, isCurrentMonth: Bool) {
+  private func setBackgroundImage(_ image: UIImage?, isCurrentMonth: Bool, isToday: Bool) {
     backgroundImageView.image = isCurrentMonth ? image : nil
-    backgroundImageView.layer.opacity = image != nil ? 0.8 : 1
+    backgroundImageView.layer.opacity = isToday ? 1 : 0.3
     backgroundImageView.isHidden = image == nil
   }
   
@@ -250,11 +250,11 @@ extension WalWalCalendarDayCell {
     ) -> (textColor: UIColor, backgroundColor: UIColor) {
       if date < today {
         return isCurrentMonth
-        ? (Colors.white.color, UIColor(hex: 0xCCCCCC))
+        ? (Colors.white.color, Colors.gray800.color)
         : ((Colors.gray100.color), (Colors.gray100.color))
       } else if Calendar.current.isDate(date, inSameDayAs: today) {
         return isCurrentMonth
-        ? (Colors.walwalOrange.color, Colors.walwalBeige.color)
+        ? (Colors.walwalOrange.color, Colors.gray150.color)
         : ((Colors.gray100.color), (Colors.gray100.color))
       } else {
         return isCurrentMonth
