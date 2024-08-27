@@ -121,8 +121,10 @@ public final class WalWalProfileCardView: UIView {
         .width(100%)
         .define { flex in
           flex.addItem(profileContainer).marginRight(10)
-          flex.addItem(infoContainer).grow(1).shrink(1)
+          flex.addItem(infoContainer).grow(1)
           flex.addItem(chipContainer).marginLeft(22)
+            .height(28)
+            .width(64)
         }
     }
     
@@ -137,6 +139,8 @@ public final class WalWalProfileCardView: UIView {
     
     chipContainer.flex.define { flex in
       flex.addItem(actionChip)
+        .width(100%)
+        .height(100%)
     }
   }
   
