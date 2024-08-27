@@ -126,7 +126,8 @@ public final class FeedReactorImp: FeedReactor {
       .map { missionImage, profileImage in
         let profileImageOrDefault = profileImage ?? ResourceKitAsset.Assets.yellowDog.image
         return WalWalFeedModel(
-          id: feed.recordID,
+          recordId: feed.recordID,
+          authorId: feed.authorID,
           date: feed.createdDate,
           nickname: feed.authorNickname,
           missionTitle: feed.missionTitle,

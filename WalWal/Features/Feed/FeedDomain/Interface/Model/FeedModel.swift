@@ -24,6 +24,7 @@ public struct FeedModel {
     let globalFeed = self.list.map {
       GlobalFeedListModel(
         recordID: $0.missionRecordID,
+        authorID: $0.authorID,
         createdDate: $0.createdDate,
         authorNickname: $0.authorNickName,
         missionTitle: $0.missionTitle,

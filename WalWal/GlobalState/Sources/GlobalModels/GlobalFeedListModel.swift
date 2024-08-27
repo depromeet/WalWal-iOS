@@ -9,6 +9,7 @@
 import Foundation
 public struct GlobalFeedListModel {
   public let recordID: Int
+  public let authorID: Int
   public let createdDate: String
   public let authorNickname: String
   public let missionTitle: String
@@ -19,6 +20,7 @@ public struct GlobalFeedListModel {
   
   public init(
     recordID: Int,
+    authorID: Int,
     createdDate: String,
     authorNickname: String,
     missionTitle: String,
@@ -28,6 +30,7 @@ public struct GlobalFeedListModel {
     contents: String?
   ) {
     self.recordID = recordID
+    self.authorID = authorID
     self.createdDate = createdDate
     self.authorNickname = authorNickname
     self.missionTitle = missionTitle

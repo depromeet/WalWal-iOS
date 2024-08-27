@@ -9,7 +9,8 @@
 import UIKit
 
 public struct WalWalFeedModel: Equatable {
-  public let id: Int
+  public let recordId: Int
+  var authorId: Int
   var date: String
   var nickname: String
   var missionTitle: String
@@ -19,7 +20,8 @@ public struct WalWalFeedModel: Equatable {
   var contents: String
   
   public init(
-    id: Int,
+    recordId: Int,
+    authorId: Int,
     date: String,
     nickname: String,
     missionTitle: String,
@@ -28,7 +30,8 @@ public struct WalWalFeedModel: Equatable {
     boostCount: Int,
     contents: String
   ) {
-    self.id = id
+    self.recordId = recordId
+    self.authorId = authorId
     self.date = date
     self.nickname = nickname
     self.missionTitle = missionTitle
@@ -42,7 +45,7 @@ public struct WalWalFeedModel: Equatable {
     lhs: WalWalFeedModel,
     rhs: WalWalFeedModel
   ) -> Bool {
-    return lhs.id == rhs.id 
+    return lhs.recordId == rhs.recordId
   }
 }
 
