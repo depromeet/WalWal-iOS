@@ -221,9 +221,9 @@ extension WalWalCalendarDayCell {
     
     static func getPosition(for index: Int) -> FlowerPosition {
       switch index {
-      case 2: return .topLeft
-      case 12: return .topRight
-      case 22: return .bottomRight
+      case 8: return .topLeft
+      case 18: return .topRight
+      case 30: return .bottomRight
       default: return .topRight
       }
     }

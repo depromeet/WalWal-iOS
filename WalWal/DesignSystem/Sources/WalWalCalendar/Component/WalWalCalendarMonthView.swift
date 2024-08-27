@@ -132,7 +132,7 @@ final class WalWalCalendarMonthView: UIView {
       toGranularity: .month
     )
     let image = data.model.flatMap { $0.image }
-    let showFlower = (index + 1) % 10 == 3 && index <= 23
+    let showFlower = index == 8 || index == 18 || index == 30
     cell.configure(
       with: data.date,
       isCurrentMonth: isCurrentMonth,
