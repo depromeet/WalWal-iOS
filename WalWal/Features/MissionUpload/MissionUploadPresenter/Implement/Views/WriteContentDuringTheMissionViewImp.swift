@@ -113,14 +113,6 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
     self.reactor = self.writeContentDuringTheMissionReactor
   }
   
-  public override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    if isFirstAppearance {
-      contentTextView.textView.becomeFirstResponder()
-      isFirstAppearance = false
-    }
-  }
-  
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     rootFlexContainer.pin
@@ -134,6 +126,10 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
       .width(100%)
       .height(50)
     
+    if isFirstAppearance {
+      contentTextView.textView.becomeFirstResponder()
+      isFirstAppearance = false
+    }
     updateLayout()
   }
   
