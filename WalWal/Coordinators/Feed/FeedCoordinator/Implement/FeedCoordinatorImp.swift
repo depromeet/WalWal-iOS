@@ -7,7 +7,10 @@
 //
 
 import UIKit
+
 import FeedDependencyFactory
+import RecordsDependencyFactory
+
 import BaseCoordinator
 import FeedCoordinator
 
@@ -28,15 +31,18 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   public var baseViewController: UIViewController?
   
   public var feedDependencyFactory: FeedDependencyFactory
+  public var recordsDependencyFactory: RecordsDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
-    feedDependencyFactory: FeedDependencyFactory
+    feedDependencyFactory: FeedDependencyFactory,
+    recordsDependencyFactory: RecordsDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.feedDependencyFactory = feedDependencyFactory
+    self.recordsDependencyFactory = recordsDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -62,7 +68,8 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   public func start() {
     let reactor = feedDependencyFactory.makeFeedReactor(
       coordinator: self,
-      fetchFeedUseCase: feedDependencyFactory.injectFetchFeedUseCase()
+      fetchFeedUseCase: feedDependencyFactory.injectFetchFeedUseCase(),
+      updateBoostCountUseCase: recordsDependencyFactory.injectUpdateRecordUseCase()
     )
     let feedVC = feedDependencyFactory.makeFeedViewController(reactor: reactor)
     self.baseViewController = feedVC

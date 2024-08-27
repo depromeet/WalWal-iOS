@@ -7,11 +7,16 @@
 //
 
 import UIKit
+
 import BaseCoordinator
 import FeedCoordinator
+
 import FeedData
 import FeedDomain
 import FeedPresenter
+
+import RecordsDomain
+import RecordsDependencyFactory
 
 public protocol FeedDependencyFactory {
   func injectFeedRepository() -> FeedRepository
@@ -19,11 +24,13 @@ public protocol FeedDependencyFactory {
   func injectFetchUserFeedUseCase() -> FetchUserFeedUseCase
   func makeFeedCoordinator(
     navigationController: UINavigationController,
-    parentCoordinator: any BaseCoordinator
+    parentCoordinator: any BaseCoordinator,
+    recordsDependencyFactory: RecordsDependencyFactory
   ) -> any FeedCoordinator
   func makeFeedReactor<T: FeedCoordinator>(
     coordinator: T,
-    fetchFeedUseCase: FetchFeedUseCase
+    fetchFeedUseCase: FetchFeedUseCase,
+    updateBoostCountUseCase: UpdateBoostCountUseCase
   ) -> any FeedReactor
   func makeFeedViewController<T: FeedReactor>(reactor: T) -> any FeedViewController
 }

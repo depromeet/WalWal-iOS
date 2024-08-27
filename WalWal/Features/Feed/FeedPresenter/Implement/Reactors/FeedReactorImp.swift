@@ -16,6 +16,8 @@ import FeedDomain
 import FeedPresenter
 import FeedCoordinator
 
+import RecordsDomain
+
 import ReactorKit
 import RxSwift
 
@@ -27,14 +29,18 @@ public final class FeedReactorImp: FeedReactor {
   
   public let initialState: State
   public let coordinator: any FeedCoordinator
+  
   private let fetchFeedUseCase: FetchFeedUseCase
+  private let updateBoostCountUseCase: UpdateBoostCountUseCase
   
   public init(
     coordinator: any FeedCoordinator,
-    fetchFeedUseCase: FetchFeedUseCase
+    fetchFeedUseCase: FetchFeedUseCase,
+    updateBoostCountUseCase: UpdateBoostCountUseCase
   ) {
     self.coordinator = coordinator
     self.fetchFeedUseCase = fetchFeedUseCase
+    self.updateBoostCountUseCase = updateBoostCountUseCase
     self.initialState = State()
   }
   

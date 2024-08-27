@@ -38,6 +38,7 @@ public protocol FeedReactor: Reactor where Action == FeedReactorAction, Mutation
   
   init(
     coordinator: any FeedCoordinator,
-    fetchFeedUseCase: FetchFeedUseCase
+    fetchFeedUseCase: FetchFeedUseCase,
+    updateBoostCountUseCase: UpdateBoostCountUseCase
   )
 }
