@@ -62,9 +62,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     defaultState: .active,
     placeholder: "닉네임을 입력해주세요",
     rightIcon: .close
-  ).then {
-    $0.backgroundColor = .green
-  }
+  )
   private let nextButton = WalWalButton(type: .disabled, title: "다음")
   
   // MARK: - Initialize
@@ -149,7 +147,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     
     titleView.flex
       .marginHorizontal(20.adjustedWidth)
-      .marginTop(38.adjustedHeight)
+      .marginTop(40.adjustedHeight)
       .define {
         $0.addItem(titleLabel)
         $0.addItem(subTitleLabel)
@@ -158,7 +156,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
       
     profileContainer.flex
       .justifyContent(.start)
-      .marginTop(65.adjustedHeight)
+      .marginTop(70.adjustedHeight)
       .grow(1)
       .define {
         $0.addItem(profileSelectView)
@@ -176,7 +174,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   private func updateKeyboardLayout() {
     
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
-    let scrollOffset = titleView.frame.height + 40.adjustedHeight + 65.adjustedHeight/2
+    let scrollOffset = titleView.frame.height + 40.adjustedHeight + 71.adjustedHeight/2
     
     nextButton.pin
       .bottom(keyboardTop + 20.adjustedHeight)
@@ -199,7 +197,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     }
     nextButton.pin
       .bottom(30.adjustedHeight)
-      .height(58)
+      .height(56)
     view.layoutIfNeeded()
   }
 }
