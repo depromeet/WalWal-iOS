@@ -92,11 +92,10 @@ final class WalWalCalendarHeaderView: UIView {
       .direction(.row)
       .define { flex in
         flex.addItem(leftButtonContainer)
-          .size(20)
+          .size(44)
         flex.addItem(centerLabelContainer)
-          .marginHorizontal(16)
         flex.addItem(rightButtonContainer)
-          .size(20)
+          .size(44)
       }
     
     leftButtonContainer.flex
