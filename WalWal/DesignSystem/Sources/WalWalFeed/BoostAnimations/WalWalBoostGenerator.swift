@@ -12,8 +12,8 @@ import ResourceKit
 import RxSwift
 
 struct BoostResult {
-    let indexPath: IndexPath
-    let count: Int
+  let indexPath: IndexPath
+  let count: Int
 }
 
 final class WalWalBoostGenerator {
@@ -128,7 +128,14 @@ extension WalWalBoostGenerator {
     with feedModel: WalWalFeedModel
   ) -> WalWalFeedCellView {
     let detailView = WalWalFeedCellView(frame: cell.frame)
-    detailView.configureFeed(feedData: feedModel, isBoost: true)
+    detailView.configureFeed(feedData: feedModel, isBoost: true, isAlreadyExpanded: cell.feedView.isExpanded)
+    
+    /// 더보기를 클릭한 경우 늘리기
+    if cell.feedView.isExpanded {
+      detailView.isExpanded = true
+      detailView.toggleContent()
+      detailView.flex.layout()
+    }
     let cellFrameInWindow = cell.convert(cell.bounds, to: nil)
     detailView.frame = cellFrameInWindow
     return detailView

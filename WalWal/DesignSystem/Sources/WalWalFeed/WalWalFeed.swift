@@ -29,10 +29,11 @@ public final class WalWalFeed: UIView {
   public private(set) lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
     
     let flowLayout = UICollectionViewFlowLayout()
-    flowLayout.itemSize = UICollectionViewFlowLayout.automaticSize
+    
     flowLayout.sectionInset = .init(top: 20.adjusted, left: 0, bottom: 20.adjusted, right: 0)
     flowLayout.minimumLineSpacing = 14.adjusted
     flowLayout.headerReferenceSize = .init(width: 0, height: headerHeight)
+    
     $0.collectionViewLayout = flowLayout
     $0.backgroundColor = .clear
     $0.register(
@@ -45,6 +46,7 @@ public final class WalWalFeed: UIView {
       withReuseIdentifier: FeedHeaderView.identifier
     )
     $0.showsHorizontalScrollIndicator = false
+    $0.showsVerticalScrollIndicator = false
     $0.alwaysBounceVertical = true
   }
   
@@ -87,7 +89,7 @@ public final class WalWalFeed: UIView {
     isFeed: Bool = true
   ) {
     self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
-    self.headerHeight = isFeed ? 71.adjusted : 0
+    self.headerHeight = isFeed ? 63.adjusted : 0
     super.init(frame: .zero)
     
     configureView()
@@ -102,7 +104,10 @@ public final class WalWalFeed: UIView {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    pin.all()
     flex.layout()
+    
+    collectionView.collectionViewLayout.invalidateLayout()
   }
   
   
@@ -195,6 +200,8 @@ public final class WalWalFeed: UIView {
           let feedModel = feedData.value[safe: indexPath.item] else { return }
     var updatedFeedData = feedData.value
     updatedFeedData[indexPath.item] = feedModel
+    
+    collectionView.collectionViewLayout.invalidateLayout()
     feedData.accept(updatedFeedData)
   }
   
@@ -244,6 +251,7 @@ extension WalWalFeed: UICollectionViewDataSource {
     }
     return UICollectionReusableView()
   }
+  
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -253,17 +261,26 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
     _ collectionView: UICollectionView,
     layout collectionViewLayout: UICollectionViewLayout,
     sizeForItemAt indexPath: IndexPath) -> CGSize {
-    let width = collectionView.bounds.width - 40
-    let content = feedData.value[indexPath.row].contents
-    
-    let lineHeight: Int = content.count / 40
-    let lineBreakCount = content.filter { $0 == "\n" }.count
-    let totalLineCount = min(3, lineHeight + lineBreakCount)
-    
-    let height: CGFloat = CGFloat(480 + (16 * totalLineCount))
-    
-    return CGSize(width: width, height: height)
-  }
+      let width = (collectionView.bounds.width - 32).adjusted
+      let model = feedData.value[indexPath.row]
+      let cell = collectionView.cellForItem(at: indexPath) as? WalWalFeedCell
+      let isExpanded = cell?.feedView.isExpanded ?? false
+      
+      let content = model.contents
+      
+      var lineHeight: Int
+      let baseHeight: CGFloat = 480.adjusted
+      
+      if isExpanded {
+        lineHeight = content.count / 35
+      } else {
+        lineHeight = max(0, min(2, (content.count / 35) - 1))
+      }
+      
+      let height: CGFloat =  baseHeight + (16 * lineHeight).adjusted
+      
+      return CGSize(width: width, height: height)
+    }
 }
 
 

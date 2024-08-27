@@ -8,7 +8,6 @@
 
 import UIKit
 import ResourceKit
-import Utility
 
 import Then
 import FlexLayout
@@ -40,13 +39,11 @@ final class WalWalFeedCellView: UIView {
     $0.clipsToBounds = true
   }
   
-  private let userNickNameLabel = UILabel().then {
-    $0.font = Fonts.KR.H7.B
+  private let userNickNameLabel = CustomLabel(font: Fonts.KR.H7.B).then {
     $0.textColor = Colors.black.color
   }
   
-  private let missionLabel = UILabel().then {
-    $0.font = Fonts.KR.B2
+  private let missionLabel = CustomLabel(font: Fonts.KR.B2).then {
     $0.textColor = Colors.gray700.color
   }
   
@@ -59,34 +56,35 @@ final class WalWalFeedCellView: UIView {
     $0.image = Images.fireDef.image
   }
   
-  let contentLabel = UILabel().then {
+  let contentLabel = CustomLabel(font: Fonts.KR.B2).then {
     $0.textColor = Colors.black.color
-    $0.font = Fonts.KR.B2
     $0.translatesAutoresizingMaskIntoConstraints = false
     $0.numberOfLines = 2
-    $0.lineBreakMode = .byCharWrapping
+    $0.lineBreakStrategy = .hangulWordPriority
   }
   
-  private let boostCountLabel = UILabel().then {
-    $0.font = Fonts.EN.B2
+  private let boostCountLabel = CustomLabel(font: Fonts.EN.B2).then {
     $0.textColor = Colors.gray500.color
   }
   
-  private let boostLabel = UILabel().then {
-    $0.text = "부스터"
-    $0.font = Fonts.KR.B2
+  private let boostLabel = CustomLabel(text: "부스터", font: Fonts.KR.B2).then {
     $0.textColor = Colors.gray500.color
   }
   
-  private let missionDateLabel = UILabel().then {
-    $0.font = Fonts.KR.B2
+  private let missionDateLabel = CustomLabel(font: Fonts.KR.B2).then {
     $0.textColor = Colors.gray500.color
   }
   
-  var isContentExpanded = false
   var maxLength = 55
-  private var contents = ""
+  public private(set) var contents = ""
   private let disposeBag = DisposeBag()
+  private let moreTappedSubject = PublishSubject<Bool>()
+  
+  public var moreTapped: Observable<Bool> {
+    return moreTappedSubject.asObservable()
+  }
+  
+  public var isExpanded: Bool = false
   
   // MARK: - Initializers
   
@@ -117,6 +115,9 @@ final class WalWalFeedCellView: UIView {
     contentLabel.flex
       .markDirty()
     
+    feedContentView.flex
+      .markDirty()
+    
     containerView.pin
       .all()
     
@@ -129,15 +130,19 @@ final class WalWalFeedCellView: UIView {
   
   private func bind() {
     contentLabel.rx.tapped
-      .subscribe(onNext: { [weak self] in
-        self?.toggleContent()
-      })
-      .disposed(by: disposeBag) // DisposeBag에 추가
+      .withUnretained(self)
+      .compactMap { _ in
+        self.isExpanded.toggle()
+        self.toggleContent()
+        return self.isExpanded
+      }
+      .bind(to: moreTappedSubject)
+      .disposed(by: disposeBag)
   }
   
-  func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false) {
+  func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false, isAlreadyExpanded: Bool = false) {
     userNickNameLabel.text = feedData.nickname
-    missionLabel.text = feedData.missionTitle
+    missionLabel.text = sanitizeContent(feedData.missionTitle)
     profileImageView.image = feedData.profileImage
     missionImageView.image = feedData.missionImage
     boostCountLabel.text = "\(feedData.boostCount)"
@@ -146,33 +151,17 @@ final class WalWalFeedCellView: UIView {
     boostIconImageView.image = isBoostImage
     boostCountLabel.textColor = isBoostColor
     boostLabel.textColor = isBoostColor
-    contentLabel.text = feedData.contents
-    contentLabel.sizeToFit()
+    contents = sanitizeContent(feedData.contents)
+    contentLabel.text = contents
+    missionDateLabel.attributedText = setupDateLabel(to: feedData.date)
     
-    let missionDate = feedData.date.toFormattedDate() ?? feedData.date
-    let attributedString = NSMutableAttributedString(string: missionDate)
-    
-    let numberFont = Fonts.EN.Caption // 숫자에 적용할 폰트
-    let defaultFont = Fonts.KR.B2 // 기본 폰트
-    
-    attributedString.addAttribute(.font, value: defaultFont, range: NSRange(location: 0, length: missionDate.count))
-    
-    let numberPattern = "[0-9]"
-    if let regex = try? NSRegularExpression(pattern: numberPattern, options: []) {
-      let matches = regex.matches(in: missionDate, options: [], range: NSRange(location: 0, length: missionDate.count))
-      for match in matches {
-        attributedString.addAttribute(.font, value: numberFont, range: match.range)
-      }
-    }
-    
-    missionDateLabel.attributedText = attributedString
-    
-    contents = feedData.contents
-    
-    guard let contentTextLength = self.contentLabel.text?.count else { return }
-    if contentTextLength > maxLength {
-      DispatchQueue.main.async {
-        self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
+    /// 부스트 애니메이션 시 이미 열려 있었으면 더보기 X
+    if !isAlreadyExpanded  {
+      if contents.count > maxLength {
+        DispatchQueue.main.async {
+          self.contentLabel.configureSpacing(text: self.contentLabel.text, font: Fonts.KR.B2)
+          self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
+        }
       }
     }
   }
@@ -202,15 +191,14 @@ final class WalWalFeedCellView: UIView {
   }
   
   private func setLayouts() {
-    contentLabel.flex.isIncludedInLayout(contentLabel.text != "")
     
     containerView.flex
       .define {
         $0.addItem(profileHeaderView)
-          .marginHorizontal(16)
-          .marginVertical(15)
+          .marginHorizontal(16.adjusted)
+          .marginVertical(15.adjusted)
         $0.addItem(feedContentView)
-          .marginBottom(20)
+          .marginBottom(20.adjusted)
       }
     
     profileHeaderView.flex
@@ -219,16 +207,18 @@ final class WalWalFeedCellView: UIView {
       .width(100%)
       .define {
         $0.addItem(profileImageView)
-          .size(40)
+          .size(40.adjusted)
         $0.addItem(profileInfoView)
-          .marginLeft(10)
+          .marginLeft(10.adjusted)
       }
     
     profileInfoView.flex
+      .width(100%)
       .define {
         $0.addItem(userNickNameLabel)
-          .marginBottom(2)
+          .marginBottom(2.adjusted)
         $0.addItem(missionLabel)
+          .grow(1)
       }
     
     feedContentView.flex
@@ -237,16 +227,16 @@ final class WalWalFeedCellView: UIView {
       .justifyContent(.center)
       .define {
         $0.addItem(missionImageView)
-          .size(343)
+          .height(343.adjusted)
           .alignItems(.center)
           .position(.relative)
         $0.addItem(contentLabel)
-          .minHeight(16)
-          .marginHorizontal(16)
-          .marginTop(14)
+          .minHeight(16.adjusted)
+          .marginHorizontal(16.adjusted)
+          .marginTop(14.adjusted)
         $0.addItem(boostLabelView)
-          .marginTop(8)
-          .marginHorizontal(16)
+          .marginTop(8.adjusted)
+          .marginHorizontal(16.adjusted)
       }
     
     boostLabelView.flex
@@ -256,17 +246,69 @@ final class WalWalFeedCellView: UIView {
       .define {
         $0.addItem(boostIconImageView)
         $0.addItem(boostCountLabel)
-          .marginRight(1)
+          .marginRight(1.adjusted)
         $0.addItem(boostLabel)
-          .marginRight(8)
+          .marginRight(8.adjusted)
         $0.addItem(missionDateLabel)
       }
   }
   
-  private func toggleContent() {
+  func toggleContent() {
     contentLabel.numberOfLines = 4
     contentLabel.text = contents
     setNeedsLayout()
   }
   
+  private func sanitizeContent(_ content: String) -> String {
+    return content.replacingOccurrences(of: "\n", with: " ")
+  }
+  
+  private func applyLineHeight(to text: String, lineHeight: CGFloat) -> NSAttributedString {
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.minimumLineHeight = lineHeight
+    paragraphStyle.maximumLineHeight = lineHeight
+    paragraphStyle.lineBreakMode = .byTruncatingTail
+    
+    let attributes: [NSAttributedString.Key: Any] = [
+      .paragraphStyle: paragraphStyle,
+      .font: Fonts.KR.B2,
+      .foregroundColor: Colors.black.color
+    ]
+    
+    return NSAttributedString(string: text, attributes: attributes)
+  }
+  
+  private func setupDateLabel(to text: String) -> NSAttributedString {
+    
+    let missionDate = text.toFormattedDate() ?? text
+    let attributedString = NSMutableAttributedString(string: missionDate)
+    
+    let numberFont = Fonts.EN.Caption
+    let defaultFont = Fonts.KR.B2
+    
+    attributedString.addAttribute(.font, value: defaultFont, range: NSRange(location: 0, length: missionDate.count))
+    
+    let numberPattern = "[0-9]"
+    if let regex = try? NSRegularExpression(pattern: numberPattern, options: []) {
+      let matches = regex.matches(in: missionDate, options: [], range: NSRange(location: 0, length: missionDate.count))
+      for match in matches {
+        attributedString.addAttribute(.font, value: numberFont, range: match.range)
+      }
+    }
+    
+    return attributedString
+  }
+  
+}
+
+extension String {
+  func toFormattedDate() -> String? {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    guard let date = dateFormatter.date(from: self) else {
+      return nil
+    }
+    dateFormatter.dateFormat = "yyyy년 M월 d일"
+    return dateFormatter.string(from: date)
+  }
 }

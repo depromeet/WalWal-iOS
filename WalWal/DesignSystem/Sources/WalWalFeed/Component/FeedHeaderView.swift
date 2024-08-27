@@ -17,10 +17,8 @@ final class FeedHeaderView: UICollectionReusableView {
   
   static let identifier = "FeedHeaderView"
   
-  private let guideLabel = UILabel().then {
-    $0.font = Fonts.KR.H6.B
+  private let guideLabel = CustomLabel(text: "☀️ 다른 반려동물은 어떤 미션을 했을까요?", font: Fonts.KR.H6.B).then {
     $0.textColor = .black
-    $0.text = "☀️ 다른 반려동물은 어떤 미션을 했을까요?"
   }
   
   override init(frame: CGRect) {
@@ -36,7 +34,13 @@ final class FeedHeaderView: UICollectionReusableView {
     addSubview(guideLabel)
     
     guideLabel.pin
-      .center()
-      .sizeToFit()
+      .all()
+    
+    self.flex
+      .alignItems(.center)
+      .define {
+        $0.addItem(guideLabel)
+          .marginTop(29.adjusted)
+      }
   }
 }
