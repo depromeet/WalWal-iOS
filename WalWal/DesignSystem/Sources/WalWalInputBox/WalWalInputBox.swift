@@ -71,8 +71,7 @@ public final class WalWalInputBox: UIView {
     $0.spellCheckingType = .no
   }
   
-  fileprivate let placeholderLabel = UILabel().then {
-    $0.font = Fonts.KR.H6.M
+  fileprivate let placeholderLabel = CustomLabel(font: Fonts.KR.H6.M).then {
     $0.textColor = Colors.gray500.color
     $0.textAlignment = .center
   }
@@ -83,9 +82,8 @@ public final class WalWalInputBox: UIView {
     $0.backgroundColor = Colors.gray300.color
   }
   
-  fileprivate let errorLabel = UILabel().then {
+  fileprivate let errorLabel = CustomLabel(font: Fonts.KR.B2).then {
     $0.numberOfLines = 1
-    $0.font = Fonts.KR.B2
     $0.minimumScaleFactor = 0.8
     $0.textColor = .red
     $0.textAlignment = .center
@@ -129,21 +127,10 @@ public final class WalWalInputBox: UIView {
   public override func layoutSubviews() {
     super.layoutSubviews()
     containerView.pin
-      .left()
-      .right()
-      .top()
-      .height(52)
+      .all()
     containerView.flex
-      .layout()
+      .layout(mode: .adjustHeight)
     
-    errorLabel.pin
-      .left()
-      .right()
-      .below(of: containerView)
-      .top(6)
-      .height(20)
-    errorLabel.flex
-      .layout()
   }
   
   // MARK: - Methods
@@ -159,17 +146,16 @@ public final class WalWalInputBox: UIView {
   
   private func configureLayouts() {
     addSubview(containerView)
-    addSubview(errorLabel)
-    
     containerView.flex.define { flex in
       flex.addItem()
         .direction(.row)
-        .justifyContent(.spaceBetween)
-        .alignItems(.center)
-        .paddingTop(18)
+        .justifyContent(.end)
         .paddingLeft(24)
+        .marginTop(17)
         .define { flex in
           flex.addItem()
+            .direction(.column)
+            .alignSelf(.end)
             .grow(1)
             .define { flex in
               flex.addItem(textField)
@@ -183,9 +169,10 @@ public final class WalWalInputBox: UIView {
       flex.addItem(separatorView)
         .height(1)
         .marginTop(15)
+      flex.addItem(errorLabel)
+        .marginTop(3)
+        .height(17)
     }
-    errorLabel.flex
-      .marginTop(8)
   }
   
   private func bind() {
