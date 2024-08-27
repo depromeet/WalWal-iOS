@@ -62,14 +62,17 @@ public final class FeedReactorImp: FeedReactor {
         return .empty()
       }
       return fetchFeedData(cursor: cursor, limit: 10)
+        .observe(on: MainScheduler.asyncInstance)
     case .refresh(cursor: let cursor):
       let initialFeedData: [WalWalFeedModel] = [] // 초기화할 feedData
       let nextCursor: String? = nil // 초기 커서 설정
       GlobalState.shared.feedList.accept([])
       return Observable.just(.feedLoadEnded(nextCursor: nextCursor, feedData: initialFeedData))
         .concat(fetchFeedData(cursor: cursor, limit: 10))
+        .observe(on: MainScheduler.asyncInstance)
     case let .endedBoost(recordId, count):
       return postBoostCount(recordId: recordId, count: count)
+        .observe(on: MainScheduler.asyncInstance) 
     }
   }
   
