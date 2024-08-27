@@ -72,40 +72,38 @@ public final class WalWalCalendar: UIView {
     
     rootContainer.flex
       .define { flex in
-      flex.addItem(headerContainer)
-        .marginTop(18.adjusted)
-      flex.addItem(weekdayContainer)
-        .marginTop(10.adjusted)
-      flex.addItem(monthContainer)
-        .marginTop(4.adjusted)
-        .marginHorizontal(20.adjusted)
-        .grow(1)
-        .shrink(1)
-    }
+        flex.addItem(headerContainer)
+          .marginTop(18.adjusted)
+        flex.addItem(weekdayContainer)
+          .marginTop(10.adjusted)
+        flex.addItem(monthContainer)
+          .marginTop(4.adjusted)
+          .marginHorizontal(20.adjusted)
+          .grow(1)
+          .shrink(1)
+      }
     
     headerContainer.flex
       .define { flex in
-      flex.addItem(headerView)
-        .height(44.adjusted)
-        .grow(1)
-        .shrink(1)
-        .alignSelf(.center)
-    }
+        flex.addItem(headerView)
+          .height(44.adjusted)
+          .alignSelf(.center)
+      }
     
     weekdayContainer.flex
       .alignSelf(.center)
       .define { flex in
-      flex.addItem(weekdayView)
-        .width(100%)
-        .height(44.adjusted)
-    }
+        flex.addItem(weekdayView)
+          .width(100%)
+          .height(44.adjusted)
+      }
     
     monthContainer.flex
       .define { flex in
-      flex.addItem(monthView)
-        .width(100%)
-        .height(100%)
-    }
+        flex.addItem(monthView)
+          .width(100%)
+          .height(100%)
+      }
   }
   
   private func bind() {

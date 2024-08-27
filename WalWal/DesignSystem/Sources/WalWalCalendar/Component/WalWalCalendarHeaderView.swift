@@ -79,21 +79,25 @@ final class WalWalCalendarHeaderView: UIView {
     super.layoutSubviews()
     rootContainer.pin.all()
     rootContainer.flex.layout()
+    monthLabel.pin
+      .hCenter()
+      .vCenter()
   }
   
   // MARK: - Methods
   
   private func setLayouts() {
     addSubview(rootContainer)
-    
+    addSubview(monthLabel)
     rootContainer.flex
+      .direction(.row)
       .justifyContent(.center)
       .alignItems(.center)
-      .direction(.row)
       .define { flex in
         flex.addItem(leftButtonContainer)
           .size(44)
-        flex.addItem(centerLabelContainer)
+        flex.addItem()
+          .width(82)
         flex.addItem(rightButtonContainer)
           .size(44)
       }
@@ -106,17 +110,13 @@ final class WalWalCalendarHeaderView: UIView {
           .alignSelf(.center)
       }
     
-    centerLabelContainer.flex
+    rightButtonContainer.flex
       .define { flex in
-        flex.addItem(monthLabel)
+        flex.addItem(nextButton)
+          .width(100%)
+          .height(100%)
+          .alignSelf(.center)
       }
-    
-    rightButtonContainer.flex.define { flex in
-      flex.addItem(nextButton)
-        .width(100%)
-        .height(100%)
-        .alignSelf(.center)
-    }
   }
   
   private func bind() {
