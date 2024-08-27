@@ -54,7 +54,7 @@ let project = Project(
       )
     ),
     .makeApp(
-      name: "PROD-WalWalApp",
+      name: "WalWal",
       platform: .iOS,
       bundleId: "olderStoneBed.io.walwal",
       iOSTargetVersion: "16.0.0",
