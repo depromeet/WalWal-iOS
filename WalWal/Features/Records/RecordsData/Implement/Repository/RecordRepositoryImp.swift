@@ -62,5 +62,12 @@ public final class RecordRepositoryImp: RecordRepository {
       .asObservable()
       .asSingle()
   }
-  
+ 
+  public func postBoostCount(recordId: Int, count: Int) -> Single<Void> {
+    let body = PostBoostCountBody(count: count)
+    let endpoint = RecordEndpoint<EmptyResponse>.postBoostCount(recordId: recordId, body: body)
+    
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
+      .map { _ in Void() }
+  }
 }
