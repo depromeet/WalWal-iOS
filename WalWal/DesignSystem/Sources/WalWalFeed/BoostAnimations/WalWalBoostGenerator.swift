@@ -8,6 +8,7 @@
 
 import UIKit
 import ResourceKit
+import GlobalState
 
 import RxSwift
 
@@ -35,6 +36,7 @@ final class WalWalBoostGenerator {
   private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
   
   let boostFinished = PublishSubject<BoostResult>()
+  let isOwnFeed = PublishSubject<Bool>()
   var isEndedLongPress = false
   
   init(
@@ -64,6 +66,11 @@ final class WalWalBoostGenerator {
           let window = UIWindow.key else { return }
     
     currentIndexPath = indexPath
+    
+    if feedModel.authorId == GlobalState.shared.profileInfo.value.memberId {
+      isOwnFeed.onNext(true)
+      return
+    }
     
     let detailView = createAndConfigureDetailView(from: cell, with: feedModel)
     let overlayView = createOverlayView(frame: detailView.frame)

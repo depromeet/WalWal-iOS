@@ -162,7 +162,13 @@ public final class WalWalFeed: UIView {
         owner.feedData.accept(owner.feedData.value)
       }
       .disposed(by: disposeBag)
-
+    
+    walwalBoostGenerater.isOwnFeed
+      .subscribe(with: self) { owner, isOwnFeed in
+        if isOwnFeed {WalWalToast.shared.show(type: .error, message: "자신의 피드는 부스트할 수 없어요")}
+      }
+      .disposed(by: disposeBag)
+    
     walwalBoostGenerater.boostFinished
       .withUnretained(self) { (owner, boostResult) in
         var updatedFeedData = owner.feedData.value
@@ -178,7 +184,7 @@ public final class WalWalFeed: UIView {
           updatedFeedData[boostResult.indexPath.item] = updatedModel
           
           owner.updatedBoost.accept(
-            (recordId: updatedModel.id,
+            (recordId: updatedModel.recordId,
              count: boostResult.count)
           )
         }
