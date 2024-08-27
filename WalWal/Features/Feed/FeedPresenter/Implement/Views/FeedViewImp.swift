@@ -52,6 +52,11 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   
   // MARK: - Lifecycle
   
+  public override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    feedReactor.action.onNext(.refresh(cursor: nil))
+  }
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     configureLayout()
@@ -106,7 +111,9 @@ extension FeedViewControllerImp: View {
       .disposed(by: disposeBag)
     
     feed.refreshLoading
-      .map { _ in Reactor.Action.loadFeedData(cursor: nil) }
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+      .filter { $0 }
+      .map { _ in Reactor.Action.refresh(cursor: nil) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
