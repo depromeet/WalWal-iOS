@@ -71,11 +71,12 @@ final class PermissionView {
     alertContainer.addSubview(containerView)
     alertContainer.flex
       .justifyContent(.spaceAround)
+      
     
     containerView.flex
       .justifyContent(.spaceBetween)
       .marginHorizontal(30.adjustedWidth)
-      .paddingTop(42.adjustedHeight)
+      .paddingTop(44.adjustedHeight)
       .paddingBottom(20.adjustedHeight)
       .define {
         $0.addItem(titleLabel)
@@ -101,7 +102,7 @@ final class PermissionView {
           }
         $0.addItem(confirmButton)
           .marginHorizontal(20.adjustedHeight)
-          .height(56.adjustedHeight)
+          .height(56)
       }
     
     containerView.flex
@@ -165,6 +166,7 @@ fileprivate final class PermissionListView: UIView {
   private let iconImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFit
   }
+  private let textContainer = UIView()
   private let typeLabel = CustomLabel(font: Font.H6.M).then {
     $0.textColor = Color.gray800.color
   }
@@ -190,22 +192,26 @@ fileprivate final class PermissionListView: UIView {
   
   private func setLayout() {
     self.pin.all()
+    
+    textContainer.flex
+      .direction(.row)
+      .alignItems(.end)
+      .define {
+        $0.addItem(typeLabel)
+          .marginRight(8.adjustedWidth)
+        $0.addItem(contentLabel)
+      }
+    
     self.flex
       .direction(.row)
-      .justifyContent(.center)
+      .justifyContent(.start)
       .alignItems(.center)
       .define {
-        $0.addItem()
-          .direction(.row)
-          .define {
-            $0.addItem(iconImageView)
-              .size(32)
-            $0.addItem(typeLabel)
-              .marginRight(8)
-              .marginLeft(2)
-            $0.addItem(contentLabel)
-          }
-        
+        $0.addItem(iconImageView)
+          .size(32.adjusted)
+        $0.addItem(textContainer)
+          .marginLeft(2.adjustedWidth)
+          .layout(mode: .adjustHeight)
       }
     self.flex
       .layout(mode: .adjustWidth)

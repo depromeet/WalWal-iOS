@@ -82,12 +82,12 @@ final class DescriptionCell: UICollectionViewCell, ReusableView {
           .height(100%)
         $0.addItem(subTextLabel)
           .height(100%)
-          .marginTop(4)
+          .marginTop(4.adjustedHeight)
         $0.addItem(imageView)
           .alignSelf(.center)
           .width(100%)
           .marginTop(8)
-          .aspectRatio(375/280)
+          .aspectRatio(375.adjustedWidth/280.adjustedHeight)
       }
   }
   

@@ -91,7 +91,7 @@ final class PetView: UIView {
       .alignItems(.center)
       .define { flex in
         flex.addItem(petView)
-          .size(160.adjustedWidth)
+          .size(161.adjustedWidth)
         flex.addItem(typeLabel)
           .marginTop(20.adjustedHeight)
       }

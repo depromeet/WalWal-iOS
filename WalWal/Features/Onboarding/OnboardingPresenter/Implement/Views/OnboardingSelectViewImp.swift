@@ -119,7 +119,7 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
         $0.addItem()
           .direction(.row)
           .justifyContent(.spaceBetween)
-          .marginTop(80.adjustedHeight)
+          .marginTop(81.adjustedHeight)
           .define {
             $0.addItem(dogView)
             $0.addItem(catView)
