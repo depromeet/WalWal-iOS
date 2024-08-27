@@ -23,7 +23,7 @@ public final class WalWalFeed: UIView {
   // MARK: - UI
   
   private let walwalIndicator = WalWalLoadingIndicator(frame: .zero)
-  
+  private let containerView = UIView()
   public private(set) lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
     
     let flowLayout = UICollectionViewFlowLayout()
@@ -110,8 +110,11 @@ public final class WalWalFeed: UIView {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    pin.all()
-    flex.layout()
+    
+    containerView.pin
+      .all()
+    containerView.flex
+      .layout()
     
     collectionView.collectionViewLayout.invalidateLayout()
   }
@@ -207,7 +210,9 @@ public final class WalWalFeed: UIView {
   }
   
   private func setLayouts() {
-    flex.define {
+    addSubview(containerView)
+    
+    containerView.flex.define {
       $0.addItem(collectionView)
         .grow(1)
     }
