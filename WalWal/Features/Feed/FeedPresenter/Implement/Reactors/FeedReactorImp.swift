@@ -62,6 +62,12 @@ public final class FeedReactorImp: FeedReactor {
         return .empty()
       }
       return fetchFeedData(cursor: cursor, limit: 10)
+    case .refresh(cursor: let cursor):
+      let initialFeedData: [WalWalFeedModel] = [] // 초기화할 feedData
+      let nextCursor: String? = nil // 초기 커서 설정
+      GlobalState.shared.feedList.accept([])
+      return Observable.just(.feedLoadEnded(nextCursor: nextCursor, feedData: initialFeedData))
+        .concat(fetchFeedData(cursor: cursor, limit: 10))
     case let .endedBoost(recordId, count):
       return postBoostCount(recordId: recordId, count: count)
     }
@@ -150,14 +156,15 @@ public final class FeedReactorImp: FeedReactor {
     
     if let defaultImage = DefaultProfile(rawValue: imageURL) {
       return .just(defaultImage.image) // 기본 이미지 반환
-    } else if let cachedImage = GlobalState.shared.imageStore[imageURL] {
-      return .just(cachedImage)
-    } else {
-      return GlobalState.shared.downloadAndCacheImage(for: imageURL)
-        .map { _ in
-          GlobalState.shared.imageStore[imageURL]
-        }
     }
+    
+    if let cachedImage = GlobalState.shared.imageStore[imageURL] {
+      return .just(cachedImage)
+    }
+    
+    return GlobalState.shared.downloadAndCacheImage(for: imageURL)
+      .map { _ in
+        GlobalState.shared.imageStore[imageURL]
+      }
   }
-  
 }

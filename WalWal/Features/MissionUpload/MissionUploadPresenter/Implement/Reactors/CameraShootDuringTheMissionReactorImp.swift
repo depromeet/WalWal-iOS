@@ -53,7 +53,7 @@ public final class CameraShootDuringTheMissionReactorImp: CameraShootDuringTheMi
     case .setLoading(let isLoading):
       newState.isLoading = isLoading
     case .moveToMain:
-      passFlagAndMoveToMission()
+      backToMission()
     }
     return newState
   }
@@ -61,11 +61,11 @@ public final class CameraShootDuringTheMissionReactorImp: CameraShootDuringTheMi
 
 // MARK: - Private Method
 extension CameraShootDuringTheMissionReactorImp {
-  private func passFlagAndMoveToMission() {
+  private func backToMission() {
     guard let tabBarViewController = coordinator.navigationController.tabBarController as? WalWalTabBarViewController else {
       return
     }
     tabBarViewController.showCustomTabBar()
-    coordinator.fetchMissionData()
+    coordinator.requirefinish()
   }
 }

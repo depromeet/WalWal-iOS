@@ -19,6 +19,7 @@ import RxCocoa
 final class WalWalLoadingIndicator: UIRefreshControl {
   let indicatorView: LottieAnimationView = {
     let animationView = LottieAnimationView(animation: AnimationAsset.refersh.animation)
+    animationView.contentMode = .scaleAspectFit
     animationView.loopMode = .loop
     return animationView
   }()
@@ -35,10 +36,12 @@ final class WalWalLoadingIndicator: UIRefreshControl {
   private func setupAnimationViews() {
     self.tintColor = .clear
     self.addSubview(indicatorView)
+    self.clipsToBounds = true
   }
   
   override func layoutSubviews() {
     super.layoutSubviews()
+    indicatorView.flex.height(self.height)
     indicatorView.pin.center()
     
     indicatorView.play()

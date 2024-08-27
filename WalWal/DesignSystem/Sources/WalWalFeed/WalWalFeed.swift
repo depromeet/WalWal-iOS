@@ -96,6 +96,8 @@ public final class WalWalFeed: UIView {
     self.headerHeight = isFeed ? 63.adjusted : 0
     super.init(frame: .zero)
     
+    self.collectionView.backgroundColor = isFeed ? Colors.gray150.color : Colors.gray100.color
+    
     configureView()
     self.feedData.accept(feedData)
   }
@@ -141,9 +143,10 @@ public final class WalWalFeed: UIView {
     feedData
       .asDriver(onErrorJustReturn: [])
       .drive(with: self) { owner, feedData in
-        self.currentFeedData = feedData
+        owner.currentFeedData = feedData
         owner.collectionView.reloadData()
         owner.walwalIndicator.endRefreshing()
+        owner.refreshLoading.accept(false)
       }
       .disposed(by: disposeBag)
     
@@ -153,14 +156,10 @@ public final class WalWalFeed: UIView {
       .disposed(by: disposeBag)
     
     walwalIndicator.rx.controlEvent(.valueChanged)
-      .bind { [weak self] _ in
-        self?.refreshLoading.accept(true)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-          self?.feedData.accept(self?.feedData.value ?? [])
-          self?.collectionView.reloadData()
-          self?.refreshLoading.accept(false)
-        }
+      .withUnretained(self)
+      .bind { owner, _ in
+        owner.refreshLoading.accept(true)
+        owner.feedData.accept(owner.feedData.value)
       }
       .disposed(by: disposeBag)
     
@@ -229,6 +228,7 @@ public final class WalWalFeed: UIView {
   }
   
   // MARK: - Scroll
+  
   private func isNearBottom(_: CGPoint) -> Bool {
     return collectionView.isNearBottom()
   }
