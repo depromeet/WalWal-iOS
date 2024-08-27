@@ -15,8 +15,8 @@ public protocol TermsViewController: UIViewController {
   associatedtype TermsReactorType: TermsReactor
   var disposeBag: DisposeBag { get set }
   
-  func setLayout()
-  func setAttribute()
+  func configureLayout()
+  func configureAttribute()
   func bind(reactor: TermsReactorType)
 }
 
