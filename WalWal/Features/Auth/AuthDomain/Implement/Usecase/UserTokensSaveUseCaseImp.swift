@@ -17,6 +17,9 @@ public class UserTokensSaveUseCaseImp: UserTokensSaveUseCase {
   public func execute(tokens: AuthToken) {
     if tokens.isTemporaryToken {
       UserDefaults.setValue(value: tokens.accessToken, forUserDefaultKey: .temporaryToken)
+      if KeychainWrapper.shared.accessToken != nil {
+        let _ = KeychainWrapper.shared.setAccessToken(nil)
+      }
     } else {
       UserDefaults.setValue(value: tokens.refreshToken, forUserDefaultKey: .refreshToken)
       let _ = KeychainWrapper.shared.setAccessToken(tokens.accessToken)
