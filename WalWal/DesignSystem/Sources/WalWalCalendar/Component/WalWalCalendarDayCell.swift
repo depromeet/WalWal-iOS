@@ -254,7 +254,7 @@ extension WalWalCalendarDayCell {
         : ((Colors.gray100.color), (Colors.gray100.color))
       } else if Calendar.current.isDate(date, inSameDayAs: today) {
         return isCurrentMonth
-        ? (Colors.walwalOrange.color, Colors.gray150.color)
+        ? (Colors.walwalOrange.color, Colors.walwalBeige.color)
         : ((Colors.gray100.color), (Colors.gray100.color))
       } else {
         return isCurrentMonth
