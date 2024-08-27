@@ -165,13 +165,25 @@ public final class WalWalFeed: UIView {
       .disposed(by: disposeBag)
     
     walwalBoostGenerater.boostFinished
-      .withLatestFrom(feedData) { (boostResult, currentFeedData) -> [WalWalFeedModel] in
-        var updatedFeedData = currentFeedData
+      .withUnretained(self) { (owner, boostResult) in
+        var updatedFeedData = owner.feedData.value
+        
+        guard boostResult.count <= 500 else {
+          WalWalToast.shared.show(type: .boost, message: "부스터는 최대 500개까지만 가능해요!")
+          return updatedFeedData
+        }
+        
         if let feedModel = updatedFeedData[safe: boostResult.indexPath.item] {
           var updatedModel = feedModel
           updatedModel.boostCount += boostResult.count
           updatedFeedData[boostResult.indexPath.item] = updatedModel
+          
+          owner.updatedBoost.accept(
+            (recordId: updatedModel.id,
+             count: boostResult.count)
+          )
         }
+        
         return updatedFeedData
       }
       .bind(to: feedData)
@@ -202,14 +214,9 @@ public final class WalWalFeed: UIView {
     let point = gesture.location(in: collectionView)
     guard let indexPath = collectionView.indexPathForItem(at: point),
           let feedModel = feedData.value[safe: indexPath.item] else { return }
-    var updatedFeedData = feedData.value
-    updatedFeedData[indexPath.item] = feedModel
-    
-    updatedBoost.accept(
-      (recordId: updatedFeedData[indexPath.item].id,
-       count: updatedFeedData[indexPath.item].boostCount)
-    )
-    
+    let updatedFeedData = feedData.value
+    var updatedRecord = updatedFeedData[indexPath.item]
+    updatedRecord = feedModel
     collectionView.collectionViewLayout.invalidateLayout()
     feedData.accept(updatedFeedData)
     
