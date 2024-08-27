@@ -17,10 +17,15 @@ public final class WalWalCalendar: UIView {
   
   // MARK: - UI
   
+  private let rootContainer = UIView()
+  
+  private let headerContainer = UIView()
   private let headerView = WalWalCalendarHeaderView()
   
+  private let weekdayContainer = UIView()
   private let weekdayView = WalWalCalendarWeekdayView()
   
+  private let monthContainer = UIView()
   private let monthView: WalWalCalendarMonthView
   
   // MARK: - Properties
@@ -54,27 +59,50 @@ public final class WalWalCalendar: UIView {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    flex.layout()
+    rootContainer.pin
+      .all()
+    rootContainer.flex
+      .layout()
   }
   
   // MARK: Methods
   
   private func setLayouts() {
-    flex
-      .direction(.column)
-      .padding(Const.varticalPadding, Const.horizontalPadding, 0, Const.horizontalPadding)
-      .padding(Const.horizontalPadding)
+    addSubview(rootContainer)
+    
+    rootContainer.flex
+      .define { flex in
+        flex.addItem(headerContainer)
+          .marginTop(18.adjusted)
+        flex.addItem(weekdayContainer)
+          .marginTop(10.adjusted)
+        flex.addItem(monthContainer)
+          .marginTop(4.adjusted)
+          .marginHorizontal(20.adjusted)
+          .grow(1)
+          .shrink(1)
+      }
+    
+    headerContainer.flex
       .define { flex in
         flex.addItem(headerView)
-          .width(Const.headerWidth)
-          .height(Const.headerHeight)
+          .height(44.adjusted)
           .alignSelf(.center)
+      }
+    
+    weekdayContainer.flex
+      .alignSelf(.center)
+      .define { flex in
         flex.addItem(weekdayView)
           .width(100%)
-          .height(Const.weekdayHeight)
+          .height(44.adjusted)
+      }
+    
+    monthContainer.flex
+      .define { flex in
         flex.addItem(monthView)
           .width(100%)
-          .height(372)
+          .height(100%)
       }
   }
   
@@ -97,17 +125,6 @@ public final class WalWalCalendar: UIView {
   
   private func updateMonthView(with models: [WalWalCalendarModel]) {
     monthView.updateCellDatas(models)
-  }
-}
-
-// MARK: - WalWalCalendar Extension
-private extension WalWalCalendar {
-  enum Const {
-    static let varticalPadding: CGFloat = 22
-    static let horizontalPadding: CGFloat = 20
-    static let headerWidth: CGFloat = 200
-    static let headerHeight: CGFloat = 44
-    static let weekdayHeight: CGFloat = 30
   }
 }
 

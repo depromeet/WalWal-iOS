@@ -25,16 +25,20 @@ public final class WalWalProfileCardView: UIView {
   
   private let containerView = UIView()
   
+  private let profileContainer = UIView()
   private let profileImageView = UIImageView()
   
-  private let nameLabel = UILabel().then {
+  private let infoContainer = UIView()
+  private let nameLabel = CustomLabel(font: Fonts.KR.H6.B).then {
     $0.numberOfLines = 1
+    $0.textColor = Colors.black.color
   }
   
   private let subDescriptionLabel = UILabel().then {
     $0.numberOfLines = 1
   }
   
+  private let chipContainer = UIView()
   fileprivate let actionChip: WalWalChip
   
   // MARK: - Properties
@@ -107,31 +111,37 @@ public final class WalWalProfileCardView: UIView {
   private func configureLayout() {
     addSubview(containerView)
     
-    containerView.flex
-      .define { flex in
-        flex.addItem()
-          .direction(.row)
-          .alignItems(.center)
-          .justifyContent(.center)
-          .paddingHorizontal(20)
-          .height(100)
-          .width(100%)
-          .define { flex in
-            flex.addItem(profileImageView)
-              .size(54)
-              .marginRight(8)
-            flex.addItem()
-              .grow(1)
-              .shrink(1)
-              .define { flex in
-                flex.addItem(nameLabel)
-                flex.addItem(subDescriptionLabel)
-                  .marginTop(2)
-              }
-            flex.addItem(actionChip)
-              .marginLeft(24)
-          }
-      }
+    containerView.flex.define { flex in
+      flex.addItem()
+        .direction(.row)
+        .alignItems(.center)
+        .justifyContent(.center)
+        .paddingHorizontal(20)
+        .height(100)
+        .width(100%)
+        .define { flex in
+          flex.addItem(profileContainer).marginRight(10)
+          flex.addItem(infoContainer).grow(1)
+          flex.addItem(chipContainer).marginLeft(22)
+            .height(28)
+            .width(64)
+        }
+    }
+    
+    profileContainer.flex.define { flex in
+      flex.addItem(profileImageView).size(54)
+    }
+    
+    infoContainer.flex.define { flex in
+      flex.addItem(nameLabel)
+      flex.addItem(subDescriptionLabel).marginTop(2)
+    }
+    
+    chipContainer.flex.define { flex in
+      flex.addItem(actionChip)
+        .width(100%)
+        .height(100%)
+    }
   }
   
   public func configureAttributes() {
@@ -148,9 +158,6 @@ public final class WalWalProfileCardView: UIView {
     profileImageView.layer.cornerRadius = 27
     profileImageView.clipsToBounds = true
     profileImageView.contentMode = .scaleAspectFill
-    
-    nameLabel.font = Fonts.KR.H6.B
-    nameLabel.textColor = Colors.black.color
     
     subDescriptionLabel.font = Fonts.KR.B1
     subDescriptionLabel.textColor = Colors.gray600.color

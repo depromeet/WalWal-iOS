@@ -24,13 +24,11 @@ public final class WalWalNavigationBar: UIView {
   
   private let containerView = UIView()
   
-  private lazy var titleLabel: UILabel = {
-    let label = UILabel()
-    label.textColor = Colors.black.color
-    label.textAlignment = .center
-    label.font = Fonts.KR.H5.B
-    return label
-  }()
+  private let titleLabel = CustomLabel(font: Fonts.KR.H5.B).then {
+    $0.textColor = Colors.black.color
+    $0.textAlignment = .center
+    $0.font = Fonts.KR.H5.B
+  }
   
   
   // MARK: - Properties
