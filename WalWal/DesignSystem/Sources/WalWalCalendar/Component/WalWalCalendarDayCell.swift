@@ -31,9 +31,9 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
     $0.clipsToBounds = true
   }
   
-  private let dateLabel = UILabel().then {
+  private let dateLabel = CustomLabel(font: Fonts.KR.B1).then {
     $0.textAlignment = .center
-    $0.font = .systemFont(ofSize: Metrics.dateFontSize, weight: .medium)
+    $0.font = Fonts.KR.B1
   }
   
   private let flowerImageView = UIImageView().then {
