@@ -27,14 +27,12 @@ final class DescriptionCell: UICollectionViewCell, ReusableView {
   
   // MARK: - UI
   
-  private let mainTitleLabel = UILabel().then {
-    $0.font = Font.H3
+  private let mainTitleLabel = CustomLabel(font: Font.H3).then {
     $0.textColor = Color.black.color
     $0.numberOfLines = 2
     $0.textAlignment = .center
   }
-  private let subTextLabel = UILabel().then {
-    $0.font = Font.B1
+  private let subTextLabel = CustomLabel(font: Font.B1).then {
     $0.textColor = Color.gray600.color
     $0.textAlignment = .center
   }
@@ -65,6 +63,7 @@ final class DescriptionCell: UICollectionViewCell, ReusableView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
+    contentView.pin.all()
     contentView.flex
       .layout(mode: .adjustHeight)
   }
@@ -80,8 +79,10 @@ final class DescriptionCell: UICollectionViewCell, ReusableView {
       .justifyContent(.center)
       .define {
         $0.addItem(mainTitleLabel)
+          .height(100%)
         $0.addItem(subTextLabel)
-          .marginTop(4)
+          .height(100%)
+          .marginTop(4.adjustedHeight)
         $0.addItem(imageView)
           .alignSelf(.center)
           .width(100%)
@@ -96,6 +97,7 @@ final class DescriptionCell: UICollectionViewCell, ReusableView {
     mainTitleLabel.text = data.title
     subTextLabel.text = data.subTitle
     imageView.image = data.image
+    layoutIfNeeded()
   }
   
 }

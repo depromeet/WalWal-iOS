@@ -72,7 +72,7 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
     }
     changeButtonLayout()
     contentView.flex
-      .layout(mode: .fitContainer)
+      .layout(mode: .adjustHeight)
   }
   
   
@@ -89,19 +89,19 @@ final class WalWalProfileCell: UICollectionViewCell, ReusableView {
       .size(140.adjusted)
     borderView.pin
       .center()
-      .size(170.adjusted)
+      .size(173.adjusted)
     profileImageView.pin
       .center()
-      .size(158.adjusted)
+      .size(160.adjusted)
     changeButton.pin
       .size(40.adjusted)
   }
   
   private func changeButtonLayout() {
     let radius = borderView.frame.size.width / 2
-    let angle = CGFloat.pi / 4 // 45도 각도
+    let angle = CGFloat.pi / 4.1 // 45도 각도
     let xOffset = radius * cos(angle)
-    let yOffset = radius * sin(angle)
+    let yOffset = radius * sin(angle) - 1
     changeButton.pin
       .vCenter(xOffset)
       .hCenter(yOffset)
