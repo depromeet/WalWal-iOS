@@ -56,6 +56,13 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
     $0.layer.cornerRadius = 20
   }
   
+  private let characterCountContainer = UIView()
+  private lazy var characterCountLabel = UILabel().then {
+    $0.font = Fonts.EN.Caption
+    $0.textColor = Colors.white.color.withAlphaComponent(0.2)
+    $0.text = "0/80"
+  }
+  
   // 업로드 버튼 컨테이너
   private let uploadContainer = UIView()
   private let uploadButtonLabel = UILabel().then {
@@ -116,6 +123,16 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    rootFlexContainer.pin
+      .all(view.pin.safeArea)
+    rootFlexContainer.flex
+      .layout()
+    uploadContainer.flex
+      .layout()
+    uploadContainer.pin
+      .bottomCenter(view.pin.safeArea.bottom + 50)
+      .width(100%)
+      .height(50)
     
     updateLayout()
   }
@@ -127,30 +144,15 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   }
   
   public func configureLayout() {
+    
     [rootFlexContainer, uploadContainer].forEach {
       view.addSubview($0)
     }
     
-    [navigationContainer, imagePreviewContainer, contentInputContainer].forEach {
-      rootFlexContainer.addSubview($0)
-    }
-    
-    navigationContainer.addSubview(backButton)
-    imagePreviewContainer.addSubview(previewImageView)
-    contentInputContainer.addSubview(contentTextView)
-    
-    [uploadButtonLabel, uploadButton].forEach {
-      uploadContainer.addSubview($0)
-    }
-    
-    layoutView()
-  }
-  
-  private func layoutView() {
-    rootFlexContainer.pin.all(view.pin.safeArea)
-    
     let isKeyboardVisible = keyboardHeight > 0
-    let previewImageHeight: CGFloat = isKeyboardVisible ? 160 : 240
+    let previewImageHeight: CGFloat = isKeyboardVisible ? 160.adjusted : 240.adjusted
+    let imagePreviewContainerMarginTop: CGFloat = isKeyboardVisible ? 15.adjusted : 50.adjusted
+    let contentInputMarginTop: CGFloat = isKeyboardVisible ? 40.adjusted : 50.adjusted
     
     rootFlexContainer.flex
       .define { flex in
@@ -160,13 +162,15 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
           .marginHorizontal(10)
         flex.addItem(imagePreviewContainer)
           .alignSelf(.center)
-          .marginTop(50)
+          .marginTop(imagePreviewContainerMarginTop)
           .aspectRatio(1.0)
           .width(previewImageHeight)
         flex.addItem(contentInputContainer)
           .alignSelf(.center)
-          .marginTop(26)
-          .height(164)
+          .marginTop(contentInputMarginTop)
+          .marginHorizontal(30)
+          .height(150.adjusted)
+          .width(315.adjusted)
       }
     
     navigationContainer.flex.define { flex in
@@ -177,14 +181,14 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
       flex.addItem(previewImageView).grow(1)
     }
     
-    contentInputContainer.flex.define { flex in
-      flex.addItem(contentTextView).grow(1)
-    }
-    
-    uploadContainer.pin
-      .bottomCenter(view.pin.safeArea.bottom + 50)
-      .width(100%)
-      .height(50)
+    contentInputContainer.flex
+      .define { flex in
+        flex.addItem(contentTextView).grow(1)
+        flex.addItem(characterCountLabel)
+          .alignSelf(.end)
+          .marginTop(6)
+          .width(40)
+      }
     
     uploadContainer.flex
       .direction(.row)
@@ -194,14 +198,11 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
         flex.addItem(uploadButtonLabel)
         flex.addItem(uploadButton).size(40)
       }
-    
-    rootFlexContainer.flex.layout()
-    uploadContainer.flex.layout()
   }
   
   private func updateLayout() {
     UIView.animate(withDuration: 0.3) {
-      self.layoutView()
+      self.configureLayout()
       self.view.layoutIfNeeded()
     }
   }
@@ -347,6 +348,14 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
         owner.keyboardHeight = 0
         owner.updateLayout()
       }
+      .disposed(by: disposeBag)
+    
+    contentTextView.textRelay
+      .map { [weak self] text -> String in
+        guard let self = self else { return "" }
+        return "\(text.count)/80"
+      }
+      .bind(to: characterCountLabel.rx.text)
       .disposed(by: disposeBag)
   }
 }
