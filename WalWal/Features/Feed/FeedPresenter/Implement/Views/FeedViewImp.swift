@@ -112,7 +112,6 @@ extension FeedViewControllerImp: View {
     
     feed.refreshLoading
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-      .debug()
       .filter { $0 }
       .map { _ in Reactor.Action.refresh(cursor: nil) }
       .bind(to: reactor.action)
