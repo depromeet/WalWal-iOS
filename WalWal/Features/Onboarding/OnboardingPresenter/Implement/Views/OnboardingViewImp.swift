@@ -106,6 +106,7 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
   }
   
   public func configureLayout() {
+    
     rootContainer.flex
       .define {
         $0.addItem()
@@ -114,17 +115,17 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
           .grow(1)
           .define {
             $0.addItem(collectionView)
-              .width(375.adjustedWidth)
+              .width(100%)
               .height(367.adjustedHeight)
             $0.addItem(pageControl)
-              .marginTop(22.adjustedHeight)
               .height(5)
+              .marginTop(20.adjustedHeight)
           }
         $0.addItem(nextButton)
-          .marginBottom(30.adjustedHeight)
+          .height(58)
+          .marginBottom(34)
           .marginHorizontal(20)
       }
-    
   }
   
   private func collectionViewLayout() -> UICollectionViewLayout {

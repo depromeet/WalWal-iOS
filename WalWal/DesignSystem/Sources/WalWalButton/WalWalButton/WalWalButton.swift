@@ -27,7 +27,7 @@ public class WalWalButton: UIControl {
   public struct Configuration {
     var backgroundColor: UIColor
     var titleColor: UIColor? = Colors.white.color
-    var font: UIFont? = Fonts.KR.H5.B
+    var font: UIFont? = Fonts.KR.H6.B
     var isEnabled: Bool
   }
   
