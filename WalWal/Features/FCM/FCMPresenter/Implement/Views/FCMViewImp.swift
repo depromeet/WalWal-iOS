@@ -42,7 +42,7 @@ public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMVie
     $0.textColor = Colors.black.color
   }
   private let guideLabel = UILabel().then {
-    $0.text = "조금만 기다리면 알림이 올꺼에요."
+    $0.text = "조금만 기다리면 알림이 올 거예요."
     $0.numberOfLines = 2
     $0.textAlignment = .center
     $0.font = Fonts.KR.H7.M
