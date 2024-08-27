@@ -16,6 +16,8 @@ import FeedDomain
 import FeedPresenter
 import FeedCoordinator
 
+import RecordsDomain
+
 import ReactorKit
 import RxSwift
 
@@ -27,14 +29,18 @@ public final class FeedReactorImp: FeedReactor {
   
   public let initialState: State
   public let coordinator: any FeedCoordinator
+  
   private let fetchFeedUseCase: FetchFeedUseCase
+  private let updateBoostCountUseCase: UpdateBoostCountUseCase
   
   public init(
     coordinator: any FeedCoordinator,
-    fetchFeedUseCase: FetchFeedUseCase
+    fetchFeedUseCase: FetchFeedUseCase,
+    updateBoostCountUseCase: UpdateBoostCountUseCase
   ) {
     self.coordinator = coordinator
     self.fetchFeedUseCase = fetchFeedUseCase
+    self.updateBoostCountUseCase = updateBoostCountUseCase
     self.initialState = State()
   }
   
@@ -51,11 +57,13 @@ public final class FeedReactorImp: FeedReactor {
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .loadFeedData(let cursor):
+    case let .loadFeedData(cursor):
       if currentState.feedFetchEnded {
         return .empty()
       }
       return fetchFeedData(cursor: cursor, limit: 10)
+    case let .endedBoost(recordId, count):
+      return postBoostCount(recordId: recordId, count: count)
     }
   }
   
@@ -71,10 +79,43 @@ public final class FeedReactorImp: FeedReactor {
     case .feedReachEnd(let feedData):
       newState.feedData = feedData
       newState.feedFetchEnded = true
+    case .updateBoost:
+      break
     }
-    
     return newState
   }
+  
+  //MARK: - Method
+  
+  private func fetchFeedData(memberId: Int? = nil, cursor: String?, limit: Int) -> Observable<Mutation> {
+    return fetchFeedUseCase.execute(memberId: memberId, cursor: cursor, limit: limit)
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, feedModel -> Observable<Mutation> in
+        let cursor = feedModel.nextCursor
+        return owner.convertFeedModel(feedList: GlobalState.shared.feedList.value)
+          .map { feedData in
+            if let cursor {
+              return Mutation.feedLoadEnded(nextCursor: cursor, feedData: feedData)
+            } else {
+              return Mutation.feedReachEnd(feedData: feedData)
+            }
+          }
+      }
+      .catch { error in
+        return .just(Mutation.feedFetchFailed(error: error.localizedDescription))
+      }
+  }
+  
+  private func postBoostCount(recordId: Int, count: Int) -> Observable<Mutation> {
+    return updateBoostCountUseCase.execute(recordId: recordId, count: count)
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        return .just(.updateBoost)
+      }
+  }
+  
+  // MARK: - Helper
   
   private func convertFeedModel(feedList: [GlobalFeedListModel]) -> Observable<[WalWalFeedModel]> {
     let feedObservables = feedList.map { feed -> Observable<WalWalFeedModel?> in
@@ -99,26 +140,6 @@ public final class FeedReactorImp: FeedReactor {
     
     return Observable.zip(feedObservables)
       .map { $0.compactMap { $0 } }
-  }
-  
-  private func fetchFeedData(memberId: Int? = nil, cursor: String?, limit: Int) -> Observable<Mutation> {
-    return fetchFeedUseCase.execute(memberId: memberId, cursor: cursor, limit: limit)
-      .asObservable()
-      .withUnretained(self)
-      .flatMap { owner, feedModel -> Observable<Mutation> in
-        let cursor = feedModel.nextCursor
-        return owner.convertFeedModel(feedList: GlobalState.shared.feedList.value)
-          .map { feedData in
-            if let cursor {
-              return Mutation.feedLoadEnded(nextCursor: cursor, feedData: feedData)
-            } else {
-              return Mutation.feedReachEnd(feedData: feedData)
-            }
-          }
-      }
-      .catch { error in
-        return .just(Mutation.feedFetchFailed(error: error.localizedDescription))
-      }
   }
   
   private func convertImage(imageURL: String?) -> Observable<UIImage?> {

@@ -8,6 +8,7 @@
 
 import UIKit
 import FeedDependencyFactory
+import RecordsDependencyFactory
 
 import WalWalNetwork
 
@@ -21,6 +22,8 @@ import FeedDomain
 import FeedDomainImp
 import FeedPresenter
 import FeedPresenterImp
+
+import RecordsDomain
 
 public class FeedDependencyFactoryImp: FeedDependencyFactory {
   
@@ -39,17 +42,27 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     return FetchUserFeedUseCaseImp(feedRepository: injectFeedRepository())
   }
   
-  public func makeFeedCoordinator(navigationController: UINavigationController, parentCoordinator: any BaseCoordinator) -> any FeedCoordinator {
+  public func makeFeedCoordinator(
+    navigationController: UINavigationController,
+    parentCoordinator: any BaseCoordinator,
+    recordsDependencyFactory: RecordsDependencyFactory
+  ) -> any FeedCoordinator {
     return FeedCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
-      feedDependencyFactory: self
+      feedDependencyFactory: self,
+      recordsDependencyFactory: recordsDependencyFactory
     )
   }
-  public func makeFeedReactor<T>(coordinator: T, fetchFeedUseCase: FetchFeedUseCase) -> any FeedReactor where T : FeedCoordinator {
+  public func makeFeedReactor<T>(
+    coordinator: T,
+    fetchFeedUseCase: FetchFeedUseCase,
+    updateBoostCountUseCase: UpdateBoostCountUseCase
+  ) -> any FeedReactor where T : FeedCoordinator {
     return FeedReactorImp(
       coordinator: coordinator,
-      fetchFeedUseCase: fetchFeedUseCase
+      fetchFeedUseCase: fetchFeedUseCase,
+      updateBoostCountUseCase: updateBoostCountUseCase
     )
   }
   

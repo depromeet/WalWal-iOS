@@ -177,7 +177,8 @@ extension WalWalTabBarCoordinatorImp {
     print("피드 탭 선택")
     let feedCoordinator = feedDependencyFactory.makeFeedCoordinator(
       navigationController: navigationController,
-      parentCoordinator: self
+      parentCoordinator: self,
+      recordsDependencyFactory: recordDependencyFactory
     )
     childCoordinator = feedCoordinator
     feedCoordinator.start()

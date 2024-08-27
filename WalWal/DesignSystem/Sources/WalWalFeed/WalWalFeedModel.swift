@@ -8,8 +8,8 @@
 
 import UIKit
 
-public struct WalWalFeedModel {
-  let id: Int
+public struct WalWalFeedModel: Equatable {
+  public let id: Int
   var date: String
   var nickname: String
   var missionTitle: String
@@ -36,6 +36,13 @@ public struct WalWalFeedModel {
     self.missionImage = missionImage
     self.boostCount = boostCount
     self.contents = contents
+  }
+  
+  public static func ==(
+    lhs: WalWalFeedModel,
+    rhs: WalWalFeedModel
+  ) -> Bool {
+    return lhs.id == rhs.id 
   }
 }
 

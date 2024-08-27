@@ -109,13 +109,22 @@ extension FeedViewControllerImp: View {
       .map { _ in Reactor.Action.loadFeedData(cursor: nil) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    feed.updatedBoost
+      .map { reocrdId, count in
+        Reactor.Action.endedBoost(recordId: reocrdId, count: count)
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
     reactor.state
       .map {  $0.feedData }
+      .distinctUntilChanged()
       .observe(on: MainScheduler.instance)
       .subscribe(with: self, onNext: { owner, feed in
+        guard owner.feed.feedData.value != feed else { return }
         owner.feed.feedData.accept(feed)
       })
       .disposed(by: disposeBag)
