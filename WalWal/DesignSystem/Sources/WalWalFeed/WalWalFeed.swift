@@ -23,7 +23,7 @@ public final class WalWalFeed: UIView {
   // MARK: - UI
   
   private let walwalIndicator = WalWalLoadingIndicator(frame: .zero)
-  
+  private let containerView = UIView()
   public private(set) lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
     
     let flowLayout = UICollectionViewFlowLayout()
@@ -93,7 +93,7 @@ public final class WalWalFeed: UIView {
     isFeed: Bool = true
   ) {
     self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
-    self.headerHeight = isFeed ? 63.adjusted : 0
+    self.headerHeight = isFeed ? 60.adjusted : 0
     super.init(frame: .zero)
     
     self.collectionView.backgroundColor = isFeed ? Colors.gray150.color : Colors.gray100.color
@@ -110,8 +110,11 @@ public final class WalWalFeed: UIView {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    pin.all()
-    flex.layout()
+    
+    containerView.pin
+      .all()
+    containerView.flex
+      .layout()
     
     collectionView.collectionViewLayout.invalidateLayout()
   }
@@ -207,7 +210,9 @@ public final class WalWalFeed: UIView {
   }
   
   private func setLayouts() {
-    flex.define {
+    addSubview(containerView)
+    
+    containerView.flex.define {
       $0.addItem(collectionView)
         .grow(1)
     }
@@ -284,7 +289,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
     _ collectionView: UICollectionView,
     layout collectionViewLayout: UICollectionViewLayout,
     sizeForItemAt indexPath: IndexPath) -> CGSize {
-      let width = (collectionView.bounds.width - 32).adjusted
+      let width = collectionView.bounds.width - 32.adjusted
       let model = feedData.value[indexPath.row]
       let cell = collectionView.cellForItem(at: indexPath) as? WalWalFeedCell
       let isExpanded = cell?.feedView.isExpanded ?? false
@@ -292,7 +297,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
       let content = model.contents
       
       var lineHeight: Int
-      let baseHeight: CGFloat = 480.adjusted
+      let baseHeight: CGFloat = 486.adjusted
       
       if isExpanded {
         lineHeight = content.count / 35

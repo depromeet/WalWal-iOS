@@ -17,6 +17,7 @@ final class FeedHeaderView: UICollectionReusableView {
   
   static let identifier = "FeedHeaderView"
   
+  private let rootContainer = UIView()
   private let guideLabel = CustomLabel(text: "☀️ 다른 반려동물은 어떤 미션을 했을까요?", font: Fonts.KR.H6.B).then {
     $0.textColor = .black
   }
@@ -30,13 +31,19 @@ final class FeedHeaderView: UICollectionReusableView {
     fatalError("init(coder:) has not been implemented")
   }
   
-  private func configureLayout() {
-    addSubview(guideLabel)
+  override func layoutSubviews() {
+    super.layoutSubviews()
     
-    guideLabel.pin
+    rootContainer.pin
       .all()
+    rootContainer.flex
+      .layout()
+  }
+  
+  private func configureLayout() {
+    addSubview(rootContainer)
     
-    self.flex
+    rootContainer.flex
       .alignItems(.center)
       .define {
         $0.addItem(guideLabel)
