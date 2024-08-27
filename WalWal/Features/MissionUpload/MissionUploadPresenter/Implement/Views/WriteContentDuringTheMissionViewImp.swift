@@ -30,14 +30,16 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   private typealias Fonts = ResourceKitFontFamily
   
   private let rootFlexContainer = UIView()
-  private let navigationContainer = UIView()
-  private let uploadContainer = UIView()
   
+  // 네비게이션 컨테이너
+  private let navigationContainer = UIView()
   private let backButton = WalWalTouchArea(
     image: Images.backL.image,
     size: 40
   )
   
+  // 이미지 프리뷰 컨테이너
+  private let imagePreviewContainer = UIView()
   private lazy var previewImageView = UIImageView().then {
     $0.image = capturedImage
     $0.contentMode = .scaleAspectFill
@@ -45,13 +47,17 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
     $0.layer.cornerRadius = 20
   }
   
+  // 콘텐츠 입력 컨테이너
+  private let contentInputContainer = UIView()
   private lazy var contentTextView = StyledTextInputView(
-    placeholderText: "오늘의 산책은 어땠나요?",
+    placeholderText: "함께한 추억을 기록해주세요",
     maxCharacterCount: 80
   ).then {
     $0.layer.cornerRadius = 20
   }
   
+  // 업로드 버튼 컨테이너
+  private let uploadContainer = UIView()
   private let uploadButtonLabel = UILabel().then {
     $0.text = "피드에 자랑하기"
     $0.font = Fonts.KR.H3
@@ -117,18 +123,21 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   // MARK: - Methods
   
   public func configureAttribute() {
-    view.backgroundColor = Colors.black.color
+    view.backgroundColor = UIColor(hex: 0x1b1b1b)
   }
   
   public func configureLayout() {
-    
     [rootFlexContainer, uploadContainer].forEach {
       view.addSubview($0)
     }
     
-    [navigationContainer, previewImageView, contentTextView].forEach {
+    [navigationContainer, imagePreviewContainer, contentInputContainer].forEach {
       rootFlexContainer.addSubview($0)
     }
+    
+    navigationContainer.addSubview(backButton)
+    imagePreviewContainer.addSubview(previewImageView)
+    contentInputContainer.addSubview(contentTextView)
     
     [uploadButtonLabel, uploadButton].forEach {
       uploadContainer.addSubview($0)
@@ -138,41 +147,43 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   }
   
   private func layoutView() {
-    rootFlexContainer.pin
-      .all(view.pin.safeArea)
+    rootFlexContainer.pin.all(view.pin.safeArea)
     
     let isKeyboardVisible = keyboardHeight > 0
     let previewImageHeight: CGFloat = isKeyboardVisible ? 160 : 240
     
     rootFlexContainer.flex
-      .direction(.column)
       .define { flex in
         flex.addItem(navigationContainer)
-          .direction(.row)
-          .justifyContent(.start)
+          .height(40)
           .marginTop(26)
           .marginHorizontal(10)
-          .define { flex in
-            flex.addItem(backButton)
-              .size(40)
-          }
-        
-        flex.addItem(previewImageView)
+        flex.addItem(imagePreviewContainer)
           .alignSelf(.center)
-          .marginTop(20)
-          .marginHorizontal(10)
-          .aspectRatio(1)
+          .marginTop(50)
+          .aspectRatio(1.0)
           .width(previewImageHeight)
-        
-        flex.addItem(contentTextView)
-          .marginTop(20)
-          .marginHorizontal(15)
-          .height(170)
+        flex.addItem(contentInputContainer)
+          .alignSelf(.center)
+          .marginTop(26)
+          .height(164)
       }
     
+    navigationContainer.flex.define { flex in
+      flex.addItem(backButton).size(40)
+    }
+    
+    imagePreviewContainer.flex.define { flex in
+      flex.addItem(previewImageView).grow(1)
+    }
+    
+    contentInputContainer.flex.define { flex in
+      flex.addItem(contentTextView).grow(1)
+    }
+    
     uploadContainer.pin
-      .bottomCenter(view.pin.safeArea.bottom + 30)
-      .width(190)
+      .bottomCenter(view.pin.safeArea.bottom + 50)
+      .width(100%)
       .height(50)
     
     uploadContainer.flex
@@ -181,14 +192,11 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
       .alignItems(.center)
       .define { flex in
         flex.addItem(uploadButtonLabel)
-        flex.addItem(uploadButton)
-          .size(40)
+        flex.addItem(uploadButton).size(40)
       }
     
-    rootFlexContainer.flex
-      .layout()
-    uploadContainer.flex
-      .layout()
+    rootFlexContainer.flex.layout()
+    uploadContainer.flex.layout()
   }
   
   private func updateLayout() {
