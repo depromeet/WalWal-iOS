@@ -19,12 +19,10 @@ import Lottie
 public final class WalWalFeed: UIView {
   
   private typealias Colors = ResourceKitAsset.Colors
-  let walwalIndicator = WalWalLoadingIndicator(frame: .zero)
-  public let refreshLoading = PublishRelay<Bool>()
-  public let scrollEndReached = PublishRelay<Bool>()
-  
   
   // MARK: - UI
+  
+  private let walwalIndicator = WalWalLoadingIndicator(frame: .zero)
   
   public private(set) lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
     
@@ -53,6 +51,12 @@ public final class WalWalFeed: UIView {
   // MARK: - Property
   
   public var feedData = BehaviorRelay<[WalWalFeedModel]>(value: [])
+  
+  public var updatedBoost = PublishRelay<(recordId: Int, count: Int)>()
+  
+  public let refreshLoading = PublishRelay<Bool>()
+  
+  public let scrollEndReached = PublishRelay<Bool>()
   
   private var headerHeight: CGFloat = 0
   
@@ -201,8 +205,14 @@ public final class WalWalFeed: UIView {
     var updatedFeedData = feedData.value
     updatedFeedData[indexPath.item] = feedModel
     
+    updatedBoost.accept(
+      (recordId: updatedFeedData[indexPath.item].id,
+       count: updatedFeedData[indexPath.item].boostCount)
+    )
+    
     collectionView.collectionViewLayout.invalidateLayout()
     feedData.accept(updatedFeedData)
+    
   }
   
   // MARK: - Scroll
