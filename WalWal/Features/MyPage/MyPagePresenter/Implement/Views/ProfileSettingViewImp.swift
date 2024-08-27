@@ -176,7 +176,7 @@ extension ProfileSettingViewControllerImp: View {
         if item.type == .withdraw {
           WalWalAlert.shared.show(
             title: "회원 탈퇴",
-            bodyMessage: "회원 탈퇴 시, 계정은 삭제되며 기록된 내용은 복구되지 않습니다.",
+            bodyMessage: "회원 탈퇴 시, 계정은 삭제되며 기록된 내용은\n복구되지 않습니다.",
             cancelTitle: "계속 이용하기",
             okTitle: "회원 탈퇴"
           )
