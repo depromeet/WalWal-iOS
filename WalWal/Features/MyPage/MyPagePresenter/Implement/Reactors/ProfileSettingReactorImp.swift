@@ -259,13 +259,13 @@ extension ProfileSettingReactorImp {
   private func createSettings(appVersion: String, isRecent: Bool) -> [ProfileSettingItemModel] {
     return [
       .init(
-        title: "서비스 이용 약관",
+        title: "서비스이용약관",
         subTitle: "",
         rightText: "",
         type: .service
       ),
       .init(
-        title: "개인정보 처리 방침",
+        title: "개인정보처리방침",
         subTitle: "",
         rightText: "",
         type: .privacy
@@ -279,7 +279,7 @@ extension ProfileSettingReactorImp {
       .init(
         title: "버전 정보",
         subTitle: appVersion,
-        rightText: isRecent ? "최신 버전입니다." : "업데이트 필요",
+        rightText: isRecent ? "최신 버전입니다" : "업데이트 필요",
         type: .version
       ),
       .init(
