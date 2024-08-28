@@ -88,6 +88,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
       isMoveToEdit = false
       refreshProfileInfo.accept(())
     }
+    mypageReactor.action.onNext(.loadCalendarData)
   }
   
   public override func viewDidLayoutSubviews() {
