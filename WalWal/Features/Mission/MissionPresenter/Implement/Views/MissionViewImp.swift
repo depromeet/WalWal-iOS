@@ -274,6 +274,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   @objc private func appWillEnterForeground() {
     missionCountBubbleView.startFloatingAnimation()
+    missionReactor.action.onNext(.appWillEnterForeground)
   }
   
 }

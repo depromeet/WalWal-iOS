@@ -22,8 +22,6 @@ public final class MissionReactorImp: MissionReactor {
   public typealias Mutation = MissionReactorMutation
   public typealias State = MissionReactorState
   
-  private var timerDisposeBag = DisposeBag()
-  
   public let initialState: State
   public let coordinator: any MissionCoordinator
   private let todayMissionUseCase: TodayMissionUseCase
@@ -33,6 +31,8 @@ public final class MissionReactorImp: MissionReactor {
   private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   private let startRecordUseCase: StartRecordUseCase
   
+  private var lastUpdateDate: Date?
+  private var timerDisposeBag = DisposeBag()
   private let disposeBag = DisposeBag()
   
   public init(
@@ -61,6 +61,8 @@ public final class MissionReactorImp: MissionReactor {
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
+    case .refreshMissionData:
+      return loadMidnightMissionData()
     case .loadInitialData:
       return loadAllMissionData()
     case .moveToMissionUpload:
@@ -75,6 +77,8 @@ public final class MissionReactorImp: MissionReactor {
       return .just(Mutation.stopTimer)
     case .moveToMyPage:
       return .just(.moveToMyPage)
+    case .appWillEnterForeground:
+      return checkAndUpdateMissionIfNeeded()
     }
   }
   
@@ -128,8 +132,25 @@ public final class MissionReactorImp: MissionReactor {
   }
   
   private func loadAllMissionData() -> Observable<Mutation> {
+    lastUpdateDate = Date()
     return checkRecordCalendar()
       .flatMap { _ in self.fetchMissionData()}
+      .flatMap { [weak self] mission -> Observable<Mutation> in
+        guard let owner = self else { return .empty() }
+        return .concat([
+          .just(Mutation.fetchTodayMissionData(mission)),
+          owner.fetchRecordStatus(missionId: mission.id),
+          owner.fetchCompletedTotalRecordsCount(),
+          .just(Mutation.loadInitialDataFlowEnded)
+        ])
+      }
+      .catch { error in
+        return Observable.just(Mutation.loadInitialDataFlowFailed(error))
+      }
+  }
+  
+  private func loadMidnightMissionData() -> Observable<Mutation> {
+    return fetchMissionData()
       .flatMap { [weak self] mission -> Observable<Mutation> in
         guard let owner = self else { return .empty() }
         return .concat([
@@ -200,6 +221,29 @@ public final class MissionReactorImp: MissionReactor {
       .catch { error in return .just(Void()) }
   }
   
+  private func calculateTimeRemainingUntilMidnight() -> String {
+    let calendar = Calendar.current
+    let now = Date()
+    let midnight = calendar.startOfDay(for: now).addingTimeInterval(86400)
+    let components = calendar.dateComponents([.hour, .minute, .second], from: now, to: midnight)
+    guard let hour = components.hour, let minute = components.minute, let second = components.second else {
+      return "남은 시간 계산 실패"
+    }
+    if hour == 0 && minute == 0 && second == 0 {
+      action.onNext(.refreshMissionData)
+    }
+    return String(format: "%02d:%02d:%02d 남았어요!", hour, minute, second)
+  }
+  
+  private func checkAndUpdateMissionIfNeeded() -> Observable<Mutation> {
+    let calendar = Calendar.current, now = Date()
+    if let lastUpdate = lastUpdateDate, !calendar.isDate(lastUpdate, inSameDayAs: now) {
+      lastUpdateDate = now
+      return loadMidnightMissionData()
+    }
+    return .empty()
+  }
+  
   // MARK: - MissionTimer
   
   private func startTimer() -> Observable<Mutation> {
@@ -210,17 +254,6 @@ public final class MissionReactorImp: MissionReactor {
       .do(onDispose: { [weak self] in
         self?.timerDisposeBag = DisposeBag()
       })
-  }
-  
-  private func calculateTimeRemainingUntilMidnight() -> String {
-    let calendar = Calendar.current
-    let now = Date()
-    let midnight = calendar.startOfDay(for: now).addingTimeInterval(86400)
-    let components = calendar.dateComponents([.hour, .minute, .second], from: now, to: midnight)
-    guard let hour = components.hour, let minute = components.minute, let second = components.second else {
-      return "남은 시간 계산 실패"
-    }
-    return String(format: "%02d:%02d:%02d 남았어요!", hour, minute, second)
   }
   
   /// 알림 권한 확인
