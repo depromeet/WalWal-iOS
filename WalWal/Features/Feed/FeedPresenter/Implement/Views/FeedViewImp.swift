@@ -81,6 +81,8 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   public func configureAttribute() {
     view.backgroundColor = Colors.gray150.color
     view.addSubview(rootContainer)
+    if UserDefaults.bool(forUserDefaultsKey: .isFirstFeedAppear) {
+    }
   }
   
   public func configureLayout() {

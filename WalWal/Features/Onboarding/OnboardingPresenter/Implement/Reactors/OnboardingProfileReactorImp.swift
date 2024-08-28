@@ -18,6 +18,7 @@ import MembersDomain
 
 import Utility
 import DesignSystem
+import LocalStorage
 import GlobalState
 
 import ReactorKit
@@ -186,6 +187,7 @@ extension OnboardingProfileReactorImp {
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
+        UserDefaults.setValue(value: true, forUserDefaultKey: .isFirstFeedAppear)
         owner.coordinator.startMission()
         return .just(.showIndicator(show: false))
       }

@@ -18,6 +18,7 @@ public extension UserDefaults {
     case temporaryToken
     case isAlreadyLoaded
     case socialLogin
+    case isFirstFeedAppear
   }
   
   // MARK: - GET
