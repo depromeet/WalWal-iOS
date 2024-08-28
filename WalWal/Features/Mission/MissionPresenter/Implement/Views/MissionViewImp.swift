@@ -99,7 +99,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     super.viewDidLoad()
     configureAttribute()
     configureLayout()
-    showCoachView()
     
     missionCountBubbleView.startFloatingAnimation()
     self.reactor = missionReactor
@@ -363,6 +362,8 @@ extension MissionViewControllerImp: View {
       .map { $0.loadInitialDataFlowEnded }
       .subscribe(with: self, onNext: { owner, isLoadInitialDataFlowEnded in
         owner.splashContainer.isHidden = isLoadInitialDataFlowEnded
+        
+        owner.showCoachView()
       })
       .disposed(by: disposeBag)
     
