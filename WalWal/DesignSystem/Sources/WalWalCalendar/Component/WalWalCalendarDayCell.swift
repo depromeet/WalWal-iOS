@@ -166,7 +166,7 @@ final class WalWalCalendarDayCell: UICollectionViewCell {
   
   private func setBackgroundImage(_ image: UIImage?, isCurrentMonth: Bool, isToday: Bool) {
     backgroundImageView.image = isCurrentMonth ? image : nil
-    backgroundImageView.layer.opacity = isToday ? 1 : 0.3
+    backgroundImageView.layer.opacity = isToday ? 1 : 0.7
     backgroundImageView.isHidden = image == nil
   }
   
