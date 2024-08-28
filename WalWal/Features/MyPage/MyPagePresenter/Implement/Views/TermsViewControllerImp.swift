@@ -26,6 +26,7 @@ public final class TermsViewControllerImp<R: TermsReactor>: UIViewController, Te
   private let rootContainer = UIView()
   private let navigationBar: WalWalNavigationBar
   private let textView = UITextView().then {
+    $0.backgroundColor = ResourceKitAsset.Colors.white.color
     $0.isEditable = false
     $0.isScrollEnabled = true
     $0.font = FontKR.B2
