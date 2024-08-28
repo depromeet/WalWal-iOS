@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "cam.png",
+      "filename" : "recordArrow.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "cam@2x.png",
+      "filename" : "recordArrow@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "cam@3x.png",
+      "filename" : "recordArrow@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
