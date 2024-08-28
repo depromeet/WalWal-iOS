@@ -218,6 +218,18 @@ public final class WalWalFeed: UIView {
     }
   }
   
+  /// 특정 레코드로 이동하는 메서드
+  public func scrollToRecord(withId recordId: Int, animated: Bool = true) {
+    guard let index = currentFeedData.firstIndex(where: { $0.recordId == recordId }) else {
+      print("기록 ID(\(recordId))에 해당하는 셀을 찾을 수 없습니다.")
+      return
+    }
+    
+    let indexPath = IndexPath(item: index, section: 0)
+    collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: animated)
+  }
+  
+  
   // MARK: - Boost Count Update
   
   private func updateBoostCount(for gesture: UILongPressGestureRecognizer) {
