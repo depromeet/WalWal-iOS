@@ -31,6 +31,8 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   private let rootContainer = UIView()
   private lazy var feed = WalWalFeed(feedData: dummyData, isFeed: true)
   
+  private let coachView = FeedCoachMarkView()
+  
   // MARK: - Properties
   
   public var disposeBag = DisposeBag()
@@ -61,6 +63,7 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
     super.viewDidLoad()
     configureLayout()
     configureAttribute()
+    showCoachView()
     self.reactor = feedReactor
   }
   
@@ -89,6 +92,19 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
         $0.addItem(feed)
           .grow(1)
       }
+  }
+
+  private func showCoachView() {
+    if UserDefaults.bool(forUserDefaultsKey: .isFirstFeedAppear) {
+      let scenes = UIApplication.shared.connectedScenes
+      let windowScene = scenes.first as? UIWindowScene
+      let window = windowScene?.windows.first
+      
+      
+      coachView.isHidden = false
+      window?.addSubview(coachView)
+      coachView.pin.all()
+    }
   }
 }
 

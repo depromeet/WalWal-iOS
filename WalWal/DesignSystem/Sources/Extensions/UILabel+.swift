@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension UILabel {
+public extension UILabel {
   var visibleTextLength: Int {
     let font: UIFont = self.font
     let mode: NSLineBreakMode = self.lineBreakMode
@@ -66,53 +66,62 @@ extension UILabel {
   
   
   func addTrailing(
-     with trailingText: String,
-     moreText: String,
-     moreTextFont: UIFont,
-     moreTextColor: UIColor
-   ) {
-
-     let readMoreText: String = trailingText + moreText
-
-     if self.visibleTextLength == 0 { return }
-
-     let lengthForVisibleString: Int = self.visibleTextLength
-
-     if let myText = self.text {
-
-       let mutableString: String = myText
-       let trimmedString: String? = (mutableString as NSString).replacingCharacters(
-         in: NSRange(
-           location: lengthForVisibleString,
-           length: myText.count - lengthForVisibleString
-         ), with: "")
-
-       let readMoreLength: Int = (readMoreText.count)
-
-       guard let safeTrimmedString = trimmedString else { return }
-
-       if safeTrimmedString.count <= readMoreLength { return }
-
-       let trimmedForReadMore: String = (safeTrimmedString as NSString)
-         .replacingCharacters(
-           in: NSRange(
-             location: safeTrimmedString.count - readMoreLength,
-             length: readMoreLength)
-           ,with: ""
-         ) + trailingText
-
-       let answerAttributed = NSMutableAttributedString(
-         string: trimmedForReadMore,
-         attributes: [NSAttributedString.Key.font: self.font as Any]
-       )
-
-       let readMoreAttributed = NSMutableAttributedString(
-         string: moreText,
-         attributes: [NSAttributedString.Key.font: moreTextFont,
-                      NSAttributedString.Key.foregroundColor: moreTextColor]
-       )
-       answerAttributed.append(readMoreAttributed)
-       self.attributedText = answerAttributed
-     }
-   }
+    with trailingText: String,
+    moreText: String,
+    moreTextFont: UIFont,
+    moreTextColor: UIColor
+  ) {
+    
+    let readMoreText: String = trailingText + moreText
+    
+    if self.visibleTextLength == 0 { return }
+    
+    let lengthForVisibleString: Int = self.visibleTextLength
+    
+    if let myText = self.text {
+      
+      let mutableString: String = myText
+      let trimmedString: String? = (mutableString as NSString).replacingCharacters(
+        in: NSRange(
+          location: lengthForVisibleString,
+          length: myText.count - lengthForVisibleString
+        ), with: "")
+      
+      let readMoreLength: Int = (readMoreText.count)
+      
+      guard let safeTrimmedString = trimmedString else { return }
+      
+      if safeTrimmedString.count <= readMoreLength { return }
+      
+      let trimmedForReadMore: String = (safeTrimmedString as NSString)
+        .replacingCharacters(
+          in: NSRange(
+            location: safeTrimmedString.count - readMoreLength,
+            length: readMoreLength)
+          ,with: ""
+        ) + trailingText
+      
+      let answerAttributed = NSMutableAttributedString(
+        string: trimmedForReadMore,
+        attributes: [NSAttributedString.Key.font: self.font as Any]
+      )
+      
+      let readMoreAttributed = NSMutableAttributedString(
+        string: moreText,
+        attributes: [NSAttributedString.Key.font: moreTextFont,
+                     NSAttributedString.Key.foregroundColor: moreTextColor]
+      )
+      answerAttributed.append(readMoreAttributed)
+      self.attributedText = answerAttributed
+    }
+  }
+  
+  /// 색상 변경 함수
+  func asColor(targetString: String, color: UIColor) {
+    let fullText = text ?? ""
+    let attributedString = NSMutableAttributedString(string: fullText)
+    let range = (fullText as NSString).range(of: targetString)
+    attributedString.addAttribute(.foregroundColor, value: color, range: range)
+    attributedText = attributedString
+  }
 }
