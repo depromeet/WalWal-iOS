@@ -159,4 +159,17 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
       raisePet: raisePet
     )
   }
+  
+  public func injectTermsReactor<T: MyPageCoordinator>(coordinator: T) -> any TermsReactor {
+    return TermsReactorImp(coordinator: coordinator)
+  }
+  public func injectTermsViewController<T: TermsReactor>(
+    reactor: T,
+    type: TermsType
+  ) -> any TermsViewController {
+    return TermsViewControllerImp(
+      reactor: reactor,
+      termType: type
+    )
+  }
 }

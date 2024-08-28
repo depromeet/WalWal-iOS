@@ -95,4 +95,10 @@ public protocol MyPageDependencyFactory {
     kakaoUnlinkUseCase: KakaoUnlinkUseCase
   ) -> any ProfileSettingReactor
   func injectProfileSettingViewController<T: ProfileSettingReactor>(reactor: T) -> any ProfileSettingViewController
+  
+  func injectTermsReactor<T: MyPageCoordinator>(coordinator: T) -> any TermsReactor
+  func injectTermsViewController<T: TermsReactor>(
+    reactor: T,
+    type: TermsType
+  ) -> any TermsViewController
 }
