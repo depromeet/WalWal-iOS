@@ -37,7 +37,9 @@ let spm = SwiftPackageManagerDependencies(
     .remote(url: "https://github.com/kakao/kakao-ios-sdk",
             requirement: .upToNextMajor(from: "2.22.4")),
     .remote(url: "https://github.com/airbnb/lottie-spm",
-            requirement: .upToNextMajor(from: "4.5.0"))
+            requirement: .upToNextMajor(from: "4.5.0")),
+    .remote(url: "https://github.com/RxSwiftCommunity/RxDataSources",
+            requirement: .upToNextMajor(from: "5.0.0"))
   ],
   productTypes: [
     "RxAlamofire": .framework,
@@ -51,7 +53,8 @@ let spm = SwiftPackageManagerDependencies(
     "KakaoSDKAuth": .framework,
     "KakaoSDKUser": .framework,
     "KakaoSDKCommon": .framework,
-    "Lottie": .framework
+    "Lottie": .framework,
+    "RxDataSources": .framework
   ]
 )
 

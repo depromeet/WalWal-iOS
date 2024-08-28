@@ -16,6 +16,7 @@ let project = Project.invertedPresenterWithDemoApp(
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
     .ThirdParty.ReactorKit,
+    .ThirdParty.RxDataSources,
     
     .Feature.FCM.Domain.Interface,
     
