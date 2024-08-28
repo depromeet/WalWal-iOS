@@ -95,7 +95,7 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   }
 
   private func showCoachView() {
-    if !UserDefaults.bool(forUserDefaultsKey: .isFirstFeedAppear) {
+    if UserDefaults.bool(forUserDefaultsKey: .isFirstFeedAppear) {
       let scenes = UIApplication.shared.connectedScenes
       let windowScene = scenes.first as? UIWindowScene
       let window = windowScene?.windows.first
