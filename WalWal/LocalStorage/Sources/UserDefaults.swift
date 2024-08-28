@@ -19,6 +19,7 @@ public extension UserDefaults {
     case isAlreadyLoaded
     case socialLogin
     case isFirstFeedAppear
+    case isFirstMissionAppear
   }
   
   // MARK: - GET

@@ -188,6 +188,7 @@ extension OnboardingProfileReactorImp {
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in
         UserDefaults.setValue(value: true, forUserDefaultKey: .isFirstFeedAppear)
+        UserDefaults.setValue(value: true, forUserDefaultKey: .isFirstMissionAppear)
         owner.coordinator.startMission()
         return .just(.showIndicator(show: false))
       }
