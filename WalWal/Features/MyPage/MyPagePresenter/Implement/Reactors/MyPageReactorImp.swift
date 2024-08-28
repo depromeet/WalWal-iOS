@@ -49,8 +49,8 @@ public final class MyPageReactorImp: MyPageReactor {
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .didSelectCalendarItem(let member, let date):
-      return Observable.just(.moveToRecordDetail(memberInfo: member, cursor: date))
+    case .didSelectCalendarItem(let member, let calendar):
+      return Observable.just(.moveToRecordDetail(memberInfo: member, calendar: calendar))
     case .didTapSettingButton:
       return Observable.just(.moveToSettingView)
     case .didTapEditButton:
@@ -93,10 +93,11 @@ public final class MyPageReactorImp: MyPageReactor {
       ))
     case let .profileInfo(data):
       newState.profileData = data
-    case .moveToRecordDetail(let member, let cursor):
+    case .moveToRecordDetail(let member, let calendar):
       coordinator.destination.accept(.showRecordDetail(
         nickname: member.nickname,
-        memberId: member.memberId
+        memberId: member.memberId,
+        recordId: calendar.recordId
       ))
     }
     return newState

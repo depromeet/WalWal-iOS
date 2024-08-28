@@ -45,6 +45,7 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   
   private var memberId: Int
   private var nickname: String
+  private var recordId: Int
   
   public var disposeBag = DisposeBag()
   public var recordDetailReactor: R
@@ -55,10 +56,12 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
     reactor: R,
     nickname: String,
     memberId: Int,
+    recordId: Int,
     isFeedRecord: Bool
   ) {
     self.nickname = nickname
     self.memberId = memberId
+    self.recordId = recordId
     
     self.recordDetailReactor = reactor
     self.feed = WalWalFeed(feedData: dummyData, isFeed: false)
@@ -154,6 +157,8 @@ extension RecordDetailViewControllerImp: View {
       .observe(on: MainScheduler.instance)
       .subscribe(with: self, onNext: { owner, feed in
         owner.feed.feedData.accept(feed)
+        
+        owner.feed.scrollToRecord(withId: owner.recordId, animated: true)
       })
       .disposed(by: disposeBag)
   }

@@ -14,7 +14,11 @@ public enum MyPageCoordinatorAction: ParentAction {
 }
 
 public enum MyPageCoordinatorFlow: CoordinatorFlow {
-  case showRecordDetail(nickname: String, memberId: Int)
+  case showRecordDetail(
+    nickname: String,
+    memberId: Int,
+    recordId: Int
+  )
   case showProfileEdit(
     nickname: String,
     defaultProfile: String?,

@@ -70,10 +70,11 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     destination
       .subscribe(with: self, onNext: { owner, flow in
         switch flow {
-        case .showRecordDetail(let nickname, let memberId):
+        case let .showRecordDetail(nickname, memberId, recordId):
           owner.showRecordDetailVC(
             nickname: nickname,
-            memberId: memberId
+            memberId: memberId,
+            recordId: recordId
           )
         case let .showProfileEdit(nickname, defaultProfile, selectImage, raisePet):
           owner.showProfileEditVC(
@@ -157,7 +158,8 @@ extension MyPageCoordinatorImp {
   /// 기록 상세뷰
   fileprivate func showRecordDetailVC(
     nickname: String,
-    memberId: Int
+    memberId: Int,
+    recordId: Int
   ) {
     let fetchUserFeedUseCase = feedDependencyFactory.injectFetchUserFeedUseCase()
     let reactor = myPageDependencyFactory.injectRecordDetailReactor(
@@ -166,7 +168,8 @@ extension MyPageCoordinatorImp {
     let recordDetailVC = myPageDependencyFactory.injectRecordDetailViewController(
       reactor: reactor,
       memberId: memberId,
-      memberNickname: nickname
+      memberNickname: nickname,
+      recordId: recordId
     )
     guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
       return

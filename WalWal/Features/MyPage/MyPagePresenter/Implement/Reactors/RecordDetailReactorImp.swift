@@ -54,7 +54,7 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       if currentState.feedFetchEnded {
         return .empty()
       }
-      return fetchFeedData(memberId: memberId, cursor: cursorDate, limit: 10)
+      return fetchFeedData(memberId: memberId, cursor: cursorDate, limit: 30)
     case .tapBackButton:
       return .just(Mutation.moveToBack)
     }
