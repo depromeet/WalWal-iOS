@@ -118,7 +118,15 @@ extension TabBarItemView {
 
 extension Reactive where Base: TabBarItemView {
   var tapped: ControlEvent<Void> {
-    ControlEvent(events: base.rx.tapGesture().when(.recognized).map { _ in })
+    let event: Observable<Void> = base.rx.tapGesture()
+      .when(.recognized)
+      .throttle(
+        .milliseconds(300),
+        latest: false,
+        scheduler: MainScheduler.instance
+      )
+      .map{ _ in }
+    return ControlEvent(events: event)
   }
   
   var isSelected: Binder<Bool> {

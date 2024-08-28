@@ -119,11 +119,3 @@ private extension WalWalTouchArea {
       .disposed(by: disposeBag)
   }
 }
-
-// MARK: - Reactive Extension
-
-public extension Reactive where Base: WalWalTouchArea {
-  var tapped: ControlEvent<Void> {
-    ControlEvent(events: base.rx.tapGesture().when(.recognized).map { _ in })
-  }
-}
