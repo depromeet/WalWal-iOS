@@ -101,6 +101,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     configureLayout()
     
     missionCountBubbleView.startFloatingAnimation()
+    showCoachView()
     self.reactor = missionReactor
   }
   
@@ -245,16 +246,12 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   }
   
   private func showCoachView() {
-    if UserDefaults.bool(forUserDefaultsKey: .isFirstMissionAppear) {
-      let scenes = UIApplication.shared.connectedScenes
-      let windowScene = scenes.first as? UIWindowScene
-      let window = windowScene?.windows.first
-      
-      
+//    if UserDefaults.bool(forUserDefaultsKey: .isFirstMissionAppear) {
+      let window = UIWindow.key
       missionMarkView.isHidden = false
       window?.addSubview(missionMarkView)
       missionMarkView.pin.all()
-    }
+//    }
   }
   
   // MARK: - Notification Setup
@@ -363,7 +360,7 @@ extension MissionViewControllerImp: View {
       .subscribe(with: self, onNext: { owner, isLoadInitialDataFlowEnded in
         owner.splashContainer.isHidden = isLoadInitialDataFlowEnded
         
-        owner.showCoachView()
+//        owner.showCoachView()
       })
       .disposed(by: disposeBag)
     

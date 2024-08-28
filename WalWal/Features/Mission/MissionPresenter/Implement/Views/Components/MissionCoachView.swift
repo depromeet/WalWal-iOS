@@ -83,8 +83,9 @@ final class MissionCoachMarkView: UIView {
   private let missionStartButton = WalWalButton_Icon(
     type: .active,
     title: "미션 시작하기",
-    icon: Images.flagL.image
+    icon: Images.flagS.image
   )
+  
   private let cancelButton = WalWalTouchArea(image: Images.closeL.image, size: 40.adjusted)
   
   private let disposeBag = DisposeBag()
@@ -107,6 +108,11 @@ final class MissionCoachMarkView: UIView {
     
     containerView.pin.all()
     containerView.flex.layout()
+    
+    missionStartButton.pin
+      .bottom(self.pin.safeArea.bottom + 30 + 68)
+      .horizontally(20.adjusted)
+      .height(50.adjusted)
   }
   
   // MARK: - Layout Helper
@@ -119,7 +125,7 @@ final class MissionCoachMarkView: UIView {
     missionContentView.layer.borderColor = Colors.walwalOrange.color.cgColor
     missionContentView.layer.borderWidth = 3
     
-    [containerView, topContainerView, recordGuideContainerView].forEach {
+    [containerView, missionStartButton, topContainerView, recordGuideContainerView].forEach {
       addSubview($0)
     }
     
@@ -143,10 +149,6 @@ final class MissionCoachMarkView: UIView {
           .alignSelf(.end)
           .marginRight(41.adjusted)
           .marginTop(15.adjusted)
-        $0.addItem(missionStartButton)
-          .height(50.adjusted)
-          .marginTop(13.adjusted)
-          .marginHorizontal(20.adjusted)
       }
     
     topContainerView.flex
