@@ -51,8 +51,9 @@ final class MissionCoachMarkView: UIView {
     $0.image = Assets.missionCoach.image
   }
   private let missionContentLabel = CustomLabel(text: " 미션 내용을\n확인해 보아요!", font: Fonts.KR.H5.B).then {
-    $0.asColor(targetString: "미션 내용", color: Colors.walwalOrange.color)
+    
     $0.textColor = Colors.white.color
+    $0.asColor(targetString: "미션 내용", color: Colors.walwalOrange.color)
     $0.numberOfLines = 2
     $0.textAlignment = .right
   }
@@ -68,8 +69,9 @@ final class MissionCoachMarkView: UIView {
     $0.image = Assets.missionCoachCam.image
   }
   private let cameraLabel = CustomLabel(text: "미션 사진을\n바로 찍을 수 있어요", font: Fonts.KR.H5.B).then {
-    $0.asColor(targetString: "미션 사진", color: Colors.walwalOrange.color)
+    
     $0.textColor = Colors.white.color
+    $0.asColor(targetString: "미션 사진", color: Colors.walwalOrange.color)
     $0.numberOfLines = 2
     $0.textAlignment = .right
   }

@@ -33,8 +33,8 @@ final class FeedCoachMarkView: UIView {
 귀여운 반려동물 사진에
 반응 해보세요!
 """
-    $0.asColor(targetString: "꾸욱", color: Colors.walwalOrange.color)
     $0.textColor = Colors.white.color
+    $0.asColor(targetString: "꾸욱", color: Colors.walwalOrange.color)
     $0.numberOfLines = 3
     $0.textAlignment = .center
   }
@@ -94,7 +94,7 @@ final class FeedCoachMarkView: UIView {
           .marginTop(46.adjusted)
           .marginRight(14.adjusted)
         $0.addItem(guideContainerView)
-          .marginTop(59.adjusted)
+          .marginTop(50.adjusted)
           .alignSelf(.center)
       }
     
