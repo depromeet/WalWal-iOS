@@ -67,7 +67,6 @@ final class FeedCoachMarkView: UIView {
     
     containerView.pin.all()
     containerView.flex.layout()
-    animateShow()
   }
   
   // MARK: - Layout Helper
@@ -110,6 +109,8 @@ final class FeedCoachMarkView: UIView {
         $0.addItem(coachImageView)
           .marginTop(-32.adjusted)
       }
+    
+    animateShow()
   }
   
   private func bind() {
@@ -141,6 +142,7 @@ final class FeedCoachMarkView: UIView {
     }) { _ in
       self.isHidden = true
       UserDefaults.setValue(value: false, forUserDefaultKey: .isFirstFeedAppear)
+      self.removeFromSuperview()
     }
   }
 }

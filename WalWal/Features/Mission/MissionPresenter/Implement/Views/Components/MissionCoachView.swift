@@ -107,7 +107,6 @@ final class MissionCoachMarkView: UIView {
     
     containerView.pin.all()
     containerView.flex.layout()
-    animateShow()
   }
   
   // MARK: - Layout Helper
@@ -200,6 +199,8 @@ final class MissionCoachMarkView: UIView {
         $0.addItem(cameraLabel)
           .marginLeft(-46.adjusted)
       }
+    
+    animateShow()
   }
   private func bind() {
     cancelButton.rx.tapped
@@ -230,6 +231,7 @@ final class MissionCoachMarkView: UIView {
     }) { _ in
       self.isHidden = true
       UserDefaults.setValue(value: false, forUserDefaultKey: .isFirstMissionAppear)
+      self.removeFromSuperview()
     }
   }
 }
