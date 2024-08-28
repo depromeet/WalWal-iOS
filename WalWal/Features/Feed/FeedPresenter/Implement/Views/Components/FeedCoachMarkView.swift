@@ -45,7 +45,7 @@ final class FeedCoachMarkView: UIView {
   private let coachImageView = UIImageView().then {
     $0.image = Assets.coachImage.image
   }
-  private let cancelButton = WalWalTouchArea(image: Images.closeL.image)
+  private let cancelButton = WalWalTouchArea(image: Images.closeL.image, size: 40.adjusted)
   
   private let disposeBag = DisposeBag()
   
