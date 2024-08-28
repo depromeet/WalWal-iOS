@@ -112,6 +112,9 @@ final class WalWalFeedCellView: UIView {
     boostLabelView.flex
       .markDirty()
     
+    missionImageView.flex
+      .markDirty()
+    
     contentLabel.flex
       .markDirty()
     
