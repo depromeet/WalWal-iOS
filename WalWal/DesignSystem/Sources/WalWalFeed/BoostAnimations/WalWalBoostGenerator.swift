@@ -26,6 +26,7 @@ final class WalWalBoostGenerator {
   
   private weak var feed: WalWalFeed?
   private var currentDetailView: UIView?
+  private var currentBackgroundView: UIView?
   private var currentBlackOverlayView: UIView?
   private var currentIndexPath: IndexPath?
   
@@ -73,10 +74,12 @@ final class WalWalBoostGenerator {
     }
     
     let detailView = createAndConfigureDetailView(from: cell, with: feedModel)
+    let backgroundView = createBackgroundView(frame: window.frame)
     let overlayView = createOverlayView(frame: detailView.frame)
     
     addViewsToWindow(
       detailView: detailView,
+      backgroundView: backgroundView,
       overlayView: overlayView,
       window: window
     )
@@ -87,20 +90,24 @@ final class WalWalBoostGenerator {
     )
     
     currentDetailView = detailView
+    currentBackgroundView = backgroundView
     currentBlackOverlayView = overlayView
   }
   
   /// 부스트 애니메이션 종료
   func stopBoostAnimation() {
     guard let detailView = currentDetailView,
+          let backgroundView = currentBackgroundView,
           let overlayView = currentBlackOverlayView,
           let indexPath = currentIndexPath else { return }
     
     UIView.animate(withDuration: 0.3, animations: {
       detailView.alpha = 0
+      backgroundView.alpha = 0
       overlayView.alpha = 0
     }) { _ in
       detailView.removeFromSuperview()
+      backgroundView.removeFromSuperview()
       overlayView.removeFromSuperview()
     }
     
@@ -108,6 +115,7 @@ final class WalWalBoostGenerator {
     walwalBoostCounter.stopCountTimer()
     walwalBoostBorder.stopBorderAnimation()
     currentDetailView = nil
+    currentBackgroundView = nil
     currentBlackOverlayView = nil
     walwalEmitter.stopEmitting()
     walwalEmitter.removeFromSuperlayer()
@@ -150,8 +158,8 @@ extension WalWalBoostGenerator {
   
   private func createBackgroundView(frame: CGRect) -> UIView {
     let backgroundView = UIView(frame: frame)
-    backgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-    backgroundView.alpha = 0
+    backgroundView.backgroundColor = .clear
+    backgroundView.alpha = 1
     return backgroundView
   }
   
@@ -163,10 +171,12 @@ extension WalWalBoostGenerator {
   
   private func addViewsToWindow(
     detailView: UIView,
+    backgroundView: UIView,
     overlayView: UIView,
     window: UIWindow
   ) {
     window.addSubview(overlayView)
+    window.addSubview(backgroundView)
     window.addSubview(detailView)
   }
   
