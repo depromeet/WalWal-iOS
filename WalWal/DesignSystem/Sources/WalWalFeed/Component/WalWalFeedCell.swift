@@ -82,9 +82,6 @@ final class WalWalFeedCell: UICollectionViewCell {
     
     feedView.layoutSubviews()
     
-    feedView.flex
-      .markDirty()
-    
     layoutCell()
     
     invalidateIntrinsicContentSize()

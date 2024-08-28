@@ -30,6 +30,7 @@ final class WalWalFeedCellView: UIView {
   
   private let profileHeaderView = UIView()
   private let profileInfoView = UIView()
+  private let imageContentView = UIView()
   private let feedContentView = UIView()
   private let boostLabelView = UIView()
   
@@ -103,8 +104,6 @@ final class WalWalFeedCellView: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    boostCountLabel.flex
-      .markDirty()
     
     missionDateLabel.flex
       .markDirty()
@@ -167,6 +166,21 @@ final class WalWalFeedCellView: UIView {
         }
       }
     }
+    
+    boostCountLabel.flex
+      .markDirty()
+    
+    missionDateLabel.flex
+      .markDirty()
+    
+    boostLabelView.flex
+      .markDirty()
+    
+    feedContentView.flex
+      .markDirty()
+    
+    containerView.flex
+      .markDirty()
   }
   
   private func setAttributes() {
@@ -200,7 +214,14 @@ final class WalWalFeedCellView: UIView {
         $0.addItem(profileHeaderView)
           .marginHorizontal(16.adjusted)
           .marginVertical(15.adjusted)
+        $0.addItem(imageContentView)
         $0.addItem(feedContentView)
+          .minHeight(16.adjusted)
+          .marginHorizontal(16.adjusted)
+          .marginTop(14.adjusted)
+        $0.addItem(boostLabelView)
+          .marginTop(8.adjusted)
+          .marginHorizontal(16.adjusted)
           .marginBottom(20.adjusted)
       }
     
@@ -224,21 +245,20 @@ final class WalWalFeedCellView: UIView {
           .grow(1)
       }
     
+    imageContentView.flex
+      .width(100%)
+      .define({
+        $0.addItem(missionImageView)
+          .height(343.adjusted)
+        
+      })
+    
     feedContentView.flex
       .width(100%)
       .direction(.column)
       .justifyContent(.center)
       .define {
-        $0.addItem(missionImageView)
-          .height(343.adjusted)
-          .alignItems(.center)
         $0.addItem(contentLabel)
-          .minHeight(16.adjusted)
-          .marginHorizontal(16.adjusted)
-          .marginTop(14.adjusted)
-        $0.addItem(boostLabelView)
-          .marginTop(8.adjusted)
-          .marginHorizontal(16.adjusted)
       }
     
     boostLabelView.flex
