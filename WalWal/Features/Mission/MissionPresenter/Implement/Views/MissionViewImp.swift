@@ -58,6 +58,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   private let bubbleContainer = UIView()
   private lazy var missionCountBubbleView = BubbleView()
+  private let missionMarkView = MissionCoachMarkView()
   
   // MARK: - Properties
   
@@ -98,6 +99,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     super.viewDidLoad()
     configureAttribute()
     configureLayout()
+    showCoachView()
     
     missionCountBubbleView.startFloatingAnimation()
     self.reactor = missionReactor
@@ -241,6 +243,19 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private func updateBubbleViewTitle(for status: StatusMessage?) {
     let isCompleted = status == .completed ? true : false
     missionCountBubbleView.isCompleted.accept(isCompleted)
+  }
+  
+  private func showCoachView() {
+    if !UserDefaults.bool(forUserDefaultsKey: .isFirstMissionAppear) {
+      let scenes = UIApplication.shared.connectedScenes
+      let windowScene = scenes.first as? UIWindowScene
+      let window = windowScene?.windows.first
+      
+      
+      missionMarkView.isHidden = false
+      window?.addSubview(missionMarkView)
+      missionMarkView.pin.all()
+    }
   }
   
   // MARK: - Notification Setup
