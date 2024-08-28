@@ -226,7 +226,7 @@ public final class WalWalFeed: UIView {
     }
     
     let indexPath = IndexPath(item: index, section: 0)
-    collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: animated)
+    collectionView.scrollToItem(at: indexPath, at: .top, animated: animated)
   }
   
   
