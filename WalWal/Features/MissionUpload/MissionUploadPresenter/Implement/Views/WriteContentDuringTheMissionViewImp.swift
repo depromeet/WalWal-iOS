@@ -78,7 +78,7 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   
   private let missionUploadCompletedLottieView: LottieAnimationView = {
     let animationView = LottieAnimationView(animation: AnimationAsset.missionComplete.animation)
-    animationView.loopMode = .playOnce
+    animationView.loopMode = .loop
     return animationView
   }()
   
@@ -229,19 +229,14 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
     window.addSubview(dimView)
     window.addSubview(missionUploadCompletedLottieView)
     
-    missionUploadCompletedLottieView.play { [weak self] (finished) in
-      guard let self = self else { return }
-      if finished { self.hideLottie() }
-    }
+    missionUploadCompletedLottieView.play()
   }
   
   fileprivate func hideLottie() {
     guard let window = UIWindow.key else { return }
-    
+    missionUploadCompletedLottieView.stop()
     window.viewWithTag(999)?.removeFromSuperview()
     missionUploadCompletedLottieView.removeFromSuperview()
-    
-    writeContentDuringTheMissionReactor.action.onNext(.lottieFinished)
   }
 }
 
@@ -313,21 +308,11 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map{ $0.isCompletedUpload}
+      .map{ $0.showLottie}
       .distinctUntilChanged()
-      .filter { $0 }
-      .subscribe(with: self, onNext: { owner, _ in
-        owner.showLottie()
+      .subscribe(with: self, onNext: { owner, showLottie in
+        showLottie ? owner.showLottie() : owner.hideLottie()
       })
-      .disposed(by: disposeBag)
-    
-    reactor.state
-      .map { $0.showIndicator }
-      .distinctUntilChanged()
-      .asDriver(onErrorJustReturn: false)
-      .drive(with: self) { owner, show in
-        ActivityIndicator.shared.showIndicator.accept(show)
-      }
       .disposed(by: disposeBag)
   }
   
@@ -347,10 +332,7 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
       .disposed(by: disposeBag)
     
     contentTextView.textRelay
-      .map { [weak self] text -> String in
-        guard let self = self else { return "" }
-        return "\(text.count)/80"
-      }
+      .map { "\($0.count)/80" }
       .bind(to: characterCountLabel.rx.text)
       .disposed(by: disposeBag)
   }

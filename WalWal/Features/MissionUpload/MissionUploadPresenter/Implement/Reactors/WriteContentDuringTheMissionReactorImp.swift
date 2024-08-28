@@ -63,11 +63,9 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
       return .just(Mutation.showMeTheAlert(show: false))
     case .uploadButtonTapped(let image, let content): /// 피드 공유하기 버튼 눌렀어
       return .concat([
-        .just(Mutation.showIndicator(show: true)),
+        .just(Mutation.showLottie(show: true)),
         uploadProcess(content, image)
       ])
-    case .lottieFinished:
-      return .just(Mutation.lottieFinished)
     }
   }
   
@@ -76,17 +74,15 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
     switch mutation {
     case .showMeTheAlert(let isShow):
       newState.isAlertWillPresent = isShow
-    case let .showIndicator(show):
-      newState.showIndicator = show
+    case let .showLottie(show):
+      newState.showLottie = show
     case .uploadFailed(message: let message):
       newState.uploadErrorMessage = message
-      newState.isCompletedUpload = false
+      newState.showLottie = false
     case .uploadProcessEnded:
-      newState.isCompletedUpload = true
+      passFlagAndMoveToMission()
     case .moveToMain:
       justMoveToMission()
-    case .lottieFinished:
-      passFlagAndMoveToMission()
     }
     return newState
   }
@@ -121,7 +117,7 @@ extension WriteContentDuringTheMissionReactorImp {
       .catch { error -> Observable<Mutation> in
         return .concat([
           .just(.uploadFailed(message: error.localizedDescription)),
-          .just(.showIndicator(show: false))
+          .just(.showLottie(show: false))
         ])
       }
   }
@@ -134,13 +130,13 @@ extension WriteContentDuringTheMissionReactorImp {
       .flatMap { owner, result -> Observable<Mutation> in
         return .concat([
           .just(.uploadProcessEnded),
-          .just(.showIndicator(show: false))
+          .just(.showLottie(show: false))
         ])
       }
       .catch { error -> Observable<Mutation> in
         return .concat([
           .just(.uploadFailed(message: error.localizedDescription)),
-          .just(.showIndicator(show: false))
+          .just(.showLottie(show: false))
         ])
       }
   }
