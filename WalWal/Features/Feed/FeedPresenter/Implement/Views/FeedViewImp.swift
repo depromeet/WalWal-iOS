@@ -63,6 +63,7 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
     super.viewDidLoad()
     configureLayout()
     configureAttribute()
+    showCoachView()
     self.reactor = feedReactor
   }
   
@@ -83,6 +84,17 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   public func configureAttribute() {
     view.backgroundColor = Colors.gray150.color
     view.addSubview(rootContainer)
+  }
+  
+  public func configureLayout() {
+    rootContainer.flex
+      .define {
+        $0.addItem(feed)
+          .grow(1)
+      }
+  }
+
+  private func showCoachView() {
     if UserDefaults.bool(forUserDefaultsKey: .isFirstFeedAppear) {
       let scenes = UIApplication.shared.connectedScenes
       let windowScene = scenes.first as? UIWindowScene
@@ -93,19 +105,6 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
       window?.addSubview(coachView)
       coachView.pin.all()
     }
-  }
-  
-  public func configureLayout() {
-    rootContainer.flex
-      .define {
-        $0.addItem(feed)
-          .grow(1)
-      }
-  }
-  
-  private func hideCoachView() {
-    coachView.removeFromSuperview()
-    UserDefaults.setValue(value: false, forUserDefaultKey: .isFirstFeedAppear)
   }
 }
 
