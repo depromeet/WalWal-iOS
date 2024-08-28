@@ -140,7 +140,10 @@ extension MyPageViewControllerImp: View {
   public func bindAction(reactor: R) {
     calendar.selectedDayData
       .map {
-        return Reactor.Action.didSelectCalendarItem(memberInfo: self.memberInfo, date: $0.date)
+        Reactor.Action.didSelectCalendarItem(
+          memberInfo: self.memberInfo,
+          calendar: $0
+        )
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
@@ -167,7 +170,8 @@ extension MyPageViewControllerImp: View {
   }
   
   public func bindState(reactor: R) {
-    reactor.state.map { $0.calendarData }
+    reactor.state
+      .map { $0.calendarData }
       .distinctUntilChanged()
       .bind(to: calendar.rx.updateModels)
       .disposed(by: disposeBag)

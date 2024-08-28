@@ -63,7 +63,8 @@ public protocol MyPageDependencyFactory {
   func injectRecordDetailViewController<T: RecordDetailReactor>(
     reactor: T,
     memberId: Int,
-    memberNickname: String
+    memberNickname: String,
+    recordId: Int
   ) -> any RecordDetailViewController
   
   // MARK: - ProfileEdit

@@ -94,12 +94,14 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   public func injectRecordDetailViewController<T: RecordDetailReactor>(
     reactor: T,
     memberId: Int,
-    memberNickname: String
+    memberNickname: String,
+    recordId: Int
   ) -> any RecordDetailViewController {
     return RecordDetailViewControllerImp(
       reactor: reactor,
       nickname: memberNickname,
       memberId: memberId,
+      recordId: recordId,
       isFeedRecord: false
     )
   }
