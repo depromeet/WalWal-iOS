@@ -24,9 +24,11 @@ final class StyledTextInputView: UIView {
   // MARK: - UI Components
   
   private let textViewContainer = UIView()
-  public private(set) var textView = UITextView().then {
+  public private(set) var textView = UnderlinedTextView().then {
     $0.backgroundColor = .clear
     $0.font = Fonts.KR.H6.B
+    $0.textColor = Colors.gray600.color
+    $0.tintColor = Colors.walwalOrange.color
     $0.isEditable = true
     $0.isScrollEnabled = true
     $0.textContainerInset = .zero
@@ -56,7 +58,6 @@ final class StyledTextInputView: UIView {
     
     configureView()
     setupBindings()
-    applyLineHeightToTextView()
   }
   
   required init?(coder: NSCoder) {
@@ -98,20 +99,22 @@ final class StyledTextInputView: UIView {
       .bind(to: textRelay)
       .disposed(by: disposeBag)
     
-    /// 현재 텍스트뷰에 나와있는 텍스트가 플레이스홀더인지 일반 텍스트인지에 따라서 AttributeString을 적용
-    Observable.combineLatest(textRelay, isPlaceholderVisibleRelay)
-      .map { [weak self] (text, isPlaceholderVisible) -> NSAttributedString in
-        guard let self = self else { return NSAttributedString() }
-        return isPlaceholderVisible ? self.stylePlaceholderText() : self.styleText(text)
-      }
-      .bind(to: textView.rx.attributedText)
-      .disposed(by: disposeBag)
-    
     textView.rx.text.orEmpty
       .asDriver()
       .drive(with: self) { owner, text in
         if text.count > owner.maxCharacterCount {
           owner.cutText(length: owner.maxCharacterCount, text: text)
+        }
+      }
+      .disposed(by: disposeBag)
+    
+    isPlaceholderVisibleRelay
+      .asDriver()
+      .drive(with: self) { owner, isPlaceHolder in
+        if isPlaceHolder {
+          owner.textView.attributedText = owner.stylePlaceholderText()
+        } else {
+          owner.textView.attributedText = .none
         }
       }
       .disposed(by: disposeBag)
@@ -134,6 +137,13 @@ final class StyledTextInputView: UIView {
         owner.isPlaceholderVisibleRelay.accept(true)
       })
       .disposed(by: disposeBag)
+    
+    textView.rx.didChange
+      .asDriver()
+      .drive(with: self) { owner, _ in
+        owner.textView.attributeText()
+      }
+      .disposed(by: disposeBag)
   }
   
   private func stylePlaceholderText() -> NSAttributedString {
@@ -144,6 +154,8 @@ final class StyledTextInputView: UIView {
   }
   
   private func styleText(_ text: String) -> NSAttributedString {
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.lineSpacing = 32
     let attributedText = NSMutableAttributedString(string: text, attributes: [
       .foregroundColor: Colors.white.color,
       .font: Fonts.KR.H6.B
@@ -164,7 +176,12 @@ final class StyledTextInputView: UIView {
         range: NSRange(range, in: text)
       )
     }
-    
+    if let existingText = textView.text, !existingText.isEmpty {
+      let attributedText = NSMutableAttributedString(string: existingText)
+      attributedText.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedText.length))
+//      textView.attributedText = attributedText
+    }
+    textView.typingAttributes[.paragraphStyle] = paragraphStyle
     return attributedText
   }
   
@@ -175,19 +192,6 @@ final class StyledTextInputView: UIView {
     textView.text = cutting
   }
   
-  private func applyLineHeightToTextView() {
-    let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.minimumLineHeight = 40
-    paragraphStyle.maximumLineHeight = 40
-    
-    if let existingText = textView.text, !existingText.isEmpty {
-      let attributedText = NSMutableAttributedString(string: existingText)
-      attributedText.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedText.length))
-      textView.attributedText = attributedText
-    }
-    
-    textView.typingAttributes[.paragraphStyle] = paragraphStyle
-  }
 
 }
 
@@ -209,5 +213,66 @@ extension String {
 extension Reactive where Base: StyledTextInputView {
   var text: Observable<String> {
     return base.textRelay.asObservable()
+  }
+}
+
+class UnderlinedTextView: UITextView {
+  private typealias Fonts = ResourceKitFontFamily
+  private typealias Colors = ResourceKitAsset.Colors
+  
+  func attributeText() {
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.lineSpacing = 22
+    
+    // 속성 텍스트 설정
+    let attributes: [NSAttributedString.Key: Any] = [
+      .paragraphStyle: paragraphStyle,
+      .font: Fonts.KR.H6.B,
+      .foregroundColor: Colors.gray600.color
+    ]
+    let attributedString = NSMutableAttributedString(string: text, attributes: attributes)
+    
+    // 왈왈
+    let walwalAttributes: [NSAttributedString.Key: Any] = [
+      .foregroundColor: Colors.walwalOrange.color
+    ]
+    if let range = text.range(of: "왈왈") {
+      let nsRange = NSRange(range, in: text)
+      attributedString.addAttributes(walwalAttributes, range: nsRange)
+    }
+    
+    if let range = text.range(of: "WalWal") {
+      let nsRange = NSRange(range, in: text)
+      attributedString.addAttributes(walwalAttributes, range: nsRange)
+    }
+    
+    
+    // UITextView에 속성 텍스트 할당
+    
+    self.attributedText = attributedString
+    self.typingAttributes[.paragraphStyle] = paragraphStyle
+  }
+  
+  override func draw(_ rect: CGRect) {
+    super.draw(rect)
+    
+    guard let context = UIGraphicsGetCurrentContext() else { return }
+    context.setStrokeColor(Colors.gray800.color.cgColor)
+    context.setLineWidth(1.0)
+    
+    let lineHeight: CGFloat = 40
+    let lineSpacing: CGFloat = 0  // 줄 간격
+    
+    var currentBaseline = self.textContainerInset.top + self.textContainer.lineFragmentPadding + lineHeight - (self.font?.lineHeight ?? 0) - 10
+    
+    let numberOfLines = Int((rect.height / (lineHeight + lineSpacing)).rounded(.down))
+    
+    for _ in 0...numberOfLines {
+      let underlineY = currentBaseline + (self.font?.lineHeight ?? 0)
+      context.move(to: CGPoint(x: self.textContainerInset.left, y: underlineY))
+      context.addLine(to: CGPoint(x: rect.width - self.textContainerInset.right, y: underlineY))
+      context.strokePath()
+      currentBaseline += lineHeight + lineSpacing
+    }
   }
 }
