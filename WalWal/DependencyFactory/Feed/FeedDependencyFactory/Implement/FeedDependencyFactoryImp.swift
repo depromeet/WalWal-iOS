@@ -9,6 +9,7 @@
 import UIKit
 import FeedDependencyFactory
 import RecordsDependencyFactory
+import MyPageDependencyFactory
 
 import WalWalNetwork
 

@@ -10,7 +10,6 @@ import UIKit
 
 import FeedDependencyFactory
 import RecordsDependencyFactory
-import MyPageDependencyFactory
 
 import BaseCoordinator
 import FeedCoordinator
@@ -33,19 +32,16 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   
   public var feedDependencyFactory: FeedDependencyFactory
   public var recordsDependencyFactory: RecordsDependencyFactory
-  public var mypageDependencyFactory: MyPageDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     feedDependencyFactory: FeedDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory,
-    mypageDepencyFactory: MyPageDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.feedDependencyFactory = feedDependencyFactory
-    self.mypageDependencyFactory = mypageDepencyFactory
     self.recordsDependencyFactory = recordsDependencyFactory
     bindChildToParentAction()
     bindState()

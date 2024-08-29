@@ -78,6 +78,7 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     fetchMemberInfoUseCase: FetchMemberInfoUseCase,
     checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
     checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase,
+    memberProfileInfoUseCase: MemberInfoUseCase,
     memberId: Int? = nil
   ) -> any MyPageReactor {
     return MyPageReactorImp(
@@ -86,6 +87,7 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
       fetchMemberInfoUseCase: fetchMemberInfoUseCase,
       checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
       checkCalendarRecordsUseCase: checkCalendarRecordsUseCase,
+      memberProfileInfoUseCase: memberProfileInfoUseCase,
       memberId: memberId
     )
   }
@@ -107,9 +109,10 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   
   public func injectRecordDetailReactor<T: MyPageCoordinator>(
     coordinator: T,
-    fetchUserFeedUseCase: FetchUserFeedUseCase
+    fetchUserFeedUseCase: FetchUserFeedUseCase,
+    memberId: Int
   ) -> any RecordDetailReactor{
-    return RecordDetailReactorImp(coordinator: coordinator, fetchUserFeedUseCase: fetchUserFeedUseCase)
+    return RecordDetailReactorImp(coordinator: coordinator, fetchUserFeedUseCase: fetchUserFeedUseCase, memberId: memberId)
   }
   
   public func injectRecordDetailViewController<T: RecordDetailReactor>(

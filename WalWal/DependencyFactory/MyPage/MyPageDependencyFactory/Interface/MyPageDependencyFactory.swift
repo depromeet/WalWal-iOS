@@ -56,6 +56,7 @@ public protocol MyPageDependencyFactory {
     fetchMemberInfoUseCase: FetchMemberInfoUseCase,
     checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
     checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase,
+    memberProfileInfoUseCase: MemberInfoUseCase,
     memberId: Int?
   ) -> any MyPageReactor
   func injectMyPageViewController<T: MyPageReactor>(
@@ -68,9 +69,10 @@ public protocol MyPageDependencyFactory {
 
   // MARK: - RecordDetail
   
-    func injectRecordDetailReactor<T: MyPageCoordinator>(
+  func injectRecordDetailReactor<T: MyPageCoordinator>(
     coordinator: T,
-    fetchUserFeedUseCase: FetchUserFeedUseCase
+    fetchUserFeedUseCase: FetchUserFeedUseCase,
+    memberId: Int
   ) -> any RecordDetailReactor
   func injectRecordDetailViewController<T: RecordDetailReactor>(
     reactor: T,

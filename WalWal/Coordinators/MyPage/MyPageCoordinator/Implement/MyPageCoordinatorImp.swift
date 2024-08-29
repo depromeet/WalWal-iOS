@@ -109,14 +109,17 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   public func start() {
     let fetchWalWalCalendarModelsUseCase = myPageDependencyFactory.injectFetchWalWalCalendarModelsUseCase()
     let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
+    let memberProfileInfoUseCase = membersDependencyFactory.injectMemberInfoUseCase()
     let checkCompletedTotalRecordsUseCase = recordsDependencyFactory.injectCheckCompletedTotalRecordsUseCase()
     let checkCalendarRecordsUseCase = recordsDependencyFactory.injectCheckCalendarRecordsUseCase()
+  
     let reactor = myPageDependencyFactory.injectMyPageReactor (
       coordinator: self,
       fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
       fetchMemberInfoUseCase: fetchMemberInfoUseCase,
       checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
       checkCalendarRecordsUseCase: checkCalendarRecordsUseCase,
+      memberProfileInfoUseCase: memberProfileInfoUseCase,
       memberId: nil
     )
     let myPageVC = myPageDependencyFactory.injectMyPageViewController(
@@ -137,12 +140,14 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     let fetchMemberInfoUseCase = membersDependencyFactory.injectFetchMemberInfoUseCase()
     let checkCompletedTotalRecordsUseCase = recordsDependencyFactory.injectCheckCompletedTotalRecordsUseCase()
     let checkCalendarRecordsUseCase = recordsDependencyFactory.injectCheckCalendarRecordsUseCase()
+    let memberProfileInfoUseCase = membersDependencyFactory.injectMemberInfoUseCase()
     let reactor = myPageDependencyFactory.injectMyPageReactor(
       coordinator: self,
       fetchWalWalCalendarModelsUseCase: fetchWalWalCalendarModelsUseCase,
       fetchMemberInfoUseCase: fetchMemberInfoUseCase,
       checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
       checkCalendarRecordsUseCase: checkCalendarRecordsUseCase,
+      memberProfileInfoUseCase: memberProfileInfoUseCase,
       memberId: memberId
     )
     let profileVC = myPageDependencyFactory.injectMyPageViewController(
@@ -201,19 +206,21 @@ extension MyPageCoordinatorImp {
     recordId: Int
   ) {
     let fetchUserFeedUseCase = feedDependencyFactory.injectFetchUserFeedUseCase()
+    let memberInfoUseCase = membersDependencyFactory.injectMemberInfoUseCase()
     let reactor = myPageDependencyFactory.injectRecordDetailReactor(
       coordinator: self,
-      fetchUserFeedUseCase: fetchUserFeedUseCase)
+      fetchUserFeedUseCase: fetchUserFeedUseCase,
+      memberId: memberId
+    )
     let recordDetailVC = myPageDependencyFactory.injectRecordDetailViewController(
       reactor: reactor,
       memberId: memberId,
       memberNickname: nickname,
       recordId: recordId
     )
-    guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
-      return
+    if let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController {
+      tabBarViewController.hideCustomTabBar()
     }
-    tabBarViewController.hideCustomTabBar()
     self.pushViewController(viewController: recordDetailVC, animated: true)
   }
   
