@@ -57,7 +57,8 @@ public protocol MyPageDependencyFactory {
     checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
     checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase,
     memberProfileInfoUseCase: MemberInfoUseCase,
-    memberId: Int?
+    memberId: Int?,
+    isFeedProfile: Bool
   ) -> any MyPageReactor
   func injectMyPageViewController<T: MyPageReactor>(
     reactor: T,

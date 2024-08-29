@@ -120,7 +120,8 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
       checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
       checkCalendarRecordsUseCase: checkCalendarRecordsUseCase,
       memberProfileInfoUseCase: memberProfileInfoUseCase,
-      memberId: nil
+      memberId: nil,
+      isFeedProfile: false
     )
     let myPageVC = myPageDependencyFactory.injectMyPageViewController(
       reactor: reactor,
@@ -148,7 +149,8 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
       checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
       checkCalendarRecordsUseCase: checkCalendarRecordsUseCase,
       memberProfileInfoUseCase: memberProfileInfoUseCase,
-      memberId: memberId
+      memberId: memberId,
+      isFeedProfile: true
     )
     let profileVC = myPageDependencyFactory.injectMyPageViewController(
       reactor: reactor,
@@ -206,7 +208,6 @@ extension MyPageCoordinatorImp {
     recordId: Int
   ) {
     let fetchUserFeedUseCase = feedDependencyFactory.injectFetchUserFeedUseCase()
-    let memberInfoUseCase = membersDependencyFactory.injectMemberInfoUseCase()
     let reactor = myPageDependencyFactory.injectRecordDetailReactor(
       coordinator: self,
       fetchUserFeedUseCase: fetchUserFeedUseCase,

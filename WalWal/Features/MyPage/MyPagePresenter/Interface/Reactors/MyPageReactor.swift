@@ -17,7 +17,8 @@ import ReactorKit
 import RxSwift
 
 public enum MyPageReactorAction {
-  case didSelectCalendarItem(memberInfo: MemberModel, calendar: WalWalCalendarModel)
+  case setLoading(isLoading: Bool)
+  case didSelectCalendarItem(memberId: Int, memberNickname: String, calendar: WalWalCalendarModel)
   case didTapSettingButton
   case didTapEditButton
   case loadCalendarData
@@ -29,10 +30,11 @@ public enum MyPageReactorAction {
 }
 
 public enum MyPageReactorMutation {
+  case setLoading(isLoading: Bool)
   case setSelectedCalendarItem(WalWalCalendarModel)
   case setCalendarData([WalWalCalendarModel]) // 캘린더 데이터를 설정하는 뮤테이션 추가
   case moveToSettingView
-  case moveToRecordDetail(memberInfo: MemberModel, calendar: WalWalCalendarModel)
+  case moveToRecordDetail(memberId: Int, memberNickname: String, calendar: WalWalCalendarModel)
   case moveToEditView(data: MemberModel)
   case profileInfo(data: MemberModel)
   case setMissionCount(missionCount: Int)
@@ -40,7 +42,10 @@ public enum MyPageReactorMutation {
 }
 
 public struct MyPageReactorState {
-  public init() { }
+  public init(isLoading: Bool) {
+    self.isLoading = isLoading
+  }
+  public var isLoading: Bool
   public var selectedDate: WalWalCalendarModel = .init(recordId: 0, date: "", image: nil)
   public var calendarData: [WalWalCalendarModel] = [] // 캘린더 데이터를 저장할 상태 추가
   public var profileData: MemberModel? = nil
@@ -58,6 +63,7 @@ public protocol MyPageReactor: Reactor where Action == MyPageReactorAction, Muta
     checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
     checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase,
     memberProfileInfoUseCase: MemberInfoUseCase,
-    memberId: Int?
+    memberId: Int?,
+    isFeedProfile: Bool
   )
 }

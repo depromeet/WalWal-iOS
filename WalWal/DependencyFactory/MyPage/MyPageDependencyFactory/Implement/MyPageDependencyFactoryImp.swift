@@ -79,7 +79,8 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
     checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase,
     memberProfileInfoUseCase: MemberInfoUseCase,
-    memberId: Int? = nil
+    memberId: Int? = nil,
+    isFeedProfile: Bool
   ) -> any MyPageReactor {
     return MyPageReactorImp(
       coordinator: coordinator,
@@ -88,7 +89,8 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
       checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
       checkCalendarRecordsUseCase: checkCalendarRecordsUseCase,
       memberProfileInfoUseCase: memberProfileInfoUseCase,
-      memberId: memberId
+      memberId: memberId,
+      isFeedProfile: isFeedProfile
     )
   }
   

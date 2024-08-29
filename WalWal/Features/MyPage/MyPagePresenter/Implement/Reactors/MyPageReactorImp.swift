@@ -30,6 +30,7 @@ public final class MyPageReactorImp: MyPageReactor {
   public let coordinator: any MyPageCoordinator
   
   private var memberId: Int?
+  private var isFeedProfile: Bool
   
   private let fetchWalWalCalendarModelsUseCase: FetchWalWalCalendarModelsUseCase
   private let fetchMemberInfoUseCase: FetchMemberInfoUseCase
@@ -44,7 +45,8 @@ public final class MyPageReactorImp: MyPageReactor {
     checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
     checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase,
     memberProfileInfoUseCase: MemberInfoUseCase,
-    memberId: Int? = GlobalState.shared.profileInfo.value.memberId
+    memberId: Int? = GlobalState.shared.profileInfo.value.memberId,
+    isFeedProfile: Bool
   ) {
     self.memberId = memberId
     self.coordinator = coordinator
@@ -53,13 +55,14 @@ public final class MyPageReactorImp: MyPageReactor {
     self.checkCompletedTotalRecordsUseCase = checkCompletedTotalRecordsUseCase
     self.checkCalendarRecordsUseCase = checkCalendarRecordsUseCase
     self.memberProfileInfoUseCase = memberProfileInfoUseCase
-    self.initialState = State()
+    self.isFeedProfile = isFeedProfile
+    self.initialState = State(isLoading: isFeedProfile) // 피드에서 진입 시 인디케이터 표출
   }
   
   /// `transform` 메서드를 사용하여 액션 스트림을 변형합니다.
   public func transform(action: Observable<Action>) -> Observable<Action> {
     let defaultMemberId = GlobalState.shared.profileInfo.value.memberId
-    let isOther = !(memberId == GlobalState.shared.profileInfo.value.memberId)
+
     /// 초기 액션으로 `loadCalendarData`를 추가
     let initialLoadAction = Observable.just(Action.loadCalendarData)
     let initialProfileAction = Observable.just(Action.loadProfileInfo)
@@ -68,7 +71,7 @@ public final class MyPageReactorImp: MyPageReactor {
     let initialLoadMemberCalendar = Observable.just(Action.loadMemberCalendar(memberId: memberId ?? defaultMemberId))
     let initialLoadCount = Observable.just(Action.loadMissionCount(memberId: memberId ?? defaultMemberId))
     /// 기존 액션 스트림과 초기 액션 스트림을 병합
-    if isOther {
+    if isFeedProfile {
       return Observable.merge(action, initialMemberInfo, initialLoadCount, initialLoadMemberCalendar)
     } else {
       return Observable.merge(action, initialLoadAction, initialProfileAction)
@@ -77,8 +80,12 @@ public final class MyPageReactorImp: MyPageReactor {
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .didSelectCalendarItem(let member, let calendar):
-      return Observable.just(.moveToRecordDetail(memberInfo: member, calendar: calendar))
+    case .didSelectCalendarItem(let memberId, let nickname, let calendar):
+      return Observable.just(.moveToRecordDetail(
+        memberId: memberId,
+        memberNickname: nickname,
+        calendar: calendar
+      ))
     case .didTapSettingButton:
       return Observable.just(.moveToSettingView)
     case .didTapEditButton:
@@ -131,6 +138,9 @@ public final class MyPageReactorImp: MyPageReactor {
         .map { calendarModels in
           return Mutation.setCalendarData(calendarModels)
         }
+        .concat(Observable.just(Mutation.setLoading(isLoading: false)))
+    case .setLoading(isLoading: let isLoading):
+      return .just(.setLoading(isLoading: isLoading))
     }
   }
   
@@ -152,22 +162,20 @@ public final class MyPageReactorImp: MyPageReactor {
       ))
     case let .profileInfo(data):
       newState.profileData = data
-    case .moveToRecordDetail(let member, let calendar):
+    case .moveToRecordDetail(let membeId, let memberNickname, let calendar):
       coordinator.destination.accept(.showRecordDetail(
-        nickname: member.nickname,
-        memberId: member.memberId,
+        nickname: memberNickname,
+        memberId: membeId,
         recordId: calendar.recordId
       ))
     case .moveToBack:
       coordinator.requirefinish()
     case .setMissionCount(let count):
       newState.missionCount = count
+    case .setLoading(isLoading: let isLoading):
+      newState.isLoading = isLoading
     }
     return newState
-  }
-  
-  private func fetchMissionCount(id: Int) {
-    
   }
 }
 
