@@ -35,5 +35,11 @@ public struct MemberModel {
     self.nickname = nickName
     self.profileURL = profileURL
     self.raisePet = raisePet
+    
+    if let defaultProfile = DefaultProfile(rawValue: profileURL) {
+      defaultImageName = defaultProfile.rawValue
+    } else {
+      self.profileImage = GlobalState.shared.imageStore[profileURL]
+    }
   }
 }

@@ -24,7 +24,10 @@ public final class CheckCalendarRecordsUseCaseImp: CheckCalendarRecordsUseCase {
     return recordRepository.checkCalendarRecords(cursor: cursor, limit: limit, memberId: memberId)
       .map{
         let calendarModel = MissionRecordCalendarModel(dto: $0)
-        calendarModel.saveToGlobalState()
+        guard let memberId else  {
+          calendarModel.saveToGlobalState()
+          return calendarModel
+        }
         return calendarModel
       }
   }
