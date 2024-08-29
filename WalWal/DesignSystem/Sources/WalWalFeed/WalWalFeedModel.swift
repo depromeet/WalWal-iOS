@@ -8,6 +8,7 @@
 
 import UIKit
 
+public struct WalWalFeedModel: Equatable {
   public var authorId: Int
   public let recordId: Int
   public var nickname: String

@@ -37,7 +37,7 @@ public final class WalWalFeedCell: UICollectionViewCell {
   
   // MARK: - Lifecycle
   
-  override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+  public override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
     setNeedsLayout()
     layoutIfNeeded()
     
@@ -50,7 +50,7 @@ public final class WalWalFeedCell: UICollectionViewCell {
   }
   
   
-  override func layoutSubviews() {
+  public override func layoutSubviews() {
     super.layoutSubviews()
     layoutCell()
   }
@@ -79,6 +79,7 @@ public final class WalWalFeedCell: UICollectionViewCell {
         self.setNeedsLayout()
       })
       .disposed(by: disposeBag)
+    
     
     feedView.layoutSubviews()
     

@@ -24,7 +24,7 @@ public final class WalWalProfileCardView: UIView {
   // MARK: - UI
   
   private let containerView = UIView()
-  
+  private let profileInfoContainer = UIView()
   private let profileContainer = UIView()
   private let profileImageView = UIImageView()
   
@@ -138,15 +138,27 @@ public final class WalWalProfileCardView: UIView {
     
     containerView.flex.define { flex in
       flex.addItem()
-        .direction(.row)
         .alignItems(.center)
         .justifyContent(.center)
-        .paddingHorizontal(20)
-        .height(100)
+        .marginHorizontal(20)
+        .height(height.adjustedHeight)
+        .define { flex in
+          flex.addItem(profileInfoContainer)
+            .marginBottom(21.adjustedHeight)
+          flex.addItem(missionCountView)
+            .width(100%)
+        }
+    }
+    
+    profileInfoContainer.flex.define { flex in
+      flex.addItem()
+        .direction(.row)
+        .justifyContent(.center)
+        .alignItems(.center)
         .width(100%)
         .define { flex in
           flex.addItem(profileContainer).marginRight(10)
-          flex.addItem(infoContainer).grow(1)
+          flex.addItem(infoContainer).width(190.adjusted)
           flex.addItem(chipContainer).marginLeft(22)
             .height(28)
             .width(64)
@@ -167,6 +179,16 @@ public final class WalWalProfileCardView: UIView {
         .width(100%)
         .height(100%)
     }
+    
+    missionCountView.flex
+      .direction(.row)
+      .alignItems(.center)
+      .justifyContent(.center)
+      .height(44.adjusted)
+      .define { flex in
+        flex.addItem(missionIconImageView)
+        flex.addItem(missionCountLabel)
+      }
   }
   
   public func configureAttributes() {

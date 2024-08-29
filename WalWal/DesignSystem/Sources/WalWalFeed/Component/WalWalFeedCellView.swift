@@ -79,18 +79,19 @@ public final class WalWalFeedCellView: UIView {
     $0.textColor = Colors.gray500.color
   }
   
+  // MARK: - Property
+  
+  var feedData: WalWalFeedModel?
   var maxLength = 55
   public private(set) var contents = ""
   private let disposeBag = DisposeBag()
-  private let moreTappedSubject = PublishSubject<Bool>()
-  
-  // MARK: - Property
-  var feedData: WalWalFeedModel?
   
   private let profileTappedSubject = PublishSubject<WalWalFeedModel>()
   public var profileTapped: Observable<WalWalFeedModel> {
     return profileTappedSubject.asObservable()
   }
+  
+  private let moreTappedSubject = PublishSubject<Bool>()
   public var moreTapped: Observable<Bool> {
     return moreTappedSubject.asObservable()
   }
@@ -136,23 +137,32 @@ public final class WalWalFeedCellView: UIView {
       .layout(mode: .adjustHeight)
     
   }
-  
-  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-      let view = super.hitTest(point, with: event)
-      return view === self ? nil : view
-  }
+
   
   // MARK: - Methods
   
   private func bind() {
     contentLabel.rx.tapped
-      .subscribe(onNext: { [weak self] in
-        self?.toggleContent()
-      })
-      .disposed(by: disposeBag) // DisposeBag에 추가
+      .withUnretained(self)
+      .compactMap { _ in
+        self.isExpanded.toggle()
+        self.toggleContent()
+        return self.isExpanded
+      }
+      .bind(to: moreTappedSubject)
+      .disposed(by: disposeBag)
+    
+    profileHeaderView.rx.tapped
+      .debug()
+      .compactMap { [weak self] in
+        print(self?.feedData)
+        return self?.feedData
+      }
+      .bind(to: profileTappedSubject)
+      .disposed(by: disposeBag)
   }
   
-  func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false) {
+  func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false, isAlreadyExpanded: Bool = false) {
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = sanitizeContent(feedData.missionTitle)
     profileImageView.image = feedData.profileImage
@@ -166,6 +176,7 @@ public final class WalWalFeedCellView: UIView {
     contents = sanitizeContent(feedData.contents)
     contentLabel.text = contents
     missionDateLabel.attributedText = setupDateLabel(to: feedData.date)
+    self.feedData = feedData
     
     /// 부스트 애니메이션 시 이미 열려 있었으면 더보기 X
     if !isAlreadyExpanded  {
