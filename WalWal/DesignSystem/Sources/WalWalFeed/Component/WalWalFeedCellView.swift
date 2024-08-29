@@ -153,9 +153,7 @@ public final class WalWalFeedCellView: UIView {
       .disposed(by: disposeBag)
     
     profileHeaderView.rx.tapped
-      .debug()
       .compactMap { [weak self] in
-        print(self?.feedData)
         return self?.feedData
       }
       .bind(to: profileTappedSubject)
