@@ -259,8 +259,8 @@ public final class WalWalFeedCellView: UIView {
       .width(100%)
       .define {
         $0.addItem(userNickNameLabel)
-          .marginBottom(2.adjusted)
         $0.addItem(missionLabel)
+          .marginTop(2)
           .grow(1)
       }
     
@@ -273,7 +273,6 @@ public final class WalWalFeedCellView: UIView {
       })
     
     feedContentView.flex
-      .width(100%)
       .direction(.column)
       .justifyContent(.center)
       .define {
@@ -297,6 +296,7 @@ public final class WalWalFeedCellView: UIView {
   func toggleContent() {
     contentLabel.numberOfLines = 4
     contentLabel.text = contents
+    contentLabel.lineBreakStrategy = .hangulWordPriority
     setNeedsLayout()
   }
   
