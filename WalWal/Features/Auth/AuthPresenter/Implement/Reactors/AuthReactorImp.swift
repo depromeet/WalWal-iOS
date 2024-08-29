@@ -138,7 +138,7 @@ extension AuthReactorImp {
   }
   
   private func fetchProfileInfo() -> Observable<Void> {
-    return memberInfoUseCase.execute()
+    return memberInfoUseCase.execute(memberId: nil)
       .asObservable()
       .map { _ in Void() }
   }
