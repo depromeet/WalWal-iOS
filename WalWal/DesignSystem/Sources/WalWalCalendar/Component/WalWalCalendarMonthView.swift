@@ -118,6 +118,7 @@ final class WalWalCalendarMonthView: UIView {
   
   func updateCellDatas(_ newCellDatas: [WalWalCalendarModel]) {
     cellDataRelay.accept(newCellDatas)
+    collectionView.reloadData()
   }
   
   // MARK: - Methods
