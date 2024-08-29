@@ -187,6 +187,7 @@ public final class WalWalProfileCardView: UIView {
       .height(44.adjusted)
       .define { flex in
         flex.addItem(missionIconImageView)
+          .marginRight(6)
         flex.addItem(missionCountLabel)
       }
   }
