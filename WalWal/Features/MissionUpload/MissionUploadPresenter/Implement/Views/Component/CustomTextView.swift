@@ -131,7 +131,7 @@ final class StyledTextInputView: UIView {
         if isPlaceHolder {
           owner.textView.attributedText = owner.stylePlaceholderText()
         } else {
-          owner.textView.text = ""
+          owner.textView.text = nil
         }
       }
       .disposed(by: disposeBag)
@@ -142,7 +142,7 @@ final class StyledTextInputView: UIView {
       .filter { $0 }
       .subscribe(with: self, onNext: { owner, _ in
         owner.isPlaceholderVisibleRelay.accept(false)
-        owner.textView.text = ""
+        owner.textView.text = nil
       })
       .disposed(by: disposeBag)
     

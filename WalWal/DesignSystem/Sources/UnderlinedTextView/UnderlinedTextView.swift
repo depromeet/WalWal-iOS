@@ -43,6 +43,7 @@ public class UnderlinedTextView: UITextView {
     fatalError("init(coder:) has not been implemented")
   }
   
+  /// AttributedText 속성 설정 메서드
   public func attributeText() {
     let paragraphStyle = NSMutableParagraphStyle()
     paragraphStyle.lineSpacing = enterSpacing
@@ -74,6 +75,15 @@ public class UnderlinedTextView: UITextView {
     self.typingAttributes[.paragraphStyle] = paragraphStyle
   }
   
+  public override func caretRect(for position: UITextPosition) -> CGRect {
+    var superRect = super.caretRect(for: position)
+    guard let font = self.font else { return superRect }
+    
+    superRect.size.height = font.pointSize - font.descender
+    return superRect
+  }
+  
+  /// 밑줄 그리기
   public override func draw(_ rect: CGRect) {
     super.draw(rect)
     
