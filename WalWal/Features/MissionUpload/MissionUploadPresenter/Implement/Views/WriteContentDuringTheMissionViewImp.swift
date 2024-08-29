@@ -57,11 +57,6 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   }
   
   private let characterCountContainer = UIView()
-  private lazy var characterCountLabel = UILabel().then {
-    $0.font = Fonts.EN.Caption
-    $0.textColor = Colors.white.color.withAlphaComponent(0.2)
-    $0.text = "0/80"
-  }
   
   // 업로드 버튼 컨테이너
   private let uploadContainer = UIView()
@@ -148,7 +143,7 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
     let isKeyboardVisible = keyboardHeight > 0
     let previewImageHeight: CGFloat = isKeyboardVisible ? 160.adjusted : 240.adjusted
     let imagePreviewContainerMarginTop: CGFloat = isKeyboardVisible ? 15.adjusted : 50.adjusted
-    let contentInputMarginTop: CGFloat = isKeyboardVisible ? 40.adjusted : 50.adjusted
+    let contentInputMarginTop: CGFloat = isKeyboardVisible ? 30.adjustedHeight : 40.adjustedHeight
     
     rootFlexContainer.flex
       .define { flex in
@@ -164,9 +159,8 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
         flex.addItem(contentInputContainer)
           .alignSelf(.center)
           .marginTop(contentInputMarginTop)
-          .marginHorizontal(30)
-          .height(150.adjusted)
-          .width(315.adjusted)
+          .marginHorizontal(30.adjustedWidth)
+          .width(315.adjustedWidth)
       }
     
     navigationContainer.flex.define { flex in
@@ -179,11 +173,8 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
     
     contentInputContainer.flex
       .define { flex in
-        flex.addItem(contentTextView).grow(1)
-        flex.addItem(characterCountLabel)
-          .alignSelf(.end)
-          .marginTop(6)
-          .width(40)
+        flex.addItem(contentTextView)
+          .height(100%)
       }
     
     uploadContainer.flex
@@ -331,9 +322,5 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
-    contentTextView.textRelay
-      .map { "\($0.count)/80" }
-      .bind(to: characterCountLabel.rx.text)
-      .disposed(by: disposeBag)
   }
 }
