@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol MemberInfoUseCase {
-  func execute() -> Single<MemeberInfo>
+  func execute(memberId: Int?) -> Single<MemeberInfo>
 }

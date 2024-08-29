@@ -45,4 +45,12 @@ public final class MembersRepositoryImp: MembersRepository {
     return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
       .map { _ in return Void() }
   }
+  
+  public func memberProfileInfo(memberId: Int) -> Single<MemberDTO> {
+    let endpoint = MembersEndPoint<MemberDTO>.memberInfo(memberId: memberId)
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
+      .compactMap { $0 }
+      .asObservable()
+      .asSingle()
+  }
 }

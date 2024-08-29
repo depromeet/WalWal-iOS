@@ -29,7 +29,7 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   // MARK: - UI
   
   private let rootContainer = UIView()
-  private lazy var feed = WalWalFeed(feedData: dummyData, isFeed: true)
+  private let feed = WalWalFeed(feedData: [], isFeed: true)
   
   private let coachView = FeedCoachMarkView()
   
@@ -37,7 +37,6 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   
   public var disposeBag = DisposeBag()
   public var feedReactor: R
-  private let dummyData: [WalWalFeedModel] = []
   
   // MARK: - Initialize
   

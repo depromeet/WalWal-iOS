@@ -11,6 +11,7 @@ import Foundation
 import RxSwift
 
 public protocol MembersRepository {
+  func memberProfileInfo(memberId: Int) -> Single<MemberDTO>
   func profileInfo() -> Single<MemberDTO>
   func checkValidNickname(nickname: String) -> Single<Void>
   func editProfile(nickname: String, profileImage: String) -> Single<Void>

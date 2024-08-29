@@ -35,6 +35,7 @@ public final class MyPageReactorImp: MyPageReactor {
   private let fetchMemberInfoUseCase: FetchMemberInfoUseCase
   private let checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase
   private let checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase
+  private let memberProfileInfoUseCase: MemberInfoUseCase
   
   public init(
     coordinator: any MyPageCoordinator,
@@ -42,6 +43,7 @@ public final class MyPageReactorImp: MyPageReactor {
     fetchMemberInfoUseCase: FetchMemberInfoUseCase,
     checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
     checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase,
+    memberProfileInfoUseCase: MemberInfoUseCase,
     memberId: Int? = GlobalState.shared.profileInfo.value.memberId
   ) {
     self.memberId = memberId
@@ -50,6 +52,7 @@ public final class MyPageReactorImp: MyPageReactor {
     self.fetchMemberInfoUseCase = fetchMemberInfoUseCase
     self.checkCompletedTotalRecordsUseCase = checkCompletedTotalRecordsUseCase
     self.checkCalendarRecordsUseCase = checkCalendarRecordsUseCase
+    self.memberProfileInfoUseCase = memberProfileInfoUseCase
     self.initialState = State()
   }
   
@@ -61,11 +64,12 @@ public final class MyPageReactorImp: MyPageReactor {
     let initialLoadAction = Observable.just(Action.loadCalendarData)
     let initialProfileAction = Observable.just(Action.loadProfileInfo)
     
+    let initialMemberInfo = Observable.just(Action.loadMemberProfileInfo(memberId: memberId ?? defaultMemberId))
     let initialLoadMemberCalendar = Observable.just(Action.loadMemberCalendar(memberId: memberId ?? defaultMemberId))
     let initialLoadCount = Observable.just(Action.loadMissionCount(memberId: memberId ?? defaultMemberId))
     /// 기존 액션 스트림과 초기 액션 스트림을 병합
     if isOther {
-      return Observable.merge(action, initialLoadCount, initialLoadMemberCalendar)
+      return Observable.merge(action, initialMemberInfo, initialLoadCount, initialLoadMemberCalendar)
     } else {
       return Observable.merge(action, initialLoadAction, initialProfileAction)
     }
@@ -95,6 +99,19 @@ public final class MyPageReactorImp: MyPageReactor {
         .asObservable()
         .flatMap { info -> Observable<Mutation> in
           return .just(.profileInfo(data: info))
+        }
+    case let .loadMemberProfileInfo(memberId):
+      return memberProfileInfoUseCase.execute(memberId: memberId)
+        .asObservable()
+        .flatMap { info -> Observable<Mutation> in
+          return .just(.profileInfo(
+            data: MemberModel.init(
+              memberId: info.memberId,
+              nickName: info.nickname,
+              profileURL: info.profileURL,
+              raisePet: info.raisePet
+            )
+          ))
         }
     case .didTapBackButton:
       return Observable.just(.moveToBack)

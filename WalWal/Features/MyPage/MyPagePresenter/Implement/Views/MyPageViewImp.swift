@@ -46,7 +46,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
     name: " ",
     chipStyle: isOtherProfile ? .none : .tonal,
-    chipTitle: "수정",
+    chipTitle: isOtherProfile ? "" : "수정",
     isOther: isOtherProfile,
     missionCount: missionCount
   )
@@ -70,7 +70,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     nickname: String? = nil,
     isOther: Bool = false
   ) {
-    self.nickname = nickname ?? ""
+    self.nickname = nickname ?? GlobalState.shared.profileInfo.value.nickname
     self.memberId = memberId ?? GlobalState.shared.profileInfo.value.memberId
     self.navigationBar = isOther ?
       .init(
@@ -89,13 +89,6 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     
     self.mypageReactor = reactor
     super.init(nibName: nil, bundle: nil)
-    
-    
-    self.profileCardView.changeProfileInfo(
-      nickname: self.nickname,
-      image: nil,
-      raisePet: ""
-    )
   }
   
   required init?(coder: NSCoder) {
@@ -220,25 +213,28 @@ extension MyPageViewControllerImp: View {
             image: nil,
             raisePet: "",
             missionCount: count
-          )
-    reactor.state
-      .map { $0.calendarData }
-      .distinctUntilChanged()
-      .bind(to: calendar.rx.updateModels)
-      .disposed(by: disposeBag)
-    
-    reactor.state
-      .map { $0.profileData }
-      .compactMap { $0 }
-      .bind(with: self) { owner, data in
-        var image: UIImage?
-        if let imgName = data.defaultImageName,
-           let defaultImage = DefaultProfile(rawValue: imgName) {
-          image = defaultImage.image
-        }
+          )}
         .disposed(by: disposeBag)
       
+      reactor.state
+        .map { $0.calendarData }
+        .distinctUntilChanged()
+        .bind(to: calendar.rx.updateModels)
+        .disposed(by: disposeBag)
+      
+      reactor.state
+        .map { $0.profileData }
+        .compactMap { $0 }
+        .bind(with: self) { owner, data in
+          var image: UIImage?
+          if let imgName = data?.defaultImageName,
+             let defaultImage = DefaultProfile(rawValue: imgName) {
+            image = defaultImage.image
+          }
+        }
+        .disposed(by: disposeBag)
     } else {
+      
       reactor.state.map { $0.calendarData }
         .distinctUntilChanged()
         .bind(to: calendar.rx.updateModels)

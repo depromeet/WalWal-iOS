@@ -29,4 +29,11 @@ public struct MemberModel {
       self.profileImage = GlobalState.shared.imageStore[global.profileURL]
     }
   }
+  
+  public init(memberId: Int, nickName: String, profileURL: String, raisePet: String){
+    self.memberId = memberId
+    self.nickname = nickName
+    self.profileURL = profileURL
+    self.raisePet = raisePet
+  }
 }

@@ -22,7 +22,7 @@ public enum MyPageReactorAction {
   case didTapEditButton
   case loadCalendarData
   case loadProfileInfo
-  
+  case loadMemberProfileInfo(memberId: Int)
   case loadMemberCalendar(memberId: Int)
   case loadMissionCount(memberId: Int)
   case didTapBackButton
@@ -57,6 +57,7 @@ public protocol MyPageReactor: Reactor where Action == MyPageReactorAction, Muta
     fetchMemberInfoUseCase: FetchMemberInfoUseCase,
     checkCompletedTotalRecordsUseCase: CheckCompletedTotalRecordsUseCase,
     checkCalendarRecordsUseCase: CheckCalendarRecordsUseCase,
+    memberProfileInfoUseCase: MemberInfoUseCase,
     memberId: Int?
   )
 }

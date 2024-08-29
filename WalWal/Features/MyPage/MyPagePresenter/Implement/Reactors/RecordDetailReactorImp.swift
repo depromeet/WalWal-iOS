@@ -32,10 +32,11 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
   
   public init(
     coordinator: any MyPageCoordinator,
-    fetchUserFeedUseCase: FetchUserFeedUseCase
+    fetchUserFeedUseCase: FetchUserFeedUseCase,
+    memberId: Int
   ) {
     self.fetchUserFeedUseCase = fetchUserFeedUseCase
-    self.initialState = State()
+    self.initialState = State(memberId: memberId)
     self.coordinator = coordinator
   }
   
@@ -72,11 +73,10 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
     case .userFeedFetchFailed(let error):
       newState.feedErrorMessage = error
     case .moveToBack:
-      guard let tabBarViewController = coordinator.navigationController.tabBarController
-              as? WalWalTabBarViewController else {
-        return state
+      if let tabBarViewController = coordinator.navigationController.tabBarController
+          as? WalWalTabBarViewController {
+        tabBarViewController.showCustomTabBar()
       }
-      tabBarViewController.showCustomTabBar()
       coordinator.popViewController(animated: true)
     }
     
