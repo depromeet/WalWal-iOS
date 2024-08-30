@@ -114,6 +114,9 @@ final class StyledTextInputView: UIView {
       .distinctUntilChanged()
     
     limitedTextObservable
+      .map {
+        self.isPlaceholderVisibleRelay.value ? "" : $0
+      }
       .bind(to: textRelay)
       .disposed(by: disposeBag)
     
@@ -122,10 +125,6 @@ final class StyledTextInputView: UIView {
       .drive(with: self) { owner, text in
         if text.count > owner.maxCharacterCount {
           owner.cutText(length: owner.maxCharacterCount, text: text)
-        }
-        
-        if text.last == "\n" {
-          owner.textView.endEditing(true)
         }
       }
       .disposed(by: disposeBag)
