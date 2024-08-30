@@ -159,7 +159,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
       isOther: true
     )
     self.baseViewController = profileVC
-    self.pushViewController(viewController: profileVC, animated: false)
+    self.pushViewController(viewController: profileVC, animated: true)
   }
 }
 

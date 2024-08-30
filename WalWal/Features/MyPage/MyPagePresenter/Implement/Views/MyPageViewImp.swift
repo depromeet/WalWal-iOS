@@ -76,7 +76,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     self.navigationBar = isOther ?
       .init(
         leftItems: [.darkBack],
-        leftItemSize: 40,
+        leftItemSize: 40.adjusted,
         title: self.nickname,
         rightItems: []
       ) :
@@ -84,7 +84,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
         leftItems: [],
         title: "내 정보",
         rightItems: [.setting],
-        rightItemSize: 40
+        rightItemSize: 40.adjusted
       )
     self.isFeedProfile = isOther
     

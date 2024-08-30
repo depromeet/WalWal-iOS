@@ -34,6 +34,7 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
   
   private let navigationBar = WalWalNavigationBar(
     leftItems: [.darkBack],
+    leftItemSize: 40.adjusted,
     title: "기록",
     rightItems: []
   ).then {
