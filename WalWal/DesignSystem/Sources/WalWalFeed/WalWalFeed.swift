@@ -50,6 +50,8 @@ public final class WalWalFeed: UIView {
   
   // MARK: - Property
   
+  public let profileTapped = PublishRelay<WalWalFeedModel>()
+  
   public var feedData = BehaviorRelay<[WalWalFeedModel]>(value: [])
   
   public var updatedBoost = PublishRelay<(recordId: Int, count: Int)>()
@@ -278,6 +280,11 @@ extension WalWalFeed: UICollectionViewDataSource {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WalWalFeedCell.identifier, for: indexPath) as! WalWalFeedCell
     let model = currentFeedData[indexPath.row]
     cell.configureCell(feedData: model)
+    cell.feedView.profileTapped
+      .bind(with: self) { owner, data in
+        owner.profileTapped.accept(data)
+      }
+      .disposed(by: disposeBag)
     return cell
   }
   
