@@ -33,9 +33,10 @@ final class StyledTextInputView: UIView {
   ).then {
     $0.backgroundColor = .clear
     $0.isEditable = true
-    $0.isScrollEnabled = true
+    $0.isScrollEnabled = false
     $0.textContainerInset = .zero
     $0.textContainer.lineFragmentPadding = 0
+    $0.returnKeyType = .done
   }
   private lazy var characterCountLabel = UILabel().then {
     $0.font = Fonts.EN.Caption
@@ -121,6 +122,10 @@ final class StyledTextInputView: UIView {
       .drive(with: self) { owner, text in
         if text.count > owner.maxCharacterCount {
           owner.cutText(length: owner.maxCharacterCount, text: text)
+        }
+        
+        if text.last == "\n" {
+          owner.textView.endEditing(true)
         }
       }
       .disposed(by: disposeBag)
