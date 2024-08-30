@@ -246,11 +246,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   private func showCoachView() {
     if UserDefaults.bool(forUserDefaultsKey: .isFirstMissionAppear) {
-      let scenes = UIApplication.shared.connectedScenes
-      let windowScene = scenes.first as? UIWindowScene
-      let window = windowScene?.windows.first
-      
-      
+      let window = UIWindow.key
       missionMarkView.isHidden = false
       window?.addSubview(missionMarkView)
       missionMarkView.pin.all()
