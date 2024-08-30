@@ -53,11 +53,6 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   
   // MARK: - Lifecycle
   
-  public override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    feedReactor.action.onNext(.refresh(cursor: nil))
-  }
-  
   public override func viewDidLoad() {
     super.viewDidLoad()
     configureLayout()
