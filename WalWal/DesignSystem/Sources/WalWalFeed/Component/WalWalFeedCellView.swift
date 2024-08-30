@@ -35,7 +35,7 @@ final class WalWalFeedCellView: UIView {
   private let boostLabelView = UIView()
   
   private let profileImageView = UIImageView().then {
-    $0.layer.cornerRadius = 20
+    $0.layer.cornerRadius = 20.adjusted
     $0.contentMode = .scaleAspectFill
     $0.clipsToBounds = true
   }
@@ -61,7 +61,7 @@ final class WalWalFeedCellView: UIView {
     $0.textColor = Colors.black.color
     $0.translatesAutoresizingMaskIntoConstraints = false
     $0.numberOfLines = 2
-    $0.lineBreakStrategy = .hangulWordPriority
+    $0.lineBreakMode = .byCharWrapping
   }
   
   private let boostCountLabel = CustomLabel(font: Fonts.EN.B2).then {
@@ -254,7 +254,6 @@ final class WalWalFeedCellView: UIView {
       })
     
     feedContentView.flex
-      .width(100%)
       .direction(.column)
       .justifyContent(.center)
       .define {
@@ -276,8 +275,9 @@ final class WalWalFeedCellView: UIView {
   }
   
   func toggleContent() {
-    contentLabel.numberOfLines = 4
+    contentLabel.numberOfLines = 3
     contentLabel.text = contents
+    contentLabel.lineBreakMode = .byCharWrapping
     setNeedsLayout()
   }
   
