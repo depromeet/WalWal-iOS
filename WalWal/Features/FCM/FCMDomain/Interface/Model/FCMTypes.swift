@@ -1,8 +1,8 @@
 //
 //  FCMTypes.swift
-//  FCMPresenter
+//  FCMDomain
 //
-//  Created by Jiyeon on 8/28/24.
+//  Created by Jiyeon on 8/30/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
