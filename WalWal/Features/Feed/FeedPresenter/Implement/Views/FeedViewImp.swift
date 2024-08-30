@@ -134,19 +134,12 @@ extension FeedViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    feed.collectionView.rx
-      .itemSelected
-      .compactMap { [weak self] indexPath -> WalWalFeedCell? in
-        guard let cell = self?.feed.collectionView.cellForItem(at: indexPath) as? WalWalFeedCell else {
-          return nil
-        }
-        return cell
-      }
-      .flatMap { $0.feedView.profileTapped }
+    feed.profileTapped
       .throttle(.seconds(1), latest: false, scheduler: MainScheduler.instance)
       .map { Reactor.Action.profileTapped($0) }
       .bind(to: reactor.action )
       .disposed(by: disposeBag)
+    
   }
   
   public func bindState(reactor: R) {
