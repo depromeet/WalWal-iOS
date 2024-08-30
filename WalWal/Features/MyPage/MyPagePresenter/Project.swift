@@ -19,11 +19,13 @@ let project = Project.invertedPresenterWithDemoApp(
     .Coordinator.MyPage.Interface,
     
     .Feature.MyPage.Domain.Interface,
-    .Feature.Auth.Domain.Interface
+    .Feature.Auth.Domain.Interface,
+    .Feature.Records.Domain.Interface,
+    .DesignSystem
   ],
   implementDependencies: [
     .DependencyFactory.MyPage.Interface,
-    .DesignSystem
+    
   ],
   demoAppDependencies: [
     .DependencyFactory.MyPage.Implement
