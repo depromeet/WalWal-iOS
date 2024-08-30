@@ -13,6 +13,7 @@ import MyPagePresenter
 import DesignSystem
 import ResourceKit
 import GlobalState
+import Utility
 
 import Then
 import PinLayout
@@ -23,7 +24,8 @@ import RxCocoa
 
 public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, MyPageViewController {
   
-  private typealias Images = ResourceKitAsset.Assets
+  private typealias Assets = ResourceKitAsset.Assets
+  private typealias Images = ResourceKitAsset.Images
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
@@ -33,12 +35,7 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
     $0.backgroundColor = Colors.gray100.color
   }
   
-  private let navigationBar = WalWalNavigationBar(
-    leftItems: [],
-    title: "내 정보",
-    rightItems: [.setting],
-    rightItemSize: 40
-  ).then { $0.backgroundColor = Colors.white.color }
+  private var navigationBar: WalWalNavigationBar
   
   private let seperator = UIView().then {
     $0.backgroundColor = Colors.gray150.color
@@ -47,24 +44,50 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   private let calendar = WalWalCalendar(initialModels: [])
   
   private lazy var profileCardView = WalWalProfileCardView(
-    profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
+    profileImage: ResourceKitAsset.Assets.yellowDog.image,
     name: " ",
-    chipStyle: .tonal,
-    chipTitle: "수정"
+    chipStyle: isFeedProfile ? .none : .tonal,
+    chipTitle: isFeedProfile ? "" : "수정",
+    isOther: isFeedProfile,
+    missionCount: missionCount
   )
   
   // MARK: - Properties
   
   public var disposeBag = DisposeBag()
   public var mypageReactor: R
+  private var isFeedProfile: Bool = false
   private var isMoveToEdit: Bool = false
+  private var missionCount = 0
   private let refreshProfileInfo = PublishRelay<Void>()
   
   private var memberInfo: MemberModel = .init(global: GlobalState.shared.profileInfo.value)
+  private var nickname: String = ""
+  private var memberId: Int = 0
   
   public init(
-    reactor: R
+    reactor: R,
+    memberId: Int? = nil,
+    nickname: String? = nil,
+    isOther: Bool = false
   ) {
+    self.nickname = nickname ?? GlobalState.shared.profileInfo.value.nickname
+    self.memberId = memberId ?? GlobalState.shared.profileInfo.value.memberId
+    self.navigationBar = isOther ?
+      .init(
+        leftItems: [.darkBack],
+        leftItemSize: 40.adjusted,
+        title: self.nickname,
+        rightItems: []
+      ) :
+      .init(
+        leftItems: [],
+        title: "내 정보",
+        rightItems: [.setting],
+        rightItemSize: 40.adjusted
+      )
+    self.isFeedProfile = isOther
+    
     self.mypageReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
@@ -84,11 +107,11 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   
   public override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    
     if isMoveToEdit {
       isMoveToEdit = false
       refreshProfileInfo.accept(())
     }
-    mypageReactor.action.onNext(.loadCalendarData)
   }
   
   public override func viewDidLayoutSubviews() {
@@ -101,9 +124,8 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   
   // MARK: - Methods
   
-  
   public func setAttribute() {
-    view.backgroundColor = Colors.white.color
+    view.backgroundColor = Colors.gray100.color
   }
   
   public func setLayout() {
@@ -138,19 +160,15 @@ extension MyPageViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
+    /// 공통 액션
     calendar.selectedDayData
-      .map {
+      .withUnretained(self)
+      .map { owner, calendar in
         Reactor.Action.didSelectCalendarItem(
-          memberInfo: self.memberInfo,
-          calendar: $0
+          memberId: owner.memberId,
+          memberNickname: owner.nickname,
+          calendar: calendar
         )
-      }
-      .bind(to: reactor.action)
-      .disposed(by: disposeBag)
-    
-    navigationBar.rightItems?[0].rx.tapped
-      .map {
-        Reactor.Action.didTapSettingButton
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
@@ -167,31 +185,94 @@ extension MyPageViewControllerImp: View {
       .map { Reactor.Action.loadProfileInfo }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    /// 다른 사람 프로필인 경우 네비게이션 액션
+    if !isFeedProfile {
+      navigationBar.rightItems?[0].rx.tapped
+        .map {
+          Reactor.Action.didTapSettingButton
+        }
+        .bind(to: reactor.action)
+        .disposed(by: disposeBag)
+    } else {
+      navigationBar.leftItems?[0].rx.tapped
+        .map { Reactor.Action.didTapBackButton }
+        .bind(to: reactor.action)
+        .disposed(by: disposeBag)
+    }
+    
   }
   
   public func bindState(reactor: R) {
+    
     reactor.state
       .map { $0.calendarData }
       .distinctUntilChanged()
       .bind(to: calendar.rx.updateModels)
       .disposed(by: disposeBag)
     
-    reactor.state
-      .map { $0.profileData }
-      .compactMap { $0 }
-      .bind(with: self) { owner, data in
-        var image: UIImage?
-        if let imgName = data.defaultImageName,
-            let defaultImage = DefaultProfile(rawValue: imgName) {
-          image = defaultImage.image
+    if !isFeedProfile{
+      
+      reactor.state
+        .map { $0.profileData }
+        .compactMap { $0 }
+        .bind(with: self) { owner, profileData in
+          var image: UIImage?
+          if let imgName = profileData.defaultImageName,
+             let defaultImage = DefaultProfile(rawValue: imgName) {
+            image = defaultImage.image
+          }
+          owner.profileCardView.changeProfileInfo(
+            nickname: profileData.nickname,
+            image: profileData.profileImage ?? image,
+            raisePet: profileData.raisePet
+          )
         }
-        owner.profileCardView.changeProfileInfo(
-          nickname: data.nickname,
-          image: data.profileImage ?? image,
-          raisePet: data.raisePet
+        .disposed(by: disposeBag)
+      
+    } else {
+      Observable
+        .combineLatest(
+          reactor.state.map { $0.missionCount },
+          reactor.state.map { $0.profileData }.compactMap { $0 }
         )
+        .bind(with: self) { owner, combinedData in
+          let (missionCount, profileData) = combinedData
+          var image: UIImage?
+          if let imgName = profileData.defaultImageName,
+             let defaultImage = DefaultProfile(rawValue: imgName) {
+            image = defaultImage.image
+          }
+          owner.profileCardView.changeProfileInfo(
+            nickname: profileData.nickname,
+            image: profileData.profileImage ?? image,
+            raisePet: profileData.raisePet,
+            missionCount: missionCount
+          )
+        }
+        .disposed(by: disposeBag)
+      
+      
+      reactor.state
+        .map { $0.calendarData }
+        .distinctUntilChanged()
+        .bind(to: calendar.rx.updateModels)
+        .disposed(by: disposeBag)
+      
+    }
+    reactor.state
+      .map { $0.isLoading }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, isLoading in
+        print("isLoading: \(isLoading)")
+        owner.calendar.isHidden = isLoading
+        owner.profileCardView.isHidden = isLoading
+        ActivityIndicator.shared.showIndicator.accept(isLoading)
       }
       .disposed(by: disposeBag)
+    
+    
   }
   
   public func bindEvent() {

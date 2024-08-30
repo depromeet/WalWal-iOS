@@ -21,6 +21,7 @@ public enum FeedReactorAction {
   case loadFeedData(cursor: String?)
   case refresh(cursor: String?)
   case endedBoost(recordId: Int, count: Int)
+  case profileTapped(WalWalFeedModel)
 }
 
 public enum FeedReactorMutation {
@@ -28,6 +29,7 @@ public enum FeedReactorMutation {
   case feedReachEnd(feedData: [WalWalFeedModel])
   case feedLoadEnded(nextCursor: String?, feedData: [WalWalFeedModel])
   case updateBoost
+  case moveToProfile(memberId: Int, nickName: String)
 }
 
 public struct FeedReactorState {

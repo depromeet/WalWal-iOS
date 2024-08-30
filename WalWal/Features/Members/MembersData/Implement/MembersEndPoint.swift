@@ -14,6 +14,8 @@ import Alamofire
 
 enum MembersEndPoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
+  
+  case memberInfo(memberId: Int)
   case myInfo
   case checkNickname(body: NicknameCheckBody)
   case editProfile(body: EditProfileBody)
@@ -30,6 +32,8 @@ extension MembersEndPoint {
       return "/members/me"
     case .checkNickname:
       return "/members/check-nickname"
+    case let .memberInfo(memberId):
+      return "/members/\(memberId)"
     }
   }
   var method: HTTPMethod {
@@ -40,12 +44,14 @@ extension MembersEndPoint {
       return .post
     case .editProfile:
       return .put
+    case .memberInfo:
+      return .get
     }
   }
   
   var parameters: RequestParams {
     switch self {
-    case .myInfo:
+    case .myInfo, .memberInfo:
       return .requestPlain
     case let .checkNickname(body):
       return .requestWithbody(body)
@@ -56,7 +62,7 @@ extension MembersEndPoint {
   
   var headerType: HTTPHeaderType {
     switch self {
-    case .myInfo, .editProfile:
+    case .myInfo, .editProfile, .memberInfo:
       if let accessToken = KeychainWrapper.shared.accessToken {
         return .authorization(accessToken)
       } else{

@@ -75,6 +75,8 @@ public final class FeedReactorImp: FeedReactor {
     case let .endedBoost(recordId, count):
       return postBoostCount(recordId: recordId, count: count)
         .observe(on: MainScheduler.asyncInstance) 
+    case .profileTapped(let feedData):
+      return .just(.moveToProfile(memberId: feedData.authorId, nickName: feedData.nickname))
     }
   }
   
@@ -92,6 +94,8 @@ public final class FeedReactorImp: FeedReactor {
       newState.feedFetchEnded = true
     case .updateBoost:
       break
+    case .moveToProfile(let memberId, let nickName):
+      coordinator.startProfile(memberId: memberId, nickName: nickName)
     }
     return newState
   }

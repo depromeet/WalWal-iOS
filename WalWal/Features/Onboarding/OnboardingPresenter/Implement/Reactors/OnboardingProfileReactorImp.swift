@@ -183,7 +183,7 @@ extension OnboardingProfileReactorImp {
   }
   
   private func fetchProfileInfo() -> Observable<Mutation> {
-    return memberInfoUseCase.execute()
+    return memberInfoUseCase.execute(memberId: nil)
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in

@@ -29,22 +29,28 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
   public let coordinator: any MyPageCoordinator
   
   private let fetchUserFeedUseCase: FetchUserFeedUseCase
+  private let memberId: Int
+  private var isOtherFeed: Bool
   
   public init(
     coordinator: any MyPageCoordinator,
-    fetchUserFeedUseCase: FetchUserFeedUseCase
+    fetchUserFeedUseCase: FetchUserFeedUseCase,
+    memberId: Int
   ) {
+    self.isOtherFeed = memberId != GlobalState.shared.profileInfo.value.memberId
+    self.memberId = memberId
     self.fetchUserFeedUseCase = fetchUserFeedUseCase
-    self.initialState = State()
+    self.initialState = State(memberId: memberId)
     self.coordinator = coordinator
   }
   
   public func transform(action: Observable<Action>) -> Observable<Action> {
+  
     let initialLoadAction = Observable.just(
-      Action.loadFeed(memberId: initialState.memberId, cursorDate: nil)
+      Action.loadFeed(memberId: memberId, cursorDate: nil)
     )
     
-    return Observable.merge(initialLoadAction, action)
+    return Observable.merge(action, initialLoadAction)
   }
   
   
@@ -53,6 +59,8 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
     case .loadFeed(let memberId, let cursorDate):
       if currentState.feedFetchEnded {
         return .empty()
+      } else if isOtherFeed {
+        return fetchmemberFeedData(memberId: memberId, cursor: cursorDate, limit: 30)
       }
       return fetchFeedData(memberId: memberId, cursor: cursorDate, limit: 30)
     case .tapBackButton:
@@ -72,11 +80,10 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
     case .userFeedFetchFailed(let error):
       newState.feedErrorMessage = error
     case .moveToBack:
-      guard let tabBarViewController = coordinator.navigationController.tabBarController
-              as? WalWalTabBarViewController else {
-        return state
+      if let tabBarViewController = coordinator.navigationController.tabBarController
+          as? WalWalTabBarViewController {
+        tabBarViewController.showCustomTabBar()
       }
-      tabBarViewController.showCustomTabBar()
       coordinator.popViewController(animated: true)
     }
     
@@ -84,12 +91,12 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
   }
   
   private func fetchFeedData(memberId: Int, cursor: String?, limit: Int) -> Observable<Mutation> {
-    return fetchUserFeedUseCase.execute(memberId: memberId, cursor: cursor, limit: limit)
+    return fetchUserFeedUseCase.execute(memberId: memberId, cursor: cursor, limit: limit, isProfileFeed: false)
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, feedModel -> Observable<Mutation> in
         let cursor = feedModel.nextCursor
-        return owner.convertFeedModel(feedList: GlobalState.shared.recordList.value)
+        return owner.convertGlobaltoFeedModel(feedList: GlobalState.shared.recordList.value)
           .map { feedData in
             if let cursor {
               return Mutation.fetchUseFeed(memberId: memberId, nextCursor: cursor, newRecord: feedData)
@@ -107,7 +114,52 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       }
   }
   
-  private func convertFeedModel(feedList: [GlobalFeedListModel]) -> Observable<[WalWalFeedModel]> {
+  private func fetchmemberFeedData(memberId: Int, cursor: String?, limit: Int) -> Observable<Mutation> {
+    return fetchUserFeedUseCase.execute(memberId: memberId, cursor: cursor, limit: limit, isProfileFeed: true)
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, userFeed in
+        let cursor = userFeed.nextCursor
+        return owner.convertRawFeedtoFeedModel(feedList: userFeed.list)
+          .map { feedData in
+            if let cursor {
+              return Mutation.fetchUseFeed(memberId: memberId, nextCursor: cursor, newRecord: feedData)
+            } else {
+              return Mutation.userFeedReachEnd(newRecord: feedData)
+            }
+          }
+      }
+      .catch{ error in
+        return .just(Mutation.userFeedFetchFailed(errorMessage: error.localizedDescription))}
+  }
+  
+  private func convertRawFeedtoFeedModel(feedList: [FeedListModel]) -> Observable<[WalWalFeedModel]> {
+    let feedObservables = feedList.map { feed -> Observable<WalWalFeedModel?> in
+      return Observable.zip(
+        convertImage(imageURL: feed.missionRecordImageURL),
+        convertImage(imageURL: feed.authorProfileImageURL)
+      )
+        .map({ missionRecordImage, authorProfileImage in
+          let profileDefault = authorProfileImage ?? ResourceKitAsset.Assets.yellowDog.image
+          return WalWalFeedModel(
+            recordId: feed.missionRecordID,
+            authorId: feed.authorID,
+            date: feed.createdDate,
+            nickname: feed.authorNickName,
+            missionTitle: feed.missionTitle,
+            profileImage: authorProfileImage,
+            missionImage: missionRecordImage,
+            boostCount: feed.totalBoostCount,
+            contents: feed.content ?? ""
+          )
+        })
+    }
+    
+    return Observable.zip(feedObservables)
+      .map { $0.compactMap { $0 } }
+  }
+  
+  private func convertGlobaltoFeedModel(feedList: [GlobalFeedListModel]) -> Observable<[WalWalFeedModel]> {
     let feedObservables = feedList.map { feed -> Observable<WalWalFeedModel?> in
       return Observable.zip(
         convertImage(imageURL: feed.missionImage),

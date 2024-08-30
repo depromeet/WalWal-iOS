@@ -22,7 +22,7 @@ public final class WalWalFeed: UIView {
   
   // MARK: - UI
   
-  private let walwalIndicator = WalWalLoadingIndicator(frame: .zero)
+  private let walwalIndicator = WalWalRefreshControl(frame: .zero)
   private let containerView = UIView()
   public private(set) lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
     
@@ -220,13 +220,10 @@ public final class WalWalFeed: UIView {
   
   /// 특정 레코드로 이동하는 메서드
   public func scrollToRecord(withId recordId: Int, animated: Bool = true) {
-    guard let index = currentFeedData.firstIndex(where: { $0.recordId == recordId }) else {
-      print("기록 ID(\(recordId))에 해당하는 셀을 찾을 수 없습니다.")
-      return
+    if let index = currentFeedData.firstIndex(where: { $0.recordId == recordId }) {
+      let indexPath = IndexPath(item: index, section: 0)
+      collectionView.scrollToItem(at: indexPath, at: .top, animated: animated)
     }
-    
-    let indexPath = IndexPath(item: index, section: 0)
-    collectionView.scrollToItem(at: indexPath, at: .top, animated: animated)
   }
   
   

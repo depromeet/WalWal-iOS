@@ -11,6 +11,8 @@ import MyPageCoordinator
 import DesignSystem
 
 import FeedDomain
+import MembersDomain
+
 import GlobalState
 
 import ReactorKit
@@ -33,10 +35,10 @@ public struct RecordDetailReactorState {
   @Pulse public var feedErrorMessage: String = ""
   public var nextCursor: String? = nil
   public var feedFetchEnded: Bool = false
-  public var memberId: Int = GlobalState.shared.profileInfo.value.memberId
+  public var memberId: Int
   
-  public init() {
-  
+  public init(memberId: Int) {
+    self.memberId = memberId
   }
 }
 
@@ -49,6 +51,7 @@ public protocol RecordDetailReactor: Reactor where Action == RecordDetailReactor
   
   init(
     coordinator: any MyPageCoordinator,
-    fetchUserFeedUseCase: FetchUserFeedUseCase
+    fetchUserFeedUseCase: FetchUserFeedUseCase,
+    memberId: Int
   )
 }

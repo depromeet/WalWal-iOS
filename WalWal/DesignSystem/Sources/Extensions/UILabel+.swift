@@ -115,6 +115,15 @@ public extension UILabel {
       self.attributedText = answerAttributed
     }
   }
+
+  /// 폰트 변경 함수
+  func asFont(targetString: String, font: UIFont) {
+    let fullText = text ?? ""
+    let attributedString = NSMutableAttributedString(string: fullText)
+    let range = (fullText as NSString).range(of: targetString)
+    attributedString.addAttribute(.font, value: font, range: range)
+    attributedText = attributedString
+  }
   
   /// 색상 변경 함수
   func asColor(targetString: String, color: UIColor) {
