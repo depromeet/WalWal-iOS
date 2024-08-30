@@ -165,7 +165,7 @@ final class StyledTextInputView: UIView {
       .asDriver()
       .drive(with: self) { owner, _ in
         owner.textView.endEditingWithDeleteNewLines()
-        owner.textView.attributeText()
+        owner.textView.configureAttributeText()
       }
       .disposed(by: disposeBag)
     

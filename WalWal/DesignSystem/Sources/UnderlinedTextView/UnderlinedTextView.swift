@@ -80,7 +80,7 @@ public class UnderlinedTextView: UITextView {
   }
   
   /// AttributedText 속성 설정 메서드
-  public func attributeText() {
+  public func configureAttributeText() {
     let paragraphStyle = NSMutableParagraphStyle()
     paragraphStyle.lineSpacing = enterSpacing
     
