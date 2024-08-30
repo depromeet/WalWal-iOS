@@ -8,6 +8,7 @@
 
 import UIKit
 import ResourceKit
+import Lottie
 
 import RxSwift
 import RxCocoa
@@ -36,6 +37,12 @@ public final class ActivityIndicator {
   private let container = UIView().then {
     $0.backgroundColor = ResourceKitAsset.Colors.white.color.withAlphaComponent(0)
   }
+  private let indicatorBackGroundView = UIView().then {
+    $0.backgroundColor = ResourceKitAsset.Colors.white.color.withAlphaComponent(0.5)
+    $0.layer.cornerRadius = 10
+  }
+  
+  private var lottieAnimationView = LottieAnimationView(animation: AnimationAsset.refersh.animation)
   
   private var activityIndicator: UIActivityIndicatorView = {
     let indicator = UIActivityIndicatorView(style: .large)
@@ -67,16 +74,20 @@ public final class ActivityIndicator {
     
     window.addSubview(container)
     window.bringSubviewToFront(container)
-    container.addSubview(activityIndicator)
+    container.addSubview(indicatorBackGroundView)
+    indicatorBackGroundView.addSubview(lottieAnimationView)
+
     setLayout()
     isIndicatorShow = true
-    activityIndicator.startAnimating()
+    
+    lottieAnimationView.play()
+    lottieAnimationView.loopMode = .loop
   }
   
   private func stopAnimating() {
     if isIndicatorShow {
       isIndicatorShow = false
-      activityIndicator.stopAnimating()
+      lottieAnimationView.stop()
       container.removeFromSuperview()
     }
   }
@@ -84,9 +95,11 @@ public final class ActivityIndicator {
   private func setLayout() {
     container.pin
       .all()
-    activityIndicator.pin
+    indicatorBackGroundView.pin
       .center()
-      .size(30)
+      .size(100)
+    lottieAnimationView.pin
+      .center()
     container.flex
       .layout()
   }

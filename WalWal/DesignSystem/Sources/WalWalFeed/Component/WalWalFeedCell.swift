@@ -13,7 +13,7 @@ import FlexLayout
 import PinLayout
 import RxSwift
 
-final class WalWalFeedCell: UICollectionViewCell {
+public final class WalWalFeedCell: UICollectionViewCell {
   
   private typealias Images = ResourceKitAsset.Images
   private typealias Colors = ResourceKitAsset.Colors
@@ -37,7 +37,7 @@ final class WalWalFeedCell: UICollectionViewCell {
   
   // MARK: - Lifecycle
   
-  override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+  public override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
     setNeedsLayout()
     layoutIfNeeded()
     
@@ -50,12 +50,12 @@ final class WalWalFeedCell: UICollectionViewCell {
   }
   
   
-  override func layoutSubviews() {
+  public override func layoutSubviews() {
     super.layoutSubviews()
     layoutCell()
   }
   
-  override func prepareForReuse() {
+  public override func prepareForReuse() {
     super.prepareForReuse()
     feedView.maxLength = 55
     feedView.isExpanded = false
@@ -79,6 +79,7 @@ final class WalWalFeedCell: UICollectionViewCell {
         self.setNeedsLayout()
       })
       .disposed(by: disposeBag)
+    
     
     feedView.layoutSubviews()
     

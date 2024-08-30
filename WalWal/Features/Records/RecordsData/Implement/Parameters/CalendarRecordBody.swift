@@ -11,4 +11,5 @@ import Foundation
 struct CalendarRecordQuery: Encodable {
   let cursor: String
   let limit: Int
+  let memberId: Int?
 }

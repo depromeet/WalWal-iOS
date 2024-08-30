@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol CheckCalendarRecordsUseCase {
-  func execute(cursor: String, limit: Int) -> Single<MissionRecordCalendarModel>
+  func execute(cursor: String, limit: Int, memberId: Int?) -> Single<MissionRecordCalendarModel>
 }

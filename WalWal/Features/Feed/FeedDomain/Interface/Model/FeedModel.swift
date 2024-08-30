@@ -23,6 +23,7 @@ public struct FeedModel {
   public func saveToGlobalState(globalState: GlobalState = GlobalState.shared, isFeed: Bool = true) {
     let globalFeed = self.list.map {
       GlobalFeedListModel(
+        authorId: $0.authorID,
         recordID: $0.missionRecordID,
         authorID: $0.authorID,
         createdDate: $0.createdDate,

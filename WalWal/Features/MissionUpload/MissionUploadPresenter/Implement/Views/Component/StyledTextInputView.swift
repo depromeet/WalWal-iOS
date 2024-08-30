@@ -1,5 +1,5 @@
 //
-//  CustomTextView.swift
+//  StyledTextInputView.swift
 //  MissionUploadPresenter
 //
 //  Created by 조용인 on 8/21/24.
@@ -24,13 +24,25 @@ final class StyledTextInputView: UIView {
   // MARK: - UI Components
   
   private let textViewContainer = UIView()
-  public private(set) var textView = UITextView().then {
+  public private(set) var textView = UnderlinedTextView(
+    font: Fonts.KR.H6.B,
+    textColor: Colors.gray600.color,
+    tintColor: Colors.walwalOrange.color,
+    underLineColor: Colors.gray800.color,
+    numberOfLines: 4
+  ).then {
     $0.backgroundColor = .clear
-    $0.font = Fonts.KR.H6.B
     $0.isEditable = true
-    $0.isScrollEnabled = true
+    $0.isScrollEnabled = false
     $0.textContainerInset = .zero
     $0.textContainer.lineFragmentPadding = 0
+    $0.returnKeyType = .done
+  }
+  private lazy var characterCountLabel = UILabel().then {
+    $0.font = Fonts.EN.Caption
+    $0.textColor = Colors.white.color.withAlphaComponent(0.2)
+    $0.text = "0/80"
+    $0.textAlignment = .right
   }
   
   // MARK: - Properties
@@ -39,6 +51,7 @@ final class StyledTextInputView: UIView {
   public private(set) var isPlaceholderVisibleRelay = BehaviorRelay<Bool>(value: true)
   private let placeholderText: String
   private let maxCharacterCount: Int
+  private let textViewMinHeight: CGFloat = 151
   
   private let disposeBag = DisposeBag()
   
@@ -56,7 +69,6 @@ final class StyledTextInputView: UIView {
     
     configureView()
     setupBindings()
-    applyLineHeightToTextView()
   }
   
   required init?(coder: NSCoder) {
@@ -68,17 +80,24 @@ final class StyledTextInputView: UIView {
   private func configureView() {
     addSubview(textViewContainer)
     
-    textViewContainer.flex.define { flex in
-      flex.addItem(textView)
-        .height(100%)
-        .width(100%)
-    }
+    textViewContainer.flex
+      .define { flex in
+        flex.addItem(textView)
+          .width(100%)
+          .minHeight(textViewMinHeight)
+          .grow(1)
+        flex.addItem(characterCountLabel)
+          .alignSelf(.end)
+          .marginTop(6)
+          .maxHeight(17)
+          .width(100%)
+      }
   }
   
   override func layoutSubviews() {
     super.layoutSubviews()
     textViewContainer.pin.all()
-    textViewContainer.flex.layout()
+    textViewContainer.flex.layout(mode: .adjustHeight)
   }
   
   // MARK: - Bindings
@@ -95,16 +114,10 @@ final class StyledTextInputView: UIView {
       .distinctUntilChanged()
     
     limitedTextObservable
-      .bind(to: textRelay)
-      .disposed(by: disposeBag)
-    
-    /// 현재 텍스트뷰에 나와있는 텍스트가 플레이스홀더인지 일반 텍스트인지에 따라서 AttributeString을 적용
-    Observable.combineLatest(textRelay, isPlaceholderVisibleRelay)
-      .map { [weak self] (text, isPlaceholderVisible) -> NSAttributedString in
-        guard let self = self else { return NSAttributedString() }
-        return isPlaceholderVisible ? self.stylePlaceholderText() : self.styleText(text)
+      .map {
+        self.isPlaceholderVisibleRelay.value ? "" : $0
       }
-      .bind(to: textView.rx.attributedText)
+      .bind(to: textRelay)
       .disposed(by: disposeBag)
     
     textView.rx.text.orEmpty
@@ -116,23 +129,50 @@ final class StyledTextInputView: UIView {
       }
       .disposed(by: disposeBag)
     
+    isPlaceholderVisibleRelay
+      .asDriver()
+      .drive(with: self) { owner, isPlaceHolder in
+        if isPlaceHolder {
+          owner.textView.attributedText = owner.stylePlaceholderText()
+        } else {
+          owner.textView.text = nil
+        }
+      }
+      .disposed(by: disposeBag)
+    
     /// 입력 시작되고, 플레이스 홀더가 나와있다면 플레이스 홀더 제거
     textView.rx.didBeginEditing
       .withLatestFrom(isPlaceholderVisibleRelay)
       .filter { $0 }
       .subscribe(with: self, onNext: { owner, _ in
         owner.isPlaceholderVisibleRelay.accept(false)
-        owner.textView.text = ""
+        owner.textView.text = nil
       })
       .disposed(by: disposeBag)
     
     /// 입력이 종료되고, 텍스트가 없다면 플레이스 홀더 등장
     textView.rx.didEndEditing
       .withLatestFrom(textRelay)
+      .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
       .filter { $0.isEmpty }
       .subscribe(with: self, onNext: { owner, _ in
         owner.isPlaceholderVisibleRelay.accept(true)
       })
+      .disposed(by: disposeBag)
+    
+    /// 텍스트 뷰에 입력 시 텍스트 스타일 지정
+    textView.rx.didChange
+      .asDriver()
+      .drive(with: self) { owner, _ in
+        owner.textView.endEditingWithDeleteNewLines()
+        owner.textView.configureAttributeText()
+      }
+      .disposed(by: disposeBag)
+    
+    /// 글자 수 카운트
+    textRelay
+      .map { "\($0.count)/80"}
+      .bind(to: characterCountLabel.rx.text)
       .disposed(by: disposeBag)
   }
   
@@ -143,31 +183,6 @@ final class StyledTextInputView: UIView {
     ])
   }
   
-  private func styleText(_ text: String) -> NSAttributedString {
-    let attributedText = NSMutableAttributedString(string: text, attributes: [
-      .foregroundColor: Colors.white.color,
-      .font: Fonts.KR.H6.B
-    ])
-    
-    text.ranges(of: "왈왈").forEach { range in
-      attributedText.addAttribute(
-        .foregroundColor,
-        value: Colors.walwalOrange.color,
-        range: NSRange(range, in: text)
-      )
-    }
-    
-    text.ranges(of: "WalWal").forEach { range in
-      attributedText.addAttribute(
-        .foregroundColor,
-        value: Colors.walwalOrange.color,
-        range: NSRange(range, in: text)
-      )
-    }
-    
-    return attributedText
-  }
-  
   public func cutText(length: Int, text: String) {
     let maxIndex = text.index(text.startIndex, offsetBy: length-1)
     let startIndex = text.startIndex
@@ -175,20 +190,7 @@ final class StyledTextInputView: UIView {
     textView.text = cutting
   }
   
-  private func applyLineHeightToTextView() {
-    let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.minimumLineHeight = 40
-    paragraphStyle.maximumLineHeight = 40
-    
-    if let existingText = textView.text, !existingText.isEmpty {
-      let attributedText = NSMutableAttributedString(string: existingText)
-      attributedText.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedText.length))
-      textView.attributedText = attributedText
-    }
-    
-    textView.typingAttributes[.paragraphStyle] = paragraphStyle
-  }
-
+  
 }
 
 extension String {
@@ -204,7 +206,6 @@ extension String {
     return ranges
   }
 }
-
 
 extension Reactive where Base: StyledTextInputView {
   var text: Observable<String> {

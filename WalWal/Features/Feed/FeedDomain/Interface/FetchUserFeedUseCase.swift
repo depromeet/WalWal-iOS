@@ -15,5 +15,5 @@ import RxSwift
 
 /// 특정 유저의 피드 GET
 public protocol FetchUserFeedUseCase {
-  func execute(memberId: Int, cursor: String?, limit: Int) -> Single<FeedModel>
+  func execute(memberId: Int, cursor: String?, limit: Int, isProfileFeed: Bool) -> Single<FeedModel>
 }

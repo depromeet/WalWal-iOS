@@ -16,7 +16,7 @@ import PinLayout
 import RxSwift
 import RxCocoa
 
-final class WalWalLoadingIndicator: UIRefreshControl {
+final class WalWalRefreshControl: UIRefreshControl {
   let indicatorView: LottieAnimationView = {
     let animationView = LottieAnimationView(animation: AnimationAsset.refersh.animation)
     animationView.contentMode = .scaleAspectFit

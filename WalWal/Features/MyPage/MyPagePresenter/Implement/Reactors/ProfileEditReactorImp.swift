@@ -107,7 +107,7 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
 extension ProfileEditReactorImp {
   
   private func refreshMemberInfo() -> Observable<Void> {
-    return memberInfoUseCase.execute()
+    return memberInfoUseCase.execute(memberId: nil)
       .asObservable()
       .map { _ in Void() }
   }
@@ -176,7 +176,7 @@ extension ProfileEditReactorImp {
   }
   
   private func refreshProfile() -> Observable<Mutation> {
-    return memberInfoUseCase.execute()
+    return memberInfoUseCase.execute(memberId: nil)
       .asObservable()
       .withUnretained(self)
       .flatMap { owner, _ -> Observable<Mutation> in

@@ -10,7 +10,7 @@ import UIKit
 import BaseCoordinator
 
 public enum FeedCoordinatorAction: ParentAction {
-  
+  case startProfile(memberId: Int, nickName: String)
 }
 
 public enum FeedCoordinatorFlow: CoordinatorFlow {
@@ -18,5 +18,5 @@ public enum FeedCoordinatorFlow: CoordinatorFlow {
 }
 
 public protocol FeedCoordinator: BaseCoordinator where Flow == FeedCoordinatorFlow {
-
+  func startProfile(memberId: Int, nickName: String)
 }

@@ -14,7 +14,7 @@ import FlexLayout
 import PinLayout
 import RxSwift
 
-final class WalWalFeedCellView: UIView {
+public final class WalWalFeedCellView: UIView {
   
   private typealias Images = ResourceKitAsset.Sample
   private typealias Colors = ResourceKitAsset.Colors
@@ -38,14 +38,17 @@ final class WalWalFeedCellView: UIView {
     $0.layer.cornerRadius = 20.adjusted
     $0.contentMode = .scaleAspectFill
     $0.clipsToBounds = true
+    $0.isUserInteractionEnabled = false
   }
   
   private let userNickNameLabel = CustomLabel(font: Fonts.KR.H7.B).then {
     $0.textColor = Colors.black.color
+    $0.isUserInteractionEnabled = false
   }
   
   private let missionLabel = CustomLabel(font: Fonts.KR.B2).then {
     $0.textColor = Colors.gray700.color
+    $0.isUserInteractionEnabled = false
   }
   
   private let missionImageView = UIImageView().then {
@@ -76,15 +79,22 @@ final class WalWalFeedCellView: UIView {
     $0.textColor = Colors.gray500.color
   }
   
+  // MARK: - Property
+  
+  var feedData: WalWalFeedModel?
   var maxLength = 55
   public private(set) var contents = ""
   private let disposeBag = DisposeBag()
-  private let moreTappedSubject = PublishSubject<Bool>()
   
+  private let profileTappedSubject = PublishSubject<WalWalFeedModel>()
+  public var profileTapped: Observable<WalWalFeedModel> {
+    return profileTappedSubject.asObservable()
+  }
+  
+  private let moreTappedSubject = PublishSubject<Bool>()
   public var moreTapped: Observable<Bool> {
     return moreTappedSubject.asObservable()
   }
-  
   public var isExpanded: Bool = false
   
   // MARK: - Initializers
@@ -102,7 +112,7 @@ final class WalWalFeedCellView: UIView {
   
   // MARK: - Lifecycle
   
-  override func layoutSubviews() {
+  public override func layoutSubviews() {
     super.layoutSubviews()
     
     missionDateLabel.flex
@@ -127,6 +137,7 @@ final class WalWalFeedCellView: UIView {
       .layout(mode: .adjustHeight)
     
   }
+
   
   // MARK: - Methods
   
@@ -139,6 +150,13 @@ final class WalWalFeedCellView: UIView {
         return self.isExpanded
       }
       .bind(to: moreTappedSubject)
+      .disposed(by: disposeBag)
+    
+    profileHeaderView.rx.tapped
+      .compactMap { [weak self] in
+        return self?.feedData
+      }
+      .bind(to: profileTappedSubject)
       .disposed(by: disposeBag)
   }
   
@@ -156,6 +174,7 @@ final class WalWalFeedCellView: UIView {
     contents = sanitizeContent(feedData.contents)
     contentLabel.text = contents
     missionDateLabel.attributedText = setupDateLabel(to: feedData.date)
+    self.feedData = feedData
     
     /// 부스트 애니메이션 시 이미 열려 있었으면 더보기 X
     if !isAlreadyExpanded  {
@@ -240,8 +259,8 @@ final class WalWalFeedCellView: UIView {
       .width(100%)
       .define {
         $0.addItem(userNickNameLabel)
-          .marginBottom(2.adjusted)
         $0.addItem(missionLabel)
+          .marginTop(2)
           .grow(1)
       }
     
