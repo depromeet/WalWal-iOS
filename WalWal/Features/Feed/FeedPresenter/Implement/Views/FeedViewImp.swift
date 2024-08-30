@@ -135,7 +135,7 @@ extension FeedViewControllerImp: View {
       .disposed(by: disposeBag)
     
     feed.profileTapped
-      .throttle(.seconds(500), latest: false, scheduler: MainScheduler.instance)
+      .throttle(.seconds(1), latest: false, scheduler: MainScheduler.instance)
       .map { Reactor.Action.profileTapped($0) }
       .bind(to: reactor.action )
       .disposed(by: disposeBag)
