@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum FCMTypes {
-  case mission
-  case boost
+public enum FCMTypes: String {
+  case mission = "MISSION"
+  case boost = "BOOSTER"
 }
