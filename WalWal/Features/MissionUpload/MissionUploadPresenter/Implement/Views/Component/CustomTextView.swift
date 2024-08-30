@@ -154,6 +154,7 @@ final class StyledTextInputView: UIView {
     /// 입력이 종료되고, 텍스트가 없다면 플레이스 홀더 등장
     textView.rx.didEndEditing
       .withLatestFrom(textRelay)
+      .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
       .filter { $0.isEmpty }
       .subscribe(with: self, onNext: { owner, _ in
         owner.isPlaceholderVisibleRelay.accept(true)
@@ -164,6 +165,7 @@ final class StyledTextInputView: UIView {
     textView.rx.didChange
       .asDriver()
       .drive(with: self) { owner, _ in
+        owner.textView.endEditingWithDeleteNewLines()
         owner.textView.attributeText()
       }
       .disposed(by: disposeBag)

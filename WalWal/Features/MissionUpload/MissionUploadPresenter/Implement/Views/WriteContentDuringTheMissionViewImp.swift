@@ -253,7 +253,7 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
       .map { owner, content in
         Reactor.Action.uploadButtonTapped(
           capturedImage: owner.capturedImage,
-          content: content
+          content: content.trimmingCharacters(in: .whitespacesAndNewlines)
         )
       }
       .bind(to: reactor.action)

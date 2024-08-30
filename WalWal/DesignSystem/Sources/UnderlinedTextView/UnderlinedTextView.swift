@@ -43,6 +43,42 @@ public class UnderlinedTextView: UITextView {
     fatalError("init(coder:) has not been implemented")
   }
   
+  /// 마지막 엔터 제거하고 키보드 내리기
+  public func endEditingWithDeleteNewLines() {
+    if let selectedRange = selectedTextRange,
+        let curText = text,
+        !curText.isEmpty {
+      let cursorPosition = offset(from: beginningOfDocument, to: selectedRange.start)
+      
+      // 현재 텍스트
+      var text = curText
+      
+      // 커서 위치 바로 앞의 문자 확인
+      let index = text.index(text.startIndex, offsetBy: cursorPosition - 1)
+      if text[index] == "\n" {
+        // 엔터가 입력된 경우, 해당 엔터 제거
+        text.remove(at: index)
+        
+        // attributedText를 유지하면서 텍스트 업데이트
+        let mutableAttributedString = NSMutableAttributedString(attributedString: attributedText)
+        mutableAttributedString.mutableString.deleteCharacters(
+          in: NSRange(
+            location: cursorPosition - 1,
+            length: 1
+          )
+        )
+        
+        attributedText = mutableAttributedString
+        
+        // 커서를 제거된 위치로 다시 설정
+        if let newPosition = position(from: beginningOfDocument, offset: cursorPosition - 1) {
+          selectedTextRange = textRange(from: newPosition, to: newPosition)
+        }
+        endEditing(true)
+      }
+    }
+  }
+  
   /// AttributedText 속성 설정 메서드
   public func attributeText() {
     let paragraphStyle = NSMutableParagraphStyle()
