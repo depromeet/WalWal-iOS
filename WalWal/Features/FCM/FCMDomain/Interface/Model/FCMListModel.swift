@@ -8,6 +8,7 @@
 
 import Foundation
 import FCMData
+import GlobalState
 
 public struct FCMListModel: Hashable {
   public let list: [FCMItemModel]
@@ -40,7 +41,16 @@ public struct FCMItemModel: Hashable {
     self.recordID = dto.recordID
     self.createdAt = dto.createdAt
   }
-  
+  public init(global: GlobalFCMListModel) {
+    self.notificationID = global.notificationID
+    self.type = FCMTypes(rawValue: global.type) ?? .boost
+    self.title = global.title
+    self.message = global.message
+    self.imageURL = global.imageURL
+    self.isRead = global.isRead
+    self.recordID = global.recordID
+    self.createdAt = global.createdAt
+  }
   public init(
     id: Int,
     type: FCMTypes,

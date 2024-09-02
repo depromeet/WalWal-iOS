@@ -23,6 +23,7 @@ public final class GlobalState {
   public private(set) var profileInfo = BehaviorRelay<GlobalProfileModel>(value: .init(memberId: 0, nickname: "", profileURL: "", raisePet: "DOG"))
   public private(set) var feedList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
   public private(set) var recordList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
+  public let fcmList = BehaviorRelay<[GlobalFCMListModel]>(value: [])
   
   /// 이미지 저장소 (캐시된 이미지를 저장하는 딕셔너리)
   public private(set) var imageStore: [String?: UIImage] = [:]
@@ -70,6 +71,15 @@ public final class GlobalState {
       .withUnretained(self)
       .flatMap { owner, feed -> Observable<Void> in
         return owner.preloadImages(globalState: .recodList(owner.profileInfo.value.memberId))
+      }
+      .subscribe()
+      .disposed(by: disposeBag)
+    
+    fcmList
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, data -> Observable<Void> in
+        return owner.preloadImages(globalState: .fcmList)
       }
       .subscribe()
       .disposed(by: disposeBag)
@@ -131,6 +141,15 @@ public final class GlobalState {
     recordList.accept(currentRecord)
   }
   
+  public func updateFCMList(newList: [GlobalFCMListModel]) {
+    var curList = fcmList.value
+    let newItems = newList.filter { item in
+      !curList.contains(where: { $0.notificationID == item.notificationID })
+    }
+    curList.append(contentsOf: newItems)
+    fcmList.accept(curList)
+  }
+  
   /// 기록 가져오기
   public func getRecords(forDate date: String) -> [GlobalFeedListModel] {
     return recordList.value.filter {  $0.createdDate == date  }
@@ -174,6 +193,11 @@ public final class GlobalState {
         return [missionDownload, profileDownload]
       }
       return Observable.concat(downloadTasks)
+    case .fcmList:
+      let tasks = self.fcmList.value.map { data in
+        return downloadAndCacheImage(for: data.imageURL)
+      }
+      return Observable.concat(tasks)
     }
   }
   
