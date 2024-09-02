@@ -9,6 +9,7 @@
 import UIKit
 import DesignSystem
 import ResourceKit
+import FCMDomain
 
 import Then
 import FlexLayout
@@ -36,7 +37,7 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   private let messageLabel = CustomLabel(font: FontKR.B1).then {
     $0.textColor = Colors.black.color
   }
-  private let dateLabel = CustomLabel(font: FontKR.Caption).then {
+  private let dateLabel = CustomLabel(font: FontEN.Caption).then {
     $0.textColor = Colors.gray500.color
   }
   
@@ -44,7 +45,8 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   
   override init(frame: CGRect) {
     super.init(frame: frame)
-    
+    configAttribute()
+    configLayout()
   }
   
   required init?(coder: NSCoder) {
@@ -60,15 +62,16 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
+    rootContainer.pin.all()
+    rootContainer.flex.layout()
     
+    iconImageView.layer.cornerRadius = iconImageView.frame.width/2
+    iconImageView.clipsToBounds = true
   }
   
   private func configAttribute() {
-    contentView.backgroundColor = Colors.gray150.color
+    contentView.backgroundColor = Colors.gray100.color
     contentView.addSubview(rootContainer)
-    [iconImageView, contentContainer].forEach {
-      rootContainer.addSubview($0)
-    }
   }
   
   private func configLayout() {
@@ -92,8 +95,10 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
         $0.addItem()
           .direction(.row)
           .justifyContent(.spaceBetween)
+          .width(100%)
           .define {
             $0.addItem(titleLabel)
+            $0.addItem()
             $0.addItem(dateLabel)
           }
         $0.addItem(messageLabel)
@@ -101,6 +106,21 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
       }
   }
   
+  // MARK: - Methods
+  
+  public func configureCell(items: FCMItemModel) {
+    let tintColor: UIColor = items.type == .mission ? Colors.walwalOrange.color : UIColor(hex: 0xFF6668)
+    let backgroundColor: UIColor = items.isRead ? Colors.gray150.color : Colors.gray100.color
+    
+    titleLabel.textColor = tintColor
+    titleLabel.text = items.title
+    messageLabel.text = items.message
+    dateLabel.text = items.createdAt
+    
+    contentView.backgroundColor = backgroundColor
+    
+    layoutIfNeeded()
+  }
   
   
 }

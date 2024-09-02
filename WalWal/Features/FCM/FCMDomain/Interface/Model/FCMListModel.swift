@@ -40,4 +40,25 @@ public struct FCMItemModel: Hashable {
     self.recordID = dto.recordID
     self.createdAt = dto.createdAt
   }
+  
+  public init(
+    id: Int,
+    type: FCMTypes,
+    title: String,
+    message: String,
+    imageURL: String?,
+    isRead: Bool,
+    recordID: Int,
+    createdAt: String
+  ) {
+    self.notificationID = id
+    self.type = type
+    self.title = title
+    self.message = message
+    self.imageURL = imageURL
+    self.isRead = isRead
+    self.recordID = recordID
+    self.createdAt = createdAt
+  }
+  
 }
