@@ -11,6 +11,8 @@ import MissionPresenter
 import MissionCoordinator
 import MissionDomain
 import RecordsDomain
+import FCMDomain
+
 import Utility
 import DesignSystem
 
@@ -30,6 +32,7 @@ public final class MissionReactorImp: MissionReactor {
   private let checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
   private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   private let startRecordUseCase: StartRecordUseCase
+  private let fcmListUseCase: FCMListUseCase
   
   private var lastUpdateDate: Date?
   private var timerDisposeBag = DisposeBag()
@@ -42,7 +45,8 @@ public final class MissionReactorImp: MissionReactor {
     checkRecordStatusUseCase: CheckRecordStatusUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
-    startRecordUseCase: StartRecordUseCase
+    startRecordUseCase: StartRecordUseCase,
+    fcmListUseCase: FCMListUseCase
   ) {
     self.coordinator = coordinator
     self.todayMissionUseCase = todayMissionUseCase
@@ -51,6 +55,7 @@ public final class MissionReactorImp: MissionReactor {
     self.checkRecordCalendarUseCase = checkRecordCalendarUseCase
     self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
     self.startRecordUseCase = startRecordUseCase
+    self.fcmListUseCase = fcmListUseCase
     self.initialState = State()
   }
   
@@ -134,6 +139,7 @@ public final class MissionReactorImp: MissionReactor {
   private func loadAllMissionData() -> Observable<Mutation> {
     lastUpdateDate = Date()
     return checkRecordCalendar()
+      .flatMap { _ in self.fetchFCMListData(cursor: nil, limit: 10) }
       .flatMap { _ in self.fetchMissionData()}
       .flatMap { [weak self] mission -> Observable<Mutation> in
         guard let owner = self else { return .empty() }
@@ -242,6 +248,24 @@ public final class MissionReactorImp: MissionReactor {
       return loadMidnightMissionData()
     }
     return .empty()
+  }
+  
+  // MARK: - 알림 리스트 미리 가져옴
+  
+  private func fetchFCMListData(cursor: String?, limit: Int) -> Observable<Void> {
+    return fcmListUseCase.execute(cursor: cursor, limit: limit)
+      .asObservable()
+      .flatMap { data -> Observable<Void> in
+        if let nextCursor = data.nextCursor {
+          return self.fetchFCMListData(cursor: nextCursor, limit: limit)
+        } else {
+          return .just(Void())
+        }
+      }
+      .catch { error in
+        print(error.localizedDescription)
+        return .just(Void())
+      }
   }
   
   // MARK: - MissionTimer

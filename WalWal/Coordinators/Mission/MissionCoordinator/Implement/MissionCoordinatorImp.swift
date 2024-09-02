@@ -18,6 +18,7 @@ import MissionUploadDependencyFactory
 import MissionDependencyFactory
 import RecordsDependencyFactory
 import ImageDependencyFactory
+import FCMDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -40,6 +41,7 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   public var missionUploadDependencyFactory: MissionUploadDependencyFactory
   public var recordDependencyFactory: RecordsDependencyFactory
   public var imageDependencyFactory: ImageDependencyFactory
+  private let fcmDependencyFactory: FCMDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
@@ -47,7 +49,8 @@ public final class MissionCoordinatorImp: MissionCoordinator {
     missionDependencyFactory: MissionDependencyFactory,
     missionUploadDependencyFactory: MissionUploadDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
+    fcmDependencyFactory: FCMDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -55,6 +58,7 @@ public final class MissionCoordinatorImp: MissionCoordinator {
     self.missionUploadDependencyFactory = missionUploadDependencyFactory
     self.recordDependencyFactory = recordDependencyFactory
     self.imageDependencyFactory = imageDependencyFactory
+    self.fcmDependencyFactory = fcmDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -88,7 +92,8 @@ public final class MissionCoordinatorImp: MissionCoordinator {
       checkRecordStatusUseCase: recordDependencyFactory.injectCheckRecordStatusUseCase(),
       checkRecordCalendarUseCase: recordDependencyFactory.injectCheckCalendarRecordsUseCase(),
       removeGlobalCalendarRecordsUseCase: recordDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase(),
-      startRecordUseCase: recordDependencyFactory.injectStartRecordUseCase()
+      startRecordUseCase: recordDependencyFactory.injectStartRecordUseCase(),
+      fcmListUseCase: fcmDependencyFactory.injectFCMListUseCase()
     )
     let missionVC = missionDependencyFactory.injectMissionViewController(reactor: reactor)
     self.baseViewController = missionVC

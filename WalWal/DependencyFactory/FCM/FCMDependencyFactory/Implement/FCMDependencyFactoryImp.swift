@@ -37,8 +37,14 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
     )
   }
   
-  public func injectFCMReactor<T>(coordinator: T) -> any FCMReactor where T : FCMCoordinator {
-    return FCMReactorImp(coordinator: coordinator)
+  public func injectFCMReactor<T>(
+    coordinator: T,
+    fcmListUseCase: FCMListUseCase
+  ) -> any FCMReactor where T : FCMCoordinator {
+    return FCMReactorImp(
+      coordinator: coordinator,
+      fcmListUseCase: fcmListUseCase
+    )
   }
   
   public func injectFCMViewController<T>(reactor: T) -> any FCMViewController where T : FCMReactor {
@@ -58,4 +64,7 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
     return FCMDeleteUseCaseImp(fcmRepository: injectFCMRepository())
   }
   
+  public func injectFCMListUseCase() -> FCMListUseCase {
+    return FCMListUseCaseImp(fcmRepository: injectFCMRepository())
+  }
 }

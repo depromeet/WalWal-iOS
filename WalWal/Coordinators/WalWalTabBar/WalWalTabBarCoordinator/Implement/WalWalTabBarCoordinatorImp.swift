@@ -182,7 +182,8 @@ extension WalWalTabBarCoordinatorImp {
       parentCoordinator: self,
       missionUploadDependencyFactory: missionUploadDependencyFactory,
       recordDependencyFactory: recordDependencyFactory,
-      imageDependencyFactory: imageDependencyFactory
+      imageDependencyFactory: imageDependencyFactory,
+      fcmDependencyFactory: fcmDependencyFactory
     )
     missionCoordinator.start()
     return missionCoordinator

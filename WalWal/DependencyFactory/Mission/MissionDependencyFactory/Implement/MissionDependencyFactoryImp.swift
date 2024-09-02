@@ -11,6 +11,7 @@ import MissionDependencyFactory
 import MissionUploadDependencyFactory
 import RecordsDependencyFactory
 import ImageDependencyFactory
+import FCMDependencyFactory
 
 import WalWalNetwork
 
@@ -26,6 +27,7 @@ import MissionPresenter
 import MissionPresenterImp
 
 import RecordsDomain
+import FCMDomain
 
 public class MissionDependencyFactoryImp: MissionDependencyFactory {
   
@@ -48,7 +50,8 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
     parentCoordinator: (any BaseCoordinator)?,
     missionUploadDependencyFactory: MissionUploadDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
+    fcmDependencyFactory: FCMDependencyFactory
   ) -> any MissionCoordinator {
     return MissionCoordinatorImp(
       navigationController: navigationController,
@@ -56,7 +59,8 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
       missionDependencyFactory: self,
       missionUploadDependencyFactory: missionUploadDependencyFactory,
       recordDependencyFactory: recordDependencyFactory,
-      imageDependencyFactory: imageDependencyFactory
+      imageDependencyFactory: imageDependencyFactory,
+      fcmDependencyFactory: fcmDependencyFactory
     )
   }
   
@@ -67,7 +71,8 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
     checkRecordStatusUseCase: CheckRecordStatusUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
-    startRecordUseCase: StartRecordUseCase
+    startRecordUseCase: StartRecordUseCase,
+    fcmListUseCase: FCMListUseCase
   ) -> any MissionReactor where T : MissionCoordinator {
     return MissionReactorImp(
       coordinator: coordinator,
@@ -76,7 +81,8 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
       checkRecordStatusUseCase: checkRecordStatusUseCase,
       checkRecordCalendarUseCase: checkRecordCalendarUseCase,
       removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
-      startRecordUseCase: startRecordUseCase
+      startRecordUseCase: startRecordUseCase,
+      fcmListUseCase: fcmListUseCase
     )
   }
   

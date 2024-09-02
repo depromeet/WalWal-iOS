@@ -13,11 +13,11 @@ import ReactorKit
 import RxSwift
 
 public enum FCMReactorAction {
-  
+  case loadFCMList
 }
 
 public enum FCMReactorMutation {
-  
+  case loadFCMList
 }
 
 public struct FCMReactorState {
@@ -31,6 +31,7 @@ public protocol FCMReactor: Reactor where Action == FCMReactorAction, Mutation =
   var coordinator: any FCMCoordinator { get }
   
   init(
-    coordinator: any FCMCoordinator
+    coordinator: any FCMCoordinator,
+    fcmListUseCase: FCMListUseCase
   )
 }

@@ -20,19 +20,31 @@ public final class FCMReactorImp: FCMReactor {
   
   public let initialState: State
   public let coordinator: any FCMCoordinator
+  private let fcmListUseCase: FCMListUseCase
   
   public init(
-    coordinator: any FCMCoordinator
+    coordinator: any FCMCoordinator,
+    fcmListUseCase: FCMListUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
+    self.fcmListUseCase = fcmListUseCase
   }
   
+  
   public func mutate(action: Action) -> Observable<Mutation> {
-    
+    switch action {
+    case .loadFCMList:
+      return .never()
+    }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
-    
+    var newState = state
+    switch mutation {
+    case .loadFCMList:
+      break
+    }
+    return newState
   }
 }
