@@ -60,10 +60,10 @@ public final class FCMCoordinatorImp: FCMCoordinator {
   }
   
   public func start() {
-    let fcmListUseCase = fcmDependencyFactory.injectFCMListUseCase()
+    let fetchFCMListUseCase = fcmDependencyFactory.injectFetchFCMListUseCase()
     let reactor = fcmDependencyFactory.injectFCMReactor(
       coordinator: self,
-      fcmListUseCase: fcmListUseCase
+      fetchFCMListUseCase: fetchFCMListUseCase
     )
     let fcmVC = fcmDependencyFactory.injectFCMViewController(reactor: reactor)
     self.baseViewController = fcmVC

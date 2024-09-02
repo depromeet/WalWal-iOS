@@ -17,13 +17,14 @@ public enum FCMReactorAction {
 }
 
 public enum FCMReactorMutation {
-  case loadFCMList
+  case loadFCMList(data: [FCMSectionModel])
 }
 
 public struct FCMReactorState {
   public init() {
   
   }
+  public var listData: [FCMSectionModel] = []
 }
 
 public protocol FCMReactor: Reactor where Action == FCMReactorAction, Mutation == FCMReactorMutation, State == FCMReactorState {
@@ -32,6 +33,6 @@ public protocol FCMReactor: Reactor where Action == FCMReactorAction, Mutation =
   
   init(
     coordinator: any FCMCoordinator,
-    fcmListUseCase: FCMListUseCase
+    fetchFCMListUseCase: FetchFCMListUseCase
   )
 }

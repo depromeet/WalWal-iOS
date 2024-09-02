@@ -7,3 +7,10 @@
 //
 
 import Foundation
+import GlobalState
+
+import RxSwift
+
+public protocol FetchFCMListUseCase {
+  func execute() -> Observable<[FCMItemModel]>
+}

@@ -50,32 +50,7 @@ public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMVie
     $0.register(FCMCollectionViewCell.self)
     $0.showsVerticalScrollIndicator = false
   }
-//  private let titleLabel = UILabel().then {
-//    $0.text = "앗.."
-//    $0.font = Fonts.LotteriaChab.Buster_Cute
-//    $0.textColor = Colors.black.color
-//  }
-//  private let subTitelLabel = UILabel().then {
-//    $0.text = "아직 알림이 없어요!"
-//    $0.font = Fonts.KR.H5.B
-//    $0.textColor = Colors.black.color
-//  }
-//  private let guideLabel = UILabel().then {
-//    $0.text = "조금만 기다리면 알림이 올 거예요."
-//    $0.numberOfLines = 2
-//    $0.textAlignment = .center
-//    $0.font = Fonts.KR.H7.M
-//    $0.textColor = Colors.black.color
-//  }
-//  private let actionButton = WalWalButton(type: .dark, title: "")
   
-  let items: [FCMSectionModel] = [
-    FCMSectionModel(section: 0, items: [
-      .init(id: 1, type: .mission, title: "11", message: "11", imageURL: nil, isRead: false, recordID: 1, createdAt: "2024.08.11"),
-      .init(id: 2, type: .boost, title: "22", message: "22", imageURL: nil, isRead: true, recordID: 2, createdAt: "2024.08.13"),
-      .init(id: 3, type: .boost, title: "33", message: "33", imageURL: nil, isRead: false, recordID: 3, createdAt: "2024.08.14")
-    ])
-  ]
   public init(
       reactor: R
   ) {
@@ -172,14 +147,12 @@ extension FCMViewControllerImp: View {
   }
   
   public func bindState(reactor: R) {
-    
+    reactor.state
+      .map { $0.listData }
+      .bind(to: collectionView.rx.items(dataSource: datasource))
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
-    
-    Observable.just(items)
-      .bind(to: collectionView.rx.items(dataSource: datasource))
-      .disposed(by: disposeBag)
-    
   }
 }

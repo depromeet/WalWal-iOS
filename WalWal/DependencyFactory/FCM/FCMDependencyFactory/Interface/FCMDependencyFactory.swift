@@ -22,11 +22,13 @@ public protocol FCMDependencyFactory {
   ) -> any FCMCoordinator
   func injectFCMReactor<T: FCMCoordinator>(
     coordinator: T,
-    fcmListUseCase: FCMListUseCase
+    fetchFCMListUseCase: FetchFCMListUseCase
   ) -> any FCMReactor
   func injectFCMViewController<T: FCMReactor>(reactor: T) -> any FCMViewController
   func injectFCMRepository() -> FCMRepository
   func injectFCMSaveUseCase() -> FCMSaveUseCase
   func injectFCMDeleteUseCase() -> FCMDeleteUseCase
   func injectFCMListUseCase() -> FCMListUseCase
+  func injectSaveFCMListGlobalStateUseCase() -> SaveFCMListGlobalStateUseCase
+  func injectFetchFCMListUseCase() -> FetchFCMListUseCase
 }
