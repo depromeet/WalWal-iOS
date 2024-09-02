@@ -13,8 +13,9 @@ final class WalWalBoostCenterLabel {
   
   private typealias Colors = ResourceKitAsset.Colors
   
-  private var centerLabels: [UILabel] = []
-  private var centerShadowLabels: [UILabel] = []
+  private var centerLabels: [UILabel] = [] /// 앞에 들어가는 글자 역할
+  private var centerBorderLabels: [UILabel] = [] /// outBorder 역할
+  private var centerShadowLabels: [UILabel] = [] /// 뒤에 들어가는 그림자 역할
   
   private let letterSpacing: CGFloat = -1.0 // 음수 값으로 글자 간격을 좁힘
   private let sideMargin: CGFloat = 20.0
@@ -50,25 +51,33 @@ final class WalWalBoostCenterLabel {
           continue
         }
         
-        let (label, shadowLabel) = createCharacterLabels(for: char, font: labelFont)
-        centerLabels.append(label)
+        let (centerLabel, borderLabel, shadowLabel) = createCharacterLabels(for: char, font: labelFont)
+        centerLabels.append(centerLabel)
+        centerBorderLabels.append(borderLabel)
         centerShadowLabels.append(shadowLabel)
         
-        label.center = CGPoint(x: startX + label.bounds.width / 2, y: startY)
-        shadowLabel.center = CGPoint(x: startX + shadowLabel.bounds.width / 2 + 4, y: startY + 4)
+        // 패딩을 고려하여 레이블의 중앙을 다시 계산
+        let padding: CGFloat = 8
+        let adjustedCenterX = startX + (centerLabel.bounds.width / 2) - padding
+        let adjustedCenterY = startY - padding
+        
+        centerLabel.center = CGPoint(x: adjustedCenterX, y: adjustedCenterY)
+        borderLabel.center = CGPoint(x: adjustedCenterX, y: adjustedCenterY)
+        shadowLabel.center = CGPoint(x: adjustedCenterX + 6.74, y: adjustedCenterY + 6.74)
         
         window.addSubview(shadowLabel)
-        window.addSubview(label)
+        window.addSubview(borderLabel)
+        window.addSubview(centerLabel)
         
         let delay = Double(lineIndex * lineText.count + charIndex) * 0.1
-        animateLabel(label, shadowLabel: shadowLabel, delay: delay) {
+        animateLabel(centerLabel: centerLabel, borderLabel: borderLabel, shadowLabel: shadowLabel, delay: delay) {
           self.completedAnimationsCount += 1
           if self.completedAnimationsCount == totalCharacters {
             completion?() // 모든 애니메이션이 완료되면 completion 호출
           }
         }
         
-        startX += label.bounds.width - characterOverlap
+        startX += centerLabel.bounds.width - characterOverlap
       }
       
       startY += (labelFont.lineHeight - 30)
@@ -79,9 +88,11 @@ final class WalWalBoostCenterLabel {
     let delayBetweenChars: TimeInterval = 0.1
     var completionCount = 0
     
-    for (index, (label, shadowLabel)) in zip(centerLabels, centerShadowLabels).enumerated() {
+    for (index, centerLabel) in centerLabels.enumerated() {
       let delay = Double(index) * delayBetweenChars
-      animateLabelDisappearance(label, shadowLabel: shadowLabel, delay: delay) {
+      let centerBorderLabel = centerBorderLabels[index]
+      let shadowLabel = centerShadowLabels[index]
+      animateLabelDisappearance(centerLabel: centerLabel, borderLabel: centerBorderLabel, shadowLabel: shadowLabel, delay: delay) {
         completionCount += 1
         if completionCount == self.centerLabels.count {
           self.clearExistingLabels()
@@ -120,21 +131,24 @@ final class WalWalBoostCenterLabel {
   
   private func calculateLineWidth(_ text: String, with font: UIFont, considering overlap: CGFloat) -> CGFloat {
     let attributes = [NSAttributedString.Key.font: font]
-    let width = (text as NSString).size(withAttributes: attributes).width
+    let width = (text as NSString).size(withAttributes: attributes).width + 8
     return width - (CGFloat(text.count - 1) * overlap)
   }
   
-  private func createCharacterLabels(for char: Character, font: UIFont) -> (UILabel, UILabel) {
+  private func createCharacterLabels(for char: Character, font: UIFont) -> (UILabel, UILabel, UILabel) {
     let label = createCharacterLabel(for: char, font: font)
+    let borderLabel = createBorderLabel(for: char, font: font)
     let shadowLabel = createShadowLabel(for: char, font: font)
-    return (label, shadowLabel)
+    return (label, borderLabel, shadowLabel)
   }
   
-  private func animateLabel(_ label: UILabel, shadowLabel: UILabel, delay: TimeInterval, completion: @escaping () -> Void) {
+  private func animateLabel(centerLabel: UILabel, borderLabel: UILabel, shadowLabel: UILabel, delay: TimeInterval, completion: @escaping () -> Void) {
     /// 초기 상태 설정
-    label.alpha = 1
+    centerLabel.alpha = 1
+    borderLabel.alpha = 1
     shadowLabel.alpha = 1
-    label.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
+    centerLabel.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
+    borderLabel.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
     shadowLabel.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
     
     /// 랜덤 시작 각도 (-15도에서 15도 사이)
@@ -144,18 +158,21 @@ final class WalWalBoostCenterLabel {
       
       /// 크기 애니메이션 (팝업 효과)
       UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
-        label.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: startAngle)
+        centerLabel.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: startAngle)
+        borderLabel.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: startAngle)
         shadowLabel.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: startAngle)
       }
       
       /// 크기 정상화 및 흔들림 애니메이션
       UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
-        label.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: 0)
+        centerLabel.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: 0)
+        borderLabel.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: 0)
         shadowLabel.transform = CGAffineTransform(scaleX: 1, y: 1).rotated(by: 0)
       }
     }, completion: { _ in
       // 흔들림 애니메이션 추가
-      self.addExpandAndWobbleAnimation(to: label)
+      self.addExpandAndWobbleAnimation(to: centerLabel)
+      self.addExpandAndWobbleAnimation(to: borderLabel)
       self.addExpandAndWobbleAnimation(to: shadowLabel)
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
         completion()
@@ -171,11 +188,13 @@ final class WalWalBoostCenterLabel {
     })
   }
   
-  private func animateLabelDisappearance(_ label: UILabel, shadowLabel: UILabel, delay: TimeInterval, completion: @escaping () -> Void) {
+  private func animateLabelDisappearance(centerLabel: UILabel, borderLabel: UILabel, shadowLabel: UILabel, delay: TimeInterval, completion: @escaping () -> Void) {
     /// 초기 상태 설정
-    label.alpha = 1
+    centerLabel.alpha = 1
+    borderLabel.alpha = 1
     shadowLabel.alpha = 1
-    label.transform = .identity
+    centerLabel.transform = .identity
+    borderLabel.transform = .identity
     shadowLabel.transform = .identity
     
     /// 랜덤 시작 각도 (-15도에서 15도 사이)
@@ -185,22 +204,27 @@ final class WalWalBoostCenterLabel {
       // 첫 번째 키프레임: 약간 커지면서 회전 시작
       UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.3) {
         let transform = CGAffineTransform(scaleX: 1.1, y: 1.1).rotated(by: startAngle / 2)
-        label.transform = transform
+        centerLabel.transform = transform
+        borderLabel.transform = transform
         shadowLabel.transform = transform
       }
       
       // 두 번째 키프레임: 작아지면서 완전히 회전하고 투명해짐
       UIView.addKeyframe(withRelativeStartTime: 0.3, relativeDuration: 0.7) {
         let transform = CGAffineTransform(scaleX: 0.1, y: 0.1).rotated(by: startAngle)
-        label.transform = transform
+        centerLabel.transform = transform
+        borderLabel.transform = transform
         shadowLabel.transform = transform
-        label.alpha = 0
+        centerLabel.alpha = 0
+        borderLabel.alpha = 0
         shadowLabel.alpha = 0
       }
     }) { _ in
-      label.transform = .identity
+      centerLabel.transform = .identity
+      borderLabel.transform = .identity
       shadowLabel.transform = .identity
-      label.alpha = 0
+      centerLabel.alpha = 0
+      borderLabel.alpha = 0
       shadowLabel.alpha = 0
       completion()
     }
@@ -212,9 +236,57 @@ final class WalWalBoostCenterLabel {
   
   func clearExistingLabels() {
     centerLabels.forEach { $0.removeFromSuperview() }
+    centerBorderLabels.forEach { $0.removeFromSuperview() }
     centerShadowLabels.forEach { $0.removeFromSuperview() }
     centerLabels.removeAll()
+    centerBorderLabels.removeAll()
     centerShadowLabels.removeAll()
+  }
+  
+  private func createCharacterLabel(for char: Character, font: UIFont) -> UILabel {
+    let label = UILabel()
+    let attrString = NSAttributedString(
+      string: String(char),
+      attributes: [
+        .font: font,
+        .foregroundColor: Colors.white.color,
+      ]
+    )
+    label.attributedText = attrString
+    label.textAlignment = .center
+    label.sizeToFit()
+    
+    // 패딩을 추가해 레이블의 크기를 넉넉하게 만들어 외곽선이 잘리지 않게 처리
+    let padding: CGFloat = 6 // 패딩 값은 상황에 따라 조정
+    label.frame = label.frame.insetBy(dx: -padding, dy: -padding)
+    
+    label.alpha = 0
+    label.clipsToBounds = false
+    return label
+  }
+  
+  private func createBorderLabel(for char: Character, font: UIFont) -> UILabel {
+    let borderLabel = UILabel()
+    let borderAttrString = NSAttributedString(
+      string: String(char),
+      attributes: [
+        .strokeColor: Colors.black.color,
+        .foregroundColor: Colors.black.color,
+        .strokeWidth: -18,
+        .font: font
+      ]
+    )
+    borderLabel.attributedText = borderAttrString
+    borderLabel.textAlignment = .center
+    borderLabel.sizeToFit()
+    
+    // 패딩을 추가해 레이블의 크기를 넉넉하게 만들어 외곽선이 잘리지 않게 처리
+    let padding: CGFloat = 6 // 패딩 값은 상황에 따라 조정
+    borderLabel.frame = borderLabel.frame.insetBy(dx: -padding, dy: -padding)
+    
+    borderLabel.alpha = 0
+    borderLabel.clipsToBounds = false
+    return borderLabel
   }
   
   private func createShadowLabel(for char: Character, font: UIFont) -> UILabel {
@@ -224,32 +296,21 @@ final class WalWalBoostCenterLabel {
       attributes: [
         .strokeColor: Colors.black.color,
         .foregroundColor: Colors.black.color,
-        .strokeWidth: -4,
+        .strokeWidth: -12,
         .font: font
       ]
     )
     shadowLabel.attributedText = shadowAttrString
     shadowLabel.textAlignment = .center
     shadowLabel.sizeToFit()
+    
+    // 마찬가지로 패딩을 추가해 그림자 부분이 잘리지 않도록 처리
+    let padding: CGFloat = 6
+    shadowLabel.frame = shadowLabel.frame.insetBy(dx: -padding, dy: -padding)
+    
     shadowLabel.alpha = 0
+    shadowLabel.clipsToBounds = false
     return shadowLabel
   }
   
-  private func createCharacterLabel(for char: Character, font: UIFont) -> UILabel {
-    let label = UILabel()
-    let attrString = NSAttributedString(
-      string: String(char),
-      attributes: [
-        .strokeColor: Colors.black.color,
-        .font: font,
-        .foregroundColor: Colors.white.color,
-        .strokeWidth: -6
-      ]
-    )
-    label.attributedText = attrString
-    label.textAlignment = .center
-    label.sizeToFit()
-    label.alpha = 0
-    return label
-  }
 }
