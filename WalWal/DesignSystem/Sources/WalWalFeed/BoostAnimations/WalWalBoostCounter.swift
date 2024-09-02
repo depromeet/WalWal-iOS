@@ -16,16 +16,27 @@ final class WalWalBoostCounter {
   
   private(set) var currentCount: Int = 0
   private var countTimer: Timer?
+  
   private var countLabel: UILabel?
+  private var borderLabel: UILabel?
   
   func setupCountLabel(in window: UIWindow, detailView: UIView) {
     currentCount = 0
     countLabel = UILabel()
-    updateCountLabelText()
     countLabel?.textAlignment = .center
     countLabel?.sizeToFit()
+    
+    borderLabel = UILabel()
+    borderLabel?.textAlignment = .center
+    borderLabel?.sizeToFit()
+    
+    updateCountLabelText()
+    
     countLabel?.center = CGPoint(x: detailView.center.x, y: detailView.center.y - 40)
     countLabel?.alpha = 1
+    borderLabel?.center = CGPoint(x: detailView.center.x, y: detailView.center.y - 40)
+    borderLabel?.alpha = 1
+    window.addSubview(borderLabel!)
     window.addSubview(countLabel!)
     updateCountLabelPosition(detailView: detailView)
   }
@@ -44,29 +55,51 @@ final class WalWalBoostCounter {
     countTimer?.invalidate()
     countTimer = nil
     countLabel?.removeFromSuperview()
+    borderLabel?.removeFromSuperview()
     countLabel = nil
+    borderLabel = nil
   }
   
   private func updateCountLabelText() {
     let attrString = NSAttributedString(
       string: "\(currentCount)",
       attributes: [
-        .strokeColor: Colors.black.color,
+        .font: Fonts.LotteriaChab.H1,
         .foregroundColor: Colors.white.color,
-        .strokeWidth: -8,
-        .font: Fonts.LotteriaChab.H1
       ]
     )
     countLabel?.attributedText = attrString
+    countLabel?.textAlignment = .center
     countLabel?.sizeToFit()
+    countLabel?.frame = countLabel?.frame.insetBy(dx: -6, dy: -6) ?? .zero
+    
+    let borderAttrString = NSAttributedString(
+      string: "\(currentCount)",
+      attributes: [
+        .strokeColor: Colors.black.color,
+        .foregroundColor: Colors.black.color,
+        .strokeWidth: -24,
+        .font:  Fonts.LotteriaChab.H1
+      ]
+    )
+    borderLabel?.attributedText = borderAttrString
+    borderLabel?.textAlignment = .center
+    borderLabel?.sizeToFit()
+    borderLabel?.frame = borderLabel?.frame.insetBy(dx: -6, dy: -6) ?? .zero
   }
   
   private func updateCountLabelPosition(detailView: UIView) {
     guard let countLabel = countLabel else { return }
+    guard let borderLabel = borderLabel else { return }
     
     let labelSize = countLabel.bounds.size
+    let borderLabelSize = borderLabel.bounds.size
     let detailViewCenter = detailView.center
     
+    borderLabel.center = CGPoint(
+      x: detailViewCenter.x,
+      y: detailViewCenter.y - 50 - borderLabelSize.height / 2
+    )
     countLabel.center = CGPoint(
       x: detailViewCenter.x,
       y: detailViewCenter.y - 50 - labelSize.height / 2
