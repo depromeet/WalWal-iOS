@@ -41,7 +41,10 @@ public final class FCMReactorImp: FCMReactor {
     case .loadFCMList:
       return fetchFCMListUseCase.execute()
         .flatMap { data -> Observable<Mutation> in
-          let section = [FCMSectionModel(section: 0, items: data)]
+          let section = [
+            FCMSectionModel(section: 0, items: data),
+            FCMSectionModel(section: 1, items: [])
+          ]
           return .just(.loadFCMList(data: section))
         }
     }

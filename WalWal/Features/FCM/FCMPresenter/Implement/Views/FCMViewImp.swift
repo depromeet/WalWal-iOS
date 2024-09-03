@@ -20,7 +20,10 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMViewController {
+public final class FCMViewControllerImp<R: FCMReactor>: 
+  UIViewController, 
+    FCMViewController,
+  UICollectionViewDelegateFlowLayout {
   
   private typealias Images = ResourceKitAsset.Images
   private typealias Colors = ResourceKitAsset.Colors
@@ -48,7 +51,12 @@ public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMVie
   ).then {
     $0.backgroundColor = Colors.gray100.color
     $0.register(FCMCollectionViewCell.self)
+//    $0.registerHeader(FCMCollectionViewHeader.self)
+    $0.register(FCMCollectionViewHeader.self,
+                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                withReuseIdentifier: FCMCollectionViewHeader.reuseIdentifier)
     $0.showsVerticalScrollIndicator = false
+    $0.delegate = self
   }
   
   public init(
@@ -111,6 +119,8 @@ public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMVie
       height: 74.adjustedHeight
     )
     layout.scrollDirection = .vertical
+    layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 64)
+        
     return layout
   }
   
@@ -128,6 +138,28 @@ public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMVie
       
       return cell
               
+    } configureSupplementaryView: { datasource, collectionView, kind, indexPath in
+      switch kind {
+      case UICollectionView.elementKindSectionHeader:
+        guard let header = collectionView.dequeueReusableSupplementaryView(
+          ofKind: kind,
+          withReuseIdentifier: FCMCollectionViewHeader.reuseIdentifier,
+          for: indexPath
+        ) as? FCMCollectionViewHeader else {
+          return UICollectionReusableView()
+        }
+        return header
+      default:
+        return UICollectionReusableView()
+      }
+    }
+  }
+  
+  public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    if section == 0 || fcmReactor.currentState.listData[1].items.isEmpty {
+      return CGSize.zero
+    } else {
+      return CGSize(width: collectionView.bounds.width, height: 64) 
     }
   }
 }
@@ -149,10 +181,14 @@ extension FCMViewControllerImp: View {
   public func bindState(reactor: R) {
     reactor.state
       .map { $0.listData }
+      .observe(on: MainScheduler.instance)
       .bind(to: collectionView.rx.items(dataSource: datasource))
       .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
+    
   }
+  
 }
+
