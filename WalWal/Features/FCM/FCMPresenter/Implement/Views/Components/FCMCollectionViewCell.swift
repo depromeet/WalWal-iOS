@@ -26,6 +26,9 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   private let rootContainer = UIView()
   private let contentContainer = UIView()
   
+  private let iconContainer = UIView().then {
+    $0.backgroundColor = Colors.gray150.color
+  }
   private let iconImageView = UIImageView().then {
     $0.backgroundColor = Colors.gray150.color
     $0.contentMode = .scaleAspectFill
@@ -63,9 +66,12 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    rootContainer.pin.all()
-    rootContainer.flex.layout()
+    rootContainer.pin
+      .all()
+    rootContainer.flex
+      .layout()
     
+    iconContainer.layer.cornerRadius = iconContainer.frame.width/2
     iconImageView.layer.cornerRadius = iconImageView.frame.width/2
     iconImageView.clipsToBounds = true
   }
@@ -82,7 +88,7 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
       .alignItems(.center)
       .marginHorizontal(20)
       .define {
-        $0.addItem(iconImageView)
+        $0.addItem(iconContainer)
           .size(56)
         $0.addItem(contentContainer)
           .grow(1)

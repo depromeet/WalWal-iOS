@@ -6,7 +6,7 @@
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import FCMData
 import GlobalState
 
@@ -30,6 +30,7 @@ public struct FCMItemModel: Hashable {
   public let isRead: Bool
   public let recordID: Int?
   public let createdAt: String
+  public var image: UIImage?
   
   public init(dto: FCMItemDTO) {
     self.notificationID = dto.notificationID
@@ -50,6 +51,7 @@ public struct FCMItemModel: Hashable {
     self.isRead = global.isRead
     self.recordID = global.recordID
     self.createdAt = global.createdAt
+    self.image = GlobalState.shared.imageStore[global.imageURL]
   }
   public init(
     id: Int,
