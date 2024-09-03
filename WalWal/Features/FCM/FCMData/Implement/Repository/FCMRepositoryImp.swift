@@ -36,7 +36,6 @@ public final class FCMRepositoryImp: FCMRepository {
     let query = FCMListQuery(cursor: cursor, limit: limit)
     let endpoint = FCMEndPoint<FCMListDTO>.list(query: query)
     return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
-      .debug()
       .compactMap { $0 }
       .asObservable()
       .asSingle()

@@ -10,6 +10,7 @@ import UIKit
 import DesignSystem
 import ResourceKit
 import FCMDomain
+import Utility
 
 import Then
 import FlexLayout
@@ -115,8 +116,10 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
     titleLabel.textColor = tintColor
     titleLabel.text = items.title
     messageLabel.text = items.message
-    dateLabel.text = items.createdAt
-    
+    dateLabel.text = items.createdAt.formattedRelativeDate(
+      format: .fullISO8601,
+      to: .yearMonthDayDots
+    )
     contentView.backgroundColor = backgroundColor
     
     layoutIfNeeded()
