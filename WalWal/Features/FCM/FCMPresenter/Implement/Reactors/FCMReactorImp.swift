@@ -23,16 +23,19 @@ public final class FCMReactorImp: FCMReactor {
   public let coordinator: any FCMCoordinator
   private let fetchFCMListUseCase: FetchFCMListUseCase
   private let fcmListUseCase: FCMListUseCase
+  private let readFCMItemUseCase: ReadFCMItemUseCase
   
   public init(
     coordinator: any FCMCoordinator,
     fetchFCMListUseCase: FetchFCMListUseCase,
-    fcmListUseCase: FCMListUseCase
+    fcmListUseCase: FCMListUseCase,
+    readFCMItemUseCase: ReadFCMItemUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
     self.fetchFCMListUseCase = fetchFCMListUseCase
     self.fcmListUseCase = fcmListUseCase
+    self.readFCMItemUseCase = readFCMItemUseCase
   }
   
   public func transform(action: Observable<Action>) -> Observable<Action> {
@@ -53,6 +56,13 @@ public final class FCMReactorImp: FCMReactor {
         fetchFCMListData(),
         .just(.stopRefreshControl)
       ])
+    case let .selectItem(item):
+      if item.isRead {
+        return .never()
+      } else {
+        return readFCMItem(id: item.notificationID)
+      }
+      
     }
   }
   
@@ -69,6 +79,14 @@ public final class FCMReactorImp: FCMReactor {
 }
 
 extension FCMReactorImp {
+  
+  private func readFCMItem(id: Int) -> Observable<Mutation> {
+    return readFCMItemUseCase.execute(id: id)
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        return .never()
+      }
+  }
   
   private func fetchFCMListData() -> Observable<Mutation> {
     /// 기존 데이터 날림

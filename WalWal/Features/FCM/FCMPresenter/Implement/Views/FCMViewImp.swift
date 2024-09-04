@@ -11,6 +11,7 @@ import UIKit
 import FCMPresenter
 import DesignSystem
 import ResourceKit
+import FCMDomain
 
 import Then
 import PinLayout
@@ -178,6 +179,11 @@ extension FCMViewControllerImp: View {
       .map { Reactor.Action.refreshList }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    collectionView.rx.modelSelected(FCMItemModel.self)
+      .map { Reactor.Action.selectItem(item: $0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -196,7 +202,15 @@ extension FCMViewControllerImp: View {
   }
   
   public func bindEvent() {
-    
+    collectionView.rx.itemSelected
+      .asDriver()
+      .drive(with: self) { owner, index in
+        guard let cell = owner.collectionView.cellForItem(at: index) as? FCMCollectionViewCell else {
+          return
+        }
+        cell.isRead = true
+      }
+      .disposed(by: disposeBag)
   }
   
 }

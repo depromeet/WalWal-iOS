@@ -6,6 +6,7 @@
 //  Created by 이지희
 //
 
+import Foundation
 import FCMDomain
 import FCMCoordinator
 
@@ -15,6 +16,7 @@ import RxSwift
 public enum FCMReactorAction {
   case loadFCMList
   case refreshList
+  case selectItem(item: FCMItemModel)
 }
 
 public enum FCMReactorMutation {
@@ -35,6 +37,7 @@ public protocol FCMReactor: Reactor where Action == FCMReactorAction, Mutation =
   init(
     coordinator: any FCMCoordinator,
     fetchFCMListUseCase: FetchFCMListUseCase,
-    fcmListUseCase: FCMListUseCase
+    fcmListUseCase: FCMListUseCase,
+    readFCMItemUseCase: ReadFCMItemUseCase
   )
 }

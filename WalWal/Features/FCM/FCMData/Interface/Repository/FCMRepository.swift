@@ -14,4 +14,5 @@ public protocol FCMRepository {
   func fcmTokenSave(token: String) -> Single<Void>
   func fcmTokenDelete() -> Single<Void>
   func fetchFCMList(cursor: String?, limit: Int) -> Single<FCMListDTO>
+  func readNotification(id: Int) -> Single<Void>
 }

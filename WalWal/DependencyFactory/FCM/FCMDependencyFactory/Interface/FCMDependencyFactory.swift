@@ -23,7 +23,8 @@ public protocol FCMDependencyFactory {
   func injectFCMReactor<T: FCMCoordinator>(
     coordinator: T,
     fetchFCMListUseCase: FetchFCMListUseCase,
-    fcmListUseCase: FCMListUseCase
+    fcmListUseCase: FCMListUseCase,
+    readFCMItemUseCase: ReadFCMItemUseCase
   ) -> any FCMReactor
   func injectFCMViewController<T: FCMReactor>(reactor: T) -> any FCMViewController
   func injectFCMRepository() -> FCMRepository
@@ -32,4 +33,5 @@ public protocol FCMDependencyFactory {
   func injectFCMListUseCase() -> FCMListUseCase
   func injectSaveFCMListGlobalStateUseCase() -> SaveFCMListGlobalStateUseCase
   func injectFetchFCMListUseCase() -> FetchFCMListUseCase
+  func injectReadFCMItemUseCase() -> ReadFCMItemUseCase
 }

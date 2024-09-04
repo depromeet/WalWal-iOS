@@ -17,6 +17,7 @@ enum FCMEndPoint<T>: APIEndpoint where T: Decodable {
   case saveToken(body: FCMTokenBody)
   case deleteToken
   case list(query: FCMListQuery)
+  case read(id: Int)
 }
 
 extension FCMEndPoint {
@@ -30,12 +31,14 @@ extension FCMEndPoint {
       return "/alarm/token"
     case .list:
       return "/alarm"
+    case let .read(notificationID):
+      return "/alarm/\(notificationID)/read"
     }
   }
   
   var method: HTTPMethod {
     switch self {
-    case .saveToken:
+    case .saveToken, .read:
       return .post
     case .deleteToken:
       return .delete
@@ -48,7 +51,7 @@ extension FCMEndPoint {
     switch self {
     case let .saveToken(body):
       return .requestWithbody(body)
-    case .deleteToken:
+    case .deleteToken, .read:
       return .requestPlain
     case let .list(query):
       return .requestQuery(query)
@@ -57,7 +60,7 @@ extension FCMEndPoint {
   
   var headerType: HTTPHeaderType {
     switch self {
-    case .saveToken, .deleteToken, .list:
+    case .saveToken, .deleteToken, .list, .read:
       if let accessToken = KeychainWrapper.shared.accessToken {
         return .authorization(accessToken)
       } else{

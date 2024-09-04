@@ -50,6 +50,14 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
     $0.textColor = Colors.gray500.color
   }
   
+  // MARK: - Properties
+  
+  var isRead: Bool = false {
+    didSet {
+      contentView.backgroundColor = self.isRead ? Colors.gray150.color : Colors.gray100.color
+    }
+  }
+  
   // MARK: - Initialize
   
   override init(frame: CGRect) {
@@ -153,12 +161,10 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
     
     iconImageView.image = image
     boostBadge.isHidden = items.type == .mission
-    
-    contentView.backgroundColor = backgroundColor
+    isRead = items.isRead
     
     layoutIfNeeded()
   }
-  
   
 }
 

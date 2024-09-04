@@ -40,4 +40,10 @@ public final class FCMRepositoryImp: FCMRepository {
       .asObservable()
       .asSingle()
   }
+  
+  public func readNotification(id: Int) -> Single<Void> {
+    let endpoint = FCMEndPoint<EmptyResponse>.read(id: id)
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
+      .map { _ in Void() }
+  }
 }
