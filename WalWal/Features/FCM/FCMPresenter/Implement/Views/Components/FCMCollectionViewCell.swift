@@ -17,6 +17,7 @@ import FlexLayout
 import PinLayout
 
 final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
+  private typealias Images = ResourceKitAsset.Images
   private typealias Colors = ResourceKitAsset.Colors
   private typealias FontKR = ResourceKitFontFamily.KR
   private typealias FontEN = ResourceKitFontFamily.EN
@@ -27,11 +28,15 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   private let contentContainer = UIView()
   
   private let iconContainer = UIView().then {
-    $0.backgroundColor = Colors.gray150.color
+    $0.backgroundColor = .clear
   }
   private let iconImageView = UIImageView().then {
     $0.backgroundColor = Colors.gray150.color
     $0.contentMode = .scaleAspectFill
+  }
+  private let boostBadge = UIImageView().then {
+    $0.image = Images.boostNoti.image
+    $0.backgroundColor = .clear
   }
   
   private let titleLabel = CustomLabel(font: FontKR.B2).then {
@@ -61,7 +66,11 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   
   override func prepareForReuse() {
     super.prepareForReuse()
-    
+    iconImageView.image = nil
+    boostBadge.isHidden = true
+    titleLabel.text = nil
+    messageLabel.text = nil
+    dateLabel.text = nil
   }
   
   override func layoutSubviews() {
@@ -71,7 +80,13 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
     rootContainer.flex
       .layout()
     
-    iconContainer.layer.cornerRadius = iconContainer.frame.width/2
+    boostBadge.pin
+      .bottomRight()
+      .size(20.adjusted)
+    iconImageView.pin
+      .topLeft()
+      .size(54.adjusted)
+    
     iconImageView.layer.cornerRadius = iconImageView.frame.width/2
     iconImageView.clipsToBounds = true
   }
@@ -79,6 +94,9 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   private func configAttribute() {
     contentView.backgroundColor = Colors.gray100.color
     contentView.addSubview(rootContainer)
+    [iconImageView, boostBadge].forEach {
+      iconContainer.addSubview($0)
+    }
   }
   
   private func configLayout() {
@@ -89,7 +107,7 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
       .marginHorizontal(20)
       .define {
         $0.addItem(iconContainer)
-          .size(56)
+          .size(56.adjusted)
         $0.addItem(contentContainer)
           .grow(1)
           .marginLeft(10)
@@ -111,6 +129,8 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
         $0.addItem(messageLabel)
           .marginTop(2)
       }
+    
+    
   }
   
   // MARK: - Methods
@@ -118,6 +138,7 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   public func configureCell(items: FCMItemModel) {
     let tintColor: UIColor = items.type == .mission ? Colors.walwalOrange.color : UIColor(hex: 0xFF6668)
     let backgroundColor: UIColor = items.isRead ? Colors.gray150.color : Colors.gray100.color
+    let image = items.image ?? Images.missionNoti.image
     
     titleLabel.textColor = tintColor
     titleLabel.text = items.title
@@ -126,6 +147,8 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
       format: .fullISO8601,
       to: .yearMonthDayDots
     )
+    iconImageView.image = image
+    boostBadge.isHidden = items.type == .mission
     contentView.backgroundColor = backgroundColor
     
     layoutIfNeeded()

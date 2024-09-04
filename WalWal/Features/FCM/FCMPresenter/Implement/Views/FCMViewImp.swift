@@ -159,7 +159,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
     if section == 0 || fcmReactor.currentState.listData[1].items.isEmpty {
       return CGSize.zero
     } else {
-      return CGSize(width: collectionView.bounds.width, height: 64) 
+      return CGSize(width: collectionView.bounds.width, height: 64)
     }
   }
 }
