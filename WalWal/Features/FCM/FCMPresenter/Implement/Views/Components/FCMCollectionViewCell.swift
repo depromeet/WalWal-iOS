@@ -130,7 +130,6 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
           .marginTop(2)
       }
     
-    
   }
   
   // MARK: - Methods
@@ -142,17 +141,60 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
     
     titleLabel.textColor = tintColor
     titleLabel.text = items.title
+    
     messageLabel.text = items.message
+    messageLabel.configAttributedText(color: tintColor)
+    
     dateLabel.text = items.createdAt.formattedRelativeDate(
       format: .fullISO8601,
       to: .yearMonthDayDots
     )
+    dateLabel.changeFont(to: FontKR.Caption)
+    
     iconImageView.image = image
     boostBadge.isHidden = items.type == .mission
+    
     contentView.backgroundColor = backgroundColor
     
     layoutIfNeeded()
   }
   
   
+}
+
+fileprivate extension UILabel {
+  func configAttributedText(color: UIColor) {
+    guard let fullText = self.text else { return }
+    
+    let patterns = ["\\d+시간", "\\d+개"]
+    let attributedString = NSMutableAttributedString(string: fullText)
+    for pattern in patterns {
+      if let regex = try? NSRegularExpression(pattern: pattern) {
+        let matches = regex.matches(in: fullText, range: NSRange(location: 0, length: fullText.count))
+        
+        for match in matches {
+          attributedString.addAttribute(.foregroundColor, value: color, range: match.range)
+        }
+      }
+    }
+    self.attributedText = attributedString
+  }
+  
+  func changeFont(to font: UIFont) {
+    guard let text = self.text else { return }
+    
+    let attributedString = NSMutableAttributedString(string: text)
+    
+    let pattern = "[가-힣]"
+    
+    if let regex = try? NSRegularExpression(pattern: pattern) {
+      let matches = regex.matches(in: text, range: NSRange(location: 0, length: text.count))
+      
+      for match in matches {
+        attributedString.addAttribute(.font, value: font, range: match.range)
+      }
+    }
+    
+    self.attributedText = attributedString
+  }
 }
