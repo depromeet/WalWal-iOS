@@ -39,11 +39,13 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
   
   public func injectFCMReactor<T>(
     coordinator: T,
-    fetchFCMListUseCase: FetchFCMListUseCase
+    fetchFCMListUseCase: FetchFCMListUseCase,
+    fcmListUseCase: FCMListUseCase
   ) -> any FCMReactor where T : FCMCoordinator {
     return FCMReactorImp(
       coordinator: coordinator,
-      fetchFCMListUseCase: fetchFCMListUseCase
+      fetchFCMListUseCase: fetchFCMListUseCase,
+      fcmListUseCase: fcmListUseCase
     )
   }
   

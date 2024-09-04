@@ -9,6 +9,7 @@
 import FCMDomain
 import FCMPresenter
 import FCMCoordinator
+import GlobalState
 
 import ReactorKit
 import RxSwift
@@ -21,14 +22,17 @@ public final class FCMReactorImp: FCMReactor {
   public let initialState: State
   public let coordinator: any FCMCoordinator
   private let fetchFCMListUseCase: FetchFCMListUseCase
+  private let fcmListUseCase: FCMListUseCase
   
   public init(
     coordinator: any FCMCoordinator,
-    fetchFCMListUseCase: FetchFCMListUseCase
+    fetchFCMListUseCase: FetchFCMListUseCase,
+    fcmListUseCase: FCMListUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
     self.fetchFCMListUseCase = fetchFCMListUseCase
+    self.fcmListUseCase = fcmListUseCase
   }
   
   public func transform(action: Observable<Action>) -> Observable<Action> {
@@ -44,6 +48,11 @@ public final class FCMReactorImp: FCMReactor {
         .flatMap { owner, data -> Observable<Mutation> in
           return .just(.loadFCMList(data: owner.separateDataByDate(data: data)))
         }
+    case .refreshList:
+      return .concat([
+        fetchFCMListData(),
+        .just(.stopRefreshControl)
+      ])
     }
   }
   
@@ -52,6 +61,8 @@ public final class FCMReactorImp: FCMReactor {
     switch mutation {
     case let .loadFCMList(data):
       newState.listData = data
+    case .stopRefreshControl:
+      newState.stopRefreshControl = false
     }
     return newState
   }
@@ -59,6 +70,33 @@ public final class FCMReactorImp: FCMReactor {
 
 extension FCMReactorImp {
   
+  private func fetchFCMListData() -> Observable<Mutation> {
+    /// 기존 데이터 날림
+    GlobalState.shared.fcmList.accept([])
+    
+    return refreshFCMListData(cursor: nil, limit: 10)
+      .withUnretained(self)
+      .flatMap { owner, _ in
+        owner.fetchFCMListUseCase.execute()
+      }
+      .flatMap { data -> Observable<Mutation> in
+        return .just(.loadFCMList(data: self.separateDataByDate(data: data)))
+      }
+    
+  }
+  
+  /// FCM List 재요청
+  private func refreshFCMListData(cursor: String?, limit: Int) -> Observable<Void> {
+    return fcmListUseCase.execute(cursor: cursor, limit: limit)
+      .asObservable()
+      .flatMap { data -> Observable<Void> in
+        if let nextCursor = data.nextCursor {
+          return self.refreshFCMListData(cursor: nextCursor, limit: limit)
+        } else {
+          return .just(Void())
+        }
+      }
+  }
   
   /// 데이터  이전알림 구분 메서드
   private func separateDataByDate(data: [FCMItemModel]) -> [FCMSectionModel] {

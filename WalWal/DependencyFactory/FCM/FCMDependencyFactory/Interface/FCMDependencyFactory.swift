@@ -22,7 +22,8 @@ public protocol FCMDependencyFactory {
   ) -> any FCMCoordinator
   func injectFCMReactor<T: FCMCoordinator>(
     coordinator: T,
-    fetchFCMListUseCase: FetchFCMListUseCase
+    fetchFCMListUseCase: FetchFCMListUseCase,
+    fcmListUseCase: FCMListUseCase
   ) -> any FCMReactor
   func injectFCMViewController<T: FCMReactor>(reactor: T) -> any FCMViewController
   func injectFCMRepository() -> FCMRepository

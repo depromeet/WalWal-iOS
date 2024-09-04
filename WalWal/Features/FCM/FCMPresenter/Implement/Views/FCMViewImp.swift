@@ -45,6 +45,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
     $0.backgroundColor = Colors.gray150.color
   }
   
+  private let walwalIndicator = WalWalRefreshControl(frame: .zero)
   private lazy var collectionView = UICollectionView(
     frame: .zero, 
     collectionViewLayout: collectionViewLayout()
@@ -54,6 +55,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
     $0.registerHeader(FCMCollectionViewHeader.self)
     $0.showsVerticalScrollIndicator = false
     $0.delegate = self
+    $0.refreshControl = walwalIndicator
   }
   
   public init(
@@ -172,7 +174,10 @@ extension FCMViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    
+    walwalIndicator.rx.controlEvent(.valueChanged)
+      .map { Reactor.Action.refreshList }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -180,6 +185,13 @@ extension FCMViewControllerImp: View {
       .map { $0.listData }
       .observe(on: MainScheduler.instance)
       .bind(to: collectionView.rx.items(dataSource: datasource))
+      .disposed(by: disposeBag)
+    
+    reactor.pulse(\.$stopRefreshControl)
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, _ in
+        owner.walwalIndicator.endRefreshing()
+      }
       .disposed(by: disposeBag)
   }
   
