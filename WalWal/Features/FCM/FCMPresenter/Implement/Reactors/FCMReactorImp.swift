@@ -41,9 +41,12 @@ public final class FCMReactorImp: FCMReactor {
     case .loadFCMList:
       return fetchFCMListUseCase.execute()
         .flatMap { data -> Observable<Mutation> in
+          var lastData = data
+          let today = lastData.filter { $0.createdAt.isWithin24Hours(format: .fullISO8601) }
+          lastData.removeAll { $0.createdAt.isWithin24Hours(format: .fullISO8601) }
           let section = [
-            FCMSectionModel(section: 0, items: data),
-            FCMSectionModel(section: 1, items: [])
+            FCMSectionModel(section: 0, items: today),
+            FCMSectionModel(section: 1, items: lastData)
           ]
           return .just(.loadFCMList(data: section))
         }

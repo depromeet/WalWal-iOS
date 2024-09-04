@@ -79,6 +79,26 @@ public extension String {
       return ""
     }
   }
+  
+  func isWithin24Hours(format: DateFormat) -> Bool {
+    // DateFormatter 생성
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = format.rawValue
+    dateFormatter.locale = Locale(identifier: "ko_KR")
+    dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+    
+    // 문자열을 Date 객체로 변환
+    guard let date = dateFormatter.date(from: self) else {
+      return false
+    }
+    
+    // 현재 시간과 비교
+    let currentDate = Date()
+    let timeInterval = currentDate.timeIntervalSince(date)
+    
+    // 24시간(86400초) 이내인지 확인
+    return timeInterval <= 86400
+  }
 }
 
 /// 날짜 변환 형식
