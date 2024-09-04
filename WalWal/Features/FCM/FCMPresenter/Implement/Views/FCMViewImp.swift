@@ -51,10 +51,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
   ).then {
     $0.backgroundColor = Colors.gray100.color
     $0.register(FCMCollectionViewCell.self)
-//    $0.registerHeader(FCMCollectionViewHeader.self)
-    $0.register(FCMCollectionViewHeader.self,
-                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                withReuseIdentifier: FCMCollectionViewHeader.reuseIdentifier)
+    $0.registerHeader(FCMCollectionViewHeader.self)
     $0.showsVerticalScrollIndicator = false
     $0.delegate = self
   }
@@ -119,7 +116,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
       height: 74.adjustedHeight
     )
     layout.scrollDirection = .vertical
-    layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 64)
+    layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 64.adjustedHeight)
         
     return layout
   }
@@ -159,7 +156,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
     if section == 0 || fcmReactor.currentState.listData[1].items.isEmpty {
       return CGSize.zero
     } else {
-      return CGSize(width: collectionView.bounds.width, height: 64)
+      return CGSize(width: collectionView.bounds.width, height: 64.adjustedHeight)
     }
   }
 }
