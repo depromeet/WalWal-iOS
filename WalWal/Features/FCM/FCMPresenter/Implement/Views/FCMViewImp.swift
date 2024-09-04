@@ -41,7 +41,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
   private let naviagationBar = WalWalNavigationBar(leftItems: [], title: "알림", rightItems: []).then {
     $0.backgroundColor = Colors.white.color
   }
-  private let seperator = UIView().then {
+  private let separator = UIView().then {
     $0.backgroundColor = Colors.gray150.color
   }
   
@@ -98,7 +98,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
     rootContainerView.flex
       .define {
         $0.addItem(naviagationBar)
-        $0.addItem(seperator)
+        $0.addItem(separator)
           .width(100%)
           .height(1)
         $0.addItem(collectionView)

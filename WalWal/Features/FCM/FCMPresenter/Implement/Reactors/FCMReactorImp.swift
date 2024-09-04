@@ -40,15 +40,9 @@ public final class FCMReactorImp: FCMReactor {
     switch action {
     case .loadFCMList:
       return fetchFCMListUseCase.execute()
-        .flatMap { data -> Observable<Mutation> in
-          var lastData = data
-          let today = lastData.filter { $0.createdAt.isWithin24Hours(format: .fullISO8601) }
-          lastData.removeAll { $0.createdAt.isWithin24Hours(format: .fullISO8601) }
-          let section = [
-            FCMSectionModel(section: 0, items: today),
-            FCMSectionModel(section: 1, items: lastData)
-          ]
-          return .just(.loadFCMList(data: section))
+        .withUnretained(self)
+        .flatMap { owner, data -> Observable<Mutation> in
+          return .just(.loadFCMList(data: owner.separateDataByDate(data: data)))
         }
     }
   }
@@ -60,5 +54,21 @@ public final class FCMReactorImp: FCMReactor {
       newState.listData = data
     }
     return newState
+  }
+}
+
+extension FCMReactorImp {
+  
+  
+  /// 데이터  이전알림 구분 메서드
+  private func separateDataByDate(data: [FCMItemModel]) -> [FCMSectionModel] {
+    var lastData = data
+    let today = lastData.filter { $0.createdAt.isWithin24Hours(format: .fullISO8601) }
+    lastData.removeAll { $0.createdAt.isWithin24Hours(format: .fullISO8601) }
+    let section = [
+      FCMSectionModel(section: 0, items: today),
+      FCMSectionModel(section: 1, items: lastData)
+    ]
+    return section
   }
 }
