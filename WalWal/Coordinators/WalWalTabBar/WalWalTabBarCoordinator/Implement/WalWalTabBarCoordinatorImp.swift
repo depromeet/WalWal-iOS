@@ -25,6 +25,7 @@ import WalWalTabBarCoordinator
 import MissionCoordinator
 import FeedCoordinator
 import MyPageCoordinator
+import FCMCoordinator
 
 import RxSwift
 import RxCocoa
@@ -120,6 +121,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
       handleMissionEvent(.requireParentAction(missionEvent))
     } else if let feedEvent = event as? FeedCoordinatorAction {
       handleFeedEvent(.requireParentAction(feedEvent))
+    } else if let fcmEvent = event as? FCMCoordinatorAction {
+      handleFCMEvent(.requireParentAction(fcmEvent))
     }
   }
   
@@ -165,6 +168,18 @@ extension WalWalTabBarCoordinatorImp {
       switch action {
       case .startProfile(let id, let nickname):
         startOtherProfile(memberId: id, nickName: nickname)
+      }
+    }
+  }
+  
+  fileprivate func handleFCMEvent(_ event: CoordinatorEvent<FCMCoordinatorAction>) {
+    switch event {
+    case .finished:
+      childCoordinator = nil
+    case .requireParentAction(let action):
+      switch action {
+      case .startMission:
+        self.forceMoveTab.accept(.startMission)
       }
     }
   }

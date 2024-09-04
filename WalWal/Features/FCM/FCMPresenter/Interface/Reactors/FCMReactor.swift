@@ -17,11 +17,15 @@ public enum FCMReactorAction {
   case loadFCMList
   case refreshList
   case selectItem(item: FCMItemModel)
+  case updateItem(index: IndexPath)
 }
 
 public enum FCMReactorMutation {
   case loadFCMList(data: [FCMSectionModel])
   case stopRefreshControl
+  case moveMission
+  case moveFeed(recordId: Int?)
+  case updateItem(index: IndexPath)
 }
 
 public struct FCMReactorState {

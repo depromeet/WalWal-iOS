@@ -175,13 +175,21 @@ extension FCMViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
+    let modelSelected = collectionView.rx.modelSelected(FCMItemModel.self)
+    
     walwalIndicator.rx.controlEvent(.valueChanged)
       .map { Reactor.Action.refreshList }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    collectionView.rx.modelSelected(FCMItemModel.self)
+    modelSelected
       .map { Reactor.Action.selectItem(item: $0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    Observable.zip(modelSelected, collectionView.rx.itemSelected)
+      .filter { !$0.0.isRead }
+      .map { Reactor.Action.updateItem(index: $0.1) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
@@ -202,15 +210,7 @@ extension FCMViewControllerImp: View {
   }
   
   public func bindEvent() {
-    collectionView.rx.itemSelected
-      .asDriver()
-      .drive(with: self) { owner, index in
-        guard let cell = owner.collectionView.cellForItem(at: index) as? FCMCollectionViewCell else {
-          return
-        }
-        cell.isRead = true
-      }
-      .disposed(by: disposeBag)
+    
   }
   
 }

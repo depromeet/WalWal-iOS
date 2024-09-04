@@ -57,12 +57,12 @@ public final class FCMReactorImp: FCMReactor {
         .just(.stopRefreshControl)
       ])
     case let .selectItem(item):
-      if item.isRead {
-        return .never()
-      } else {
-        return readFCMItem(id: item.notificationID)
-      }
-      
+      return readFCMItem(item: item)
+        .flatMap {
+          self.moveOtherTab(type: item.type, recordId: item.recordID)
+        }
+    case let .updateItem(index):
+      return .just(.updateItem(index: index))
     }
   }
   
@@ -73,6 +73,12 @@ public final class FCMReactorImp: FCMReactor {
       newState.listData = data
     case .stopRefreshControl:
       newState.stopRefreshControl = false
+    case .moveMission:
+      coordinator.startMission()
+    case let .moveFeed(recordId):
+      print(recordId ?? "recordId 없음")
+    case let .updateItem(index):
+      newState.listData[index.section].items[index.row].isRead = true
     }
     return newState
   }
@@ -80,13 +86,30 @@ public final class FCMReactorImp: FCMReactor {
 
 extension FCMReactorImp {
   
-  private func readFCMItem(id: Int) -> Observable<Mutation> {
-    return readFCMItemUseCase.execute(id: id)
+  /// 알림 탭 시 화면 이동 요청
+  private func moveOtherTab(type: FCMTypes, recordId: Int?) -> Observable<Mutation> {
+    if type == .mission {
+      return  .just(.moveMission)
+    } else {
+      return .just(.moveFeed(recordId: recordId))
+    }
+  }
+  
+  /// 알림 읽음 처리
+  private func readFCMItem(item: FCMItemModel) -> Observable<Void> {
+    guard !item.isRead else { return .just(Void()) }
+    return readFCMItemUseCase.execute(id: item.notificationID)
       .asObservable()
-      .flatMap { _ -> Observable<Mutation> in
-        return .never()
+      .withUnretained(self)
+      .flatMap { owner, _ -> Observable<Void> in
+        return .just(Void())
+      }
+      .catch { _ in
+        print("읽음 처리 실패")
+        return .just(Void())
       }
   }
+  
   
   private func fetchFCMListData() -> Observable<Mutation> {
     /// 기존 데이터 날림

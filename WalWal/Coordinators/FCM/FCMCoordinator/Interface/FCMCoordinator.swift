@@ -10,7 +10,7 @@ import UIKit
 import BaseCoordinator
 
 public enum FCMCoordinatorAction: ParentAction {
-  
+  case startMission
 }
 
 public enum FCMCoordinatorFlow: CoordinatorFlow {
@@ -18,5 +18,5 @@ public enum FCMCoordinatorFlow: CoordinatorFlow {
 }
 
 public protocol FCMCoordinator: BaseCoordinator {
-
+  func startMission()
 }

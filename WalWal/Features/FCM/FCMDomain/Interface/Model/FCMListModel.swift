@@ -27,7 +27,7 @@ public struct FCMItemModel: Hashable {
   public let title: String
   public let message: String
   public let imageURL: String?
-  public let isRead: Bool
+  public var isRead: Bool
   public let recordID: Int?
   public let createdAt: String
   public var image: UIImage?
