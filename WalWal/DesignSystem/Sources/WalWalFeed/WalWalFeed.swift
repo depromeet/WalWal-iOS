@@ -30,7 +30,7 @@ public final class WalWalFeed: UIView {
     let flowLayout = UICollectionViewFlowLayout()
     
     flowLayout.sectionInset = .init(top: 20.adjusted, left: 0, bottom: 20.adjusted, right: 0)
-    flowLayout.minimumLineSpacing = 14.adjusted
+    flowLayout.minimumLineSpacing = 13.adjusted 
     flowLayout.headerReferenceSize = .init(width: 0, height: headerHeight)
     
     $0.collectionViewLayout = flowLayout
@@ -96,7 +96,7 @@ public final class WalWalFeed: UIView {
     isFeed: Bool = true
   ) {
     self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
-    self.headerHeight = isFeed ? 60.adjusted : 0
+    self.headerHeight = isFeed ? 70.adjusted : 0
     super.init(frame: .zero)
     
     self.collectionView.backgroundColor = isFeed ? Colors.gray150.color : Colors.gray100.color

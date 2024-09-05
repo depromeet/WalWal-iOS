@@ -241,7 +241,8 @@ public final class WalWalFeedCellView: UIView {
           .marginHorizontal(16.adjusted)
           .marginTop(14.adjusted)
         $0.addItem(boostLabelView)
-          .marginTop(8.adjusted)
+          .height(16.adjusted)
+          .marginTop(9.adjusted)
           .marginHorizontal(16.adjusted)
           .marginBottom(20.adjusted)
       }
