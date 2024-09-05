@@ -33,6 +33,7 @@ public final class MissionReactorImp: MissionReactor {
   private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   private let startRecordUseCase: StartRecordUseCase
   private let fcmListUseCase: FCMListUseCase
+  private let removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   
   private var lastUpdateDate: Date?
   private var timerDisposeBag = DisposeBag()
@@ -46,7 +47,8 @@ public final class MissionReactorImp: MissionReactor {
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     startRecordUseCase: StartRecordUseCase,
-    fcmListUseCase: FCMListUseCase
+    fcmListUseCase: FCMListUseCase,
+    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   ) {
     self.coordinator = coordinator
     self.todayMissionUseCase = todayMissionUseCase
@@ -56,6 +58,7 @@ public final class MissionReactorImp: MissionReactor {
     self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
     self.startRecordUseCase = startRecordUseCase
     self.fcmListUseCase = fcmListUseCase
+    self.removeGlobalFCMListUseCase = removeGlobalFCMListUseCase
     self.initialState = State()
   }
   
@@ -139,7 +142,7 @@ public final class MissionReactorImp: MissionReactor {
   private func loadAllMissionData() -> Observable<Mutation> {
     lastUpdateDate = Date()
     return checkRecordCalendar()
-      .flatMap { _ in self.fetchFCMListData(cursor: nil, limit: 10) }
+      .flatMap { _ in self.checkFCMListData() }
       .flatMap { _ in self.fetchMissionData()}
       .flatMap { [weak self] mission -> Observable<Mutation> in
         guard let owner = self else { return .empty() }
@@ -251,6 +254,14 @@ public final class MissionReactorImp: MissionReactor {
   }
   
   // MARK: - 알림 리스트 미리 가져옴
+  
+  private func checkFCMListData() -> Observable<Void> {
+    return removeGlobalFCMListUseCase.execute()
+      .asObservable()
+      .flatMap {
+        self.fetchFCMListData(cursor: nil, limit: 10)
+      }
+  }
   
   private func fetchFCMListData(cursor: String?, limit: Int) -> Observable<Void> {
     return fcmListUseCase.execute(cursor: cursor, limit: limit)

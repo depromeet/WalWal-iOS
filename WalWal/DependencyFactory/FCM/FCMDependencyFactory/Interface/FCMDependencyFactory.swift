@@ -34,4 +34,5 @@ public protocol FCMDependencyFactory {
   func injectSaveFCMListGlobalStateUseCase() -> SaveFCMListGlobalStateUseCase
   func injectFetchFCMListUseCase() -> FetchFCMListUseCase
   func injectReadFCMItemUseCase() -> ReadFCMItemUseCase
+  func injectGlobalRemoveFCMListUseCase() -> RemoveGlobalFCMListUseCase
 }

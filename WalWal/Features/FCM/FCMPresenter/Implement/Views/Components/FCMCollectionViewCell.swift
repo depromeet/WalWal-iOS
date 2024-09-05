@@ -162,6 +162,7 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
     iconImageView.image = image
     boostBadge.isHidden = items.type == .mission
     isRead = items.isRead
+    titleLabel.flex.markDirty()
     dateLabel.flex.markDirty()
     
     layoutIfNeeded()

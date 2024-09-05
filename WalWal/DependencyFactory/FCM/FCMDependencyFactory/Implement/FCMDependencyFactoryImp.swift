@@ -86,4 +86,8 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
   public func injectReadFCMItemUseCase() -> ReadFCMItemUseCase {
     return ReadFCMItemUseCaseImp(fcmRepository: injectFCMRepository())
   }
+  
+  public func injectGlobalRemoveFCMListUseCase() -> RemoveGlobalFCMListUseCase {
+    return RemoveGlobalFCMListUseCaseImp()
+  }
 }

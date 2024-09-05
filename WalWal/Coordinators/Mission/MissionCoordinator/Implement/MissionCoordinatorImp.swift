@@ -83,17 +83,25 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   }
   
   public func start() {
-    /// 이런 Reactor랑 ViewController가 있다 치고~
-    /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
+    let todayMissionUseCase = missionDependencyFactory.injectTodayMissionUseCase()
+    let checkCompletedTotalRecordsUseCase = recordDependencyFactory.injectCheckCompletedTotalRecordsUseCase()
+    let checkRecordStatusUseCase = recordDependencyFactory.injectCheckRecordStatusUseCase()
+    let checkRecordCalendarUseCase = recordDependencyFactory.injectCheckCalendarRecordsUseCase()
+    let removeGlobalCalendarRecordsUseCase = recordDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase()
+    let startRecordUseCase = recordDependencyFactory.injectStartRecordUseCase()
+    let fcmListUseCase = fcmDependencyFactory.injectFCMListUseCase()
+    let removeGlobalFCMListUseCase = fcmDependencyFactory.injectGlobalRemoveFCMListUseCase()
+    
     let reactor = missionDependencyFactory.injectMissionReactor(
       coordinator: self,
-      todayMissionUseCase: missionDependencyFactory.injectTodayMissionUseCase(),
-      checkCompletedTotalRecordsUseCase: recordDependencyFactory.injectCheckCompletedTotalRecordsUseCase(),
-      checkRecordStatusUseCase: recordDependencyFactory.injectCheckRecordStatusUseCase(),
-      checkRecordCalendarUseCase: recordDependencyFactory.injectCheckCalendarRecordsUseCase(),
-      removeGlobalCalendarRecordsUseCase: recordDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase(),
-      startRecordUseCase: recordDependencyFactory.injectStartRecordUseCase(),
-      fcmListUseCase: fcmDependencyFactory.injectFCMListUseCase()
+      todayMissionUseCase: todayMissionUseCase,
+      checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
+      checkRecordStatusUseCase: checkRecordStatusUseCase,
+      checkRecordCalendarUseCase: checkRecordCalendarUseCase,
+      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
+      startRecordUseCase: startRecordUseCase,
+      fcmListUseCase: fcmListUseCase,
+      removeGlobalFCMListUseCase: removeGlobalFCMListUseCase
     )
     let missionVC = missionDependencyFactory.injectMissionViewController(reactor: reactor)
     self.baseViewController = missionVC

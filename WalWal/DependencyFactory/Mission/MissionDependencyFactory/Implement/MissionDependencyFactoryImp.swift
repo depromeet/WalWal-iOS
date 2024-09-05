@@ -72,7 +72,8 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     startRecordUseCase: StartRecordUseCase,
-    fcmListUseCase: FCMListUseCase
+    fcmListUseCase: FCMListUseCase,
+    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   ) -> any MissionReactor where T : MissionCoordinator {
     return MissionReactorImp(
       coordinator: coordinator,
@@ -82,7 +83,8 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
       checkRecordCalendarUseCase: checkRecordCalendarUseCase,
       removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
       startRecordUseCase: startRecordUseCase,
-      fcmListUseCase: fcmListUseCase
+      fcmListUseCase: fcmListUseCase,
+      removeGlobalFCMListUseCase: removeGlobalFCMListUseCase
     )
   }
   
