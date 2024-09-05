@@ -28,14 +28,16 @@ public extension String {
   
   /// 주어진 폰트와 너비에 맞춰 텍스트가 몇 줄에 표시될지 계산하는 메서드
   func lineNumber(forWidth width: CGFloat, font: UIFont) -> Int {
+    let sanitizedText = self.replacingOccurrences(of: "\n", with: " ")
+    
     let maxSize = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
-    let textRect = self.boundingRect(with: maxSize,
-                                     options: [.usesLineFragmentOrigin, .usesFontLeading],
-                                     attributes: [.font: font],
-                                     context: nil)
+    let textRect = sanitizedText.boundingRect(with: maxSize,
+                                              options: [.usesLineFragmentOrigin, .usesFontLeading],
+                                              attributes: [.font: font],
+                                              context: nil)
+    
     let lineHeight = font.lineHeight
     let numberOfLines = Int(ceil(textRect.height / lineHeight))
-    
     return numberOfLines
   }
 }
