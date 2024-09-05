@@ -31,7 +31,7 @@ final class WalWalBoostGenerator {
   private var currentBlackOverlayView: UIView?
   private var currentIndexPath: IndexPath?
   
-  private let walwalEmitter: WalWalEmitterLayer
+  private var walwalEmitter: WalWalEmitterLayer
   private let walwalBoostBorder: WalWalBoostBorder
   private let walwalBoostCenterLabel: WalWalBoostCenterLabel
   private let walwalBoostCounter: WalWalBoostCounter
@@ -212,18 +212,24 @@ extension WalWalBoostGenerator {
     }
   }
   
-  private func setupBoostAnimationComponents(in detailView: UIView, window: UIWindow) {
-    walwalBoostBorder.addBorderLayer(to: detailView)
-    walwalBoostBorder.startBorderAnimation()
-    
+  private func showFootLottie(in detailView: UIView, window: UIWindow, mode: AnimationAsset) {
     let centerLabelLottieView: LottieAnimationView = {
-      let animationView = LottieAnimationView(animation: AnimationAsset.cute.animation)
+      let animationView = LottieAnimationView(animation: mode.animation)
       animationView.loopMode = .playOnce
+      animationView.contentMode = .scaleAspectFill
       return animationView
     }()
     
-    centerLabelLottieView.center = detailView.center
+//    centerLabelLottieView.center = CGPoint(x: detailView.center.x, y: detailView.center.y + 20.adjusted)
     window.addSubview(centerLabelLottieView)
+    
+    centerLabelLottieView.pin
+      .center()
+      .top(210.adjusted)
+      .marginHorizontal(50.adjusted)
+      .height(205.adjusted)
+    
+    centerLabelLottieView.layoutIfNeeded()
     
     centerLabelLottieView.play { completed in
       if completed {
@@ -232,6 +238,13 @@ extension WalWalBoostGenerator {
         centerLabelLottieView.removeFromSuperview()
       }
     }
+  }
+  
+  private func setupBoostAnimationComponents(in detailView: UIView, window: UIWindow) {
+    walwalBoostBorder.addBorderLayer(to: detailView)
+    walwalBoostBorder.startBorderAnimation()
+    
+    showFootLottie(in: detailView, window: window, mode: AnimationAsset.cute)
     
     walwalBoostCounter.setupCountLabel(in: window, detailView: detailView)
     walwalBoostCounter.startCountTimer(
@@ -251,7 +264,7 @@ extension WalWalBoostGenerator {
       positionRatio: CGPoint(x: 0.5, y: 0.5),
       sizeRatio: CGSize(width: 0.5, height: 0.5)
     )
-    walwalEmitter.startEmitting(rate: 16)
+    walwalEmitter.startEmitting()
     detailView.layer.addSublayer(walwalEmitter)
   }
   
@@ -282,59 +295,16 @@ extension WalWalBoostGenerator {
     window: UIWindow
   ) {
     feedbackGenerator.impactOccurred()
-    
-    // 기본 방출량
-    let normalRate: Float = 16
-    
-    // 순간적으로 방출량을 2배로 늘리는 메서드
-    func temporarilyIncreaseRate(_ rate: Float, duration: TimeInterval) {
-      walwalEmitter.startEmitting(rate: rate)
-      DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
-        self?.walwalEmitter.startEmitting(rate: normalRate)  // 원래 방출량으로 돌아감
-      }
-    }
-    
     switch count {
-    case 1:
-      // 1개일 때 방출량 잠깐 2배로 늘림
-      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
-      
     case 100:
       walwalBoostBorder.startBorderAnimation(isRainbow: true)
-      walwalBoostCenterLabel.updateCenterLabels(
-        with: WalWalBurstString.goodText,
-        in: detailView,
-        window: window
-      ) { [weak self] in
-        guard let self = self else { return }
-        self.walwalBoostCenterLabel.disappearLabels()
-      }
-      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
-      
+      showFootLottie(in: detailView, window: window, mode: AnimationAsset.soCute)
     case 250:
-      walwalBoostCenterLabel.updateCenterLabels(
-        with: WalWalBurstString.greatText,
-        in: detailView,
-        window: window
-      ) { [weak self] in
-        guard let self = self else { return }
-        self.walwalBoostCenterLabel.disappearLabels()
-      }
-      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
-      
+      showFootLottie(in: detailView, window: window, mode: AnimationAsset.soSoCute)
     case 500:
-      walwalBoostCenterLabel.updateCenterLabels(
-        with: WalWalBurstString.wonderfulText,
-        in: detailView,
-        window: window
-      ) { [weak self] in
-        guard let self = self else { return }
-        self.walwalBoostCenterLabel.disappearLabels()
-      }
-      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
-      
+      showFootLottie(in: detailView, window: window, mode: AnimationAsset.soSoLove)
     default:
-      walwalEmitter.startEmitting(rate: normalRate)  // 기본 방출량 유지
+      walwalEmitter.startEmitting()  // 기본 방출량 유지
     }
   }
 }

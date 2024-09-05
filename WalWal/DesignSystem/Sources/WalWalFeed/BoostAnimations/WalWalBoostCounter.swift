@@ -32,9 +32,9 @@ final class WalWalBoostCounter {
     
     updateCountLabelText()
     
-    countLabel?.center = CGPoint(x: detailView.center.x, y: detailView.center.y - 40)
+    countLabel?.center = CGPoint(x: detailView.center.x, y: detailView.center.y - 40.adjusted)
     countLabel?.alpha = 1
-    borderLabel?.center = CGPoint(x: detailView.center.x, y: detailView.center.y - 40)
+    borderLabel?.center = CGPoint(x: detailView.center.x, y: detailView.center.y - 40.adjusted)
     borderLabel?.alpha = 1
     window.addSubview(borderLabel!)
     window.addSubview(countLabel!)
@@ -98,11 +98,11 @@ final class WalWalBoostCounter {
     
     borderLabel.center = CGPoint(
       x: detailViewCenter.x,
-      y: detailViewCenter.y - 50 - borderLabelSize.height / 2
+      y: detailViewCenter.y - 50.adjusted - borderLabelSize.height / 2
     )
     countLabel.center = CGPoint(
       x: detailViewCenter.x,
-      y: detailViewCenter.y - 50 - labelSize.height / 2
+      y: detailViewCenter.y - 50.adjusted - labelSize.height / 2
     )
   }
 }
