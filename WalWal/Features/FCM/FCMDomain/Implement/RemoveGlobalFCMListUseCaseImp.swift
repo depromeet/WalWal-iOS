@@ -18,7 +18,7 @@ public final class RemoveGlobalFCMListUseCaseImp: RemoveGlobalFCMListUseCase {
   
   public func execute() -> Single<Void> {
     return Single.create { observable in
-      GlobalState.shared.fcmList.accept([])
+      GlobalState.shared.removeRecords()
       observable(.success(()))
       return  Disposables.create()
     }

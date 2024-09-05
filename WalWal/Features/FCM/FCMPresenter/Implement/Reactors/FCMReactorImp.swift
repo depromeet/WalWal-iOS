@@ -25,13 +25,15 @@ public final class FCMReactorImp: FCMReactor {
   private let fcmListUseCase: FCMListUseCase
   private let readFCMItemUseCase: ReadFCMItemUseCase
   private let saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase
+  private let removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   
   public init(
     coordinator: any FCMCoordinator,
     fetchFCMListUseCase: FetchFCMListUseCase,
     fcmListUseCase: FCMListUseCase,
     readFCMItemUseCase: ReadFCMItemUseCase,
-    saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase
+    saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase,
+    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
@@ -39,6 +41,7 @@ public final class FCMReactorImp: FCMReactor {
     self.fcmListUseCase = fcmListUseCase
     self.readFCMItemUseCase = readFCMItemUseCase
     self.saveFeedRecordIDUseCase = saveFeedRecordIDUseCase
+    self.removeGlobalFCMListUseCase = removeGlobalFCMListUseCase
   }
   
   public func transform(action: Observable<Action>) -> Observable<Action> {
@@ -126,10 +129,13 @@ extension FCMReactorImp {
   
   
   private func fetchFCMListData() -> Observable<Mutation> {
-    /// 기존 데이터 날림
-    GlobalState.shared.fcmList.accept([])
     
-    return refreshFCMListData(cursor: nil, limit: 10)
+    return removeGlobalFCMListUseCase.execute()
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, _ in
+        owner.refreshFCMListData(cursor: nil, limit: 10)
+      }
       .withUnretained(self)
       .flatMap { owner, _ in
         owner.fetchFCMListUseCase.execute()

@@ -42,14 +42,16 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
     fetchFCMListUseCase: FetchFCMListUseCase,
     fcmListUseCase: FCMListUseCase,
     readFCMItemUseCase: ReadFCMItemUseCase,
-    saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase
+    saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase,
+    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   ) -> any FCMReactor where T : FCMCoordinator {
     return FCMReactorImp(
       coordinator: coordinator,
       fetchFCMListUseCase: fetchFCMListUseCase,
       fcmListUseCase: fcmListUseCase,
       readFCMItemUseCase: readFCMItemUseCase,
-      saveFeedRecordIDUseCase: saveFeedRecordIDUseCase
+      saveFeedRecordIDUseCase: saveFeedRecordIDUseCase,
+      removeGlobalFCMListUseCase: removeGlobalFCMListUseCase
     )
   }
   

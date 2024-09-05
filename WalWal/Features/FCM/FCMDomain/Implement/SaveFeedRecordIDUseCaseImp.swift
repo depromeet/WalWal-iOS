@@ -16,7 +16,7 @@ public final class SaveFeedRecordIDUseCaseImp: SaveFeedRecordIDUseCase {
   public init() { }
   
   public func execute(recordId: Int?) -> Observable<Void> {
-    GlobalState.shared.moveToFeedRecord.accept(recordId)
+    GlobalState.shared.updateRecordId(recordId)
     return .just(())
   }
 }

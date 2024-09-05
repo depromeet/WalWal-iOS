@@ -25,7 +25,8 @@ public protocol FCMDependencyFactory {
     fetchFCMListUseCase: FetchFCMListUseCase,
     fcmListUseCase: FCMListUseCase,
     readFCMItemUseCase: ReadFCMItemUseCase,
-    saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase
+    saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase,
+    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   ) -> any FCMReactor
   func injectFCMViewController<T: FCMReactor>(reactor: T) -> any FCMViewController
   func injectFCMRepository() -> FCMRepository

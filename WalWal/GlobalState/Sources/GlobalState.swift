@@ -86,6 +86,13 @@ public final class GlobalState {
       .disposed(by: disposeBag)
   }
   
+  // MARK: - Save RecordID
+  public func updateRecordId(_ recordId: Int?) {
+    moveToFeedRecord.accept(recordId)
+  }
+  
+  // MARK: - Profile
+  
   public func updateProfileInfo(data: GlobalProfileModel) {
     profileInfo.accept(data)
   }
@@ -93,6 +100,8 @@ public final class GlobalState {
   public func fetchProfileImage(url: String) -> UIImage? {
     return imageStore[url]
   }
+  
+  // MARK: - Calendar
   
   /// 캘린더 기록 추가 메서드
   public func updateCalendarRecord(with newRecords: [GlobalMissonRecordListModel]) {
@@ -117,6 +126,8 @@ public final class GlobalState {
     return imageStore[record.imageUrl]
   }
   
+  // MARK: - Feed
+  
   /// 피드 정보 업데이트
   public func updateFeed(with newFeeds: [GlobalFeedListModel]) {
     var currentFeeds = feedList.value
@@ -132,6 +143,8 @@ public final class GlobalState {
     return feedList.value.filter {  $0.createdDate == date  }
   }
   
+  // MARK: - Record
+  
   /// 기록 정보 업데이트
   public func updateRecords(with newRecords: [GlobalFeedListModel]) {
     var currentRecord = recordList.value
@@ -142,6 +155,14 @@ public final class GlobalState {
     recordList.accept(currentRecord)
   }
   
+  /// 기록 가져오기
+  public func getRecords(forDate date: String) -> [GlobalFeedListModel] {
+    return recordList.value.filter {  $0.createdDate == date  }
+  }
+  
+  // MARK: - FCM List
+  
+  /// FCM List 업데이트
   public func updateFCMList(newList: [GlobalFCMListModel]) {
     var curList = fcmList.value
     let newItems = newList.filter { item in
@@ -151,10 +172,12 @@ public final class GlobalState {
     fcmList.accept(curList)
   }
   
-  /// 기록 가져오기
-  public func getRecords(forDate date: String) -> [GlobalFeedListModel] {
-    return recordList.value.filter {  $0.createdDate == date  }
+  /// FCM 데이터 지우기
+  public func removeRecords() {
+    fcmList.accept([])
   }
+  
+  // MARK: - Image
   
   public func getCachedMissionImage(for feed: GlobalFeedListModel) -> UIImage? {
     guard let imageURL = feed.missionImage else { return nil }
