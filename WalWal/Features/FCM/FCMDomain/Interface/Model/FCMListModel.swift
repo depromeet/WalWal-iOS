@@ -72,5 +72,4 @@ public struct FCMItemModel: Hashable {
     self.recordID = recordID
     self.createdAt = createdAt
   }
-  
 }

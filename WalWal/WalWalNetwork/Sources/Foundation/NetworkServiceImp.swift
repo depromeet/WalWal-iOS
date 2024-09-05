@@ -101,7 +101,6 @@ extension NetworkService {
       var error = WalWalNetworkError.serverError(message: nil)
       do {
         let errorResponse = try JSONDecoder().decode(BaseResponse<ErrorResponse>.self, from: data)
-        dump(errorResponse)
         switch statusCode {
         case 400...499:
           error = WalWalNetworkError.networkError(message: errorResponse.data?.message)

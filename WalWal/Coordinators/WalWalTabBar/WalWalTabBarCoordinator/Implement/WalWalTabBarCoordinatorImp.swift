@@ -208,7 +208,7 @@ extension WalWalTabBarCoordinatorImp {
   
   fileprivate func startFeed(navigationController: UINavigationController) -> any BaseCoordinator {
     print("피드 탭 선택")
-    let feedCoordinator = feedDependencyFactory.makeFeedCoordinator(
+    let feedCoordinator = feedDependencyFactory.injectFeedCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
       recordsDependencyFactory: recordDependencyFactory

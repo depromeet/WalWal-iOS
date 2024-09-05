@@ -49,21 +49,14 @@ public final class FCMReactorImp: FCMReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .loadFCMList:
-      return fetchFCMListUseCase.execute()
-        .withUnretained(self)
-        .flatMap { owner, data -> Observable<Mutation> in
-          return .just(.loadFCMList(data: owner.separateDataByDate(data: data)))
-        }
+      return loadInitialFCMListData()
     case .refreshList:
       return .concat([
         fetchFCMListData(),
         .just(.stopRefreshControl)
       ])
     case let .selectItem(item):
-      return readFCMItem(item: item)
-        .flatMap {
-          self.moveOtherTab(type: item.type, recordId: item.recordID)
-        }
+      return selectedItemAction(item: item)
     case let .updateItem(index):
       return .just(.updateItem(index: index))
     }
@@ -88,6 +81,21 @@ public final class FCMReactorImp: FCMReactor {
 }
 
 extension FCMReactorImp {
+  
+  private func loadInitialFCMListData() -> Observable<Mutation> {
+    return fetchFCMListUseCase.execute()
+      .withUnretained(self)
+      .flatMap { owner, data -> Observable<Mutation> in
+        return .just(.loadFCMList(data: owner.separateDataByDate(data: data)))
+      }
+  }
+  
+  private func selectedItemAction(item: FCMItemModel) -> Observable<Mutation> {
+    return readFCMItem(item: item)
+      .flatMap {
+        self.moveOtherTab(type: item.type, recordId: item.recordID)
+      }
+  }
   
   /// 알림 탭 시 화면 이동 요청
   private func moveOtherTab(type: FCMTypes, recordId: Int?) -> Observable<Mutation> {
