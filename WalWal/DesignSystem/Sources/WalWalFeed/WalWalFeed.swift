@@ -19,6 +19,7 @@ import Lottie
 public final class WalWalFeed: UIView {
   
   private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily.KR
   
   // MARK: - UI
   
@@ -312,16 +313,15 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
       
       let content = model.contents
       
-      var lineHeight: Int
       let baseHeight: CGFloat = 486.adjusted
+      var numberOfLine = content.lineNumber(
+        forWidth: width - 32.adjusted,
+        font: Fonts.B2
+      )
       
-      if isExpanded {
-        lineHeight = content.count / 35
-      } else {
-        lineHeight = max(0, min(2, (content.count / 35) - 1))
-      }
+      var lineHeight = isExpanded ? numberOfLine : min(2, numberOfLine)
       
-      let height: CGFloat =  baseHeight + (16 * lineHeight).adjusted
+      let height: CGFloat =  baseHeight + (16 * (lineHeight - 1)).adjusted
       
       return CGSize(width: width, height: height)
     }
