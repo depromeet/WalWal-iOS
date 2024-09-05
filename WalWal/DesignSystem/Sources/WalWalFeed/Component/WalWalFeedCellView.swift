@@ -82,7 +82,6 @@ public final class WalWalFeedCellView: UIView {
   // MARK: - Property
   
   var feedData: WalWalFeedModel?
-  var maxLength = 55
   public private(set) var contents = ""
   private let disposeBag = DisposeBag()
   
@@ -165,6 +164,7 @@ public final class WalWalFeedCellView: UIView {
     missionLabel.text = sanitizeContent(feedData.missionTitle)
     profileImageView.image = feedData.profileImage
     missionImageView.image = feedData.missionImage
+    
     boostCountLabel.text = "\(feedData.boostCount)"
     let isBoostImage = isBoost ? ResourceKitAsset.Sample.fireActive.image : ResourceKitAsset.Sample.fireDef.image
     let isBoostColor = isBoost ? Colors.walwalOrange.color : Colors.gray500.color
@@ -172,16 +172,18 @@ public final class WalWalFeedCellView: UIView {
     boostCountLabel.textColor = isBoostColor
     boostLabel.textColor = isBoostColor
     contents = sanitizeContent(feedData.contents)
+    
     contentLabel.text = contents
     missionDateLabel.attributedText = setupDateLabel(to: feedData.date)
     self.feedData = feedData
     
     /// 부스트 애니메이션 시 이미 열려 있었으면 더보기 X
     if !isAlreadyExpanded  {
-      if contents.count > maxLength {
+      if contents.lineNumber(forWidth: contentLabel.width, font: Fonts.KR.B2) > 2 {
         DispatchQueue.main.async {
           self.contentLabel.configureSpacing(text: self.contentLabel.text, font: Fonts.KR.B2)
           self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
+          
         }
       }
     }
