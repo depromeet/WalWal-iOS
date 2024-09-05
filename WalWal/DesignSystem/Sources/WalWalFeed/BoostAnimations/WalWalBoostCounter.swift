@@ -42,7 +42,7 @@ final class WalWalBoostCounter {
   }
   
   func startCountTimer(in detailView: UIView, window: UIWindow, countUpdateHandler: @escaping (Int) -> Void) {
-    countTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] timer in
+    countTimer = Timer.scheduledTimer(withTimeInterval: 0.025, repeats: true) { [weak self] timer in
       guard let self = self else { return }
       self.currentCount += 1
       self.updateCountLabelText()

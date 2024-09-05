@@ -11,6 +11,7 @@ import ResourceKit
 import GlobalState
 
 import RxSwift
+import Lottie
 
 struct BoostResult {
   let indexPath: IndexPath
@@ -215,13 +216,21 @@ extension WalWalBoostGenerator {
     walwalBoostBorder.addBorderLayer(to: detailView)
     walwalBoostBorder.startBorderAnimation()
     
-    walwalBoostCenterLabel.updateCenterLabels(
-      with: WalWalBurstString.normalText,
-      in: detailView,
-      window: window
-    ) { [weak self] in
-      guard let self = self else { return }
-      self.walwalBoostCenterLabel.disappearLabels()
+    let centerLabelLottieView: LottieAnimationView = {
+      let animationView = LottieAnimationView(animation: AnimationAsset.cute.animation)
+      animationView.loopMode = .playOnce
+      return animationView
+    }()
+    
+    centerLabelLottieView.center = detailView.center
+    window.addSubview(centerLabelLottieView)
+    
+    centerLabelLottieView.play { completed in
+      if completed {
+        centerLabelLottieView.stop()
+        window.viewWithTag(999)?.removeFromSuperview()
+        centerLabelLottieView.removeFromSuperview()
+      }
     }
     
     walwalBoostCounter.setupCountLabel(in: window, detailView: detailView)
@@ -242,26 +251,26 @@ extension WalWalBoostGenerator {
       positionRatio: CGPoint(x: 0.5, y: 0.5),
       sizeRatio: CGSize(width: 0.5, height: 0.5)
     )
-    walwalEmitter.startEmitting(rate: 20)
+    walwalEmitter.startEmitting(rate: 16)
     detailView.layer.addSublayer(walwalEmitter)
   }
   
   private func addTiltAnimation(to view: UIView) {
     let tiltAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
-    let frames = 60 /// 틱당 생기는 부자연스러움을 없애기 위해 144fps로 애니메이션 설정
+    let frames = 60 /// 틱당 생기는 부자연스러움을 없애기 위해 60fps로 애니메이션 설정
     var values = [Double]()
     var keyTimes = [NSNumber]()
     
     for i in 0...frames {
       let progress = Double(i) / Double(frames)
-      let angle = sin(progress * 2 * .pi) * (Double.pi / 180) /// 15도 각도를 1frame 만큼 각도 변환
+      let angle = sin(progress * 2 * .pi) * (Double.pi / 180) * 0.66  /// 15도 각도를 1frame 만큼 각도 변환
       values.append(angle)
       keyTimes.append(NSNumber(value: progress))
     }
     
     tiltAnimation.values = values
     tiltAnimation.keyTimes = keyTimes
-    tiltAnimation.duration = 0.1 /// 144프레임의 애니메이션을 0.3초 동안
+    tiltAnimation.duration = 0.1 /// 60fps의 애니메이션을 0.3초 동안
     tiltAnimation.repeatCount = .infinity /// 무한 반복
     
     view.layer.add(tiltAnimation, forKey: "tilt")
@@ -275,7 +284,7 @@ extension WalWalBoostGenerator {
     feedbackGenerator.impactOccurred()
     
     // 기본 방출량
-    let normalRate: Float = 20
+    let normalRate: Float = 16
     
     // 순간적으로 방출량을 2배로 늘리는 메서드
     func temporarilyIncreaseRate(_ rate: Float, duration: TimeInterval) {
