@@ -101,6 +101,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
     rootContainerView.flex
       .define {
         $0.addItem(naviagationBar)
+          .height(60)
         $0.addItem(separator)
           .width(100%)
           .height(1)

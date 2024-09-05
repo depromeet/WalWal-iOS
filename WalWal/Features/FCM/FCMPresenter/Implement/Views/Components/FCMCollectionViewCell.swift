@@ -118,6 +118,7 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
           .size(56.adjusted)
         $0.addItem(contentContainer)
           .grow(1)
+          .shrink(1)
           .marginLeft(10)
       }
     

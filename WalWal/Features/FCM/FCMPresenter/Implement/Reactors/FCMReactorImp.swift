@@ -129,7 +129,6 @@ extension FCMReactorImp {
       .flatMap { data -> Observable<Mutation> in
         return .just(.loadFCMList(data: self.separateDataByDate(data: data)))
       }
-    
   }
   
   /// FCM List 재요청
