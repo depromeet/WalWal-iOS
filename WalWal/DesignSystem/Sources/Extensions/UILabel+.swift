@@ -115,7 +115,7 @@ public extension UILabel {
       self.attributedText = answerAttributed
     }
   }
-
+  
   /// 폰트 변경 함수
   func asFont(targetString: String, font: UIFont) {
     let fullText = text ?? ""
@@ -132,5 +132,20 @@ public extension UILabel {
     let range = (fullText as NSString).range(of: targetString)
     attributedString.addAttribute(.foregroundColor, value: color, range: range)
     attributedText = attributedString
+  }
+  
+  /// 라벨 줄 수 계산 함수
+  ///
+  /// 사용 예시
+  /// ```
+  /// let label = UILabel()
+  /// label.text = "여러 줄이 있는 텍스트"
+  /// let numberOfLines = label.lineNumber(forWidth: 200)
+  /// ```
+  func lineNumber(forWidth labelWidth: CGFloat) -> Int {
+    guard let text = self.text else { return 0 }
+    let boundingRect = text.boundingRect(with: .zero, options: [.usesFontLeading],
+                                         attributes: [.font: self.font ?? UIFont.systemFont(ofSize: 14)], context: nil)
+    return Int(boundingRect.width / labelWidth + 1)
   }
 }
