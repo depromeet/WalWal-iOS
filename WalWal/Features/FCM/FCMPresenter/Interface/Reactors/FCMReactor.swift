@@ -24,7 +24,7 @@ public enum FCMReactorMutation {
   case loadFCMList(data: [FCMSectionModel])
   case stopRefreshControl
   case moveMission
-  case moveFeed(recordId: Int?)
+  case moveFeed
   case updateItem(index: IndexPath)
 }
 
@@ -42,6 +42,7 @@ public protocol FCMReactor: Reactor where Action == FCMReactorAction, Mutation =
     coordinator: any FCMCoordinator,
     fetchFCMListUseCase: FetchFCMListUseCase,
     fcmListUseCase: FCMListUseCase,
-    readFCMItemUseCase: ReadFCMItemUseCase
+    readFCMItemUseCase: ReadFCMItemUseCase,
+    saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase
   )
 }

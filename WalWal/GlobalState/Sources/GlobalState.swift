@@ -24,6 +24,7 @@ public final class GlobalState {
   public private(set) var feedList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
   public private(set) var recordList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
   public let fcmList = BehaviorRelay<[GlobalFCMListModel]>(value: [])
+  public let moveToFeedRecord = BehaviorRelay<Int?>(value: nil)
   
   /// 이미지 저장소 (캐시된 이미지를 저장하는 딕셔너리)
   public private(set) var imageStore: [String?: UIImage] = [:]

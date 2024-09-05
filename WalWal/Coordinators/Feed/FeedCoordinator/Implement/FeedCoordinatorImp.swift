@@ -10,6 +10,7 @@ import UIKit
 
 import FeedDependencyFactory
 import RecordsDependencyFactory
+import FCMDependencyFactory
 
 import BaseCoordinator
 import FeedCoordinator

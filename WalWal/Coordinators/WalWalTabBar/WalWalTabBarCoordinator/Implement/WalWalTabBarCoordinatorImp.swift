@@ -180,6 +180,8 @@ extension WalWalTabBarCoordinatorImp {
       switch action {
       case .startMission:
         self.forceMoveTab.accept(.startMission)
+      case .startFeed:
+        self.forceMoveTab.accept(.startFeed)
       }
     }
   }

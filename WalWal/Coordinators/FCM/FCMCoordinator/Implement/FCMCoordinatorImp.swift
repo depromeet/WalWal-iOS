@@ -63,11 +63,13 @@ public final class FCMCoordinatorImp: FCMCoordinator {
     let fetchFCMListUseCase = fcmDependencyFactory.injectFetchFCMListUseCase()
     let fcmListUseCase = fcmDependencyFactory.injectFCMListUseCase()
     let readFCMItemUseCase = fcmDependencyFactory.injectReadFCMItemUseCase()
+    let saveFeedRecordIDUseCase = fcmDependencyFactory.injectSaveFeedRecordIDUseCase()
     let reactor = fcmDependencyFactory.injectFCMReactor(
       coordinator: self,
       fetchFCMListUseCase: fetchFCMListUseCase,
       fcmListUseCase: fcmListUseCase,
-      readFCMItemUseCase: readFCMItemUseCase
+      readFCMItemUseCase: readFCMItemUseCase,
+      saveFeedRecordIDUseCase: saveFeedRecordIDUseCase
     )
     let fcmVC = fcmDependencyFactory.injectFCMViewController(reactor: reactor)
     self.baseViewController = fcmVC
@@ -118,5 +120,8 @@ extension FCMCoordinatorImp {
 extension FCMCoordinatorImp {
   public func startMission() {
     requireParentAction(.startMission)
+  }
+  public func startFeed() {
+    requireParentAction(.startFeed)
   }
 }

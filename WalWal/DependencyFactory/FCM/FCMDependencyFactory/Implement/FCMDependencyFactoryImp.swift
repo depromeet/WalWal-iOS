@@ -41,13 +41,15 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
     coordinator: T,
     fetchFCMListUseCase: FetchFCMListUseCase,
     fcmListUseCase: FCMListUseCase,
-    readFCMItemUseCase: ReadFCMItemUseCase
+    readFCMItemUseCase: ReadFCMItemUseCase,
+    saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase
   ) -> any FCMReactor where T : FCMCoordinator {
     return FCMReactorImp(
       coordinator: coordinator,
       fetchFCMListUseCase: fetchFCMListUseCase,
       fcmListUseCase: fcmListUseCase,
-      readFCMItemUseCase: readFCMItemUseCase
+      readFCMItemUseCase: readFCMItemUseCase,
+      saveFeedRecordIDUseCase: saveFeedRecordIDUseCase
     )
   }
   
@@ -89,5 +91,9 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
   
   public func injectGlobalRemoveFCMListUseCase() -> RemoveGlobalFCMListUseCase {
     return RemoveGlobalFCMListUseCaseImp()
+  }
+  
+  public func injectSaveFeedRecordIDUseCase() -> SaveFeedRecordIDUseCase {
+    return SaveFeedRecordIDUseCaseImp()
   }
 }

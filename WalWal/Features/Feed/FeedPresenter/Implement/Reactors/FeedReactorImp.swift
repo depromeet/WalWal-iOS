@@ -44,7 +44,6 @@ public final class FeedReactorImp: FeedReactor {
     self.initialState = State()
   }
   
-  
   /// `transform` 메서드를 사용하여 액션 스트림을 변형합니다.
   public func transform(action: Observable<Action>) -> Observable<Action> {
     /// 초기 액션으로 `initialLoadAction`를 추가
@@ -77,6 +76,8 @@ public final class FeedReactorImp: FeedReactor {
         .observe(on: MainScheduler.asyncInstance) 
     case .profileTapped(let feedData):
       return .just(.moveToProfile(memberId: feedData.authorId, nickName: feedData.nickname))
+    case .checkScrollItem:
+      return checkScrollEvent()
     }
   }
   
@@ -96,11 +97,22 @@ public final class FeedReactorImp: FeedReactor {
       break
     case .moveToProfile(let memberId, let nickName):
       coordinator.startProfile(memberId: memberId, nickName: nickName)
+    case let .scrollToFeedItem(id):
+      newState.scrollToFeedItem = id
     }
     return newState
   }
   
   //MARK: - Method
+  
+  /// 알림 - 피드 넘어왔을 때 스크롤이 넘어가야 하는지 여부
+  private func checkScrollEvent() -> Observable<Mutation> {
+    return GlobalState.shared.moveToFeedRecord
+      .compactMap { $0 }
+      .flatMap { id -> Observable<Mutation> in
+        return .just(.scrollToFeedItem(id: id))
+      }
+  }
   
   private func fetchFeedData(memberId: Int? = nil, cursor: String?, limit: Int) -> Observable<Mutation> {
     return fetchFeedUseCase.execute(memberId: memberId, cursor: cursor, limit: limit)
@@ -109,11 +121,12 @@ public final class FeedReactorImp: FeedReactor {
       .flatMap { owner, feedModel -> Observable<Mutation> in
         let cursor = feedModel.nextCursor
         return owner.convertFeedModel(feedList: GlobalState.shared.feedList.value)
-          .map { feedData in
+          .withUnretained(self)
+          .flatMap { owner, feedData -> Observable<Mutation> in
             if let cursor {
-              return Mutation.feedLoadEnded(nextCursor: cursor, feedData: feedData)
+              return .just(.feedLoadEnded(nextCursor: cursor, feedData: feedData))
             } else {
-              return Mutation.feedReachEnd(feedData: feedData)
+              return .just(.feedReachEnd(feedData: feedData))
             }
           }
       }

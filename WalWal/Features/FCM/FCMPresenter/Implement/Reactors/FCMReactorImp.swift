@@ -24,18 +24,21 @@ public final class FCMReactorImp: FCMReactor {
   private let fetchFCMListUseCase: FetchFCMListUseCase
   private let fcmListUseCase: FCMListUseCase
   private let readFCMItemUseCase: ReadFCMItemUseCase
+  private let saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase
   
   public init(
     coordinator: any FCMCoordinator,
     fetchFCMListUseCase: FetchFCMListUseCase,
     fcmListUseCase: FCMListUseCase,
-    readFCMItemUseCase: ReadFCMItemUseCase
+    readFCMItemUseCase: ReadFCMItemUseCase,
+    saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
     self.fetchFCMListUseCase = fetchFCMListUseCase
     self.fcmListUseCase = fcmListUseCase
     self.readFCMItemUseCase = readFCMItemUseCase
+    self.saveFeedRecordIDUseCase = saveFeedRecordIDUseCase
   }
   
   public func transform(action: Observable<Action>) -> Observable<Action> {
@@ -75,8 +78,8 @@ public final class FCMReactorImp: FCMReactor {
       newState.stopRefreshControl = false
     case .moveMission:
       coordinator.startMission()
-    case let .moveFeed(recordId):
-      print(recordId ?? "recordId 없음")
+    case .moveFeed:
+      coordinator.startFeed()
     case let .updateItem(index):
       newState.listData[index.section].items[index.row].isRead = true
     }
@@ -91,7 +94,10 @@ extension FCMReactorImp {
     if type == .mission {
       return  .just(.moveMission)
     } else {
-      return .just(.moveFeed(recordId: recordId))
+      return saveFeedRecordIDUseCase.execute(recordId: recordId)
+        .flatMap { _ -> Observable<Mutation> in
+          .just(.moveFeed)
+        }
     }
   }
   

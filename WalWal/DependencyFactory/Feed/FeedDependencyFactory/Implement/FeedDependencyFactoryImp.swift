@@ -66,7 +66,7 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     )
   }
   
-  public func makeFeedViewController<T>(reactor: T) -> any FeedPresenter.FeedViewController where T : FeedReactor {
+  public func makeFeedViewController<T>(reactor: T) -> any FeedViewController where T : FeedReactor {
     return FeedViewControllerImp(reactor: reactor)
   }
   

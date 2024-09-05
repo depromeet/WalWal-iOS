@@ -37,6 +37,7 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
   
   public var disposeBag = DisposeBag()
   public var feedReactor: R
+  private var checkScrollItem = PublishSubject<Void>()
   
   // MARK: - Initialize
   
@@ -140,6 +141,11 @@ extension FeedViewControllerImp: View {
       .bind(to: reactor.action )
       .disposed(by: disposeBag)
     
+    checkScrollItem
+      .observe(on: MainScheduler.asyncInstance)
+      .map { Reactor.Action.checkScrollItem }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -150,7 +156,16 @@ extension FeedViewControllerImp: View {
       .subscribe(with: self, onNext: { owner, feed in
         guard owner.feed.feedData.value != feed else { return }
         owner.feed.feedData.accept(feed)
+        owner.checkScrollItem.onNext(())
       })
+      .disposed(by: disposeBag)
+    
+    reactor.pulse(\.$scrollToFeedItem)
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, recordId in
+        owner.feed.scrollToRecord(withId: recordId, animated: true)
+      }
       .disposed(by: disposeBag)
   }
   

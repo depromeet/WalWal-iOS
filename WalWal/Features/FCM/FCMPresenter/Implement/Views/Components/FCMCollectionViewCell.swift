@@ -144,7 +144,6 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   
   public func configureCell(items: FCMItemModel) {
     let tintColor: UIColor = items.type == .mission ? Colors.walwalOrange.color : UIColor(hex: 0xFF6668)
-    let backgroundColor: UIColor = items.isRead ? Colors.gray150.color : Colors.gray100.color
     let image = items.image ?? Images.missionNoti.image
     
     titleLabel.textColor = tintColor
@@ -162,8 +161,10 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
     iconImageView.image = image
     boostBadge.isHidden = items.type == .mission
     isRead = items.isRead
+    
     titleLabel.flex.markDirty()
     dateLabel.flex.markDirty()
+    messageLabel.flex.markDirty()
     
     layoutIfNeeded()
   }
