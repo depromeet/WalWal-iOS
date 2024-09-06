@@ -57,7 +57,6 @@ public final class WalWalFeedCell: UICollectionViewCell {
   
   public override func prepareForReuse() {
     super.prepareForReuse()
-    feedView.maxLength = 55
     feedView.isExpanded = false
     feedView.contentLabel.numberOfLines = 2
   }

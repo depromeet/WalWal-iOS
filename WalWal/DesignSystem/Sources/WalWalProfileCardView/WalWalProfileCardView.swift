@@ -133,17 +133,17 @@ public final class WalWalProfileCardView: UIView {
   
   private func configureLayout() {
     addSubview(containerView)
-    let height = isOther ? 200 : 100
+    let height = isOther ? 202 : 100
     missionCountView.flex.isIncludedInLayout(isOther)
     
     containerView.flex.define { flex in
       flex.addItem()
         .alignItems(.center)
-        .justifyContent(.center)
         .marginHorizontal(20)
         .height(height.adjustedHeight)
         .define { flex in
           flex.addItem(profileInfoContainer)
+            .marginTop(23.adjusted)
             .marginBottom(21.adjustedHeight)
           flex.addItem(missionCountView)
             .width(100%)

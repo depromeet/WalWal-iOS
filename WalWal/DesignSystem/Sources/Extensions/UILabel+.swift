@@ -10,112 +10,77 @@ import UIKit
 
 public extension UILabel {
   var visibleTextLength: Int {
-    let font: UIFont = self.font
-    let mode: NSLineBreakMode = self.lineBreakMode
-    let labelWidth: CGFloat = self.frame.size.width
-    let labelHeight: CGFloat = self.frame.size.height
-    let sizeConstraint = CGSize(width: labelWidth, height: CGFloat.greatestFiniteMagnitude) // Label의 크기
+    guard let myText = self.text else { return 0 }
     
-    if let myText = self.text {
-      
-      let attributes: [AnyHashable: Any] = [NSAttributedString.Key.font: font]
-      let attributedText = NSAttributedString(
-        string: myText,
-        attributes: attributes as? [NSAttributedString.Key: Any])
-      
-      let boundingRect: CGRect = attributedText.boundingRect(
-        with: sizeConstraint,
-        options: .usesLineFragmentOrigin,
-        context: nil)
-      
-      if boundingRect.size.height > labelHeight {
-        var index: Int = 0
-        var prev: Int = 0
-        let characterSet = CharacterSet.whitespacesAndNewlines
-        repeat {
-          prev = index
-          if mode == NSLineBreakMode.byCharWrapping {
-            index += 1
-          } else {
-            index = (myText as NSString).rangeOfCharacter(
-              from: characterSet,
-              options: [],
-              range: NSRange(
-                location: index + 1,
-                length: myText.count - index - 1)).location
-          }
-        } while index != NSNotFound && index < myText.count && (myText as NSString)
-          .substring(to: index)
-          .boundingRect(
-            with: sizeConstraint,
-            options: .usesLineFragmentOrigin,
-            attributes: attributes as? [NSAttributedString.Key: Any], context: nil)
-          .size
-          .height <= labelHeight
-        
-        return prev
+    let font = self.font ?? UIFont.systemFont(ofSize: 12, weight: .medium)
+    let labelWidth = self.frame.size.width
+    let labelHeight = self.frame.size.height
+    let sizeConstraint = CGSize(width: labelWidth, height: CGFloat.greatestFiniteMagnitude)
+    
+    let attributes: [NSAttributedString.Key: Any] = [
+      .font: font,
+      .kern: 0
+    ]
+    
+    var index = 0
+    var prevIndex = 0
+    
+    while index < myText.count {
+      prevIndex = index
+      let substring = (myText as NSString).substring(to: index + 1)
+      let boundingRect = (substring as NSString).boundingRect(with: sizeConstraint, options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil)
+      if boundingRect.height > labelHeight {
+        break
       }
+      index += 1
+    }
+    return prevIndex
+  }
+  
+  func addTrailing(with trailingText: String, moreText: String, moreTextFont: UIFont, moreTextColor: UIColor) {
+    guard let myText = self.text else { return }
+    
+    let convertedTrailingText = trailingText.replacingOccurrences(of: "...", with: "…")
+    var trimmedString = (myText as NSString).substring(to: self.visibleTextLength)
+    
+    let readMoreLength = convertedTrailingText.count + moreText.count
+    let spaceWidth = " ".size(withAttributes: [.font: self.font!]).width
+    var numberOfSpaces = trimmedString.filter { $0 == " " }.count
+    let totalSpaceWidth = CGFloat(numberOfSpaces) * spaceWidth
+    let trimmedStringWidth = (trimmedString as NSString).boundingRect(
+      with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: self.frame.height),
+      options: [.usesLineFragmentOrigin, .usesFontLeading],
+      attributes: [.font: self.font!],
+      context: nil
+    ).width
+    
+    if trimmedString.last == " " {
+      trimmedString.removeLast()
+      numberOfSpaces -= 1
     }
     
-    if self.text == nil {
-      return 0
-    } else {
-      return self.text!.count
+    // Calculate effective removal length considering space widths
+    let effectiveRemovalLength = readMoreLength + Int(totalSpaceWidth / spaceWidth)
+    
+    if trimmedString.count <= effectiveRemovalLength { return }
+    
+    var adjustedLength = trimmedString.count - effectiveRemovalLength
+    if totalSpaceWidth > 0 {
+      adjustedLength = max(0, trimmedString.count - effectiveRemovalLength + numberOfSpaces)
     }
+    
+    var trimmedForReadMore = (trimmedString as NSString).substring(to: adjustedLength)
+    
+    trimmedForReadMore += convertedTrailingText
+    
+    let answerAttributed = NSMutableAttributedString(string: trimmedForReadMore, attributes: [.font: self.font as Any])
+    let readMoreAttributed = NSMutableAttributedString(string: moreText, attributes: [.font: moreTextFont, .foregroundColor: moreTextColor])
+    
+    answerAttributed.append(readMoreAttributed)
+    self.attributedText = answerAttributed
   }
   
   
-  func addTrailing(
-    with trailingText: String,
-    moreText: String,
-    moreTextFont: UIFont,
-    moreTextColor: UIColor
-  ) {
-    
-    let readMoreText: String = trailingText + moreText
-    
-    if self.visibleTextLength == 0 { return }
-    
-    let lengthForVisibleString: Int = self.visibleTextLength
-    
-    if let myText = self.text {
-      
-      let mutableString: String = myText
-      let trimmedString: String? = (mutableString as NSString).replacingCharacters(
-        in: NSRange(
-          location: lengthForVisibleString,
-          length: myText.count - lengthForVisibleString
-        ), with: "")
-      
-      let readMoreLength: Int = (readMoreText.count)
-      
-      guard let safeTrimmedString = trimmedString else { return }
-      
-      if safeTrimmedString.count <= readMoreLength { return }
-      
-      let trimmedForReadMore: String = (safeTrimmedString as NSString)
-        .replacingCharacters(
-          in: NSRange(
-            location: safeTrimmedString.count - readMoreLength,
-            length: readMoreLength)
-          ,with: ""
-        ) + trailingText
-      
-      let answerAttributed = NSMutableAttributedString(
-        string: trimmedForReadMore,
-        attributes: [NSAttributedString.Key.font: self.font as Any]
-      )
-      
-      let readMoreAttributed = NSMutableAttributedString(
-        string: moreText,
-        attributes: [NSAttributedString.Key.font: moreTextFont,
-                     NSAttributedString.Key.foregroundColor: moreTextColor]
-      )
-      answerAttributed.append(readMoreAttributed)
-      self.attributedText = answerAttributed
-    }
-  }
-
   /// 폰트 변경 함수
   func asFont(targetString: String, font: UIFont) {
     let fullText = text ?? ""
@@ -132,5 +97,20 @@ public extension UILabel {
     let range = (fullText as NSString).range(of: targetString)
     attributedString.addAttribute(.foregroundColor, value: color, range: range)
     attributedText = attributedString
+  }
+  
+  /// 라벨 줄 수 계산 함수
+  ///
+  /// 사용 예시
+  /// ```
+  /// let label = UILabel()
+  /// label.text = "여러 줄이 있는 텍스트"
+  /// let numberOfLines = label.lineNumber(forWidth: 200)
+  /// ```
+  func lineNumber(forWidth labelWidth: CGFloat) -> Int {
+    guard let text = self.text else { return 0 }
+    let boundingRect = text.boundingRect(with: .zero, options: [.usesFontLeading],
+                                         attributes: [.font: self.font ?? UIFont.systemFont(ofSize: 14)], context: nil)
+    return Int(boundingRect.width / labelWidth + 1)
   }
 }

@@ -19,6 +19,7 @@ import Lottie
 public final class WalWalFeed: UIView {
   
   private typealias Colors = ResourceKitAsset.Colors
+  private typealias Fonts = ResourceKitFontFamily.KR
   
   // MARK: - UI
   
@@ -29,7 +30,7 @@ public final class WalWalFeed: UIView {
     let flowLayout = UICollectionViewFlowLayout()
     
     flowLayout.sectionInset = .init(top: 20.adjusted, left: 0, bottom: 20.adjusted, right: 0)
-    flowLayout.minimumLineSpacing = 14.adjusted
+    flowLayout.minimumLineSpacing = 13.adjusted 
     flowLayout.headerReferenceSize = .init(width: 0, height: headerHeight)
     
     $0.collectionViewLayout = flowLayout
@@ -95,7 +96,7 @@ public final class WalWalFeed: UIView {
     isFeed: Bool = true
   ) {
     self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
-    self.headerHeight = isFeed ? 60.adjusted : 0
+    self.headerHeight = isFeed ? 70.adjusted : 0
     super.init(frame: .zero)
     
     self.collectionView.backgroundColor = isFeed ? Colors.gray150.color : Colors.gray100.color
@@ -177,20 +178,20 @@ public final class WalWalFeed: UIView {
     walwalBoostGenerater.boostFinished
       .withUnretained(self) { (owner, boostResult) in
         var updatedFeedData = owner.feedData.value
-        
-        guard boostResult.count <= 500 else {
-          WalWalToast.shared.show(type: .boost, message: "부스터는 최대 500개까지만 가능해요!")
-          return updatedFeedData
-        }
-        
+        var boostCount = boostResult.count
         if let feedModel = updatedFeedData[safe: boostResult.indexPath.item] {
+          if boostResult.count > 500 {
+            WalWalToast.shared.show(type: .boost, message: "부스터는 최대 500개까지만 가능해요!")
+            boostCount = 500
+          }
+          
           var updatedModel = feedModel
-          updatedModel.boostCount += boostResult.count
+          updatedModel.boostCount += boostCount
           updatedFeedData[boostResult.indexPath.item] = updatedModel
           
           owner.updatedBoost.accept(
             (recordId: updatedModel.recordId,
-             count: boostResult.count)
+             count: boostCount)
           )
         }
         
@@ -312,16 +313,14 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
       
       let content = model.contents
       
-      var lineHeight: Int
       let baseHeight: CGFloat = 486.adjusted
+      let numberOfLine = content.lineNumber(
+        forWidth: width - 40,
+        font: Fonts.B2
+      )
+      let lineHeight = isExpanded ? numberOfLine : max(1,min(2, numberOfLine))
       
-      if isExpanded {
-        lineHeight = content.count / 35
-      } else {
-        lineHeight = max(0, min(2, (content.count / 35) - 1))
-      }
-      
-      let height: CGFloat =  baseHeight + (16 * lineHeight).adjusted
+      let height: CGFloat =  baseHeight + (16 * (lineHeight - 1)).adjusted
       
       return CGSize(width: width, height: height)
     }

@@ -30,29 +30,7 @@ final class WalWalFeedViewController: UIViewController {
   
   // MARK: - Properties
   
-  private let dummyData: [WalWalFeedModel] = [
-    .init(recordId: 1,
-          date: "2024년 8월 10일",
-          nickname: "찐찐도그",
-          missionTitle: "산책 미션을 수행했어요!",
-          profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
-          missionImage: ResourceKitAsset.Sample.feedSample.image,
-          boostCount: 324, contents: ""),
-    .init(recordId: 2,
-          date: "2024년 8월 10일",
-          nickname: "찐찐도그",
-          missionTitle: "산책 미션을 수행했어요!",
-          profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
-          missionImage: ResourceKitAsset.Sample.feedSample.image,
-          boostCount: 324, contents: ""),
-    .init(recordId: 3,
-          date: "2024년 8월 10일",
-          nickname: "찐찐도그",
-          missionTitle: "산책 미션을 수행했어요!",
-          profileImage: ResourceKitAsset.Sample.calendarCellSample.image,
-          missionImage: ResourceKitAsset.Sample.feedSample.image,
-          boostCount: 324, contents: "")
-  ]
+  private let dummyData: [WalWalFeedModel] = [ ]
   private let disposeBag = DisposeBag()
   
   // MARK: - Initializers

@@ -116,8 +116,16 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    containerView.pin
-      .all(view.pin.safeArea)
+    if isFeedProfile {
+      containerView.pin
+        .top(view.pin.safeArea)
+        .left()
+        .right()
+        .bottom()
+    } else {
+      containerView.pin
+        .all(view.pin.safeArea)
+    }
     containerView.flex
       .layout()
   }
@@ -125,7 +133,8 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   // MARK: - Methods
   
   public func setAttribute() {
-    view.backgroundColor = Colors.gray100.color
+    navigationBar.backgroundColor = Colors.white.color
+    view.backgroundColor = Colors.white.color
   }
   
   public func setLayout() {
