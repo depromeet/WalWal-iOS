@@ -142,7 +142,7 @@ public final class MissionReactorImp: MissionReactor {
   private func loadAllMissionData() -> Observable<Mutation> {
     lastUpdateDate = Date()
     return checkRecordCalendar()
-      .flatMap { _ in self.checkFCMListData() }
+      .flatMap { _ in self.removeFCMListData() }
       .flatMap { _ in self.fetchMissionData()}
       .flatMap { [weak self] mission -> Observable<Mutation> in
         guard let owner = self else { return .empty() }
@@ -253,31 +253,13 @@ public final class MissionReactorImp: MissionReactor {
     return .empty()
   }
   
-  // MARK: - 알림 리스트 미리 가져옴
+  // MARK: - 알림 리스트 삭제
   
-  private func checkFCMListData() -> Observable<Void> {
+  private func removeFCMListData() -> Observable<Void> {
     return removeGlobalFCMListUseCase.execute()
       .asObservable()
-      .flatMap {
-        self.fetchFCMListData(cursor: nil, limit: 10)
-      }
   }
   
-  private func fetchFCMListData(cursor: String?, limit: Int) -> Observable<Void> {
-    return fcmListUseCase.execute(cursor: cursor, limit: limit)
-      .asObservable()
-      .flatMap { data -> Observable<Void> in
-        if let nextCursor = data.nextCursor {
-          return self.fetchFCMListData(cursor: nextCursor, limit: limit)
-        } else {
-          return .just(Void())
-        }
-      }
-      .catch { error in
-        print(error.localizedDescription)
-        return .just(Void())
-      }
-  }
   
   // MARK: - MissionTimer
   

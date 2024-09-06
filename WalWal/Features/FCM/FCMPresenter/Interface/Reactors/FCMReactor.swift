@@ -14,7 +14,7 @@ import ReactorKit
 import RxSwift
 
 public enum FCMReactorAction {
-  case loadFCMList
+  case loadFCMList(cursor: String?, limit: Int = 10)
   case refreshList
   case selectItem(item: FCMItemModel)
   case updateItem(index: IndexPath)
@@ -26,12 +26,16 @@ public enum FCMReactorMutation {
   case moveMission
   case moveFeed
   case updateItem(index: IndexPath)
+  case nextCursor(cursor: String?)
+  case isLastPage(Bool)
 }
 
 public struct FCMReactorState {
   public init() { }
-  public var listData: [FCMSection] = []
+  @Pulse public var listData: [FCMSection] = []
   @Pulse public var stopRefreshControl: Bool = false
+  public var nextCursor: String? = nil
+  public var isLastPage: Bool = false
 }
 
 public protocol FCMReactor: Reactor where Action == FCMReactorAction, Mutation == FCMReactorMutation, State == FCMReactorState {

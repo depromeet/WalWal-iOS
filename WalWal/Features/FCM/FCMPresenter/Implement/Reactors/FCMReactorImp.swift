@@ -45,20 +45,12 @@ public final class FCMReactorImp: FCMReactor {
     self.removeGlobalFCMListUseCase = removeGlobalFCMListUseCase
   }
   
-  public func transform(action: Observable<Action>) -> Observable<Action> {
-    let loadFCMList = Observable.just(Action.loadFCMList)
-    return Observable.merge(action, loadFCMList)
-  }
-  
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .loadFCMList:
-      return loadInitialFCMListData()
+    case let .loadFCMList(cursor, limit):
+      return fetchFCMListData(cursor: cursor, limit: limit)
     case .refreshList:
-      return .concat([
-        fetchFCMListData(),
-        .just(.stopRefreshControl)
-      ])
+      return refreshFCMListData()
     case let .selectItem(item):
       return selectedItemAction(item: item)
     case let .updateItem(index):
@@ -80,6 +72,10 @@ public final class FCMReactorImp: FCMReactor {
     case let .updateItem(index):
       let item = newState.listData[index.section].items[index.row]
       changeIsReadValue(item: item)
+    case let .nextCursor(cursor):
+      newState.nextCursor = cursor
+    case let .isLastPage(isLast):
+      newState.isLastPage = isLast
     }
     return newState
   }
@@ -87,14 +83,25 @@ public final class FCMReactorImp: FCMReactor {
 
 extension FCMReactorImp {
   
-  private func changeIsReadValue(item: FCMItems) {
-    switch item {
-    case let .fcmItems(reactor):
-      reactor.action.onNext(.changeIsReadValue(value: true))
-    }
+  /// FCM 아이템 요청 메서드
+  private func fetchFCMListData(cursor: String?, limit: Int) -> Observable<Mutation> {
+    return fcmListUseCase.execute(cursor: cursor, limit: limit)
+      .asObservable()
+      .flatMap { data -> Observable<Mutation> in
+          .concat([
+            self.loadSavedFCMListData(),
+            .just(.nextCursor(cursor: data.nextCursor)),
+            .just(.isLastPage(data.nextCursor == nil))
+          ])
+      }
+      .catch { error in
+        print(error.localizedDescription)
+        return .never()
+      }
   }
   
-  private func loadInitialFCMListData() -> Observable<Mutation> {
+  /// GlobalState에 저장된 FCM list 불러오기
+  private func loadSavedFCMListData() -> Observable<Mutation> {
     return fetchFCMListUseCase.execute()
       .withUnretained(self)
       .flatMap { owner, data -> Observable<Mutation> in
@@ -102,11 +109,20 @@ extension FCMReactorImp {
       }
   }
   
+  /// 알림 선택 시 플로우
   private func selectedItemAction(item: FCMItemModel) -> Observable<Mutation> {
     return readFCMItem(item: item)
       .flatMap {
         self.moveOtherTab(type: item.type, recordId: item.recordID)
       }
+  }
+  
+  /// 알림 읽었을 때 셀 모델 값 변경 처리
+  private func changeIsReadValue(item: FCMItems) {
+    switch item {
+    case let .fcmItems(reactor):
+      reactor.action.onNext(.changeIsReadValue(value: true))
+    }
   }
   
   /// 알림 탭 시 화면 이동 요청
@@ -136,34 +152,16 @@ extension FCMReactorImp {
       }
   }
   
-  
-  private func fetchFCMListData() -> Observable<Mutation> {
-    
+  /// 알림 새로고침
+  private func refreshFCMListData() -> Observable<Mutation> {
     return removeGlobalFCMListUseCase.execute()
       .asObservable()
       .withUnretained(self)
-      .flatMap { owner, _ in
-        owner.refreshFCMListData(cursor: nil, limit: 10)
-      }
-      .withUnretained(self)
-      .flatMap { owner, _ in
-        owner.fetchFCMListUseCase.execute()
-      }
-      .flatMap { data -> Observable<Mutation> in
-        return .just(.loadFCMList(data: self.separateDataByDate(data: data)))
-      }
-  }
-  
-  /// FCM List 재요청
-  private func refreshFCMListData(cursor: String?, limit: Int) -> Observable<Void> {
-    return fcmListUseCase.execute(cursor: cursor, limit: limit)
-      .asObservable()
-      .flatMap { data -> Observable<Void> in
-        if let nextCursor = data.nextCursor {
-          return self.refreshFCMListData(cursor: nextCursor, limit: limit)
-        } else {
-          return .just(Void())
-        }
+      .flatMap { owner, _ -> Observable<Mutation> in
+        return .concat([
+          owner.fetchFCMListData(cursor: nil, limit: 10),
+          .just(.stopRefreshControl)
+        ])
       }
   }
   

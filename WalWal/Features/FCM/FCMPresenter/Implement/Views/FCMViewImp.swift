@@ -30,9 +30,13 @@ public final class FCMViewControllerImp<R: FCMReactor>:
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
+  // MARK: - Properties
+  
   public var disposeBag = DisposeBag()
   public var fcmReactor: R
   private lazy var datasource: RxCollectionViewSectionedReloadDataSource<FCMSection> = configureDataSource()
+  private var isLastPage = BehaviorRelay<Bool>(value: false)
+  private var nextCursor = BehaviorRelay<String?>(value: nil)
   
   // MARK: - UI
   
@@ -48,7 +52,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
   
   private let walwalIndicator = WalWalRefreshControl(frame: .zero)
   private lazy var collectionView = UICollectionView(
-    frame: .zero, 
+    frame: .zero,
     collectionViewLayout: collectionViewLayout()
   ).then {
     $0.backgroundColor = Colors.gray100.color
@@ -60,7 +64,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
   }
   
   public init(
-      reactor: R
+    reactor: R
   ) {
     self.fcmReactor = reactor
     super.init(nibName: nil, bundle: nil)
@@ -121,7 +125,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
     )
     layout.scrollDirection = .vertical
     layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 64.adjustedHeight)
-        
+    
     return layout
   }
   
@@ -139,7 +143,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
         cell.reactor = reactor
       }
       return cell
-              
+      
     } configureSupplementaryView: { datasource, collectionView, kind, indexPath in
       switch kind {
       case UICollectionView.elementKindSectionHeader:
@@ -158,7 +162,8 @@ public final class FCMViewControllerImp<R: FCMReactor>:
   }
   
   public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-    if section == 0 || fcmReactor.currentState.listData[1].items.isEmpty {
+    let existEmptySection = fcmReactor.currentState.listData[1].items.isEmpty || fcmReactor.currentState.listData[0].items.isEmpty
+    if section == 0 || existEmptySection  {
       return CGSize.zero
     } else {
       return CGSize(width: collectionView.bounds.width, height: 64.adjustedHeight)
@@ -200,11 +205,21 @@ extension FCMViewControllerImp: View {
       .map { Reactor.Action.updateItem(index: $0.1) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    collectionView.rx.reachedBottom
+      .filter { _ in
+        !self.isLastPage.value
+      }
+      .map { _ in
+        Reactor.Action.loadFCMList(cursor: self.nextCursor.value, limit: 10)
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
   }
   
   public func bindState(reactor: R) {
-    reactor.state
-      .map { $0.listData }
+    reactor.pulse(\.$listData)
       .observe(on: MainScheduler.instance)
       .bind(to: collectionView.rx.items(dataSource: datasource))
       .disposed(by: disposeBag)
@@ -215,6 +230,18 @@ extension FCMViewControllerImp: View {
         owner.walwalIndicator.endRefreshing()
       }
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.isLastPage }
+      .distinctUntilChanged()
+      .bind(to: isLastPage)
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.nextCursor }
+      .distinctUntilChanged()
+      .bind(to: nextCursor)
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
@@ -223,3 +250,17 @@ extension FCMViewControllerImp: View {
   
 }
 
+extension Reactive where Base: UIScrollView {
+  
+  // 스크롤이 바닥에 도달했을 때의 이벤트를 방출하는 Observable
+  var reachedBottom: Observable<Bool> {
+    return self.contentOffset
+      .throttle(.milliseconds(1000), scheduler: MainScheduler.instance)
+      .distinctUntilChanged()
+      .map { [weak base] _ in
+        guard let scrollView = base else { return false }
+        return scrollView.isNearBottom()
+      }
+      .filter { $0 } // true일 때만 방출
+  }
+}
