@@ -7,16 +7,20 @@
 //
 
 import UIKit
+import FCMPresenter
 import DesignSystem
 import ResourceKit
 import FCMDomain
 import Utility
 
+import ReactorKit
 import Then
 import FlexLayout
 import PinLayout
 
-final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
+final class FCMCollectionViewCell: UICollectionViewCell, ReusableView, View {
+  typealias Reactor = FCMCellReactor
+  
   private typealias Images = ResourceKitAsset.Images
   private typealias Colors = ResourceKitAsset.Colors
   private typealias FontKR = ResourceKitFontFamily.KR
@@ -52,6 +56,9 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   
   // MARK: - Properties
   
+  public var changeIsReadValue = PublishSubject<Bool>()
+  var disposeBag = DisposeBag()
+  
   var isRead: Bool = false {
     didSet {
       contentView.backgroundColor = self.isRead ? Colors.gray150.color : Colors.gray100.color
@@ -79,6 +86,7 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
     titleLabel.text = nil
     messageLabel.text = nil
     dateLabel.text = nil
+    disposeBag = DisposeBag()
   }
   
   override func layoutSubviews() {
@@ -143,7 +151,34 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView {
   
   // MARK: - Methods
   
-  public func configureCell(items: FCMItemModel) {
+  func bind(reactor: Reactor) {
+    let items = reactor.currentState
+    configureCell(items: items)
+    
+    bindAction(reactor: reactor)
+    bindState(reactor: reactor)
+  }
+  
+  private func bindAction(reactor: Reactor) {
+    changeIsReadValue
+      .filter { _ in !reactor.currentState.isRead }
+      .map { Reactor.Action.changeIsReadValue(value: $0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+  }
+  
+  private func bindState(reactor: Reactor) {
+    reactor.state
+      .map { $0.isRead }
+      .asDriver(onErrorJustReturn: false)
+      .filter { $0 }
+      .drive(with: self) { owner, isRead in
+        owner.isRead = isRead
+      }
+      .disposed(by: disposeBag)
+  }
+  
+  private func configureCell(items: FCMItemModel) {
     let tintColor: UIColor = items.type == .mission ? Colors.walwalOrange.color : UIColor(hex: 0xFF6668)
     let image = items.image ?? Images.missionNoti.image
     

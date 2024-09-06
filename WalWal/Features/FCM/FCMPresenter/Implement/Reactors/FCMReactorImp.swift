@@ -6,6 +6,7 @@
 //  Created by 이지희
 //
 
+import Foundation
 import FCMDomain
 import FCMPresenter
 import FCMCoordinator
@@ -77,13 +78,21 @@ public final class FCMReactorImp: FCMReactor {
     case .moveFeed:
       coordinator.startFeed()
     case let .updateItem(index):
-      newState.listData[index.section].items[index.row].isRead = true
+      let item = newState.listData[index.section].items[index.row]
+      changeIsReadValue(item: item)
     }
     return newState
   }
 }
 
 extension FCMReactorImp {
+  
+  private func changeIsReadValue(item: FCMItems) {
+    switch item {
+    case let .fcmItems(reactor):
+      reactor.action.onNext(.changeIsReadValue(value: true))
+    }
+  }
   
   private func loadInitialFCMListData() -> Observable<Mutation> {
     return fetchFCMListUseCase.execute()
@@ -159,13 +168,21 @@ extension FCMReactorImp {
   }
   
   /// 데이터  이전알림 구분 메서드
-  private func separateDataByDate(data: [FCMItemModel]) -> [FCMSectionModel] {
+  private func separateDataByDate(data: [FCMItemModel]) -> [FCMSection] {
     var lastData = data
-    let today = lastData.filter { $0.createdAt.isWithin24Hours(format: .fullISO8601) }
+    let today = lastData
+      .filter { $0.createdAt.isWithin24Hours(format: .fullISO8601) }
+      .map {
+        FCMItems.fcmItems(reactor: FCMCellReactor(state: $0))
+      }
     lastData.removeAll { $0.createdAt.isWithin24Hours(format: .fullISO8601) }
+    let last = lastData.map {
+      return FCMItems.fcmItems(reactor: FCMCellReactor(state: $0))
+    }
+    
     let section = [
-      FCMSectionModel(section: 0, items: today),
-      FCMSectionModel(section: 1, items: lastData)
+      FCMSection.today(item: today),
+      FCMSection.last(item: last)
     ]
     return section
   }

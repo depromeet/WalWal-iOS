@@ -21,7 +21,7 @@ public enum FCMReactorAction {
 }
 
 public enum FCMReactorMutation {
-  case loadFCMList(data: [FCMSectionModel])
+  case loadFCMList(data: [FCMSection])
   case stopRefreshControl
   case moveMission
   case moveFeed
@@ -30,7 +30,7 @@ public enum FCMReactorMutation {
 
 public struct FCMReactorState {
   public init() { }
-  public var listData: [FCMSectionModel] = []
+  public var listData: [FCMSection] = []
   @Pulse public var stopRefreshControl: Bool = false
 }
 

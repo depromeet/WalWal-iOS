@@ -32,7 +32,7 @@ public final class FCMViewControllerImp<R: FCMReactor>:
   
   public var disposeBag = DisposeBag()
   public var fcmReactor: R
-  private lazy var datasource: RxCollectionViewSectionedReloadDataSource<FCMSectionModel> = configureDataSource()
+  private lazy var datasource: RxCollectionViewSectionedReloadDataSource<FCMSection> = configureDataSource()
   
   // MARK: - UI
   
@@ -125,18 +125,19 @@ public final class FCMViewControllerImp<R: FCMReactor>:
     return layout
   }
   
-  private func configureDataSource() -> RxCollectionViewSectionedReloadDataSource<FCMSectionModel> {
+  private func configureDataSource() -> RxCollectionViewSectionedReloadDataSource<FCMSection> {
     
-    return RxCollectionViewSectionedReloadDataSource { datasource, collectionView, indexPath, item in
+    return RxCollectionViewSectionedReloadDataSource<FCMSection> { datasource, collectionView, indexPath, item in
       guard let cell = collectionView.dequeueReusableCell(
         withReuseIdentifier: FCMCollectionViewCell.reuseIdentifier,
         for: indexPath
       ) as? FCMCollectionViewCell else {
         return UICollectionViewCell()
       }
-      
-      cell.configureCell(items: item)
-      
+      switch item {
+      case let .fcmItems(reactor):
+        cell.reactor = reactor
+      }
       return cell
               
     } configureSupplementaryView: { datasource, collectionView, kind, indexPath in
@@ -176,7 +177,13 @@ extension FCMViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    let modelSelected = collectionView.rx.modelSelected(FCMItemModel.self)
+    let modelSelected = collectionView.rx.modelSelected(FCMItems.self)
+      .map {
+        switch $0 {
+        case let .fcmItems(reactor):
+          return reactor
+        }
+      }
     
     walwalIndicator.rx.controlEvent(.valueChanged)
       .map { Reactor.Action.refreshList }
@@ -184,12 +191,12 @@ extension FCMViewControllerImp: View {
       .disposed(by: disposeBag)
     
     modelSelected
-      .map { Reactor.Action.selectItem(item: $0) }
+      .map { Reactor.Action.selectItem(item: $0.currentState) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
     Observable.zip(modelSelected, collectionView.rx.itemSelected)
-      .filter { !$0.0.isRead }
+      .filter { !$0.0.currentState.isRead }
       .map { Reactor.Action.updateItem(index: $0.1) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)

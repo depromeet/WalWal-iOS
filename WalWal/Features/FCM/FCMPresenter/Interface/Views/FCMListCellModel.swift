@@ -11,19 +11,32 @@ import FCMDomain
 
 import RxDataSources
 
-public struct FCMSectionModel: SectionModelType {
-  public typealias Item = FCMItemModel
-  var section: Int
-  public var items: [Item]
-  public init(section: Int, items: [Item]) {
-    self.section = section
-    self.items = items
-  }
+public enum FCMSection {
+  case today(item: [FCMItems])
+  case last(item: [FCMItems])
 }
 
-extension FCMSectionModel {
-  public init(original: FCMSectionModel, items: [FCMItemModel]) {
-    self = original
-    self.items = items
+public enum FCMItems {
+  case fcmItems(reactor: FCMCellReactor)
+}
+
+extension FCMSection: SectionModelType {
+  
+  public var items: [FCMItems] {
+    switch self {
+    case .today(let item):
+      return item
+    case .last(let item):
+      return item
+    }
+  }
+  
+  public init(original: FCMSection, items: [FCMItems]) {
+    switch original {
+    case .today(let item):
+      self = .today(item: item)
+    case .last(let item):
+      self = .last(item: item)
+    }
   }
 }
