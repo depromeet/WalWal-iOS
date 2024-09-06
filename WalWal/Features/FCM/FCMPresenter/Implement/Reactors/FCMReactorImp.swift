@@ -27,6 +27,7 @@ public final class FCMReactorImp: FCMReactor {
   private let readFCMItemUseCase: ReadFCMItemUseCase
   private let saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase
   private let removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
+  private let saveFCMListGlobalStateUseCase: SaveFCMListGlobalStateUseCase
   
   public init(
     coordinator: any FCMCoordinator,
@@ -34,7 +35,8 @@ public final class FCMReactorImp: FCMReactor {
     fcmListUseCase: FCMListUseCase,
     readFCMItemUseCase: ReadFCMItemUseCase,
     saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase,
-    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
+    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase,
+    saveFCMListGlobalStateUseCase: SaveFCMListGlobalStateUseCase
   ) {
     self.coordinator = coordinator
     self.initialState = State()
@@ -43,6 +45,7 @@ public final class FCMReactorImp: FCMReactor {
     self.readFCMItemUseCase = readFCMItemUseCase
     self.saveFeedRecordIDUseCase = saveFeedRecordIDUseCase
     self.removeGlobalFCMListUseCase = removeGlobalFCMListUseCase
+    self.saveFCMListGlobalStateUseCase = saveFCMListGlobalStateUseCase
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -87,17 +90,23 @@ extension FCMReactorImp {
   private func fetchFCMListData(cursor: String?, limit: Int) -> Observable<Mutation> {
     return fcmListUseCase.execute(cursor: cursor, limit: limit)
       .asObservable()
-      .flatMap { data -> Observable<Mutation> in
-          .concat([
-            self.loadSavedFCMListData(),
-            .just(.nextCursor(cursor: data.nextCursor)),
-            .just(.isLastPage(data.nextCursor == nil))
-          ])
+      .withUnretained(self)
+      .flatMap { owner, item -> Observable<Mutation> in
+        owner.saveFCMListGlobalState(item: item)
+        return .concat([
+          owner.loadSavedFCMListData(),
+          .just(.nextCursor(cursor: item.nextCursor)),
+          .just(.isLastPage(item.nextCursor == nil))
+        ])
       }
       .catch { error in
         print(error.localizedDescription)
         return .never()
       }
+  }
+  
+  private func saveFCMListGlobalState(item: FCMListModel) {
+    self.saveFCMListGlobalStateUseCase.execute(fcmList: item, globalState: GlobalState.shared)
   }
   
   /// GlobalState에 저장된 FCM list 불러오기
@@ -132,7 +141,7 @@ extension FCMReactorImp {
     } else {
       return saveFeedRecordIDUseCase.execute(recordId: recordId)
         .flatMap { _ -> Observable<Mutation> in
-          .just(.moveFeed)
+            .just(.moveFeed)
         }
     }
   }

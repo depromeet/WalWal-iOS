@@ -27,11 +27,7 @@ public final class FCMListUseCaseImp: FCMListUseCase {
   
   public func execute(cursor: String?, limit: Int = 10) -> Single<FCMListModel> {
     return fcmRepository.fetchFCMList(cursor: cursor, limit: limit)
-      .map {
-        let items = FCMListModel(dto: $0)
-        self.saveFCMListGlobalStateUseCase.execute(fcmList: items, globalState: GlobalState.shared)
-        return items
-      }
+      .map { FCMListModel(dto: $0) }
       .asObservable()
       .asSingle()
   }

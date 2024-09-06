@@ -48,6 +48,7 @@ public protocol FCMReactor: Reactor where Action == FCMReactorAction, Mutation =
     fcmListUseCase: FCMListUseCase,
     readFCMItemUseCase: ReadFCMItemUseCase,
     saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase,
-    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
+    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase,
+    saveFCMListGlobalStateUseCase: SaveFCMListGlobalStateUseCase
   )
 }

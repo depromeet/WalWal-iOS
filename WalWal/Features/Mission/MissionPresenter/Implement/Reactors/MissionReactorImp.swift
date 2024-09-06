@@ -32,7 +32,6 @@ public final class MissionReactorImp: MissionReactor {
   private let checkRecordCalendarUseCase: CheckCalendarRecordsUseCase
   private let removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase
   private let startRecordUseCase: StartRecordUseCase
-  private let fcmListUseCase: FCMListUseCase
   private let removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   
   private var lastUpdateDate: Date?
@@ -47,7 +46,6 @@ public final class MissionReactorImp: MissionReactor {
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     startRecordUseCase: StartRecordUseCase,
-    fcmListUseCase: FCMListUseCase,
     removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   ) {
     self.coordinator = coordinator
@@ -57,7 +55,6 @@ public final class MissionReactorImp: MissionReactor {
     self.checkRecordCalendarUseCase = checkRecordCalendarUseCase
     self.removeGlobalCalendarRecordsUseCase = removeGlobalCalendarRecordsUseCase
     self.startRecordUseCase = startRecordUseCase
-    self.fcmListUseCase = fcmListUseCase
     self.removeGlobalFCMListUseCase = removeGlobalFCMListUseCase
     self.initialState = State()
   }

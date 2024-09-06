@@ -65,6 +65,7 @@ public final class FCMCoordinatorImp: FCMCoordinator {
     let readFCMItemUseCase = fcmDependencyFactory.injectReadFCMItemUseCase()
     let saveFeedRecordIDUseCase = fcmDependencyFactory.injectSaveFeedRecordIDUseCase()
     let removeGlobalFCMListUseCase = fcmDependencyFactory.injectGlobalRemoveFCMListUseCase()
+    let saveFCMListGlobalStateUseCase = fcmDependencyFactory.injectSaveFCMListGlobalStateUseCase()
     
     let reactor = fcmDependencyFactory.injectFCMReactor(
       coordinator: self,
@@ -72,7 +73,8 @@ public final class FCMCoordinatorImp: FCMCoordinator {
       fcmListUseCase: fcmListUseCase,
       readFCMItemUseCase: readFCMItemUseCase,
       saveFeedRecordIDUseCase: saveFeedRecordIDUseCase,
-      removeGlobalFCMListUseCase: removeGlobalFCMListUseCase
+      removeGlobalFCMListUseCase: removeGlobalFCMListUseCase,
+      saveFCMListGlobalStateUseCase: saveFCMListGlobalStateUseCase
     )
     let fcmVC = fcmDependencyFactory.injectFCMViewController(reactor: reactor)
     self.baseViewController = fcmVC

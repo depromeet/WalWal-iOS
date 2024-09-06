@@ -89,7 +89,6 @@ public final class MissionCoordinatorImp: MissionCoordinator {
     let checkRecordCalendarUseCase = recordDependencyFactory.injectCheckCalendarRecordsUseCase()
     let removeGlobalCalendarRecordsUseCase = recordDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase()
     let startRecordUseCase = recordDependencyFactory.injectStartRecordUseCase()
-    let fcmListUseCase = fcmDependencyFactory.injectFCMListUseCase()
     let removeGlobalFCMListUseCase = fcmDependencyFactory.injectGlobalRemoveFCMListUseCase()
     
     let reactor = missionDependencyFactory.injectMissionReactor(
@@ -100,7 +99,6 @@ public final class MissionCoordinatorImp: MissionCoordinator {
       checkRecordCalendarUseCase: checkRecordCalendarUseCase,
       removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
       startRecordUseCase: startRecordUseCase,
-      fcmListUseCase: fcmListUseCase,
       removeGlobalFCMListUseCase: removeGlobalFCMListUseCase
     )
     let missionVC = missionDependencyFactory.injectMissionViewController(reactor: reactor)

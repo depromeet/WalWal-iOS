@@ -43,7 +43,8 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
     fcmListUseCase: FCMListUseCase,
     readFCMItemUseCase: ReadFCMItemUseCase,
     saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase,
-    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
+    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase,
+    saveFCMListGlobalStateUseCase: SaveFCMListGlobalStateUseCase
   ) -> any FCMReactor where T : FCMCoordinator {
     return FCMReactorImp(
       coordinator: coordinator,
@@ -51,7 +52,8 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
       fcmListUseCase: fcmListUseCase,
       readFCMItemUseCase: readFCMItemUseCase,
       saveFeedRecordIDUseCase: saveFeedRecordIDUseCase,
-      removeGlobalFCMListUseCase: removeGlobalFCMListUseCase
+      removeGlobalFCMListUseCase: removeGlobalFCMListUseCase,
+      saveFCMListGlobalStateUseCase: saveFCMListGlobalStateUseCase
     )
   }
   

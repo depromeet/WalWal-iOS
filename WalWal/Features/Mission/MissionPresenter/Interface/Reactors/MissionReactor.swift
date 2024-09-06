@@ -71,7 +71,6 @@ public protocol MissionReactor: Reactor where Action == MissionReactorAction, Mu
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
     startRecordUseCase: StartRecordUseCase,
-    fcmListUseCase: FCMListUseCase,
     removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   )
 }
