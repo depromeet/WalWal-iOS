@@ -35,7 +35,9 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private let buttonContainerWrapper = UIView()
   private let bubbleContainerWrapper = UIView()
   
-  private let splashContainer = UIView()
+  private let splashContainer = UIView().then {
+    $0.backgroundColor = Colors.walwalOrange.color
+  }
   private let splashForLoading = UIImageView().then {
     $0.image = Images.splash.image
     $0.contentMode = .scaleAspectFit
