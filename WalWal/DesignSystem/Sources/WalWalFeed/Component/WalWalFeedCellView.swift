@@ -64,7 +64,7 @@ public final class WalWalFeedCellView: UIView {
     $0.textColor = Colors.black.color
     $0.translatesAutoresizingMaskIntoConstraints = false
     $0.numberOfLines = 2
-    $0.lineBreakMode = .byCharWrapping
+    $0.lineBreakStrategy = .hangulWordPriority
   }
   
   private let boostCountLabel = CustomLabel(font: Fonts.EN.B2).then {
@@ -299,7 +299,6 @@ public final class WalWalFeedCellView: UIView {
   func toggleContent() {
     contentLabel.numberOfLines = 3
     contentLabel.text = contents
-    contentLabel.lineBreakMode = .byCharWrapping
     setNeedsLayout()
   }
   
