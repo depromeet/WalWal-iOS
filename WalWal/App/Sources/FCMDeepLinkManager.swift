@@ -45,6 +45,6 @@ final class FCMDeepLinkManager {
 }
 
 enum DeepLinkTarget: String {
-  case mission = "Mission"
-  case booster = "Booster"
+  case mission = "mission"
+  case booster = "booster"
 }
