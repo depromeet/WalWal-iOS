@@ -16,7 +16,6 @@ final class FCMDeepLinkManager {
   func checkDeepLink(userInfo: [AnyHashable : Any], coordinator: (any AppCoordinator)?) {
     guard let deepLinkUrl = userInfo["deepLink"] as? String,
             let url = URL(string: deepLinkUrl) else { return }
-    
     guard let type = url.host else { return }
     
     switch DeepLinkTarget(rawValue: type) {
@@ -46,5 +45,5 @@ final class FCMDeepLinkManager {
 
 enum DeepLinkTarget: String {
   case mission = "mission"
-  case booster = "booster"
+  case booster = "boost"
 }

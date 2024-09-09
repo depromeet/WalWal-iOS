@@ -28,7 +28,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     
-    
     configure(application)
     
     let window = UIWindow(frame: UIScreen.main.bounds)
@@ -71,6 +70,7 @@ private extension AppDelegate {
     FirebaseApp.configure()
     Messaging.messaging().delegate = self
     UNUserNotificationCenter.current().delegate = self
+    
     /// APNS에 Device Token 등록
     application.registerForRemoteNotifications()
     /// KakaoSDK 등록
@@ -118,9 +118,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     _ center: UNUserNotificationCenter,
     didReceive response: UNNotificationResponse
   ) async {
-    
+    print("didReceive")
     let userInfo = response.notification.request.content.userInfo
-    
     FCMDeepLinkManager.shared.checkDeepLink(userInfo: userInfo, coordinator: appCoordinator)
   }
   
