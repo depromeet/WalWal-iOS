@@ -22,7 +22,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
   var appCoordinator: (any AppCoordinator)?
   private let fcmToken = PublishRelay<String>()
-  private let callBackDeepLink = PublishRelay<String>()
   
   func application(
     _ application: UIApplication,
@@ -119,9 +118,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     _ center: UNUserNotificationCenter,
     didReceive response: UNNotificationResponse
   ) async {
-    /// let userInfo = response.notification.request.content.userInfo
-    /// let urlScheme = userInfo["urlScheme"]
-    /// callBackDeepLink.accept(urlScheme)
+    
+    let userInfo = response.notification.request.content.userInfo
+    
+    FCMDeepLinkManager.shared.checkDeepLink(userInfo: userInfo, coordinator: appCoordinator)
   }
   
 }

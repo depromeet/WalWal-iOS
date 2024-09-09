@@ -131,6 +131,11 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     setupTabBarController()
     childCoordinator = tabCoordinators[.startMission]
   }
+  
+  /// 특정 탭으로 이동 요청
+  public func specificTab(flow: Flow) {
+    forceMoveTab.accept(flow)
+  }
 }
 
 // MARK: - Handle Child Actions

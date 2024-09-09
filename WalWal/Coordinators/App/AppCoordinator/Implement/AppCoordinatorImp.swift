@@ -55,6 +55,10 @@ public final class AppCoordinatorImp: AppCoordinator {
   private let recordsDependencyFactory: RecordsDependencyFactory
   private let memberDependencyFactory: MembersDependencyFactory
   
+  public let pushTabMoveEvent = PublishSubject<PushNotiMoveAction>()
+  private var tabbarCoordinator: (any WalWalTabBarCoordinator)? = nil
+  private var retryPushMove: PushNotiMoveAction? = nil
+  
   /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
   /// 그리고 하위 Coordinator를 생성할 때 마다, 하위에 해당하는 인터페이스 모두 전달
   public required init(
@@ -102,6 +106,17 @@ public final class AppCoordinatorImp: AppCoordinator {
         }
       })
       .disposed(by: disposeBag)
+    
+    pushTabMoveEvent
+      .subscribe(with: self) { owner, move in
+        switch move {
+        case .feed:
+          owner.tabbarCoordinator?.specificTab(flow: .startFeed)
+        case .mission:
+          owner.tabbarCoordinator?.specificTab(flow: .startMission)
+        }
+      }
+      .disposed(by: disposeBag)
   }
   
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
@@ -131,6 +146,15 @@ public final class AppCoordinatorImp: AppCoordinator {
     let splashVC = appDependencyFactory.injectSplashViewController(reactor: reactor)
     self.baseViewController = splashVC
     self.pushViewController(viewController: splashVC, animated: false)
+  }
+  
+  public func pushTabMove(to: PushNotiMoveAction) {
+    if let tabbarCoordinator = childCoordinator as? (any WalWalTabBarCoordinator) {
+      pushTabMoveEvent.onNext(to)
+    } else {
+      /// 탭바 생성 전이라면 잠시 저장 후 다시 이동 시도
+      retryPushMove = to
+    }
   }
 }
 
@@ -194,7 +218,7 @@ extension AppCoordinatorImp {
   }
   
   /// 새로운 Coordinator를 통해서 Flow를 새로 생성하기 때문에, start를 prefix로 사용합니다.
-  fileprivate func startTabBar() {
+  fileprivate func startTabBar(moveTab: WalWalTabBarCoordinatorFlow? = nil) {
     let walwalTabBarCoordinator = walwalTabBarDependencyFactory.makeTabBarCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
@@ -209,7 +233,15 @@ extension AppCoordinatorImp {
       membersDependencyFactory: memberDependencyFactory
     )
     childCoordinator = walwalTabBarCoordinator
+    tabbarCoordinator = walwalTabBarCoordinator
+    
     walwalTabBarCoordinator.start()
+    
+    /// 저장해둔 재시도 이동 값이 있으면 코디네이터 생성 완료 후 이동 요청
+    if let tabType = retryPushMove {
+      pushTabMove(to: tabType)
+    }
+    
   }
   
   private func startOnboarding() {

@@ -19,4 +19,12 @@ public enum AppCoordinatorFlow: CoordinatorFlow {
   case startOnboarding
 }
 
-public protocol AppCoordinator: BaseCoordinator where Flow == AppCoordinatorFlow { }
+public protocol AppCoordinator: BaseCoordinator where Flow == AppCoordinatorFlow {
+  func pushTabMove(to: PushNotiMoveAction)
+  
+}
+
+public enum PushNotiMoveAction {
+  case mission
+  case feed
+}
