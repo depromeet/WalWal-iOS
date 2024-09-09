@@ -9,6 +9,8 @@ import Foundation
 import AppCoordinator
 import GlobalState
 
+/// Mission: myapp://mission
+/// Boostmyapp://boost?id=1
 final class FCMDeepLinkManager {
   static let shared = FCMDeepLinkManager()
   private init() { }
