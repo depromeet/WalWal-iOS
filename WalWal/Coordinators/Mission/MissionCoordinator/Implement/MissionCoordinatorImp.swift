@@ -18,6 +18,7 @@ import MissionUploadDependencyFactory
 import MissionDependencyFactory
 import RecordsDependencyFactory
 import ImageDependencyFactory
+import FCMDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -40,6 +41,7 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   public var missionUploadDependencyFactory: MissionUploadDependencyFactory
   public var recordDependencyFactory: RecordsDependencyFactory
   public var imageDependencyFactory: ImageDependencyFactory
+  private let fcmDependencyFactory: FCMDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
@@ -47,7 +49,8 @@ public final class MissionCoordinatorImp: MissionCoordinator {
     missionDependencyFactory: MissionDependencyFactory,
     missionUploadDependencyFactory: MissionUploadDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
+    fcmDependencyFactory: FCMDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -55,6 +58,7 @@ public final class MissionCoordinatorImp: MissionCoordinator {
     self.missionUploadDependencyFactory = missionUploadDependencyFactory
     self.recordDependencyFactory = recordDependencyFactory
     self.imageDependencyFactory = imageDependencyFactory
+    self.fcmDependencyFactory = fcmDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -79,16 +83,23 @@ public final class MissionCoordinatorImp: MissionCoordinator {
   }
   
   public func start() {
-    /// 이런 Reactor랑 ViewController가 있다 치고~
-    /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
+    let todayMissionUseCase = missionDependencyFactory.injectTodayMissionUseCase()
+    let checkCompletedTotalRecordsUseCase = recordDependencyFactory.injectCheckCompletedTotalRecordsUseCase()
+    let checkRecordStatusUseCase = recordDependencyFactory.injectCheckRecordStatusUseCase()
+    let checkRecordCalendarUseCase = recordDependencyFactory.injectCheckCalendarRecordsUseCase()
+    let removeGlobalCalendarRecordsUseCase = recordDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase()
+    let startRecordUseCase = recordDependencyFactory.injectStartRecordUseCase()
+    let removeGlobalFCMListUseCase = fcmDependencyFactory.injectGlobalRemoveFCMListUseCase()
+    
     let reactor = missionDependencyFactory.injectMissionReactor(
       coordinator: self,
-      todayMissionUseCase: missionDependencyFactory.injectTodayMissionUseCase(),
-      checkCompletedTotalRecordsUseCase: recordDependencyFactory.injectCheckCompletedTotalRecordsUseCase(),
-      checkRecordStatusUseCase: recordDependencyFactory.injectCheckRecordStatusUseCase(),
-      checkRecordCalendarUseCase: recordDependencyFactory.injectCheckCalendarRecordsUseCase(),
-      removeGlobalCalendarRecordsUseCase: recordDependencyFactory.injectRemoveGlobalCalendarRecordsUseCase(),
-      startRecordUseCase: recordDependencyFactory.injectStartRecordUseCase()
+      todayMissionUseCase: todayMissionUseCase,
+      checkCompletedTotalRecordsUseCase: checkCompletedTotalRecordsUseCase,
+      checkRecordStatusUseCase: checkRecordStatusUseCase,
+      checkRecordCalendarUseCase: checkRecordCalendarUseCase,
+      removeGlobalCalendarRecordsUseCase: removeGlobalCalendarRecordsUseCase,
+      startRecordUseCase: startRecordUseCase,
+      removeGlobalFCMListUseCase: removeGlobalFCMListUseCase
     )
     let missionVC = missionDependencyFactory.injectMissionViewController(reactor: reactor)
     self.baseViewController = missionVC

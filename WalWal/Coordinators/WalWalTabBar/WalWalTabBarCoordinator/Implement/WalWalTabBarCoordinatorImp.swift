@@ -25,6 +25,7 @@ import WalWalTabBarCoordinator
 import MissionCoordinator
 import FeedCoordinator
 import MyPageCoordinator
+import FCMCoordinator
 
 import RxSwift
 import RxCocoa
@@ -120,6 +121,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
       handleMissionEvent(.requireParentAction(missionEvent))
     } else if let feedEvent = event as? FeedCoordinatorAction {
       handleFeedEvent(.requireParentAction(feedEvent))
+    } else if let fcmEvent = event as? FCMCoordinatorAction {
+      handleFCMEvent(.requireParentAction(fcmEvent))
     }
   }
   
@@ -169,6 +172,20 @@ extension WalWalTabBarCoordinatorImp {
     }
   }
   
+  fileprivate func handleFCMEvent(_ event: CoordinatorEvent<FCMCoordinatorAction>) {
+    switch event {
+    case .finished:
+      childCoordinator = nil
+    case .requireParentAction(let action):
+      switch action {
+      case .startMission:
+        self.forceMoveTab.accept(.startMission)
+      case .startFeed:
+        self.forceMoveTab.accept(.startFeed)
+      }
+    }
+  }
+  
 }
 
 // MARK: - Create and Start(Show) with Flow(View)
@@ -182,7 +199,8 @@ extension WalWalTabBarCoordinatorImp {
       parentCoordinator: self,
       missionUploadDependencyFactory: missionUploadDependencyFactory,
       recordDependencyFactory: recordDependencyFactory,
-      imageDependencyFactory: imageDependencyFactory
+      imageDependencyFactory: imageDependencyFactory,
+      fcmDependencyFactory: fcmDependencyFactory
     )
     missionCoordinator.start()
     return missionCoordinator
@@ -190,7 +208,7 @@ extension WalWalTabBarCoordinatorImp {
   
   fileprivate func startFeed(navigationController: UINavigationController) -> any BaseCoordinator {
     print("피드 탭 선택")
-    let feedCoordinator = feedDependencyFactory.makeFeedCoordinator(
+    let feedCoordinator = feedDependencyFactory.injectFeedCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
       recordsDependencyFactory: recordDependencyFactory

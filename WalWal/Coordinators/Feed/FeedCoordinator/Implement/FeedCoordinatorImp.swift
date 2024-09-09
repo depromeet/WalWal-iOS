@@ -10,6 +10,7 @@ import UIKit
 
 import FeedDependencyFactory
 import RecordsDependencyFactory
+import FCMDependencyFactory
 
 import BaseCoordinator
 import FeedCoordinator
@@ -66,12 +67,12 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   }
   
   public func start() {
-    let reactor = feedDependencyFactory.makeFeedReactor(
+    let reactor = feedDependencyFactory.injectFeedReactor(
       coordinator: self,
       fetchFeedUseCase: feedDependencyFactory.injectFetchFeedUseCase(),
       updateBoostCountUseCase: recordsDependencyFactory.injectUpdateRecordUseCase()
     )
-    let feedVC = feedDependencyFactory.makeFeedViewController(reactor: reactor)
+    let feedVC = feedDependencyFactory.injectFeedViewController(reactor: reactor)
     self.baseViewController = feedVC
     self.pushViewController(viewController: feedVC, animated: false)
   }

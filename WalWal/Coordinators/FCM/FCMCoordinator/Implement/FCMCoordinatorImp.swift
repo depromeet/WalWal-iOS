@@ -60,7 +60,22 @@ public final class FCMCoordinatorImp: FCMCoordinator {
   }
   
   public func start() {
-    let reactor = fcmDependencyFactory.injectFCMReactor(coordinator: self)
+    let fetchFCMListUseCase = fcmDependencyFactory.injectFetchFCMListUseCase()
+    let fcmListUseCase = fcmDependencyFactory.injectFCMListUseCase()
+    let readFCMItemUseCase = fcmDependencyFactory.injectReadFCMItemUseCase()
+    let saveFeedRecordIDUseCase = fcmDependencyFactory.injectSaveFeedRecordIDUseCase()
+    let removeGlobalFCMListUseCase = fcmDependencyFactory.injectGlobalRemoveFCMListUseCase()
+    let saveFCMListGlobalStateUseCase = fcmDependencyFactory.injectSaveFCMListGlobalStateUseCase()
+    
+    let reactor = fcmDependencyFactory.injectFCMReactor(
+      coordinator: self,
+      fetchFCMListUseCase: fetchFCMListUseCase,
+      fcmListUseCase: fcmListUseCase,
+      readFCMItemUseCase: readFCMItemUseCase,
+      saveFeedRecordIDUseCase: saveFeedRecordIDUseCase,
+      removeGlobalFCMListUseCase: removeGlobalFCMListUseCase,
+      saveFCMListGlobalStateUseCase: saveFCMListGlobalStateUseCase
+    )
     let fcmVC = fcmDependencyFactory.injectFCMViewController(reactor: reactor)
     self.baseViewController = fcmVC
     self.pushViewController(viewController: fcmVC, animated: false)
@@ -108,5 +123,10 @@ extension FCMCoordinatorImp {
 // MARK: - FCM(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
 extension FCMCoordinatorImp {
-  
+  public func startMission() {
+    requireParentAction(.startMission)
+  }
+  public func startFeed() {
+    requireParentAction(.startFeed)
+  }
 }

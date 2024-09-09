@@ -16,7 +16,7 @@ import PinLayout
 import RxSwift
 import RxCocoa
 
-final class WalWalRefreshControl: UIRefreshControl {
+public final class WalWalRefreshControl: UIRefreshControl {
   let indicatorView: LottieAnimationView = {
     let animationView = LottieAnimationView(animation: AnimationAsset.refersh.animation)
     animationView.contentMode = .scaleAspectFit
@@ -24,7 +24,7 @@ final class WalWalRefreshControl: UIRefreshControl {
     return animationView
   }()
   
-  override init(frame: CGRect) {
+  public override init(frame: CGRect) {
     super.init(frame: frame)
     setupAnimationViews()
   }
@@ -39,7 +39,7 @@ final class WalWalRefreshControl: UIRefreshControl {
     self.clipsToBounds = true
   }
   
-  override func layoutSubviews() {
+  public override func layoutSubviews() {
     super.layoutSubviews()
     indicatorView.flex.height(self.height)
     indicatorView.pin.center()

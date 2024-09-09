@@ -23,6 +23,8 @@ public final class GlobalState {
   public private(set) var profileInfo = BehaviorRelay<GlobalProfileModel>(value: .init(memberId: 0, nickname: "", profileURL: "", raisePet: "DOG"))
   public private(set) var feedList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
   public private(set) var recordList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
+  public let fcmList = BehaviorRelay<[GlobalFCMListModel]>(value: [])
+  public let moveToFeedRecord = BehaviorRelay<Int?>(value: nil)
   
   /// 이미지 저장소 (캐시된 이미지를 저장하는 딕셔너리)
   public private(set) var imageStore: [String?: UIImage] = [:]
@@ -73,7 +75,23 @@ public final class GlobalState {
       }
       .subscribe()
       .disposed(by: disposeBag)
+    
+    fcmList
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, data -> Observable<Void> in
+        return owner.preloadImages(globalState: .fcmList)
+      }
+      .subscribe()
+      .disposed(by: disposeBag)
   }
+  
+  // MARK: - Save RecordID
+  public func updateRecordId(_ recordId: Int?) {
+    moveToFeedRecord.accept(recordId)
+  }
+  
+  // MARK: - Profile
   
   public func updateProfileInfo(data: GlobalProfileModel) {
     profileInfo.accept(data)
@@ -82,6 +100,8 @@ public final class GlobalState {
   public func fetchProfileImage(url: String) -> UIImage? {
     return imageStore[url]
   }
+  
+  // MARK: - Calendar
   
   /// 캘린더 기록 추가 메서드
   public func updateCalendarRecord(with newRecords: [GlobalMissonRecordListModel]) {
@@ -106,6 +126,8 @@ public final class GlobalState {
     return imageStore[record.imageUrl]
   }
   
+  // MARK: - Feed
+  
   /// 피드 정보 업데이트
   public func updateFeed(with newFeeds: [GlobalFeedListModel]) {
     var currentFeeds = feedList.value
@@ -121,6 +143,8 @@ public final class GlobalState {
     return feedList.value.filter {  $0.createdDate == date  }
   }
   
+  // MARK: - Record
+  
   /// 기록 정보 업데이트
   public func updateRecords(with newRecords: [GlobalFeedListModel]) {
     var currentRecord = recordList.value
@@ -135,6 +159,25 @@ public final class GlobalState {
   public func getRecords(forDate date: String) -> [GlobalFeedListModel] {
     return recordList.value.filter {  $0.createdDate == date  }
   }
+  
+  // MARK: - FCM List
+  
+  /// FCM List 업데이트
+  public func updateFCMList(newList: [GlobalFCMListModel]) {
+    var curList = fcmList.value
+    let newItems = newList.filter { item in
+      !curList.contains(where: { $0.notificationID == item.notificationID })
+    }
+    curList.append(contentsOf: newItems)
+    fcmList.accept(curList)
+  }
+  
+  /// FCM 데이터 지우기
+  public func removeRecords() {
+    fcmList.accept([])
+  }
+  
+  // MARK: - Image
   
   public func getCachedMissionImage(for feed: GlobalFeedListModel) -> UIImage? {
     guard let imageURL = feed.missionImage else { return nil }
@@ -174,6 +217,11 @@ public final class GlobalState {
         return [missionDownload, profileDownload]
       }
       return Observable.concat(downloadTasks)
+    case .fcmList:
+      let tasks = self.fcmList.value.map { data in
+        return downloadAndCacheImage(for: data.imageURL)
+      }
+      return Observable.concat(tasks)
     }
   }
   

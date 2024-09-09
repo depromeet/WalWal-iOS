@@ -13,12 +13,14 @@ import MissionCoordinator
 import MissionUploadDependencyFactory
 import RecordsDependencyFactory
 import ImageDependencyFactory
+import FCMDependencyFactory
 
 import MissionData
 import MissionDomain
 import MissionPresenter
 
 import RecordsDomain
+import FCMDomain
 
 public protocol MissionDependencyFactory {
   
@@ -29,7 +31,8 @@ public protocol MissionDependencyFactory {
     parentCoordinator: (any BaseCoordinator)?,
     missionUploadDependencyFactory: MissionUploadDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
-    imageDependencyFactory: ImageDependencyFactory
+    imageDependencyFactory: ImageDependencyFactory,
+    fcmDependencyFactory: FCMDependencyFactory
   ) -> any MissionCoordinator
   func injectMissionReactor<T: MissionCoordinator>(
     coordinator: T,
@@ -38,7 +41,8 @@ public protocol MissionDependencyFactory {
     checkRecordStatusUseCase: CheckRecordStatusUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
-    startRecordUseCase: StartRecordUseCase
+    startRecordUseCase: StartRecordUseCase,
+    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   ) -> any MissionReactor
   func injectMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController
 }

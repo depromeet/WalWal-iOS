@@ -22,15 +22,15 @@ public protocol FeedDependencyFactory {
   func injectFeedRepository() -> FeedRepository
   func injectFetchFeedUseCase() -> FetchFeedUseCase
   func injectFetchUserFeedUseCase() -> FetchUserFeedUseCase
-  func makeFeedCoordinator(
+  func injectFeedCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     recordsDependencyFactory: RecordsDependencyFactory
   ) -> any FeedCoordinator
-  func makeFeedReactor<T: FeedCoordinator>(
+  func injectFeedReactor<T: FeedCoordinator>(
     coordinator: T,
     fetchFeedUseCase: FetchFeedUseCase,
     updateBoostCountUseCase: UpdateBoostCountUseCase
   ) -> any FeedReactor
-  func makeFeedViewController<T: FeedReactor>(reactor: T) -> any FeedViewController
+  func injectFeedViewController<T: FeedReactor>(reactor: T) -> any FeedViewController
 }

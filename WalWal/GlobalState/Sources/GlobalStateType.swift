@@ -13,4 +13,5 @@ public enum GlobalStateType {
   case profile(_ image: String)
   case feedList
   case recodList(_ memberid: Int)
+  case fcmList
 }

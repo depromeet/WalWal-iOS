@@ -10,6 +10,7 @@ import MissionCoordinator
 
 import MissionDomain
 import RecordsDomain
+import FCMDomain
 
 import ReactorKit
 import RxSwift
@@ -69,6 +70,7 @@ public protocol MissionReactor: Reactor where Action == MissionReactorAction, Mu
     checkRecordStatusUseCase: CheckRecordStatusUseCase,
     checkRecordCalendarUseCase: CheckCalendarRecordsUseCase,
     removeGlobalCalendarRecordsUseCase: RemoveGlobalCalendarRecordsUseCase,
-    startRecordUseCase: StartRecordUseCase
+    startRecordUseCase: StartRecordUseCase,
+    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   )
 }

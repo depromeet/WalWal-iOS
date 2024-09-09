@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension UIScrollView {
+public extension UIScrollView {
   func isNearBottom(offset: CGFloat = 20.0) -> Bool {
     return (self.contentOffset.y + self.frame.height + offset) > self.contentSize.height
   }

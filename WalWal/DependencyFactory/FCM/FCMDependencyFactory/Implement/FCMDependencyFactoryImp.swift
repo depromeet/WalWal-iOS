@@ -37,8 +37,24 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
     )
   }
   
-  public func injectFCMReactor<T>(coordinator: T) -> any FCMReactor where T : FCMCoordinator {
-    return FCMReactorImp(coordinator: coordinator)
+  public func injectFCMReactor<T>(
+    coordinator: T,
+    fetchFCMListUseCase: FetchFCMListUseCase,
+    fcmListUseCase: FCMListUseCase,
+    readFCMItemUseCase: ReadFCMItemUseCase,
+    saveFeedRecordIDUseCase: SaveFeedRecordIDUseCase,
+    removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase,
+    saveFCMListGlobalStateUseCase: SaveFCMListGlobalStateUseCase
+  ) -> any FCMReactor where T : FCMCoordinator {
+    return FCMReactorImp(
+      coordinator: coordinator,
+      fetchFCMListUseCase: fetchFCMListUseCase,
+      fcmListUseCase: fcmListUseCase,
+      readFCMItemUseCase: readFCMItemUseCase,
+      saveFeedRecordIDUseCase: saveFeedRecordIDUseCase,
+      removeGlobalFCMListUseCase: removeGlobalFCMListUseCase,
+      saveFCMListGlobalStateUseCase: saveFCMListGlobalStateUseCase
+    )
   }
   
   public func injectFCMViewController<T>(reactor: T) -> any FCMViewController where T : FCMReactor {
@@ -58,4 +74,30 @@ public class FCMDependencyFactoryImp: FCMDependencyFactory {
     return FCMDeleteUseCaseImp(fcmRepository: injectFCMRepository())
   }
   
+  public func injectFCMListUseCase() -> FCMListUseCase {
+    return FCMListUseCaseImp(
+      fcmRepository: injectFCMRepository(),
+      saveFCMListGlobalStateUseCase: injectSaveFCMListGlobalStateUseCase()
+    )
+  }
+  
+  public func injectSaveFCMListGlobalStateUseCase() -> SaveFCMListGlobalStateUseCase {
+    return SaveFCMListGlobalStateUseCaseImp()
+  }
+  
+  public func injectFetchFCMListUseCase() -> FetchFCMListUseCase {
+    return FetchFCMListUseCaseImp()
+  }
+  
+  public func injectReadFCMItemUseCase() -> ReadFCMItemUseCase {
+    return ReadFCMItemUseCaseImp(fcmRepository: injectFCMRepository())
+  }
+  
+  public func injectGlobalRemoveFCMListUseCase() -> RemoveGlobalFCMListUseCase {
+    return RemoveGlobalFCMListUseCaseImp()
+  }
+  
+  public func injectSaveFeedRecordIDUseCase() -> SaveFeedRecordIDUseCase {
+    return SaveFeedRecordIDUseCaseImp()
+  }
 }

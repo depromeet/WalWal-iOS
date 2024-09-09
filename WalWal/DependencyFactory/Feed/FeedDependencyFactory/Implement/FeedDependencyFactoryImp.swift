@@ -42,7 +42,7 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     return FetchUserFeedUseCaseImp(feedRepository: injectFeedRepository())
   }
   
-  public func makeFeedCoordinator(
+  public func injectFeedCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     recordsDependencyFactory: RecordsDependencyFactory
@@ -54,7 +54,7 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
       recordsDependencyFactory: recordsDependencyFactory
     )
   }
-  public func makeFeedReactor<T>(
+  public func injectFeedReactor<T>(
     coordinator: T,
     fetchFeedUseCase: FetchFeedUseCase,
     updateBoostCountUseCase: UpdateBoostCountUseCase
@@ -66,7 +66,7 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     )
   }
   
-  public func makeFeedViewController<T>(reactor: T) -> any FeedPresenter.FeedViewController where T : FeedReactor {
+  public func injectFeedViewController<T>(reactor: T) -> any FeedViewController where T : FeedReactor {
     return FeedViewControllerImp(reactor: reactor)
   }
   

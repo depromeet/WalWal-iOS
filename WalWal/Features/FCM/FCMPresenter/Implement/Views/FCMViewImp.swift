@@ -11,6 +11,7 @@ import UIKit
 import FCMPresenter
 import DesignSystem
 import ResourceKit
+import FCMDomain
 
 import Then
 import PinLayout
@@ -18,41 +19,52 @@ import FlexLayout
 import ReactorKit
 import RxSwift
 import RxCocoa
+import RxDataSources
 
-public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMViewController {
+public final class FCMViewControllerImp<R: FCMReactor>: 
+  UIViewController, 
+    FCMViewController,
+  UICollectionViewDelegateFlowLayout {
   
   private typealias Images = ResourceKitAsset.Images
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
+  // MARK: - Properties
+  
   public var disposeBag = DisposeBag()
   public var fcmReactor: R
+  private lazy var datasource: RxCollectionViewSectionedReloadDataSource<FCMSection> = configureDataSource()
+  private var isLastPage = BehaviorRelay<Bool>(value: false)
+  private var nextCursor = BehaviorRelay<String?>(value: nil)
   
   // MARK: - UI
   
-  private let rootContainerView = UIView()
-  private let titleLabel = UILabel().then {
-    $0.text = "앗.."
-    $0.font = Fonts.LotteriaChab.Buster_Cute
-    $0.textColor = Colors.black.color
+  private let rootContainerView = UIView().then {
+    $0.backgroundColor = Colors.gray100.color
   }
-  private let subTitelLabel = UILabel().then {
-    $0.text = "아직 알림이 없어요!"
-    $0.font = Fonts.KR.H5.B
-    $0.textColor = Colors.black.color
+  private let naviagationBar = WalWalNavigationBar(leftItems: [], title: "알림", rightItems: []).then {
+    $0.backgroundColor = Colors.white.color
   }
-  private let guideLabel = UILabel().then {
-    $0.text = "조금만 기다리면 알림이 올 거예요."
-    $0.numberOfLines = 2
-    $0.textAlignment = .center
-    $0.font = Fonts.KR.H7.M
-    $0.textColor = Colors.black.color
+  private let separator = UIView().then {
+    $0.backgroundColor = Colors.gray150.color
   }
-  private let actionButton = WalWalButton(type: .dark, title: "")
   
+  private let walwalIndicator = WalWalRefreshControl(frame: .zero)
+  private lazy var collectionView = UICollectionView(
+    frame: .zero,
+    collectionViewLayout: collectionViewLayout()
+  ).then {
+    $0.backgroundColor = Colors.gray100.color
+    $0.register(FCMCollectionViewCell.self)
+    $0.registerHeader(FCMCollectionViewHeader.self)
+    $0.showsVerticalScrollIndicator = false
+    $0.delegate = self
+    $0.refreshControl = walwalIndicator
+  }
   
   public init(
-      reactor: R
+    reactor: R
   ) {
     self.fcmReactor = reactor
     super.init(nibName: nil, bundle: nil)
@@ -72,33 +84,90 @@ public final class FCMViewControllerImp<R: FCMReactor>: UIViewController, FCMVie
   }
   
   
+  // MARK: - Layout
+  
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     rootContainerView.pin
-      .all(view.pin.safeArea)
+      .vertically(view.pin.safeArea)
+      .horizontally()
+    
     rootContainerView.flex
       .layout()
   }
   
-    
-  
   public func setupAttribute() {
-    view.backgroundColor = Colors.gray150.color
+    view.backgroundColor = Colors.white.color
     view.addSubview(rootContainerView)
   }
   
   public func setupLayout() {
     rootContainerView.flex
-      .direction(.column)
-      .alignItems(.center)
-      .justifyContent(.center)
       .define {
-        $0.addItem(titleLabel)
-        $0.addItem(subTitelLabel)
-          .marginTop(20)
-        $0.addItem(guideLabel)
-          .marginTop(4)
+        $0.addItem(naviagationBar)
+          .height(60)
+        $0.addItem(separator)
+          .width(100%)
+          .height(1)
+        $0.addItem(collectionView)
+          .marginTop(13.adjustedHeight)
+          .width(100%)
+          .grow(1)
       }
+  }
+  
+  private func collectionViewLayout() -> UICollectionViewLayout {
+    let layout = UICollectionViewFlowLayout()
+    layout.minimumLineSpacing = 0
+    layout.itemSize = CGSize(
+      width: UIScreen.main.bounds.width,
+      height: 74.adjustedHeight
+    )
+    layout.scrollDirection = .vertical
+    layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 64.adjustedHeight)
+    
+    return layout
+  }
+  
+  private func configureDataSource() -> RxCollectionViewSectionedReloadDataSource<FCMSection> {
+    
+    return RxCollectionViewSectionedReloadDataSource<FCMSection> { datasource, collectionView, indexPath, item in
+      guard let cell = collectionView.dequeueReusableCell(
+        withReuseIdentifier: FCMCollectionViewCell.reuseIdentifier,
+        for: indexPath
+      ) as? FCMCollectionViewCell else {
+        return UICollectionViewCell()
+      }
+      switch item {
+      case let .fcmItems(reactor):
+        cell.reactor = reactor
+      }
+      return cell
+      
+    } configureSupplementaryView: { datasource, collectionView, kind, indexPath in
+      switch kind {
+      case UICollectionView.elementKindSectionHeader:
+        guard let header = collectionView.dequeueReusableSupplementaryView(
+          ofKind: kind,
+          withReuseIdentifier: FCMCollectionViewHeader.reuseIdentifier,
+          for: indexPath
+        ) as? FCMCollectionViewHeader else {
+          return UICollectionReusableView()
+        }
+        return header
+      default:
+        return UICollectionReusableView()
+      }
+    }
+  }
+  
+  public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    let existEmptySection = fcmReactor.currentState.listData[1].items.isEmpty || fcmReactor.currentState.listData[0].items.isEmpty
+    if section == 0 || existEmptySection  {
+      return CGSize.zero
+    } else {
+      return CGSize(width: collectionView.bounds.width, height: 64.adjustedHeight)
+    }
   }
 }
 
@@ -113,14 +182,85 @@ extension FCMViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
+    let modelSelected = collectionView.rx.modelSelected(FCMItems.self)
+      .map {
+        switch $0 {
+        case let .fcmItems(reactor):
+          return reactor
+        }
+      }
+    
+    walwalIndicator.rx.controlEvent(.valueChanged)
+      .map { Reactor.Action.refreshList }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    modelSelected
+      .map { Reactor.Action.selectItem(item: $0.currentState) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    Observable.zip(modelSelected, collectionView.rx.itemSelected)
+      .filter { !$0.0.currentState.isRead }
+      .map { Reactor.Action.updateItem(index: $0.1) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    collectionView.rx.reachedBottom
+      .filter { _ in
+        !self.isLastPage.value
+      }
+      .map { _ in
+        Reactor.Action.loadFCMList(cursor: self.nextCursor.value, limit: 10)
+      }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
     
   }
   
   public func bindState(reactor: R) {
+    reactor.pulse(\.$listData)
+      .observe(on: MainScheduler.instance)
+      .bind(to: collectionView.rx.items(dataSource: datasource))
+      .disposed(by: disposeBag)
     
+    reactor.pulse(\.$stopRefreshControl)
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, _ in
+        owner.walwalIndicator.endRefreshing()
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.isLastPage }
+      .distinctUntilChanged()
+      .bind(to: isLastPage)
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.nextCursor }
+      .distinctUntilChanged()
+      .bind(to: nextCursor)
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
     
+  }
+  
+}
+
+extension Reactive where Base: UIScrollView {
+  
+  // 스크롤이 바닥에 도달했을 때의 이벤트를 방출하는 Observable
+  var reachedBottom: Observable<Bool> {
+    return self.contentOffset
+      .throttle(.milliseconds(1000), scheduler: MainScheduler.instance)
+      .distinctUntilChanged()
+      .map { [weak base] _ in
+        guard let scrollView = base else { return false }
+        return scrollView.isNearBottom()
+      }
+      .filter { $0 } // true일 때만 방출
   }
 }
