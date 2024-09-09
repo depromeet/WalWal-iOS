@@ -67,10 +67,15 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   }
   
   public func start() {
+    let fetchFeedUseCase = feedDependencyFactory.injectFetchFeedUseCase()
+    let updateBoostCountUseCase =  recordsDependencyFactory.injectUpdateRecordUseCase()
+    let removeGlobalRecordIdUseCase = feedDependencyFactory.injectRemoveGlobalRecordIdUseCase()
+    
     let reactor = feedDependencyFactory.injectFeedReactor(
       coordinator: self,
-      fetchFeedUseCase: feedDependencyFactory.injectFetchFeedUseCase(),
-      updateBoostCountUseCase: recordsDependencyFactory.injectUpdateRecordUseCase()
+      fetchFeedUseCase: fetchFeedUseCase,
+      updateBoostCountUseCase: updateBoostCountUseCase,
+      removeGlobalRecordIdUseCase: removeGlobalRecordIdUseCase
     )
     let feedVC = feedDependencyFactory.injectFeedViewController(reactor: reactor)
     self.baseViewController = feedVC

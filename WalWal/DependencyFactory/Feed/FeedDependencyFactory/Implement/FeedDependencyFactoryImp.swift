@@ -42,6 +42,10 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     return FetchUserFeedUseCaseImp(feedRepository: injectFeedRepository())
   }
   
+  public func injectRemoveGlobalRecordIdUseCase() -> RemoveGlobalRecordIdUseCase {
+    return RemoveGlobalRecordIdUseCaseImp()
+  }
+  
   public func injectFeedCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
@@ -57,12 +61,14 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
   public func injectFeedReactor<T>(
     coordinator: T,
     fetchFeedUseCase: FetchFeedUseCase,
-    updateBoostCountUseCase: UpdateBoostCountUseCase
+    updateBoostCountUseCase: UpdateBoostCountUseCase,
+    removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
   ) -> any FeedReactor where T : FeedCoordinator {
     return FeedReactorImp(
       coordinator: coordinator,
       fetchFeedUseCase: fetchFeedUseCase,
-      updateBoostCountUseCase: updateBoostCountUseCase
+      updateBoostCountUseCase: updateBoostCountUseCase,
+      removeGlobalRecordIdUseCase: removeGlobalRecordIdUseCase
     )
   }
   

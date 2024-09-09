@@ -149,7 +149,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   }
   
   public func pushTabMove(to: PushNotiMoveAction) {
-    if let tabbarCoordinator = childCoordinator as? (any WalWalTabBarCoordinator) {
+    if childCoordinator is (any WalWalTabBarCoordinator) {
       pushTabMoveEvent.onNext(to)
     } else {
       /// 탭바 생성 전이라면 잠시 저장 후 다시 이동 시도
