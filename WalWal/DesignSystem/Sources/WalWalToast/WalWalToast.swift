@@ -26,6 +26,8 @@ public final class WalWalToast {
   private let maintenanceTime: TimeInterval = 1.5
   private let fadeOutDutaion: TimeInterval = 0.5
   private let bottomMargin: CGFloat = 13
+  private var keyboardHeight: CGFloat = 0
+  private let disposeBag = DisposeBag()
   
   // MARK: - UI
   
@@ -48,9 +50,6 @@ public final class WalWalToast {
   // MARK: - Layout
   
   private func configureLayout() {
-    guard let window = UIWindow.key else { return }
-    let safeAreaBottomInset = window.topViewControllerSafeAreaInsets?.bottom ?? 34
-    
     container.flex
       .direction(.row)
       .height(56)
@@ -63,14 +62,21 @@ public final class WalWalToast {
           .marginLeft(6)
           .grow(1)
       }
+    updateToastPosition()
+  }
+  
+  private func updateToastPosition() {
+    guard let window = UIWindow.key else { return }
+    let safeAreaBottomInset = window.topViewControllerSafeAreaInsets?.bottom ?? 34
+    let bottomOffset = safeAreaBottomInset + keyboardHeight + bottomMargin
     
     container.pin
       .horizontally(16)
-      .bottom(safeAreaBottomInset+bottomMargin)
+      .bottom(bottomOffset)
     container.flex
       .layout(mode: .adjustHeight)
     container.pin
-      .bottom(safeAreaBottomInset+bottomMargin-10)
+      .bottom(bottomOffset-10)
   }
   
   /// 토스트 메세지 띄우는 메서드
@@ -78,12 +84,14 @@ public final class WalWalToast {
   /// - Parameters:
   ///   - type: 토스트 메세지 타입(타입에 따라 아이콘이 달라짐)
   ///   - message: 토스트 메세지 내용, nil일 경우 ToastType에 지정된 기본 메세지 출력
+  ///   - keyboardHeight: 키보드 올라와있을 경우 키보드 위로 띄우기 위한 높이 파라미터
   public func show(
     type: ToastType,
-    message: String? = nil
+    message: String? = nil,
+    keyboardHeight: CGFloat = 0
   ) {
     guard let window = UIWindow.key else { return }
-    
+    self.keyboardHeight = keyboardHeight
     self.messageLabel.text = message ?? type.message
     self.iconImage.image = type.icon
     window.addSubview(container)
@@ -96,6 +104,7 @@ public final class WalWalToast {
   private func render() {
     guard let window = UIWindow.key else { return }
     let safeAreaBottomInset = window.topViewControllerSafeAreaInsets?.bottom ?? 34
+    let bottomOffset = safeAreaBottomInset + keyboardHeight + bottomMargin
     UIView.animate(
       withDuration: self.fadeInDuration,
       delay: 0,
@@ -106,7 +115,7 @@ public final class WalWalToast {
         }
         
         self.container.transform = CGAffineTransform(translationX: 0, y: -10)
-        self.container.pin.bottom(safeAreaBottomInset+bottomMargin)
+        self.container.pin.bottom(bottomOffset)
         container.alpha = 1.0
       },
       completion: { [weak self] _ in
