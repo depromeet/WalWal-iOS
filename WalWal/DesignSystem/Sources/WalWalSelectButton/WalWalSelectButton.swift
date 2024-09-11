@@ -39,6 +39,7 @@ public final class WalWalSelectButton: UIView {
   
   private let guideLabel = CustomLabel(font: Fonts.B1).then {
     $0.textColor = Colors.gray600.color
+    $0.textAlignment = .center
   }
   
   private let iconImageView = UIImageView()
@@ -50,8 +51,12 @@ public final class WalWalSelectButton: UIView {
   ) {
     self.titleLabel.text = titleText
     self.guideLabel.text = guideText
+    self.iconImageType.accept(iconImageType)
     
     super.init(frame: .zero)
+    bind()
+    configureLayouts()
+    configureAttributes()
   }
   
   required init?(coder: NSCoder) {
@@ -79,6 +84,7 @@ public final class WalWalSelectButton: UIView {
     
     rootContainer.flex
       .height(180.adjusted)
+      .width(160.adjusted)
       .alignItems(.center)
       .justifyContent(.center)
       .define {
@@ -89,6 +95,7 @@ public final class WalWalSelectButton: UIView {
         $0.addItem(guideLabel)
       }
   }
+  
   fileprivate func bind() {
     iconImageType
       .bind(with:self, onNext: { owner, type in
@@ -104,7 +111,7 @@ public final class WalWalSelectButton: UIView {
   }
   
   fileprivate func configureUISet() {
-    // type에 따라 아이콘 변경하기
+    iconImageView.image = iconImageType.value == .camera ? Assets.cameraIcon.image : Assets.galleryIcon.image
   }
 }
 
