@@ -93,12 +93,14 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
   public func injectMissionSelectReactor<T: MissionCoordinator>(
     coordinator: T,
     recordId: Int,
-    missionId: Int
+    missionId: Int,
+    missionTitle: String
   ) -> any MissionSelectReactor {
     return MissionSelectReactorImp(
       coordinator: coordinator,
       missionId: missionId,
-      recordId: recordId
+      recordId: recordId,
+      missionTitle: missionTitle
     )
   }
   

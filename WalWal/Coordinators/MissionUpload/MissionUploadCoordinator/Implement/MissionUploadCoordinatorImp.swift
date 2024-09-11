@@ -39,6 +39,7 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
   private let missionId: Int
   private let isCamera: Bool
   private let image: UIImage?
+  private let missionTitle: String
   
   public required init(
     navigationController: UINavigationController,
@@ -49,7 +50,8 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
     recordId: Int,
     missionId: Int,
     isCamera: Bool,
-    image: UIImage?
+    image: UIImage?,
+    missionTitle: String
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -60,6 +62,7 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
     self.missionId = missionId
     self.isCamera = isCamera
     self.image = image
+    self.missionTitle = missionTitle
     bindChildToParentAction()
     bindState()
   }
@@ -94,7 +97,7 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
       let cameraReactor = missionUploadDependencyFactory.injectCameraShootDuringTheMissionReactorReactor(
         coordinator: self
       )
-      let cameraShootDuringTheMissionViewController = missionUploadDependencyFactory.injectCameraShootDuringTheMissionViewController(reactor: cameraReactor)
+      let cameraShootDuringTheMissionViewController = missionUploadDependencyFactory.injectCameraShootDuringTheMissionViewController(reactor: cameraReactor, missionTitle: missionTitle)
       self.baseViewController = cameraShootDuringTheMissionViewController
       
       guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {

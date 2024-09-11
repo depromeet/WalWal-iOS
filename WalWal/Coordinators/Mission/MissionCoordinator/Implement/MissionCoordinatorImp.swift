@@ -67,15 +67,26 @@ public final class MissionCoordinatorImp: MissionCoordinator {
     destination
       .subscribe(with: self, onNext: { owner, flow in
         switch flow {
-        case .startMissionUpload(let recordId, let missionId, let isCamera, let image):
+        case .startMissionUpload(
+          let recordId,
+          let missionId,
+          let isCamera,
+          let image,
+          let missionTitle
+        ):
           owner.startMissionUpload(
             recordId: recordId,
             missionId: missionId,
             isCamera: isCamera,
-            image: image
+            image: image,
+            missionTitle: missionTitle
           )
-        case .showSelectMission(let recordId, let missionId):
-          owner.showSelectMission(recordId: recordId, missionId: missionId)
+        case .showSelectMission(let recordId, let missionId, let missionTitle):
+          owner.showSelectMission(
+            recordId: recordId,
+            missionId: missionId,
+            missionTitle: missionTitle
+          )
         }
       })
       .disposed(by: disposeBag)
@@ -144,7 +155,8 @@ extension MissionCoordinatorImp {
     recordId: Int,
     missionId: Int,
     isCamera: Bool,
-    image: UIImage? = nil
+    image: UIImage? = nil,
+    missionTitle: String
   ) {
     let missionUploadCoordinator = missionUploadDependencyFactory.injectMissionUploadCoordinator(
       navigationController: navigationController,
@@ -154,17 +166,19 @@ extension MissionCoordinatorImp {
       recordId: recordId,
       missionId: missionId,
       isCamera: isCamera,
-      image: image
+      image: image,
+      missionTitle: missionTitle
     )
     self.childCoordinator = missionUploadCoordinator
     missionUploadCoordinator.start() 
   }
   
-  fileprivate func showSelectMission(recordId: Int, missionId: Int) {
+  fileprivate func showSelectMission(recordId: Int, missionId: Int, missionTitle: String) {
     let reactor = missionDependencyFactory.injectMissionSelectReactor(
       coordinator: self,
       recordId: recordId,
-      missionId: missionId
+      missionId: missionId,
+      missionTitle: missionTitle
     )
     let missionSelectVC = missionDependencyFactory.injectMissionSelectViewController(reactor: reactor)
     self.presentViewController(viewController: missionSelectVC, style: .overFullScreen, animated: false)

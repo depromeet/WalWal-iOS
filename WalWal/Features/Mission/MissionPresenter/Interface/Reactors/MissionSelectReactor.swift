@@ -53,6 +53,7 @@ public protocol MissionSelectReactor: Reactor where Action == MissionSelectReact
   init(
     coordinator: any MissionCoordinator,
     missionId: Int,
-    recordId: Int
+    recordId: Int,
+    missionTitle: String
   )
 }

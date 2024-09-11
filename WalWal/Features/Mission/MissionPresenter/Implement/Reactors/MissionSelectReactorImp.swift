@@ -23,15 +23,18 @@ public final class MissionSelectReactorImp: MissionSelectReactor {
   
   public let recordId: Int
   public let missionId: Int
+  public let missionTitle: String
   
   public init(
     coordinator: any MissionCoordinator,
     missionId: Int,
-    recordId: Int
+    recordId: Int,
+    missionTitle: String
   ) {
     self.coordinator = coordinator
     self.recordId = recordId
     self.missionId = missionId
+    self.missionTitle = missionTitle
     initialState = State()
   }
   
@@ -72,7 +75,8 @@ public final class MissionSelectReactorImp: MissionSelectReactor {
             recordId: self.recordId,
             missionId: self.missionId,
             isCamera: isCamera,
-            image: image
+            image: image,
+            missionTitle: self.missionTitle
           )
         )
       }

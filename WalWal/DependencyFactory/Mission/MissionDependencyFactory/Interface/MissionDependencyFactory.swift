@@ -53,6 +53,8 @@ public protocol MissionDependencyFactory {
   func injectMissionSelectReactor<T:MissionCoordinator>(
     coordinator: T,
     recordId: Int,
-    missionId: Int) -> any MissionSelectReactor
+    missionId: Int,
+    missionTitle: String
+  ) -> any MissionSelectReactor
   func injectMissionSelectViewController<T: MissionSelectReactor>(reactor: T) -> any MissionSelectViewController
 }

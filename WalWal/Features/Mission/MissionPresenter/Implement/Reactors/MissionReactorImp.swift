@@ -124,7 +124,8 @@ public final class MissionReactorImp: MissionReactor {
       guard let mission = newState.mission else { return newState }
       coordinator.destination.accept(.showSelectMission(
         recordId: newState.recordId,
-        missionId: mission.id
+        missionId: mission.id,
+        missionTitle: mission.title.replacingNewlinesWithSpaces()
       )
       )
     case let .moveToMissionUploadFailed(error):

@@ -30,7 +30,8 @@ public protocol MissionUploadDependencyFactory {
     recordId: Int,
     missionId: Int,
     isCamera: Bool,
-    image: UIImage?
+    image: UIImage?,
+    missionTitle: String
   ) -> any MissionUploadCoordinator
   
   func injectCameraShootDuringTheMissionReactorReactor<T: MissionUploadCoordinator>(
@@ -46,7 +47,8 @@ public protocol MissionUploadDependencyFactory {
   ) -> any WriteContentDuringTheMissionReactor
   
   func injectCameraShootDuringTheMissionViewController<T: CameraShootDuringTheMissionReactor>(
-    reactor: T
+    reactor: T,
+    missionTitle: String
   ) -> any CameraShootDuringTheMissionViewController
   
   func injectWriteContentDuringTheMissionViewController<T: WriteContentDuringTheMissionReactor>(
