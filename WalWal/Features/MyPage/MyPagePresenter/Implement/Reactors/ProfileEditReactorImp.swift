@@ -264,12 +264,9 @@ extension ProfileEditReactorImp {
        nickname == profileModel.nickname {
       
       return .just(.buttonEnable(isEnable: false))
-    }
-    
-    else if nickname.count < 2 {
+    } else if nickname.count < 2 {
       return .just(.buttonEnable(isEnable: false))
-    }
-    else if nickname.count > 14 {
+    } else if nickname.count > 14 {
       let errorMessage = ProfileEditError.maxLengthNickname.message
       return .concat([
         .just(.buttonEnable(isEnable: false)),
@@ -281,6 +278,8 @@ extension ProfileEditReactorImp {
         .just(.buttonEnable(isEnable: false)),
         .just(.invalidNickname(message: errorMessage))
       ])
+    } else if profile.profileType == .selectImage && profile.selectImage == nil {
+      return .just(.buttonEnable(isEnable: false))
     } else {
       return .just(.buttonEnable(isEnable: true))
     }
