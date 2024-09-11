@@ -103,6 +103,7 @@ final public class MissionSelectViewControllerImp<R: MissionSelectReactor>: UIVi
     view.addSubview(dimView)
     
     rootContainer.layer.cornerRadius = 30
+    rootContainer.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
   }
   
   public func configureLayout() {
@@ -122,11 +123,12 @@ final public class MissionSelectViewControllerImp<R: MissionSelectReactor>: UIVi
           .marginTop(46.adjusted)
           .marginBottom(24.adjusted)
         flex.addItem(buttonContainerView)
-          .marginHorizontal(22.adjusted)
       }
     
     buttonContainerView.flex
       .direction(.row)
+      .width(100%)
+      .justifyContent(.center)
       .define { flex in
         flex.addItem(cameraButton)
           .marginRight(11.adjusted)
@@ -176,10 +178,9 @@ extension MissionSelectViewControllerImp: View {
     rootContainer.rx
       .panGesture()
       .asObservable()
-      .subscribe(onNext: { [weak self] gesture in
-        guard let self = self else { return }
-        let translation = gesture.translation(in: self.rootContainer)
-        let velocity = gesture.velocity(in: self.rootContainer)
+      .subscribe(with: self, onNext: { owner, gesture in
+        let translation = gesture.translation(in: owner.rootContainer)
+        let velocity = gesture.velocity(in: owner.rootContainer)
         
         switch gesture.state {
         case .changed:
@@ -188,6 +189,14 @@ extension MissionSelectViewControllerImp: View {
           reactor.action.onNext(.didEndPan(velocity: velocity))
         default:
           break
+        }
+      })
+      .disposed(by: disposeBag)
+    
+    dimView.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.animateSheetDown {
+          reactor.action.onNext(.tapDimView)
         }
       })
       .disposed(by: disposeBag)

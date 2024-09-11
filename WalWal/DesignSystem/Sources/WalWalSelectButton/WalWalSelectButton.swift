@@ -84,7 +84,7 @@ public final class WalWalSelectButton: UIView {
     
     rootContainer.flex
       .height(180.adjusted)
-      .width(160.adjusted)
+      .width(160.adjustedWidth)
       .alignItems(.center)
       .justifyContent(.center)
       .define {
