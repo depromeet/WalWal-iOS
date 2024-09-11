@@ -80,7 +80,9 @@ public final class MissionSelectReactorImp: MissionSelectReactor {
     case .setPhotoPermission(let isAllow):
       newState.isGrantedPhoto = isAllow
       if isAllow {
-        PHPickerManager.shared.presentPicker(vc: coordinator.baseViewController)
+        coordinator.dismissViewController(animated: false) {
+          PHPickerManager.shared.presentPicker(vc: self.coordinator.baseViewController)
+        }
       }
     }
     return newState
