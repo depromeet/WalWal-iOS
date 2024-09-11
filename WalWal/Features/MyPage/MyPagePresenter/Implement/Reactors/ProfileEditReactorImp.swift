@@ -147,11 +147,13 @@ extension ProfileEditReactorImp {
         .asObservable()
         .withUnretained(self)
         .flatMap { owner, _ -> Observable<Mutation> in
+          return owner.uploadImage(nickname: nickname, profile: profile)
+        }
+        .catch { error  -> Observable<Mutation> in
           return .concat([
-            owner.uploadImage(nickname: nickname, profile: profile)
+            .just(.showIndicator(show: false)),
+            .just(.invalidNickname(message: error.localizedDescription))
           ])
-        } .catch { error  -> Observable<Mutation> in
-          return .just(.invalidNickname(message: error.localizedDescription))
         }
     } else { // 닉네임 수정하지 않았음
       return uploadImage(nickname: nickname, profile: profile)
@@ -172,7 +174,7 @@ extension ProfileEditReactorImp {
       return editRequest(nickname: nickname, profileImage: profileModel.profileURL)
     }
     guard let imagedata = profile.selectImage?.jpegData(compressionQuality: 0.8) else {
-      return .never()
+      return .just(.showIndicator(show: false))
     }
     return uploadMemberUseCase.execute(nickname: nickname, type: "JPEG", image: imagedata)
       .asObservable()
@@ -181,7 +183,11 @@ extension ProfileEditReactorImp {
         return owner.editRequest(nickname: nickname, profileImage: result.imageURL)
       }
       .catch { _ -> Observable<Mutation> in
-        return .just(.showIndicator(show: false)) // TODO: - toast로 에러 메세지?
+        let errorMessage = ProfileEditError.imageUploadError.message
+        return .concat([
+          .just(.showIndicator(show: false)),
+          .just(.errorMessage(message: errorMessage))
+        ])
       }
     
   }
@@ -199,7 +205,11 @@ extension ProfileEditReactorImp {
         return owner.refreshProfile()
       }.catch { _ -> Observable<Mutation> in
         print("수정 실패")
-        return .just(.showIndicator(show: false))
+        let errorMessage = ProfileEditError.editError.message
+        return .concat([
+          .just(.showIndicator(show: false)),
+          .just(.errorMessage(message: errorMessage))
+        ])
       }
   }
   
@@ -260,17 +270,46 @@ extension ProfileEditReactorImp {
       return .just(.buttonEnable(isEnable: false))
     }
     else if nickname.count > 14 {
+      let errorMessage = ProfileEditError.maxLengthNickname.message
       return .concat([
         .just(.buttonEnable(isEnable: false)),
-        .just(.invalidNickname(message: "14글자 이내로 입력해주세요"))
+        .just(.invalidNickname(message: errorMessage))
       ])
     } else if !nickname.isValidNickName() {
+      let errorMessage = ProfileEditError.nicknameInvalid.message
       return .concat([
         .just(.buttonEnable(isEnable: false)),
-        .just(.invalidNickname(message: "영문, 한글만 입력할 수 있어요"))
+        .just(.invalidNickname(message: errorMessage))
       ])
     } else {
       return .just(.buttonEnable(isEnable: true))
     }
   }
 }
+
+fileprivate enum ProfileEditError {
+  case nicknameInvalid
+  case maxLengthNickname
+  case editError
+  case imageUploadError
+  case duplicateNickname
+  case needProfilePhoto
+  
+  var message: String {
+    switch self {
+    case .nicknameInvalid:
+      return "영문, 한글만 입력할 수 있어요"
+    case .maxLengthNickname:
+      return "14글자 이내로 입력해주세요"
+    case .editError:
+      return "프로필 수정을 완료하지 못했어요"
+    case .imageUploadError:
+      return "프로필 사진을 업로드하지 못했어요"
+    case .duplicateNickname:
+      return "이미 누군가 사용하고 있는 닉네임이에요"
+    case .needProfilePhoto:
+      return "프로필 이미지를 등록해주세요!"
+    }
+  }
+}
+
