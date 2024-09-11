@@ -54,13 +54,20 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   ).then {
     $0.focusOnTextField()
   }
-  private let completeButton = WalWalButton(type: .disabled, title: "완료")
+  private lazy var completeButton = WalWalButton(type: enableButtonStyle, title: "완료")
   
   // MARK: - Properties
   
   public var disposeBag = DisposeBag()
   public var profileEditReactor: R
   private let maxNicknameLength: Int = 14
+  private var keyboardHeight: CGFloat = 0
+  private let enableButtonStyle: WalWalButtonType = .custom(
+    backgroundColor: Colors.gray300.color,
+    titleColor: Colors.white.color,
+    font: FontKR.H6.B,
+    isEnable: true
+  )
   
   // MARK: - Initializer
   
@@ -144,6 +151,7 @@ public final class ProfileEditViewControllerImp<R: ProfileEditReactor>: UIViewCo
   
   private func keyboardLayout() {
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
+    keyboardHeight = keyboardTop
     
     profileContainer.flex.markDirty()
     profileContainer.flex
@@ -219,7 +227,9 @@ extension ProfileEditViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map { return $0.buttonEnable ? .active : .disabled }
+      .map {
+        $0.buttonEnable ? .active : self.enableButtonStyle
+      }
       .bind(to: completeButton.rx.buttonType)
       .disposed(by: disposeBag)
     
@@ -238,6 +248,14 @@ extension ProfileEditViewControllerImp: View {
         !$0.isEmpty
       }
       .drive(nicknameTextfield.rx.errorMessage)
+      .disposed(by: disposeBag)
+    
+    reactor.pulse(\.$errorToastMessage)
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, message in
+        WalWalToast.shared.show(type: .error, message: message, keyboardHeight: owner.keyboardHeight)
+      }
       .disposed(by: disposeBag)
     
   }

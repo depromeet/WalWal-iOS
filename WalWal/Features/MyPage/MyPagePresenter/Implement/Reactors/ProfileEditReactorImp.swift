@@ -63,11 +63,7 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
     case let .checkCondition(nickname, profile):
       return checkValidForm(nickname: nickname, profile: profile)
     case let .editProfile(nickname, profile):
-      
-      return .concat([
-        .just(.showIndicator(show: true)),
-        editProfile(nickname: nickname, profile: profile)
-      ])
+      return editProfileFlow(nickname: nickname, profile: profile)
     case .checkPhotoPermission:
       return checkPhotoPermission()
         .map{ Mutation.setPhotoPermission($0) }
@@ -98,6 +94,8 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
       coordinator.popViewController(animated: true)
     case let .profileInfo(info):
       newState.profileInfo = info
+    case let .errorMessage(message):
+      newState.errorToastMessage = message
     }
     return newState
   }
@@ -112,9 +110,39 @@ extension ProfileEditReactorImp {
       .map { _ in Void() }
   }
   
+  private func editProfileFlow(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
+    return checkProfileImage(profile: profile)
+      .withUnretained(self)
+      .flatMap { owner, isValid -> Observable<Mutation> in
+        if isValid {
+          if owner.currentState.buttonEnable {
+            return .concat([
+              .just(.showIndicator(show: true)),
+              owner.editProfile(nickname: nickname, profile: profile)
+            ])
+          } else {
+            return .never()
+          }
+        } else {
+          let errorMessage = "프로필 이미지를 등록해주세요!"
+          return .just(.errorMessage(message: errorMessage))
+        }
+      }
+  }
+  
+  /// 이미지 여부 체크
+  private func checkProfileImage(profile: WalWalProfileModel) -> Observable<Bool> {
+    if profile.profileType == .selectImage && profile.selectImage == nil {
+      return .just(false)
+    } else {
+      return .just(true)
+    }
+  }
+  
+  /// 프로필 수정 요청
   private func editProfile(nickname: String, profile: WalWalProfileModel) -> Observable<Mutation> {
     if let profileModel = profileModel,
-        nickname != profileModel.nickname { // 닉네임 수정 -> 체크 필요
+       nickname != profileModel.nickname { // 닉네임 수정 -> 체크 필요
       return checkNicknameUseCase.execute(nickname: nickname)
         .asObservable()
         .withUnretained(self)
