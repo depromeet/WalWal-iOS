@@ -30,6 +30,7 @@ public enum OnboardingProfileReactorMutation {
   case showIndicator(show: Bool)
   case setPhotoPermission(isAllow: Bool)
   case moveToBack
+  case errorToastMessage(String)
 }
 
 public struct OnboardingProfileReactorState {

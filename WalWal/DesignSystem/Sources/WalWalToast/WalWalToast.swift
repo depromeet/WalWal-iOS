@@ -27,7 +27,6 @@ public final class WalWalToast {
   private let fadeOutDutaion: TimeInterval = 0.5
   private let bottomMargin: CGFloat = 13
   private var keyboardHeight: CGFloat = 0
-  private let disposeBag = DisposeBag()
   
   // MARK: - UI
   

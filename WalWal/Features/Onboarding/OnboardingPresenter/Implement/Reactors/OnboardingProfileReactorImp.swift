@@ -60,10 +60,7 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .register(nickname, profile, petType):
-      return .concat([
-        .just(.showIndicator(show: true)),
-        checkNickname(nickname: nickname, profile: profile, petType: petType)
-      ])
+      return registerFlow(nickname: nickname, profile: profile, petType: petType)
     case let .checkCondition(nickname, profile):
       return checkValidForm(nickname: nickname, profile: profile)
     case .checkPhotoPermission:
@@ -89,6 +86,8 @@ public final class OnboardingProfileReactorImp: OnboardingProfileReactor {
       newState.isGrantedPhoto = isAllow
     case .moveToBack:
       coordinator.popViewController(animated: true)
+    case let .errorToastMessage(message):
+      newState.errorMessage = message
     }
     return newState
   }
@@ -105,6 +104,34 @@ extension OnboardingProfileReactorImp {
         }
         return Observable.just(isGranted)
       }
+  }
+  
+  private func registerFlow(nickname: String, profile: WalWalProfileModel, petType: String) -> Observable<Mutation> {
+    return checkProfileImage(profile: profile)
+      .withUnretained(self)
+      .flatMap { owner, isValid -> Observable<Mutation> in
+        if isValid {
+          if owner.currentState.buttonEnable {
+            return .concat([
+              .just(.showIndicator(show: true)),
+              owner.checkNickname(nickname: nickname, profile: profile, petType: petType)])
+          } else {
+            return .never()
+          }
+        } else {
+          let errorMessage = OnboardingError.needProfilePhoto.message
+          return .just(.errorToastMessage(errorMessage))
+        }
+      }
+  }
+  
+  /// 이미지 여부 체크
+  private func checkProfileImage(profile: WalWalProfileModel) -> Observable<Bool> {
+    if profile.profileType == .selectImage && profile.selectImage == nil {
+      return .just(false)
+    } else {
+      return .just(true)
+    }
   }
   
   /// 닉네임 중복 여부 체크 메서드
@@ -214,7 +241,6 @@ extension OnboardingProfileReactorImp {
       return .just(.buttonEnable(isEnable: true))
     }
   }
-  
 }
 
 fileprivate enum OnboardingError {
@@ -223,6 +249,7 @@ fileprivate enum OnboardingError {
   case registerError
   case imageUploadError
   case duplicateNickname
+  case needProfilePhoto
   
   var message: String {
     switch self {
@@ -236,6 +263,8 @@ fileprivate enum OnboardingError {
       return "프로필 사진을 업로드하지 못했어요"
     case .duplicateNickname:
       return "이미 누군가 사용하고 있는 닉네임이에요"
+    case .needProfilePhoto:
+      return "프로필 이미지를 등록해주세요!"
     }
   }
 }
