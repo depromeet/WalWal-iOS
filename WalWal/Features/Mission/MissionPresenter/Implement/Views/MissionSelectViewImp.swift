@@ -215,14 +215,6 @@ extension MissionSelectViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    
-    PHPickerManager.shared.selectedPhoto
-      .asDriver(onErrorJustReturn: nil)
-      .compactMap { $0 }
-      .drive(with: self) { owner, image in
-        reactor.action.onNext(.moveToMissionGallery(image: image))
-      }
-      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -235,12 +227,11 @@ extension MissionSelectViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.pulse(\.$isGrantedPhoto)
+      .observe(on: MainScheduler.instance)
       .asDriver(onErrorJustReturn: false)
       .skip(1)
       .drive(with: self) { owner, isAllowed in
-        if isAllowed {
-          PHPickerManager.shared.presentPicker(vc: owner)
-        } else {
+        if !isAllowed {
           WalWalAlert.shared.showOkAlert(
             title: "앨범에 대한 접근 권한이 없습니다",
             bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",

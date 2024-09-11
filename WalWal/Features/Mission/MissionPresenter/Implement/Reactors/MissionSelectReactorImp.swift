@@ -51,9 +51,7 @@ public final class MissionSelectReactorImp: MissionSelectReactor {
     case .tapDimView:
       return Observable.just(.dismissSheet)
     case .moveToMissionUploadCamera:
-      return Observable.just(.startMissionUploadProcess(true, nil))
-    case .moveToMissionGallery(let image):
-      return Observable.just(.startMissionUploadProcess(false, image))
+      return Observable.just(.startMissionUploadProcess)
     case .checkPhotoPermission:
       return checkPhotoPermission()
         .map{ Mutation.setPhotoPermission($0) }
@@ -67,21 +65,23 @@ public final class MissionSelectReactorImp: MissionSelectReactor {
       newState.sheetPosition = position
     case .dismissSheet:
       coordinator.dismissViewController(animated: false) { }
-      break
-    case .startMissionUploadProcess(let isCamera, let image):
+    case .startMissionUploadProcess:
       coordinator.dismissViewController(animated: false) {
         self.coordinator.destination.accept(
           .startMissionUpload(
             recordId: self.recordId,
             missionId: self.missionId,
-            isCamera: isCamera,
-            image: image,
+            isCamera: true,
+            image: nil,
             missionTitle: self.missionTitle
           )
         )
       }
     case .setPhotoPermission(let isAllow):
       newState.isGrantedPhoto = isAllow
+      if isAllow {
+        PHPickerManager.shared.presentPicker(vc: coordinator.baseViewController)
+      }
     }
     return newState
   }

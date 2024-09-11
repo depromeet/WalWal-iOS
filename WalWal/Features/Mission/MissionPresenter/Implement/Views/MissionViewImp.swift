@@ -329,6 +329,15 @@ extension MissionViewControllerImp: View {
       .map { _ in Reactor.Action.stopTimer }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    
+    PHPickerManager.shared.selectedPhoto
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, image in
+        reactor.action.onNext(.moveToMissionGallery(image))
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -399,8 +408,10 @@ extension MissionViewControllerImp: View {
   }
   
   public func bindEvent() {
-    
+    WalWalAlert.shared.resultRelay
+      .map { _ in Void() }
+      .observe(on: MainScheduler.instance)
+      .bind(to: WalWalAlert.shared.closeAlert)
+      .disposed(by: disposeBag)
   }
-  
-  
 }

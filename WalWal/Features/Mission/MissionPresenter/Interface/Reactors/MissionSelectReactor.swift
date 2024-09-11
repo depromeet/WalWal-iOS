@@ -20,11 +20,8 @@ public enum MissionSelectReactorAction {
   case didPan(translation: CGPoint, velocity: CGPoint)
   case didEndPan(velocity: CGPoint)
   case tapDimView
-  
   case checkPhotoPermission
-  
   case moveToMissionUploadCamera
-  case moveToMissionGallery(image: UIImage)
 }
 
 public enum MissionSelectReactorMutation {
@@ -35,7 +32,7 @@ public enum MissionSelectReactorMutation {
   case setPhotoPermission(Bool)
   
   // 미션 업로드
-  case startMissionUploadProcess(Bool, UIImage?)
+  case startMissionUploadProcess
 }
 
 
