@@ -117,14 +117,14 @@ public extension BaseCoordinator {
   }
   
   /// 현재 최상단의 ViewController에서 새로운 ViewController를 Present 해 줌
-  func presentViewController(viewController vc: UIViewController, style: UIModalPresentationStyle){
+  func presentViewController(viewController vc: UIViewController, style: UIModalPresentationStyle, animated: Bool = true){
     vc.modalPresentationStyle = style
-    self.navigationController.present(vc, animated: true)
+    self.navigationController.present(vc, animated: animated)
   }
   
   /// 현재 최상단의 ViewController에서 Present되어있는 ViewController를 Dismiss 해 줌
-  func dismissViewController(completion: (() -> Void)?) {
-    navigationController.dismiss(animated: true, completion: completion)
+  func dismissViewController(animated: Bool = true,completion: (() -> Void)?) {
+    navigationController.dismiss(animated: animated, completion: completion)
   }
   
   /// 현재 Coordinator의 BaseViewController로 정의되어있는 ViewController로 돌아옴. 이 때, 주의할 점은 Navigation의 Root가 아닌, Coordinator에 정의되어있는 Base로 돌아옴.
