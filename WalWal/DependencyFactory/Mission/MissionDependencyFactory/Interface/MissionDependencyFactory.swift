@@ -25,7 +25,9 @@ import FCMDomain
 public protocol MissionDependencyFactory {
   
   func injectMissionRepository() -> MissionRepository
+  
   func injectTodayMissionUseCase() -> TodayMissionUseCase
+  
   func injectMissionCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
@@ -34,6 +36,8 @@ public protocol MissionDependencyFactory {
     imageDependencyFactory: ImageDependencyFactory,
     fcmDependencyFactory: FCMDependencyFactory
   ) -> any MissionCoordinator
+  
+  
   func injectMissionReactor<T: MissionCoordinator>(
     coordinator: T,
     todayMissionUseCase: TodayMissionUseCase,
@@ -45,4 +49,10 @@ public protocol MissionDependencyFactory {
     removeGlobalFCMListUseCase: RemoveGlobalFCMListUseCase
   ) -> any MissionReactor
   func injectMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController
+  
+  func injectMissionSelectReactor<T:MissionCoordinator>(
+    coordinator: T,
+    recordId: Int,
+    missionId: Int) -> any MissionSelectReactor
+  func injectMissionSelectViewController<T: MissionSelectReactor>(reactor: T) -> any MissionSelectViewController
 }

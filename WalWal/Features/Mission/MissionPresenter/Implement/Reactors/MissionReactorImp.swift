@@ -122,11 +122,10 @@ public final class MissionReactorImp: MissionReactor {
       newState.recordId = recordId
     case.startMissionUploadProcess:
       guard let mission = newState.mission else { return newState }
-      coordinator.destination.accept(
-        .startMissionUpload(
-          recordId: newState.recordId,
-          missionId: mission.id
-        )
+      coordinator.destination.accept(.showSelectMission(
+        recordId: newState.recordId,
+        missionId: mission.id
+      )
       )
     case let .moveToMissionUploadFailed(error):
       newState.missionUploadError = error

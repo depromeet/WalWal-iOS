@@ -67,8 +67,15 @@ public final class MissionCoordinatorImp: MissionCoordinator {
     destination
       .subscribe(with: self, onNext: { owner, flow in
         switch flow {
-        case .startMissionUpload(let recordId, let missionId):
-          owner.startMissionUpload(recordId: recordId, missionId: missionId)
+        case .startMissionUpload(let recordId, let missionId, let isCamera, let image):
+          owner.startMissionUpload(
+            recordId: recordId,
+            missionId: missionId,
+            isCamera: isCamera,
+            image: image
+          )
+        case .showSelectMission(let recordId, let missionId):
+          owner.showSelectMission(recordId: recordId, missionId: missionId)
         }
       })
       .disposed(by: disposeBag)
@@ -133,17 +140,34 @@ extension MissionCoordinatorImp {
 
 extension MissionCoordinatorImp {
   
-  fileprivate func startMissionUpload(recordId: Int, missionId: Int) {
+  fileprivate func startMissionUpload(
+    recordId: Int,
+    missionId: Int,
+    isCamera: Bool,
+    image: UIImage? = nil
+  ) {
     let missionUploadCoordinator = missionUploadDependencyFactory.injectMissionUploadCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
       recordsDependencyFactory: recordDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,
       recordId: recordId,
-      missionId: missionId
+      missionId: missionId,
+      isCamera: isCamera,
+      image: image
     )
     self.childCoordinator = missionUploadCoordinator
-    missionUploadCoordinator.start()
+    missionUploadCoordinator.start() 
+  }
+  
+  fileprivate func showSelectMission(recordId: Int, missionId: Int) {
+    let reactor = missionDependencyFactory.injectMissionSelectReactor(
+      coordinator: self,
+      recordId: recordId,
+      missionId: missionId
+    )
+    let missionSelectVC = missionDependencyFactory.injectMissionSelectViewController(reactor: reactor)
+    self.presentViewController(viewController: missionSelectVC, style: .overFullScreen, animated: false)
   }
   
   //  /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
