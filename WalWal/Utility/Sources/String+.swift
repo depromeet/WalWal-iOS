@@ -41,6 +41,10 @@ public extension String {
     return numberOfLines
   }
   
+  func replacingNewlinesWithSpaces() -> String {
+    return self.replacingOccurrences(of: "\n", with: " ")
+  }
+  
   /// 현재 시간 기준 날짜 형식 변환 프로퍼티
   ///
   /// - parameters:
@@ -76,7 +80,7 @@ public extension String {
     )
     
     if let hoursDifference = components.hour,
-        let minutesDifference = components.minute {
+       let minutesDifference = components.minute {
       if hoursDifference < 1 {
         if minutesDifference < 1 {
           return "방금 전"
