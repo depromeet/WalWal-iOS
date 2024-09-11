@@ -37,6 +37,8 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
   
   private let recordId: Int
   private let missionId: Int
+  private let isCamera: Bool
+  private let image: UIImage?
   
   public required init(
     navigationController: UINavigationController,
@@ -45,7 +47,9 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
     recordsDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
     recordId: Int,
-    missionId: Int
+    missionId: Int,
+    isCamera: Bool,
+    image: UIImage?
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -54,6 +58,8 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
     self.imageDependencyFactory = imageDependencyFactory
     self.recordId = recordId
     self.missionId = missionId
+    self.isCamera = isCamera
+    self.image = image
     bindChildToParentAction()
     bindState()
   }
@@ -82,16 +88,46 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
   public func start() {
     /// 이런 Reactor랑 ViewController가 있다 치고~
     /// 다만, 해당 ViewController가 이 Coordinator의 Base역할을 하기 때문에, 이 ViewController에 해당하는 Reactor에 Coordinator를 주입 합니다.
-    let reactor = missionUploadDependencyFactory.injectCameraShootDuringTheMissionReactorReactor(
-      coordinator: self
+    if let image = self.image, !isCamera {
+      startRecordContent(image: image)
+    } else {
+      let cameraReactor = missionUploadDependencyFactory.injectCameraShootDuringTheMissionReactorReactor(
+        coordinator: self
+      )
+      let cameraShootDuringTheMissionViewController = missionUploadDependencyFactory.injectCameraShootDuringTheMissionViewController(reactor: cameraReactor)
+      self.baseViewController = cameraShootDuringTheMissionViewController
+      
+      guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
+        return
+      }
+      tabBarViewController.hideCustomTabBar()
+      self.pushViewController(viewController: cameraShootDuringTheMissionViewController, animated: true)
+    }
+  }
+  
+  public func startRecordContent(image: UIImage) {
+    let saveRecordUseCase = recordsDependencyFactory.injectSaveRecordUseCase()
+    let uploadRecordUseCase = imageDependencyFactory.injectUploadRecordUseCase()
+    
+    let contentReactor = missionUploadDependencyFactory.injectWriteContentDuringTheMissionReactor(
+      coordinator: self,
+      saveRecordUseCase: saveRecordUseCase,
+      uploadRecordUseCase: uploadRecordUseCase,
+      recordId: recordId,
+      missionId: missionId
     )
-    let cameraShootDuringTheMissionViewController = missionUploadDependencyFactory.injectCameraShootDuringTheMissionViewController(reactor: reactor)
-    self.baseViewController = cameraShootDuringTheMissionViewController
+    let writeContentDuringTheMissionViewController = missionUploadDependencyFactory.injectWriteContentDuringTheMissionViewController(
+      reactor: contentReactor,
+      capturedImage: image
+    )
+    
+    self.baseViewController =  writeContentDuringTheMissionViewController
+    
     guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
       return
     }
     tabBarViewController.hideCustomTabBar()
-    self.pushViewController(viewController: cameraShootDuringTheMissionViewController, animated: true)
+    self.pushViewController(viewController: writeContentDuringTheMissionViewController, animated: true)
   }
 }
 

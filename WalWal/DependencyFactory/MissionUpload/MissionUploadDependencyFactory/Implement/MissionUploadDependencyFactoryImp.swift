@@ -37,7 +37,9 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
     recordsDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
     recordId: Int,
-    missionId: Int
+    missionId: Int,
+    isCamera: Bool,
+    image: UIImage?
   ) -> any MissionUploadCoordinator {
     return MissionUploadCoordinatorImp(
       navigationController: navigationController,
@@ -46,7 +48,9 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
       recordsDependencyFactory: recordsDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,
       recordId: recordId,
-      missionId: missionId
+      missionId: missionId,
+      isCamera: isCamera,
+      image: image
     )
   }
   

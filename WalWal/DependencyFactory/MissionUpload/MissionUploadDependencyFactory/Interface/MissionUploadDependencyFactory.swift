@@ -28,7 +28,9 @@ public protocol MissionUploadDependencyFactory {
     recordsDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
     recordId: Int,
-    missionId: Int
+    missionId: Int,
+    isCamera: Bool,
+    image: UIImage?
   ) -> any MissionUploadCoordinator
   
   func injectCameraShootDuringTheMissionReactorReactor<T: MissionUploadCoordinator>(
