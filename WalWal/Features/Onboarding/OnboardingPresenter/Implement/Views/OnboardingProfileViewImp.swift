@@ -32,6 +32,13 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
+  private let buttonEnable = BehaviorRelay<Bool>(value: false)
+  private let enableButtonStyle: WalWalButtonType = .custom(
+    backgroundColor: Color.gray300.color,
+    titleColor: Color.white.color,
+    font: Font.H6.B,
+    isEnable: true
+  )
   
   // MARK: - UI
   
@@ -63,7 +70,10 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     placeholder: "닉네임을 입력해주세요",
     rightIcon: .close
   )
-  private let nextButton = WalWalButton(type: .disabled, title: "다음")
+  private lazy var nextButton = WalWalButton(
+    type: enableButtonStyle,
+    title: "다음"
+  )
   
   // MARK: - Initialize
   
@@ -252,7 +262,11 @@ extension OnboardingProfileViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map { return $0.buttonEnable ? .active : .disabled }
+      .map { $0.buttonEnable }
+      .map {
+        self.buttonEnable.accept($0)
+        return $0 ? .active : self.enableButtonStyle
+      }
       .bind(to: nextButton.rx.buttonType)
       .disposed(by: disposeBag)
     
