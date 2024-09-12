@@ -17,8 +17,8 @@ public protocol ParentAction { }
 
 /// 자식이 부모에게 처리하기를 요청하는 이벤트입니다.
 public enum CoordinatorEvent<Action: ParentAction> {
-    case finished
-    case requireParentAction(Action)
+  case finished
+  case requireParentAction(Action)
 }
 
 public protocol BaseCoordinator: AnyObject{
@@ -66,7 +66,9 @@ public extension BaseCoordinator{
   /// 나의 baseViewController까지 pop 시켜줍니다.
   /// 또한, finish가 호출되면 나의 childCoordinator를 nil로 만들어주고, 부모 Coordinator에게 자신이 종료되어야 한다는 사실을 알려줍니다.
   func requirefinish() {
-    popToRootViewController(animated: false)
+    if let baseVC = baseViewController, navigationController.viewControllers.contains(baseVC) {
+      popToRootViewController(animated: false)
+    }
     childCoordinator = nil
     requireFromChild.onNext(.finished)
   }
