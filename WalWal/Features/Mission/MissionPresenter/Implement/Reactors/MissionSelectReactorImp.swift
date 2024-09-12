@@ -81,7 +81,7 @@ public final class MissionSelectReactorImp: MissionSelectReactor {
       newState.isGrantedPhoto = isAllow
       if isAllow {
         coordinator.dismissViewController(animated: false) {
-          PHPickerManager.shared.presentPicker(vc: self.coordinator.baseViewController)
+          PHPickerManager.shared.presentPicker(vc: self.coordinator.baseViewController, pickerType: .mission)
         }
       }
     }

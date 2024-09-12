@@ -331,7 +331,7 @@ extension MissionViewControllerImp: View {
       .disposed(by: disposeBag)
     
     
-    PHPickerManager.shared.selectedPhoto
+    PHPickerManager.shared.selectedPhotoForMission
       .asDriver(onErrorJustReturn: nil)
       .compactMap { $0 }
       .drive(with: self) { owner, image in

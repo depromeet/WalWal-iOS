@@ -207,7 +207,7 @@ extension ProfileEditViewControllerImp: View {
       .skip(1)
       .drive(with: self) { owner, isAllowed in
         if isAllowed {
-          PHPickerManager.shared.presentPicker(vc: owner)
+          PHPickerManager.shared.presentPicker(vc: owner, pickerType: .profile)
         } else {
           WalWalAlert.shared.showOkAlert(
             title: "앨범에 대한 접근 권한이 없습니다",
@@ -249,7 +249,7 @@ extension ProfileEditViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
-    PHPickerManager.shared.selectedPhoto
+    PHPickerManager.shared.selectedPhotoForProfile
       .asDriver(onErrorJustReturn: nil)
       .compactMap { $0 }
       .drive(with: self) { owner, image in
