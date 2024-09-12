@@ -50,11 +50,12 @@ public final class MissionSelectReactorImp: MissionSelectReactor {
       }
     case .tapDimView:
       return Observable.just(.dismissSheet)
-    case .moveToMissionUploadCamera:
-      return Observable.just(.startMissionUploadProcess)
     case .checkPhotoPermission:
       return checkPhotoPermission()
         .map{ Mutation.setPhotoPermission($0) }
+    case .checkCameraPermission:
+      return checkCameraPermission()
+        .map{ Mutation.setCameraPermission($0) }
     }
   }
   
@@ -65,23 +66,26 @@ public final class MissionSelectReactorImp: MissionSelectReactor {
       newState.sheetPosition = position
     case .dismissSheet:
       coordinator.dismissViewController(animated: false) { }
-    case .startMissionUploadProcess:
-      coordinator.dismissViewController(animated: false) {
-        self.coordinator.destination.accept(
-          .startMissionUpload(
-            recordId: self.recordId,
-            missionId: self.missionId,
-            isCamera: true,
-            image: nil,
-            missionTitle: self.missionTitle
-          )
-        )
-      }
     case .setPhotoPermission(let isAllow):
       newState.isGrantedPhoto = isAllow
       if isAllow {
         coordinator.dismissViewController(animated: false) {
           PHPickerManager.shared.presentPicker(vc: self.coordinator.baseViewController, pickerType: .mission)
+        }
+      }
+    case .setCameraPermission(let isAllow):
+      newState.isGrantedCamera = isAllow
+      if isAllow {
+        coordinator.dismissViewController(animated: false) {
+          self.coordinator.destination.accept(
+            .startMissionUpload(
+              recordId: self.recordId,
+              missionId: self.missionId,
+              isCamera: true,
+              image: nil,
+              missionTitle: self.missionTitle
+            )
+          )
         }
       }
     }
@@ -93,6 +97,17 @@ public final class MissionSelectReactorImp: MissionSelectReactor {
       .flatMap { isGranted in
         if !isGranted {
           return PermissionManager.shared.requestPhotoPermission()
+        }
+        return Observable.just(isGranted)
+      }
+  }
+  
+  /// 미션 시작 전 카메라 권한 확인
+  private func checkCameraPermission() -> Observable<Bool> {
+    PermissionManager.shared.checkPermission(for: .camera)
+      .flatMap { isGranted in
+        if !isGranted {
+          return PermissionManager.shared.requestCameraPermission()
         }
         return Observable.just(isGranted)
       }

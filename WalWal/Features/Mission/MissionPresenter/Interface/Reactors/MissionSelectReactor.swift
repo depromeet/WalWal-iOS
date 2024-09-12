@@ -21,7 +21,7 @@ public enum MissionSelectReactorAction {
   case didEndPan(velocity: CGPoint)
   case tapDimView
   case checkPhotoPermission
-  case moveToMissionUploadCamera
+  case checkCameraPermission
 }
 
 public enum MissionSelectReactorMutation {
@@ -30,15 +30,14 @@ public enum MissionSelectReactorMutation {
   case dismissSheet
   
   case setPhotoPermission(Bool)
-  
-  // 미션 업로드
-  case startMissionUploadProcess
+  case setCameraPermission(Bool)
 }
 
 
 public struct MissionSelectReactorState {
   public var sheetPosition: CGFloat = 0
   @Pulse public var isGrantedPhoto: Bool = false
+  @Pulse public var isGrantedCamera: Bool = false
   
   public init() { }
 }

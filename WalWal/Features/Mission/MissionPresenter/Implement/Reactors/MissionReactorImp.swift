@@ -296,25 +296,4 @@ public final class MissionReactorImp: MissionReactor {
         return Observable.just(isGranted)
       }
   }
-  
-  /// 미션 시작 전 카메라 권한 확인
-  private func startMission() {
-    PermissionManager.shared.checkPermission(for: .camera)
-      .subscribe(with: self, onNext: { owner, isGranted in
-        if isGranted {
-          // 미션 시작
-        } else {
-          PermissionManager.shared.requestCameraPermission()
-            .subscribe(with: self, onNext: { owner, granted in
-              if granted {
-                // 미션 시작
-              } else {
-                // 권한 없음 -> 토스트 메시지로 권한 요청?
-              }
-            })
-            .disposed(by: owner.disposeBag)
-        }
-      })
-      .disposed(by: disposeBag)
-  }
 }

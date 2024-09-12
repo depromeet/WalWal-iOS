@@ -203,7 +203,7 @@ extension MissionSelectViewControllerImp: View {
     
     cameraButton.rx.tapped
       .map {
-        return Reactor.Action.moveToMissionUploadCamera
+        return Reactor.Action.checkCameraPermission
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
@@ -234,6 +234,21 @@ extension MissionSelectViewControllerImp: View {
         if !isAllowed {
           WalWalAlert.shared.showOkAlert(
             title: "앨범에 대한 접근 권한이 없습니다",
+            bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
+            okTitle: "확인"
+          )
+        }
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.pulse(\.$isGrantedCamera)
+      .observe(on: MainScheduler.instance)
+      .asDriver(onErrorJustReturn: false)
+      .skip(1)
+      .drive(with: self) { owner, isAllowed in
+        if !isAllowed {
+          WalWalAlert.shared.showOkAlert(
+            title: "사진에 대한 접근 권한이 없습니다",
             bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
             okTitle: "확인"
           )
