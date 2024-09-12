@@ -31,7 +31,7 @@ public enum ProfileEditReactorMutation {
   case setPhotoPermission(Bool)
   case moveToBack
   case profileInfo(info: MemberModel)
-  
+  case errorMessage(message: String)
 }
 
 public struct ProfileEditReactorState {
@@ -41,6 +41,7 @@ public struct ProfileEditReactorState {
   @Pulse public var isGrantedPhoto: Bool = false
   @Pulse public var invalidMessage: String = ""
   public var profileInfo: MemberModel?
+  @Pulse public var errorToastMessage: String? = nil
 }
 
 

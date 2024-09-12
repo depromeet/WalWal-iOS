@@ -29,9 +29,16 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   private let marginProfileItem: CGFloat = 17.adjusted
   private let maxNicknameLength: Int = 14
   private let petType: String
+  private var keyboardHeight: CGFloat = 0
   
   public var disposeBag = DisposeBag()
   private var onboardingReactor: R
+  private let enableButtonStyle: WalWalButtonType = .custom(
+    backgroundColor: Color.gray300.color,
+    titleColor: Color.white.color,
+    font: Font.H6.B,
+    isEnable: true
+  )
   
   // MARK: - UI
   
@@ -63,7 +70,10 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     placeholder: "닉네임을 입력해주세요",
     rightIcon: .close
   )
-  private let nextButton = WalWalButton(type: .disabled, title: "다음")
+  private lazy var nextButton = WalWalButton(
+    type: enableButtonStyle,
+    title: "다음"
+  )
   
   // MARK: - Initialize
   
@@ -175,6 +185,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
     let scrollOffset = titleView.frame.height + 40.adjustedHeight + 71.adjustedHeight/2
+    keyboardHeight = keyboardTop
     
     nextButton.pin
       .bottom(keyboardTop + 20.adjustedHeight)
@@ -187,7 +198,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   }
   
   private func hideKeyboardLayout() {
-    
+    keyboardHeight = 0
     if scrollView.contentOffset.y > 0 {
       scrollView.contentOffset.y = 0
       contentContainer.flex
@@ -225,7 +236,11 @@ extension OnboardingProfileViewControllerImp: View {
     
     nextButton.rx.tapped
       .withLatestFrom(inputValue) {
-        Reactor.Action.register(nickname: $1.0, profile: $1.1, petType: self.petType)
+        Reactor.Action.register(
+          nickname: $1.0,
+          profile: $1.1,
+          petType: self.petType
+        )
       }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
@@ -252,7 +267,9 @@ extension OnboardingProfileViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map { return $0.buttonEnable ? .active : .disabled }
+      .map {
+        $0.buttonEnable ? .active : self.enableButtonStyle
+      }
       .bind(to: nextButton.rx.buttonType)
       .disposed(by: disposeBag)
     
@@ -269,6 +286,14 @@ extension OnboardingProfileViewControllerImp: View {
             okTitle: "확인"
           )
         }
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.pulse(\.$errorMessage)
+      .asDriver(onErrorJustReturn: "")
+      .filter { !$0.isEmpty }
+      .drive(with: self) { owner, message in
+        WalWalToast.shared.show(type: .error, message: message, keyboardHeight: owner.keyboardHeight)
       }
       .disposed(by: disposeBag)
   }
