@@ -79,6 +79,8 @@ public final class FCMReactorImp: FCMReactor {
       newState.nextCursor = cursor
     case let .isLastPage(isLast):
       newState.isLastPage = isLast
+    case let .isHiddenEdgePage(isHidden):
+      newState.isHiddenEdgePage = isHidden
     }
     return newState
   }
@@ -114,7 +116,10 @@ extension FCMReactorImp {
     return fetchFCMListUseCase.execute()
       .withUnretained(self)
       .flatMap { owner, data -> Observable<Mutation> in
-        return .just(.loadFCMList(data: owner.separateDataByDate(data: data)))
+        return .concat([
+          .just(.isHiddenEdgePage(!data.isEmpty)),
+          .just(.loadFCMList(data: owner.separateDataByDate(data: data)))
+        ])
       }
   }
   
