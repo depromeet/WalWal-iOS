@@ -33,7 +33,7 @@ public struct MemeberInfo {
   public init(dto: MemberDTO) {
     self.memberId = dto.memberId
     self.nickname = dto.nickname
-    self.profileURL = dto.profileImageUrl
+    self.profileURL = dto.profileImageUrl ?? ""
     self.raisePet = dto.raisePet
   }
   

@@ -89,4 +89,23 @@ public class MissionDependencyFactoryImp: MissionDependencyFactory {
   public func injectMissionViewController<T: MissionReactor>(reactor: T) -> any MissionViewController {
     return MissionViewControllerImp(reactor: reactor)
   }
+  
+  public func injectMissionSelectReactor<T: MissionCoordinator>(
+    coordinator: T,
+    recordId: Int,
+    missionId: Int,
+    missionTitle: String
+  ) -> any MissionSelectReactor {
+    return MissionSelectReactorImp(
+      coordinator: coordinator,
+      missionId: missionId,
+      recordId: recordId,
+      missionTitle: missionTitle
+    )
+  }
+  
+  public func injectMissionSelectViewController<T: MissionSelectReactor>(reactor: T) -> any MissionSelectViewController {
+    return MissionSelectViewControllerImp(reactor: reactor)
+  }
+  
 }

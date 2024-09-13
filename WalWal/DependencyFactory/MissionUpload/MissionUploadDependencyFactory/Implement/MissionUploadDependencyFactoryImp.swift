@@ -37,7 +37,10 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
     recordsDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
     recordId: Int,
-    missionId: Int
+    missionId: Int,
+    isCamera: Bool,
+    image: UIImage?,
+    missionTitle: String
   ) -> any MissionUploadCoordinator {
     return MissionUploadCoordinatorImp(
       navigationController: navigationController,
@@ -46,7 +49,10 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
       recordsDependencyFactory: recordsDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,
       recordId: recordId,
-      missionId: missionId
+      missionId: missionId,
+      isCamera: isCamera,
+      image: image,
+      missionTitle: missionTitle
     )
   }
   
@@ -75,9 +81,11 @@ public class MissionUploadDependencyFactoryImp: MissionUploadDependencyFactory {
   }
   
   public func injectCameraShootDuringTheMissionViewController<T: CameraShootDuringTheMissionReactor>(
-    reactor: T
+    reactor: T,
+    missionTitle: String
   ) -> any CameraShootDuringTheMissionViewController {
     return CameraShootDuringTheMissionViewControllerImp(
+      missionTitle: missionTitle,
       reactor: reactor
     )
   }

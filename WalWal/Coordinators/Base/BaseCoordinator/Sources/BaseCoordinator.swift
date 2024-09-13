@@ -17,8 +17,8 @@ public protocol ParentAction { }
 
 /// 자식이 부모에게 처리하기를 요청하는 이벤트입니다.
 public enum CoordinatorEvent<Action: ParentAction> {
-    case finished
-    case requireParentAction(Action)
+  case finished
+  case requireParentAction(Action)
 }
 
 public protocol BaseCoordinator: AnyObject{
@@ -66,7 +66,9 @@ public extension BaseCoordinator{
   /// 나의 baseViewController까지 pop 시켜줍니다.
   /// 또한, finish가 호출되면 나의 childCoordinator를 nil로 만들어주고, 부모 Coordinator에게 자신이 종료되어야 한다는 사실을 알려줍니다.
   func requirefinish() {
-    popToRootViewController(animated: false)
+    if let baseVC = baseViewController, navigationController.viewControllers.contains(baseVC) {
+      popToRootViewController(animated: false)
+    }
     childCoordinator = nil
     requireFromChild.onNext(.finished)
   }
@@ -117,14 +119,14 @@ public extension BaseCoordinator {
   }
   
   /// 현재 최상단의 ViewController에서 새로운 ViewController를 Present 해 줌
-  func presentViewController(viewController vc: UIViewController, style: UIModalPresentationStyle){
+  func presentViewController(viewController vc: UIViewController, style: UIModalPresentationStyle, animated: Bool = true){
     vc.modalPresentationStyle = style
-    self.navigationController.present(vc, animated: true)
+    self.navigationController.present(vc, animated: animated)
   }
   
   /// 현재 최상단의 ViewController에서 Present되어있는 ViewController를 Dismiss 해 줌
-  func dismissViewController(completion: (() -> Void)?) {
-    navigationController.dismiss(animated: true, completion: completion)
+  func dismissViewController(animated: Bool = true,completion: (() -> Void)?) {
+    navigationController.dismiss(animated: animated, completion: completion)
   }
   
   /// 현재 Coordinator의 BaseViewController로 정의되어있는 ViewController로 돌아옴. 이 때, 주의할 점은 Navigation의 Root가 아닌, Coordinator에 정의되어있는 Base로 돌아옴.

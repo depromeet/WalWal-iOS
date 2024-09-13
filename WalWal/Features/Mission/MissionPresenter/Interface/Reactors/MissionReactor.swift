@@ -6,6 +6,7 @@
 //  Created by 이지희
 //
 
+import UIKit
 import MissionCoordinator
 
 import MissionDomain
@@ -23,6 +24,7 @@ public enum MissionReactorAction {
   case moveToMyPage
   case refreshMissionData
   case appWillEnterForeground
+  case moveToMissionGallery(UIImage)
 }
 
 public enum MissionReactorMutation {
@@ -36,7 +38,8 @@ public enum MissionReactorMutation {
   case stopTimer
   
   case fetchRecordId(Int) /// recordId를 저장
-  case startMissionUploadProcess
+  case selectMissionMethod
+  case startMissionUploadProcess(UIImage)
   case moveToMissionUploadFailed(Error) /// 미션 업로드 화면으로 이동 실패
   case moveToMyPage
 }

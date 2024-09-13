@@ -31,6 +31,8 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
   public var disposeBag = DisposeBag()
   public var cameraShootingDuringTheMissionReactor: R
   
+  private var missionTitle: String
+  
   private let rootFlexContainer = UIView()
   
   private let navigationContainer = UIView()
@@ -47,8 +49,8 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
   private let previewView = UIView()
   
   private let noticeContainer = UIView()
-  private let noticeLabelChip = WalWalChip(
-    text: "반려동물과 함께 산책한 사진을 찍어요!",
+  private lazy var noticeLabelChip = WalWalChip(
+    text: missionTitle,
     opacity: 0.9,
     image: Images.flagS.image,
     style: .semiFilled
@@ -68,10 +70,13 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
   private let cameraManager: CameraManager
   
   public init(
+    missionTitle: String,
     reactor: R
   ) {
     self.cameraShootingDuringTheMissionReactor = reactor
     self.cameraManager = CameraManager()
+    self.missionTitle = missionTitle
+    
     super.init(nibName: nil, bundle: nil)
   }
   

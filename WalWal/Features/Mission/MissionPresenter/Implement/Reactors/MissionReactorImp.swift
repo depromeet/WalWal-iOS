@@ -74,7 +74,7 @@ public final class MissionReactorImp: MissionReactor {
       guard let mission = currentState.mission else { return .empty() }
       return startRecord(missionId: mission.id)
         .map { Mutation.fetchRecordId($0) }
-        .concat(Observable.just(Mutation.startMissionUploadProcess))
+        .concat(Observable.just(Mutation.selectMissionMethod))
         .catch { error in Observable.just(Mutation.moveToMissionUploadFailed(error)) }
     case .startTimer:
       return startTimer()
@@ -84,14 +84,17 @@ public final class MissionReactorImp: MissionReactor {
       return .just(.moveToMyPage)
     case .appWillEnterForeground:
       return checkAndUpdateMissionIfNeeded()
+    case .moveToMissionGallery(let image):
+      return Observable.just(.startMissionUploadProcess(image))
     }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
+    
     switch mutation {
       
-    // MARK: - 미션탭 처음 들어오면 실행되는 Flow!
+      // MARK: - 미션탭 처음 들어오면 실행되는 Flow!
     case let .fetchTodayMissionData(mission):
       newState.loadInitialDataFlowEnded = false
       newState.mission = mission
@@ -116,18 +119,31 @@ public final class MissionReactorImp: MissionReactor {
       newState.loadInitialDataFlowEnded = true
     case .loadInitialDataFlowFailed(let loadInitialDataFlowFailed):
       newState.loadInitialDataFlowFailed = loadInitialDataFlowFailed
-    
-    // MARK: - 미션 시작하기를 누르면 실행되는 Flow!
+      
+      // MARK: - 미션 시작하기를 누르면 실행되는 Flow!
     case let .fetchRecordId(recordId):
       newState.recordId = recordId
-    case.startMissionUploadProcess:
+    case.selectMissionMethod:
       guard let mission = newState.mission else { return newState }
-      coordinator.destination.accept(
-        .startMissionUpload(
-          recordId: newState.recordId,
-          missionId: mission.id
-        )
+      coordinator.destination.accept(.showSelectMission(
+        recordId: newState.recordId,
+        missionId: mission.id,
+        missionTitle: mission.title.replacingNewlinesWithSpaces()
       )
+      )
+    case .startMissionUploadProcess(let image):
+      guard let mission = newState.mission else { return newState }
+      coordinator.dismissViewController(animated: false) {
+        self.coordinator.destination.accept(
+          .startMissionUpload(
+            recordId: newState.recordId,
+            missionId: mission.id,
+            isCamera: false,
+            image: image,
+            missionTitle: mission.title
+          )
+        )
+      }
     case let .moveToMissionUploadFailed(error):
       newState.missionUploadError = error
     case .moveToMyPage:
@@ -279,26 +295,5 @@ public final class MissionReactorImp: MissionReactor {
         }
         return Observable.just(isGranted)
       }
-  }
-  
-  /// 미션 시작 전 카메라 권한 확인
-  private func startMission() {
-    PermissionManager.shared.checkPermission(for: .camera)
-      .subscribe(with: self, onNext: { owner, isGranted in
-        if isGranted {
-          // 미션 시작
-        } else {
-          PermissionManager.shared.requestCameraPermission()
-            .subscribe(with: self, onNext: { owner, granted in
-              if granted {
-                // 미션 시작
-              } else {
-                // 권한 없음 -> 토스트 메시지로 권한 요청?
-              }
-            })
-            .disposed(by: owner.disposeBag)
-        }
-      })
-      .disposed(by: disposeBag)
   }
 }

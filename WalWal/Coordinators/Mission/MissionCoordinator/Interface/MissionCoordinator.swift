@@ -14,7 +14,8 @@ public enum MissionCoordinatorAction: ParentAction {
 }
 
 public enum MissionCoordinatorFlow: CoordinatorFlow {
-  case startMissionUpload(recordId: Int, missionId: Int)
+  case startMissionUpload(recordId: Int, missionId: Int, isCamera: Bool, image: UIImage?, missionTitle: String)
+  case showSelectMission(recordId: Int, missionId: Int, missionTitle: String)
 }
 
 public protocol MissionCoordinator: BaseCoordinator where Flow == MissionCoordinatorFlow{ 
