@@ -36,9 +36,13 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
   private let rootFlexContainer = UIView()
   
   private let navigationContainer = UIView()
-  private let closeButton = WalWalTouchArea(
-    image: Images.closeL.image,
-    size: 40
+    
+  private let navigationBar = WalWalNavigationBar(
+    leftItems: [.close],
+    leftItemSize: 40,
+    title: "미션 기록",
+    rightItems: [],
+    colorType: .custom(tintColor: Colors.white.color, backgroundColor: UIColor(hex: 0x1b1b1b))
   )
   
   private let cameraContainer = UIView()
@@ -119,7 +123,7 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
       rootFlexContainer.addSubview($0)
     }
     
-    navigationContainer.addSubview(closeButton)
+    navigationContainer.addSubview(navigationBar)
     
     cameraContainer.addSubview(cameraPreviewView)
     cameraPreviewView.addSubview(previewView)
@@ -140,7 +144,9 @@ public final class CameraShootDuringTheMissionViewControllerImp<R: CameraShootDu
         .marginTop(26)
         .marginHorizontal(10)
         .define { flex in
-          flex.addItem(closeButton).size(40)
+          flex.addItem(navigationBar)
+            .width(100%)
+            .height(100%)
         }
       
       flex.addItem(cameraContainer)
@@ -217,7 +223,7 @@ extension CameraShootDuringTheMissionViewControllerImp: View {
       .disposed(by: disposeBag)
     
     /// 닫기 버튼 탭 처리
-    closeButton.rx.tapped
+    navigationBar.leftItems![0].rx.tapped
       .map{ Reactor.Action.backButtonTapped }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
