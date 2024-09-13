@@ -27,25 +27,29 @@ final class WalWalEmitterCell: CAEmitterCell {
   ///   - alphaSpeed: 파티클 투명도의 변화 속도 (초당)
   init(
     image: UIImage = ResourceKitAsset.Sample.walwalEmitterDog.image,
-    scale: CGFloat = 0.8,
-    scaleRange: CGFloat = 0.5,
-    lifetime: Float = 6.0,
+    scale: CGFloat = 1.0,
+    scaleRange: CGFloat = 0.99,
+    scaleSpeed: CGFloat = -0.01,
+    lifetime: Float = 1.0,
     lifetimeRange: Float = 0,
     birthRate: Float = 0,
     velocity: CGFloat = 1000,  // 위로 솟구치는 속도
+    velocityRange: CGFloat = 1,
     emissionLongitude: CGFloat = -.pi / 2,  // 위쪽으로 방출
     emissionRange: CGFloat = .pi / 4,  // 분수대 모양처럼 좁게 방출
     yAcceleration: CGFloat = 4000,  // 중력으로 파티클이 아래로 떨어짐
-    spin: CGFloat = .pi / 18,
-    spinRange: CGFloat = .pi / 9,
+    spin: CGFloat = 0,
+    spinRange: CGFloat = .pi,
     alphaSpeed: Float = 0,  // 시간이 지나면서 파티클이 점점 투명해짐
-    alphaRange: Float = 0
+    alphaRange: Float = 0,
+    rotationRange: CGFloat = 80  // ±40도 범위
   ) {
     super.init()
     
     self.contents = image.cgImage
     self.scale = scale
     self.scaleRange = scaleRange
+    self.scaleSpeed = scaleSpeed  // 시간이 지나면서 파티클이 점점 작아짐
     self.lifetime = lifetime
     self.lifetimeRange = lifetimeRange
     self.birthRate = birthRate
@@ -67,8 +71,8 @@ final class WalWalEmitterCell: CAEmitterCell {
     fatalError("init(coder:) has not been implemented")
   }
   
-  func startEmitting(rate: Float = 30) {
-    birthRate = rate
+  func startEmitting(rate: Float = 20) {
+    birthRate = 18
   }
   
   func stopEmitting() {

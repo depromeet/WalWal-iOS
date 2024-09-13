@@ -11,6 +11,7 @@ import ResourceKit
 import GlobalState
 
 import RxSwift
+import Lottie
 
 struct BoostResult {
   let indexPath: IndexPath
@@ -30,7 +31,7 @@ final class WalWalBoostGenerator {
   private var currentBlackOverlayView: UIView?
   private var currentIndexPath: IndexPath?
   
-  private let walwalEmitter: WalWalEmitterLayer
+  private var walwalEmitter: WalWalEmitterLayer
   private let walwalBoostBorder: WalWalBoostBorder
   private let walwalBoostCenterLabel: WalWalBoostCenterLabel
   private let walwalBoostCounter: WalWalBoostCounter
@@ -86,6 +87,7 @@ final class WalWalBoostGenerator {
     
     animateDetailViewAppearance(
       detailView,
+      backgroundView,
       window: window
     )
     
@@ -158,8 +160,8 @@ extension WalWalBoostGenerator {
   
   private func createBackgroundView(frame: CGRect) -> UIView {
     let backgroundView = UIView(frame: frame)
-    backgroundView.backgroundColor = .clear
-    backgroundView.alpha = 1
+    backgroundView.backgroundColor = Colors.black.color
+    backgroundView.alpha = 0.4
     return backgroundView
   }
   
@@ -182,9 +184,12 @@ extension WalWalBoostGenerator {
   
   private func animateDetailViewAppearance(
     _ detailView: UIView,
+    _ backgroundView: UIView,
     window: UIWindow
   ) {
     detailView.transform = .identity
+    backgroundView.alpha = 0
+    
     UIView.animateKeyframes(
       withDuration: 0.5,
       delay: 0,
@@ -192,15 +197,13 @@ extension WalWalBoostGenerator {
       animations: {
         UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
           detailView.transform = CGAffineTransform(scaleX: 0.98, y: 0.98).translatedBy(x: 0, y: 2)
+          backgroundView.alpha = 0.4
         }
-        
         UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
           detailView.transform = .identity
         }
       }
-    ) { _ in
-      /// 애니메이션 완료 후 추가 작업이 필요한 경우 여기에 구현
-    }
+    )
     
     /// DetailView가 작아진 후 다시 커지기 시작할 때 다른 애니메이션 시작
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
@@ -211,18 +214,38 @@ extension WalWalBoostGenerator {
     }
   }
   
+  private func showFootLottie(in detailView: UIView, window: UIWindow, mode: AnimationAsset) {
+    let centerLabelLottieView: LottieAnimationView = {
+      let animationView = LottieAnimationView(animation: mode.animation)
+      animationView.loopMode = .playOnce
+      animationView.contentMode = .scaleAspectFill
+      return animationView
+    }()
+    
+    window.addSubview(centerLabelLottieView)
+    
+    centerLabelLottieView.pin
+      .center(to: detailView.anchor.center) // detailView의 중앙에 Lottie 뷰의 중심을 맞추기
+      .marginTop(20)
+      .marginHorizontal(50.adjusted)
+      .height(205.adjusted)
+    
+    centerLabelLottieView.layoutIfNeeded()
+    
+    centerLabelLottieView.play { completed in
+      if completed {
+        centerLabelLottieView.stop()
+        window.viewWithTag(999)?.removeFromSuperview()
+        centerLabelLottieView.removeFromSuperview()
+      }
+    }
+  }
+  
   private func setupBoostAnimationComponents(in detailView: UIView, window: UIWindow) {
     walwalBoostBorder.addBorderLayer(to: detailView)
     walwalBoostBorder.startBorderAnimation()
     
-    walwalBoostCenterLabel.updateCenterLabels(
-      with: WalWalBurstString.normalText,
-      in: detailView,
-      window: window
-    ) { [weak self] in
-      guard let self = self else { return }
-      self.walwalBoostCenterLabel.disappearLabels()
-    }
+    showFootLottie(in: detailView, window: window, mode: AnimationAsset.cute)
     
     walwalBoostCounter.setupCountLabel(in: window, detailView: detailView)
     walwalBoostCounter.startCountTimer(
@@ -242,26 +265,26 @@ extension WalWalBoostGenerator {
       positionRatio: CGPoint(x: 0.5, y: 0.5),
       sizeRatio: CGSize(width: 0.5, height: 0.5)
     )
-    walwalEmitter.startEmitting(rate: 20)
+    walwalEmitter.startEmitting()
     detailView.layer.addSublayer(walwalEmitter)
   }
   
   private func addTiltAnimation(to view: UIView) {
     let tiltAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
-    let frames = 60 /// 틱당 생기는 부자연스러움을 없애기 위해 144fps로 애니메이션 설정
+    let frames = 60 /// 틱당 생기는 부자연스러움을 없애기 위해 60fps로 애니메이션 설정
     var values = [Double]()
     var keyTimes = [NSNumber]()
     
     for i in 0...frames {
       let progress = Double(i) / Double(frames)
-      let angle = sin(progress * 2 * .pi) * (Double.pi / 180) /// 15도 각도를 1frame 만큼 각도 변환
+      let angle = sin(progress * 2 * .pi) * (Double.pi / 180) * 0.66  /// 15도 각도를 1frame 만큼 각도 변환
       values.append(angle)
       keyTimes.append(NSNumber(value: progress))
     }
     
     tiltAnimation.values = values
     tiltAnimation.keyTimes = keyTimes
-    tiltAnimation.duration = 0.1 /// 144프레임의 애니메이션을 0.3초 동안
+    tiltAnimation.duration = 0.1 /// 60fps의 애니메이션을 0.3초 동안
     tiltAnimation.repeatCount = .infinity /// 무한 반복
     
     view.layer.add(tiltAnimation, forKey: "tilt")
@@ -273,59 +296,16 @@ extension WalWalBoostGenerator {
     window: UIWindow
   ) {
     feedbackGenerator.impactOccurred()
-    
-    // 기본 방출량
-    let normalRate: Float = 20
-    
-    // 순간적으로 방출량을 2배로 늘리는 메서드
-    func temporarilyIncreaseRate(_ rate: Float, duration: TimeInterval) {
-      walwalEmitter.startEmitting(rate: rate)
-      DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
-        self?.walwalEmitter.startEmitting(rate: normalRate)  // 원래 방출량으로 돌아감
-      }
-    }
-    
     switch count {
-    case 1:
-      // 1개일 때 방출량 잠깐 2배로 늘림
-      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
-      
     case 100:
       walwalBoostBorder.startBorderAnimation(isRainbow: true)
-      walwalBoostCenterLabel.updateCenterLabels(
-        with: WalWalBurstString.goodText,
-        in: detailView,
-        window: window
-      ) { [weak self] in
-        guard let self = self else { return }
-        self.walwalBoostCenterLabel.disappearLabels()
-      }
-      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
-      
+      showFootLottie(in: detailView, window: window, mode: AnimationAsset.soCute)
     case 250:
-      walwalBoostCenterLabel.updateCenterLabels(
-        with: WalWalBurstString.greatText,
-        in: detailView,
-        window: window
-      ) { [weak self] in
-        guard let self = self else { return }
-        self.walwalBoostCenterLabel.disappearLabels()
-      }
-      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
-      
+      showFootLottie(in: detailView, window: window, mode: AnimationAsset.soSoCute)
     case 500:
-      walwalBoostCenterLabel.updateCenterLabels(
-        with: WalWalBurstString.wonderfulText,
-        in: detailView,
-        window: window
-      ) { [weak self] in
-        guard let self = self else { return }
-        self.walwalBoostCenterLabel.disappearLabels()
-      }
-      temporarilyIncreaseRate(normalRate * 2, duration: 1)  // 0.5초 동안 2배로 방출
-      
+      showFootLottie(in: detailView, window: window, mode: AnimationAsset.soSoLove)
     default:
-      walwalEmitter.startEmitting(rate: normalRate)  // 기본 방출량 유지
+      walwalEmitter.startEmitting()  // 기본 방출량 유지
     }
   }
 }

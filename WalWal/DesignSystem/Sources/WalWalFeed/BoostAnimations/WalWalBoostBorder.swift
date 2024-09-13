@@ -150,7 +150,7 @@ final class WalWalBoostBorder {
     let animation = CABasicAnimation(keyPath: "strokeEnd")
     animation.fromValue = 0.0
     animation.toValue = 1.0
-    animation.duration = 2.0
+    animation.duration = 2.5
     animation.isRemovedOnCompletion = false
     animation.fillMode = .forwards
     

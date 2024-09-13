@@ -68,7 +68,7 @@ final class WalWalEmitterLayer: CAEmitterLayer {
     )
   }
   
-  func startEmitting(rate: Float = 30) {
+  func startEmitting(rate: Float = 20) {
     walwalCell.startEmitting(rate: rate)
   }
   
