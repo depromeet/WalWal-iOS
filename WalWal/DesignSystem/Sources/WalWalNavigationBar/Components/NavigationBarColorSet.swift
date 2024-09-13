@@ -19,6 +19,7 @@ public enum NavigationBarColorSet {
   case normal
   case dark
   case orange
+  case custom(tintColor: UIColor, backgroundColor: UIColor)
   
   var tintColor: UIColor {
     switch self {
@@ -26,6 +27,8 @@ public enum NavigationBarColorSet {
       return Colors.black.color
     case .dark, .orange:
       return Colors.white.color
+    case let .custom(tintColor, backgroundColor):
+      return tintColor
     }
   }
   
@@ -37,6 +40,8 @@ public enum NavigationBarColorSet {
       return Colors.black.color
     case .orange:
       return Colors.walwalOrange.color
+    case let .custom(tintColor, backgroundColor):
+      return backgroundColor
     }
   }
 }

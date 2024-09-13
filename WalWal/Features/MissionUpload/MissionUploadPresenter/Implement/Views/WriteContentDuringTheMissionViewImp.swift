@@ -33,9 +33,12 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
   
   // 네비게이션 컨테이너
   private let navigationContainer = UIView()
-  private let backButton = WalWalTouchArea(
-    image: Images.backL.image,
-    size: 40
+  private let navigationBar = WalWalNavigationBar(
+    leftItems: [.back],
+    leftItemSize: 40,
+    title: "미션 기록",
+    rightItems: [],
+    colorType: .custom(tintColor: Colors.white.color, backgroundColor: UIColor(hex: 0x1b1b1b))
   )
   
   // 이미지 프리뷰 컨테이너
@@ -164,7 +167,7 @@ public final class WriteContentDuringTheMissionViewControllerImp<R: WriteContent
       }
     
     navigationContainer.flex.define { flex in
-      flex.addItem(backButton).size(40)
+      flex.addItem(navigationBar).width(100%).height(100%)
     }
     
     imagePreviewContainer.flex.define { flex in
@@ -242,7 +245,7 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    backButton.rx.tapped
+    navigationBar.leftItems![0].rx.tapped
       .map { Reactor.Action.backButtonTapped }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
