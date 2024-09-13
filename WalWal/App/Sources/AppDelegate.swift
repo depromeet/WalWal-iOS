@@ -47,8 +47,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     if let userInfo = launchOptions?[.remoteNotification] as? [AnyHashable: Any],
        let deepLink = userInfo["deepLink"] as? String {
+      UserDefaults.setValue(value: true, forUserDefaultKey: .enterDeepLink)
       receiveDeepLink.accept(deepLink)
-      receiveDeepLink.accept(nil)
     }
     appCoordinator?.start()
     
@@ -136,8 +136,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     let userInfo = response.notification.request.content.userInfo
     guard let deepLink = userInfo["deepLink"] as? String else { return }
+    
+    UserDefaults.setValue(value: true, forUserDefaultKey: .enterDeepLink)
     receiveDeepLink.accept(deepLink)
-    receiveDeepLink.accept(nil)
   }
 }
 
