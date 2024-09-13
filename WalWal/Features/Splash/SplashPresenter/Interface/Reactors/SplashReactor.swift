@@ -17,11 +17,13 @@ import RxSwift
 
 public enum SplashReactorAction {
   case checkToken
+  case checkDeepLink(String)
 }
 
 public enum SplashReactorMutation {
   case startAuth
   case startMain
+  case startHomeByDeepLink(pushAction: PushNotiMoveAction)
 }
 
 public struct SplashReactorState {

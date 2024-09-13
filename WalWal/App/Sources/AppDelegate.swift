@@ -22,6 +22,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
   var appCoordinator: (any AppCoordinator)?
   private let fcmToken = PublishRelay<String>()
+  private let receiveDeepLink = BehaviorRelay<String?>(value: nil)
   
   func application(
     _ application: UIApplication,
@@ -35,7 +36,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let navigationController = UINavigationController()
     
-    self.appCoordinator = self.injectWalWalImplement(navigation: navigationController)
+    self.appCoordinator = self.injectWalWalImplement(
+      navigation: navigationController,
+      deepLinkObservable: receiveDeepLink.asObservable()
+    )
     window.rootViewController = navigationController
     window.makeKeyAndVisible()
     
@@ -110,6 +114,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     _ center: UNUserNotificationCenter,
     willPresent notification: UNNotification
   ) async -> UNNotificationPresentationOptions {
+    print("willPresent")
+    UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     return [.banner, .sound, .badge]
   }
   
@@ -119,9 +125,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     didReceive response: UNNotificationResponse
   ) async {
     print("didReceive")
+    UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     let userInfo = response.notification.request.content.userInfo
-    FCMDeepLinkManager.shared.checkDeepLink(userInfo: userInfo, coordinator: appCoordinator)
+    guard let deepLink = userInfo["deepLink"] as? String else { return }
+    receiveDeepLink.accept(deepLink)
   }
-  
 }
 

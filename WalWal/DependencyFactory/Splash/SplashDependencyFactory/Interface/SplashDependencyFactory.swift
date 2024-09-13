@@ -30,6 +30,8 @@ import FCMDomain
 import RecordsDomain
 import MembersDomain
 
+import RxSwift
+
 public protocol SplashDependencyFactory {
   
   func injectAppCoordinator(
@@ -44,7 +46,8 @@ public protocol SplashDependencyFactory {
     onboardingDependencyFactory: OnboardingDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory,
-    memberDependencyFactory: MembersDependencyFactory
+    memberDependencyFactory: MembersDependencyFactory,
+    deepLinkObservable: Observable<String?>
   ) -> any AppCoordinator
   
   func injectCheckTokenUseCase() -> CheckTokenUsecase
@@ -59,5 +62,8 @@ public protocol SplashDependencyFactory {
     memberInfoUseCase: MemberInfoUseCase
   ) -> any SplashReactor
   
-  func injectSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController
+  func injectSplashViewController<T: SplashReactor>(
+    reactor: T,
+    deepLinkObservable: Observable<String?>
+  ) -> any SplashViewController
 }

@@ -27,6 +27,7 @@ public final class SplashViewControllerImp<R: SplashReactor>: UIViewController, 
   
   public var disposeBag = DisposeBag()
   public var splashReactor: R
+  private let deepLinkObservable: Observable<String?>
   
   // MARK: UI
   
@@ -41,9 +42,11 @@ public final class SplashViewControllerImp<R: SplashReactor>: UIViewController, 
   // MARK: - Initialize
   
   public init(
-      reactor: R
+      reactor: R,
+      deepLinkObservable: Observable<String?>
   ) {
     self.splashReactor = reactor
+    self.deepLinkObservable = deepLinkObservable
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -104,8 +107,11 @@ extension SplashViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    Observable<SplashReactorAction>
-      .just(Reactor.Action.checkToken)
+    deepLinkObservable
+      .compactMap { $0 }
+      .map {
+        Reactor.Action.checkDeepLink($0)
+      }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }

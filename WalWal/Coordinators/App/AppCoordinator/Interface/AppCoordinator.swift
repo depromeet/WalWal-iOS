@@ -17,10 +17,10 @@ public enum AppCoordinatorFlow: CoordinatorFlow {
   case startAuth
   case startHome
   case startOnboarding
+  case startHomeByDeepLink(move: PushNotiMoveAction)
 }
 
 public protocol AppCoordinator: BaseCoordinator where Flow == AppCoordinatorFlow {
-  func pushTabMove(to: PushNotiMoveAction)
   
 }
 

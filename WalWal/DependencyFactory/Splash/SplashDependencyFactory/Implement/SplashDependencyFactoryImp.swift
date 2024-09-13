@@ -37,6 +37,8 @@ import FCMDomain
 import RecordsDomain
 import MembersDomain
 
+import RxSwift
+
 public class SplashDependencyFactoryImp: SplashDependencyFactory {
   
   public init() {
@@ -55,7 +57,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     onboardingDependencyFactory: OnboardingDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory,
-    memberDependencyFactory: MembersDependencyFactory
+    memberDependencyFactory: MembersDependencyFactory,
+    deepLinkObservable: Observable<String?>
   ) -> any AppCoordinator {
     return AppCoordinatorImp(
       navigationController: navigationController,
@@ -70,7 +73,8 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       onboardingDependencyFactory: onboardingDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
       recordsDependencyFactory: recordsDependencyFactory,
-      memberDependencyFactory: memberDependencyFactory
+      memberDependencyFactory: memberDependencyFactory,
+      deepLinkObservable: deepLinkObservable
     )
   }
   
@@ -98,7 +102,13 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     )
   }
   
-  public func injectSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController {
-    return SplashViewControllerImp(reactor: reactor)
+  public func injectSplashViewController<T: SplashReactor>(
+    reactor: T,
+    deepLinkObservable: Observable<String?>
+  ) -> any SplashViewController {
+    return SplashViewControllerImp(
+      reactor: reactor,
+      deepLinkObservable: deepLinkObservable
+    )
   }
 }
