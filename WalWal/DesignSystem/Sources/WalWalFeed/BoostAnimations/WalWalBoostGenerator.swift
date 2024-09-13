@@ -220,12 +220,11 @@ extension WalWalBoostGenerator {
       return animationView
     }()
     
-//    centerLabelLottieView.center = CGPoint(x: detailView.center.x, y: detailView.center.y + 20.adjusted)
     window.addSubview(centerLabelLottieView)
     
     centerLabelLottieView.pin
-      .center()
-      .top(210.adjusted)
+      .center(to: detailView.anchor.center) // detailView의 중앙에 Lottie 뷰의 중심을 맞추기
+      .marginTop(20)
       .marginHorizontal(50.adjusted)
       .height(205.adjusted)
     
