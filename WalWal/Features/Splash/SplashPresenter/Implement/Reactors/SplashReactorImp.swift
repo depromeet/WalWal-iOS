@@ -6,14 +6,12 @@
 //  Created by 조용인
 //
 
-import Foundation
 import SplashDomain
 import SplashPresenter
 import FCMDomain
 import RecordsDomain
 import MembersDomain
 import AppCoordinator
-import GlobalState
 
 import ReactorKit
 import RxSwift
@@ -47,11 +45,6 @@ public final class SplashReactorImp: SplashReactor {
     self.initialState = State()
   }
   
-  public func transform(action: Observable<Action>) -> Observable<Action> {
-    let initAction = Observable.just(Action.checkToken)
-    return .merge(action, initAction)
-  }
-  
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .checkToken:
@@ -59,8 +52,6 @@ public final class SplashReactorImp: SplashReactor {
         .flatMap { isAlreadyLoaded in
           isAlreadyLoaded ? self.handleTokenCheckFlow() : .just(.startAuth)
         }
-    case let .checkDeepLink(link):
-      return checkDeepLink(link)
     }
   }
   
@@ -71,8 +62,6 @@ public final class SplashReactorImp: SplashReactor {
       coordinator.destination.accept(.startAuth)
     case .startMain:
       coordinator.destination.accept(.startHome)
-    case let .startHomeByDeepLink(pushAction):
-      coordinator.destination.accept(.startHomeByDeepLink(move: pushAction))
     }
     return state
   }
@@ -81,38 +70,6 @@ public final class SplashReactorImp: SplashReactor {
 // MARK: - Private Methods
 
 extension SplashReactorImp {
-  
-  private func checkDeepLink(_ link: String?) -> Observable<Mutation> {
-    guard let link = link,
-          let url = URL(string: link),
-          let type = url.host
-    else { return .just(.startMain) }
-    
-    switch DeepLinkTarget(rawValue: type) {
-    case .mission:
-      return .just(.startHomeByDeepLink(pushAction: .mission))
-    case .booster:
-      return decodeDeepLink(url: url)
-    default:
-      return .just(.startMain)
-    }
-  }
-  
-  private func decodeDeepLink(url: URL) -> Observable<Mutation> {
-    
-    let urlString = url.absoluteString
-    guard urlString.contains("id") else { return .just(.startMain) }
-    
-    let components = URLComponents(string: urlString)
-    let urlQueryItems = components?.queryItems ?? []
-    var dictionaryData = [String: String]()
-    urlQueryItems.forEach { dictionaryData[$0.name] = $0.value }
-    
-    guard let recordId = dictionaryData["id"] else { return .just(.startMain) }
-    GlobalState.shared.updateRecordId(Int(recordId))
-    return .just(.startHomeByDeepLink(pushAction: .feed))
-    
-  }
   
   private func checkToken() -> Observable<Bool> {
     guard let _ = checkTokenUseCase.execute() else {
@@ -150,9 +107,4 @@ extension SplashReactorImp {
       .asObservable()
       .map { _ in Void() }
   }
-}
-
-fileprivate enum DeepLinkTarget: String {
-  case mission = "mission"
-  case booster = "boost"
 }

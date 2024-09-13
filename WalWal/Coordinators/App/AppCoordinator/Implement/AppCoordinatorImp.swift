@@ -55,8 +55,6 @@ public final class AppCoordinatorImp: AppCoordinator {
   private let recordsDependencyFactory: RecordsDependencyFactory
   private let memberDependencyFactory: MembersDependencyFactory
   
-  public let pushTabMoveEvent = PublishSubject<PushNotiMoveAction>()
-  private var retryPushMove: PushNotiMoveAction? = nil
   private let deepLinkObservable: Observable<String?>
   
   /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
@@ -105,8 +103,6 @@ public final class AppCoordinatorImp: AppCoordinator {
           owner.startTabBar()
         case .startOnboarding:
           owner.startOnboarding()
-        case let .startHomeByDeepLink(move):
-          owner.startDeepLink(move)
         }
       })
       .disposed(by: disposeBag)
@@ -137,27 +133,10 @@ public final class AppCoordinatorImp: AppCoordinator {
       fcmSaveUseCase: fcmSaveUseCase,
       memberInfoUseCase: memberInfoUseCase
     )
-    let splashVC = appDependencyFactory.injectSplashViewController(
-      reactor: reactor,
-      deepLinkObservable: deepLinkObservable
-    )
+    let splashVC = appDependencyFactory.injectSplashViewController(reactor: reactor)
     self.baseViewController = splashVC
     self.pushViewController(viewController: splashVC, animated: false)
   }
-  
-  fileprivate func startDeepLink(_ deepLinkAction: PushNotiMoveAction) {
-    guard let tabbarCoordinator = childCoordinator as? (any WalWalTabBarCoordinator) else {
-      retryPushMove = deepLinkAction
-      return
-    }
-    switch deepLinkAction {
-    case .feed:
-      tabbarCoordinator.specificTab(flow: .startFeed)
-    case .mission:
-      tabbarCoordinator.specificTab(flow: .startMission)
-    }
-  }
-  
 }
 
 // MARK: - Handle Child Actions
@@ -232,16 +211,13 @@ extension AppCoordinatorImp {
       authDependencyFactory: authDependencyFactory,
       recordDependencyFactory: recordsDependencyFactory, 
       imageDependencyFactory: imageDependencyFactory,
-      membersDependencyFactory: memberDependencyFactory
+      membersDependencyFactory: memberDependencyFactory,
+      deepLinkObservable: deepLinkObservable
     )
     childCoordinator = walwalTabBarCoordinator
     
     walwalTabBarCoordinator.start()
     
-    /// 저장해둔 재시도 이동 값이 있으면 코디네이터 생성 완료 후 이동 요청
-    if let tabType = retryPushMove {
-      startDeepLink(tabType)
-    }
     
   }
   

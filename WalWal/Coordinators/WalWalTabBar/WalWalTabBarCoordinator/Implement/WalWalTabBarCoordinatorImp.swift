@@ -27,6 +27,8 @@ import FeedCoordinator
 import MyPageCoordinator
 import FCMCoordinator
 
+import GlobalState
+
 import RxSwift
 import RxCocoa
 
@@ -57,6 +59,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   private var authDependencyFactory: AuthDependencyFactory
   private let imageDependencyFactory: ImageDependencyFactory
   private var membersDependencyFactory: MembersDependencyFactory
+  private let deepLinkObservable: Observable<String?>
   
   public required init(
     navigationController: UINavigationController,
@@ -70,7 +73,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     authDependencyFactory: AuthDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
-    membersDependencyFactory: MembersDependencyFactory
+    membersDependencyFactory: MembersDependencyFactory,
+    deepLinkObservable: Observable<String?>
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -85,6 +89,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     self.imageDependencyFactory = imageDependencyFactory
     self.tabBarController = WalWalTabBarViewController()
     self.membersDependencyFactory = membersDependencyFactory
+    self.deepLinkObservable = deepLinkObservable
     
     bindChildToParentAction()
     bindState()
@@ -130,13 +135,48 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     print("탭바코디네이터 스타트 호출")
     setupTabBarController()
     childCoordinator = tabCoordinators[.startMission]
+    bindDeepLinkObserver()
   }
   
-  /// 특정 탭으로 이동 요청
-  public func specificTab(flow: Flow) {
-    forceMoveTab.accept(flow)
+  private func bindDeepLinkObserver() {
+    deepLinkObservable
+      .compactMap { $0 }
+      .subscribe(with: self) { owner, deepLink in
+        owner.checkDeepLink(deepLink)
+      }
+      .disposed(by: disposeBag)
   }
   
+  private func checkDeepLink(_ link: String?) {
+    guard let link = link,
+          let url = URL(string: link),
+          let type = url.host
+    else { return }
+    
+    switch DeepLinkTarget(rawValue: type) {
+    case .mission:
+      forceMoveTab.accept(.startMission)
+    case .booster:
+      decodeDeepLink(url)
+      forceMoveTab.accept(.startFeed)
+    default:
+      forceMoveTab.accept(.startMission)
+    }
+  }
+  
+  private func decodeDeepLink(_ url: URL) {
+    
+    let urlString = url.absoluteString
+    guard urlString.contains("id") else { return }
+    
+    let components = URLComponents(string: urlString)
+    let urlQueryItems = components?.queryItems ?? []
+    var dictionaryData = [String: String]()
+    urlQueryItems.forEach { dictionaryData[$0.name] = $0.value }
+    
+    guard let recordId = dictionaryData["id"] else { return }
+    GlobalState.shared.updateRecordId(Int(recordId))
+  }
 }
 
 // MARK: - Handle Child Actions
@@ -313,4 +353,9 @@ private extension WalWalTabBarCoordinatorImp {
       return startMyPage(navigationController: navigationController)
     }
   }
+}
+
+fileprivate enum DeepLinkTarget: String {
+  case mission = "mission"
+  case booster = "boost"
 }

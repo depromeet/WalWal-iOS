@@ -23,6 +23,8 @@ import BaseCoordinator
 import WalWalTabBarCoordinator
 import WalWalTabBarCoordinatorImp
 
+import RxSwift
+
 public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
   
   public init() {
@@ -40,7 +42,8 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
     authDependencyFactory: AuthDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
-    membersDependencyFactory: MembersDependencyFactory
+    membersDependencyFactory: MembersDependencyFactory,
+    deepLinkObservable: Observable<String?>
   ) -> any WalWalTabBarCoordinator {
     return WalWalTabBarCoordinatorImp(
       navigationController: navigationController,
@@ -54,7 +57,8 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
       authDependencyFactory: authDependencyFactory,
       recordDependencyFactory: recordDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,
-      membersDependencyFactory: membersDependencyFactory
+      membersDependencyFactory: membersDependencyFactory,
+      deepLinkObservable: deepLinkObservable
     )
   }
   

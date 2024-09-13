@@ -22,6 +22,5 @@ public enum WalWalTabBarCoordinatorFlow: Int, CoordinatorFlow, CaseIterable {
 }
 
 public protocol WalWalTabBarCoordinator: BaseCoordinator {
-  func specificTab(flow: WalWalTabBarCoordinatorFlow)
   func startAuth()
 }

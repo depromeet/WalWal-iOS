@@ -8,6 +8,7 @@
 import UIKit
 import AppCoordinator
 import LocalStorage
+import DesignSystem
 
 import RxSwift
 import RxCocoa
@@ -36,6 +37,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let navigationController = UINavigationController()
     
+    
     self.appCoordinator = self.injectWalWalImplement(
       navigation: navigationController,
       deepLinkObservable: receiveDeepLink.asObservable()
@@ -43,6 +45,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     window.rootViewController = navigationController
     window.makeKeyAndVisible()
     
+    
+    if let userInfo = launchOptions?[.remoteNotification] as? [AnyHashable: Any],
+       let deepLink = userInfo["deepLink"] as? String {
+      receiveDeepLink.accept(deepLink)
+      
+    }
     appCoordinator?.start()
     
     return true
@@ -81,6 +89,7 @@ private extension AppDelegate {
     let KakaoAppKey = Bundle.main.infoDictionary?["KakaoAppKey"] as? String ?? ""
     KakaoSDK.initSDK(appKey: KakaoAppKey)
   }
+  
 }
 
 

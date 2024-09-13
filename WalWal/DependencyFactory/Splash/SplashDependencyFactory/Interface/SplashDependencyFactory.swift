@@ -63,7 +63,6 @@ public protocol SplashDependencyFactory {
   ) -> any SplashReactor
   
   func injectSplashViewController<T: SplashReactor>(
-    reactor: T,
-    deepLinkObservable: Observable<String?>
+    reactor: T
   ) -> any SplashViewController
 }

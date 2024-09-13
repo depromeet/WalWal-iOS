@@ -102,13 +102,7 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     )
   }
   
-  public func injectSplashViewController<T: SplashReactor>(
-    reactor: T,
-    deepLinkObservable: Observable<String?>
-  ) -> any SplashViewController {
-    return SplashViewControllerImp(
-      reactor: reactor,
-      deepLinkObservable: deepLinkObservable
-    )
+  public func injectSplashViewController<T: SplashReactor>(reactor: T) -> any SplashViewController {
+    return SplashViewControllerImp(reactor: reactor)
   }
 }
