@@ -32,15 +32,19 @@ public final class FeedReactorImp: FeedReactor {
   
   private let fetchFeedUseCase: FetchFeedUseCase
   private let updateBoostCountUseCase: UpdateBoostCountUseCase
+  private let removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
   
   public init(
     coordinator: any FeedCoordinator,
     fetchFeedUseCase: FetchFeedUseCase,
-    updateBoostCountUseCase: UpdateBoostCountUseCase
+    updateBoostCountUseCase: UpdateBoostCountUseCase,
+    removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
   ) {
     self.coordinator = coordinator
     self.fetchFeedUseCase = fetchFeedUseCase
     self.updateBoostCountUseCase = updateBoostCountUseCase
+    self.removeGlobalRecordIdUseCase = removeGlobalRecordIdUseCase
+    
     self.initialState = State()
   }
   
@@ -108,8 +112,16 @@ public final class FeedReactorImp: FeedReactor {
   /// 알림 - 피드 넘어왔을 때 스크롤이 넘어가야 하는지 여부
   private func checkScrollEvent() -> Observable<Mutation> {
     return GlobalState.shared.moveToFeedRecord
+      .observe(on: MainScheduler.asyncInstance)
+      .asObservable()
       .compactMap { $0 }
+      .withUnretained(self)
+      .map { owner, id -> Int in
+        owner.removeGlobalRecordIdUseCase.execute()
+        return id
+      }
       .flatMap { id -> Observable<Mutation> in
+        
         return .just(.scrollToFeedItem(id: id))
       }
   }

@@ -56,14 +56,14 @@ public final class SplashReactorImp: SplashReactor {
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
-    var newState = state
+    
     switch mutation {
     case .startAuth:
       coordinator.destination.accept(.startAuth)
     case .startMain:
       coordinator.destination.accept(.startHome)
     }
-    return newState
+    return state
   }
 }
 
@@ -72,7 +72,7 @@ public final class SplashReactorImp: SplashReactor {
 extension SplashReactorImp {
   
   private func checkToken() -> Observable<Bool> {
-    guard let accessToken = checkTokenUseCase.execute() else {
+    guard let _ = checkTokenUseCase.execute() else {
       return .just(false) // 토큰이 없으면 인증 필요
     }
     return .just(true) // 토큰이 있으면 메인으로

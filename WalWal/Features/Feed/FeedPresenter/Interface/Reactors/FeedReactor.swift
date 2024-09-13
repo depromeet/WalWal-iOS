@@ -51,6 +51,7 @@ public protocol FeedReactor: Reactor where Action == FeedReactorAction, Mutation
   init(
     coordinator: any FeedCoordinator,
     fetchFeedUseCase: FetchFeedUseCase,
-    updateBoostCountUseCase: UpdateBoostCountUseCase
+    updateBoostCountUseCase: UpdateBoostCountUseCase,
+    removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
   )
 }

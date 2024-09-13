@@ -22,6 +22,8 @@ public protocol FeedDependencyFactory {
   func injectFeedRepository() -> FeedRepository
   func injectFetchFeedUseCase() -> FetchFeedUseCase
   func injectFetchUserFeedUseCase() -> FetchUserFeedUseCase
+  func injectRemoveGlobalRecordIdUseCase() -> RemoveGlobalRecordIdUseCase
+  
   func injectFeedCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
@@ -30,7 +32,8 @@ public protocol FeedDependencyFactory {
   func injectFeedReactor<T: FeedCoordinator>(
     coordinator: T,
     fetchFeedUseCase: FetchFeedUseCase,
-    updateBoostCountUseCase: UpdateBoostCountUseCase
+    updateBoostCountUseCase: UpdateBoostCountUseCase,
+    removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
   ) -> any FeedReactor
   func injectFeedViewController<T: FeedReactor>(reactor: T) -> any FeedViewController
 }

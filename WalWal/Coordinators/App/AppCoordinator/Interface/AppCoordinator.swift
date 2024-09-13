@@ -19,4 +19,6 @@ public enum AppCoordinatorFlow: CoordinatorFlow {
   case startOnboarding
 }
 
-public protocol AppCoordinator: BaseCoordinator where Flow == AppCoordinatorFlow { }
+public protocol AppCoordinator: BaseCoordinator where Flow == AppCoordinatorFlow {
+  
+}

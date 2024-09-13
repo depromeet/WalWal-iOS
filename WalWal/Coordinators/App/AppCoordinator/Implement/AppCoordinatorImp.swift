@@ -55,6 +55,8 @@ public final class AppCoordinatorImp: AppCoordinator {
   private let recordsDependencyFactory: RecordsDependencyFactory
   private let memberDependencyFactory: MembersDependencyFactory
   
+  private let deepLinkObservable: Observable<String?>
+  
   /// 이곳에서 모든 Feature관련 Dependency의 인터페이스를 소유함.
   /// 그리고 하위 Coordinator를 생성할 때 마다, 하위에 해당하는 인터페이스 모두 전달
   public required init(
@@ -70,7 +72,8 @@ public final class AppCoordinatorImp: AppCoordinator {
     onboardingDependencyFactory: OnboardingDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory,
-    memberDependencyFactory: MembersDependencyFactory
+    memberDependencyFactory: MembersDependencyFactory,
+    deepLinkObservable: Observable<String?>
   ) {
     self.navigationController = navigationController
     self.appDependencyFactory = appDependencyFactory
@@ -85,6 +88,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     self.feedDependencyFactory = feedDependencyFactory
     self.recordsDependencyFactory = recordsDependencyFactory
     self.memberDependencyFactory = memberDependencyFactory
+    self.deepLinkObservable = deepLinkObservable
     bindChildToParentAction()
     bindState()
   }
@@ -102,6 +106,7 @@ public final class AppCoordinatorImp: AppCoordinator {
         }
       })
       .disposed(by: disposeBag)
+    
   }
   
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
@@ -206,10 +211,14 @@ extension AppCoordinatorImp {
       authDependencyFactory: authDependencyFactory,
       recordDependencyFactory: recordsDependencyFactory, 
       imageDependencyFactory: imageDependencyFactory,
-      membersDependencyFactory: memberDependencyFactory
+      membersDependencyFactory: memberDependencyFactory,
+      deepLinkObservable: deepLinkObservable
     )
     childCoordinator = walwalTabBarCoordinator
+    
     walwalTabBarCoordinator.start()
+    
+    
   }
   
   private func startOnboarding() {

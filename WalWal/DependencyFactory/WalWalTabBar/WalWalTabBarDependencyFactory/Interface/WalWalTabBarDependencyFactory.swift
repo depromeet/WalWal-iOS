@@ -21,6 +21,8 @@ import ImageDependencyFactory
 import BaseCoordinator
 import WalWalTabBarCoordinator
 
+import RxSwift
+
 public protocol WalWalTabBarDependencyFactory {
   func makeTabBarCoordinator(
     navigationController: UINavigationController,
@@ -33,6 +35,7 @@ public protocol WalWalTabBarDependencyFactory {
     authDependencyFactory: AuthDependencyFactory,
     recordDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
-    membersDependencyFactory: MembersDependencyFactory
+    membersDependencyFactory: MembersDependencyFactory,
+    deepLinkObservable: Observable<String?>
   ) -> any WalWalTabBarCoordinator
 }

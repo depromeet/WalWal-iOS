@@ -20,8 +20,13 @@ import RecordsDependencyFactoryImp
 import ImageDependencyFactoryImp
 import MembersDependencyFactoryImp
 
+import RxSwift
+
 extension AppDelegate {
-  func injectWalWalImplement(navigation: UINavigationController) -> any AppCoordinator {
+  func injectWalWalImplement(
+    navigation: UINavigationController,
+    deepLinkObservable: Observable<String?>
+  ) -> any AppCoordinator {
     /// 전체 의존성 구현체를 이곳에서 한번에 정의
     let splashDependencyFactory = SplashDependencyFactoryImp()
     let authDependencyFactory = AuthDependencyFactoryImp()
@@ -48,7 +53,8 @@ extension AppDelegate {
       onboardingDependencyFactory: onboardingDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
       recordsDependencyFactory: recordsDependencyFactory,
-      memberDependencyFactory: membersDependencyFactory
+      memberDependencyFactory: membersDependencyFactory,
+      deepLinkObservable: deepLinkObservable
     )
   }
 }

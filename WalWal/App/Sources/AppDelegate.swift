@@ -22,13 +22,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
   var appCoordinator: (any AppCoordinator)?
   private let fcmToken = PublishRelay<String>()
-  private let callBackDeepLink = PublishRelay<String>()
+  private let receiveDeepLink = BehaviorRelay<String?>(value: nil)
   
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    
     
     configure(application)
     
@@ -37,10 +36,20 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let navigationController = UINavigationController()
     
-    self.appCoordinator = self.injectWalWalImplement(navigation: navigationController)
+    
+    self.appCoordinator = self.injectWalWalImplement(
+      navigation: navigationController,
+      deepLinkObservable: receiveDeepLink.asObservable()
+    )
     window.rootViewController = navigationController
     window.makeKeyAndVisible()
     
+    
+    if let userInfo = launchOptions?[.remoteNotification] as? [AnyHashable: Any],
+       let deepLink = userInfo["deepLink"] as? String {
+      receiveDeepLink.accept(deepLink)
+      receiveDeepLink.accept(nil)
+    }
     appCoordinator?.start()
     
     return true
@@ -72,12 +81,14 @@ private extension AppDelegate {
     FirebaseApp.configure()
     Messaging.messaging().delegate = self
     UNUserNotificationCenter.current().delegate = self
+    
     /// APNS에 Device Token 등록
     application.registerForRemoteNotifications()
     /// KakaoSDK 등록
     let KakaoAppKey = Bundle.main.infoDictionary?["KakaoAppKey"] as? String ?? ""
     KakaoSDK.initSDK(appKey: KakaoAppKey)
   }
+  
 }
 
 
@@ -111,6 +122,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     _ center: UNUserNotificationCenter,
     willPresent notification: UNNotification
   ) async -> UNNotificationPresentationOptions {
+    print("willPresent")
+    UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     return [.banner, .sound, .badge]
   }
   
@@ -119,10 +132,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     _ center: UNUserNotificationCenter,
     didReceive response: UNNotificationResponse
   ) async {
-    /// let userInfo = response.notification.request.content.userInfo
-    /// let urlScheme = userInfo["urlScheme"]
-    /// callBackDeepLink.accept(urlScheme)
+    print("didReceive")
+    UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+    let userInfo = response.notification.request.content.userInfo
+    guard let deepLink = userInfo["deepLink"] as? String else { return }
+    receiveDeepLink.accept(deepLink)
+    receiveDeepLink.accept(nil)
   }
-  
 }
 
