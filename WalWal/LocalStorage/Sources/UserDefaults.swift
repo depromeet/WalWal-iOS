@@ -20,6 +20,7 @@ public extension UserDefaults {
     case socialLogin
     case isFirstFeedAppear
     case isFirstMissionAppear
+    case enterDeepLink
   }
   
   // MARK: - GET

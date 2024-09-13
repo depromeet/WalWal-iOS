@@ -60,6 +60,8 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   private let imageDependencyFactory: ImageDependencyFactory
   private var membersDependencyFactory: MembersDependencyFactory
   private let deepLinkObservable: Observable<String?>
+  private var deeplinkFlag: Bool = false
+  private var checkDeepLink: String? = nil
   
   public required init(
     navigationController: UINavigationController,
@@ -140,6 +142,10 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   
   private func bindDeepLinkObserver() {
     deepLinkObservable
+      .distinctUntilChanged()
+      .filter { _ in
+        UserDefaults.bool(forUserDefaultsKey: .enterDeepLink)
+      }
       .compactMap { $0 }
       .subscribe(with: self) { owner, deepLink in
         owner.checkDeepLink(deepLink)
@@ -148,6 +154,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   }
   
   private func checkDeepLink(_ link: String?) {
+    UserDefaults.setValue(value: false, forUserDefaultKey: .enterDeepLink)
     guard let link = link,
           let url = URL(string: link),
           let type = url.host
