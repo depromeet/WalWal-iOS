@@ -2,7 +2,27 @@
 > ### 세상 모든 반려동물이 한 자리에 모인다! 왈왈
 <div align="center">
 <img src="https://github.com/user-attachments/assets/552cd39b-b37f-463a-8dd9-b19c4196afe5" width = "600"/>
+<br/>
+
+<a href="https://apps.apple.com/kr/app/%EC%99%88%EC%99%88/id6553981069" target="_blank">
+  <img src="https://img.shields.io/badge/AppStore-0D96F6.svg?style=flat&logo=app-store&logoColor=white" alt="App Store"/>
+</a>
+<a href="https://www.instagram.com/walwal._.official/" target="_blank">
+  <img src="http://img.shields.io/badge/Instagram-E4405F?style=flat&logo=instagram&logoColor=white" alt="Instagram"/>
+</a>
+<br>
+<a href="https://yapp-workspace.notion.site/5-8a385156703047aabf1e3706f4753cc6?pvs=4" target="_blank">
+  <img src="http://img.shields.io/badge/서비스_소개-%23000000?style=flat&logo=notion&logoColor=white" alt="서비스 소개"/>
+</a>
+<a href="https://medium.com/@olderstonebed" target="_blank">
+  <img src="http://img.shields.io/badge/개발_로그-12100E?style=flat&logo=medium&logoColor=white" alt="개발 로그"/>
+</a>
+<a href="https://dis.qa/e6J" target="_blank">
+  <img src="http://img.shields.io/badge/메이커_로그-0000FF?style=flat&logo=Pinboard&logoColor=white" alt="메이커 로그"/>
+</a>
+
 </div>
+
 
 ## 🐶 새로운 반려동물 커뮤니티 왈왈을 소개해요!
 - **왈왈은 반려동물과 함께 미션을 수행하는 새로운 펫 커뮤니티 서비스에요!**
