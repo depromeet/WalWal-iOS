@@ -8,7 +8,6 @@
 import UIKit
 import AppCoordinator
 import LocalStorage
-import DesignSystem
 
 import RxSwift
 import RxCocoa
