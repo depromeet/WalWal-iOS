@@ -248,7 +248,7 @@ extension MissionSelectViewControllerImp: View {
       .drive(with: self) { owner, isAllowed in
         if !isAllowed {
           WalWalAlert.shared.showOkAlert(
-            title: "사진에 대한 접근 권한이 없습니다",
+            title: "카메라에 대한 접근 권한이 없습니다",
             bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
             okTitle: "확인"
           )
