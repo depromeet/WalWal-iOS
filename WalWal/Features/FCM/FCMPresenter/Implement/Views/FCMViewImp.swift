@@ -55,13 +55,14 @@ public final class FCMViewControllerImp<R: FCMReactor>:
     frame: .zero,
     collectionViewLayout: collectionViewLayout()
   ).then {
-    $0.backgroundColor = Colors.gray100.color
+    $0.backgroundColor = .clear
     $0.register(FCMCollectionViewCell.self)
     $0.registerHeader(FCMCollectionViewHeader.self)
     $0.showsVerticalScrollIndicator = false
     $0.delegate = self
     $0.refreshControl = walwalIndicator
   }
+  private let edgeView = FCMEdgeView()
   
   public init(
     reactor: R
@@ -109,10 +110,15 @@ public final class FCMViewControllerImp<R: FCMReactor>:
         $0.addItem(separator)
           .width(100%)
           .height(1)
-        $0.addItem(collectionView)
-          .marginTop(13.adjustedHeight)
+        $0.addItem(edgeView)
+          .marginTop(204.adjustedHeight)
           .width(100%)
           .grow(1)
+        $0.addItem(collectionView)
+          .position(.absolute)
+          .top(61 + 13.adjustedHeight)
+          .width(100%)
+          .bottom(0)
       }
   }
   
@@ -241,6 +247,16 @@ extension FCMViewControllerImp: View {
       .map { $0.nextCursor }
       .distinctUntilChanged()
       .bind(to: nextCursor)
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.isHiddenEdgePage }
+      .distinctUntilChanged()
+      .debug()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, isHidden in
+        owner.edgeView.isHidden = isHidden
+      }
       .disposed(by: disposeBag)
   }
   
