@@ -109,7 +109,6 @@ extension SplashReactorImp {
     urlQueryItems.forEach { dictionaryData[$0.name] = $0.value }
     
     guard let recordId = dictionaryData["id"] else { return .just(.startMain) }
-    print(recordId)
     GlobalState.shared.updateRecordId(Int(recordId))
     return .just(.startHomeByDeepLink(pushAction: .feed))
     
