@@ -179,20 +179,23 @@ public final class WalWalFeed: UIView {
       .withUnretained(self) { (owner, boostResult) in
         var updatedFeedData = owner.feedData.value
         var boostCount = boostResult.count
-        if let feedModel = updatedFeedData[safe: boostResult.indexPath.item] {
-          if boostResult.count > 500 {
-            WalWalToast.shared.show(type: .boost, message: "부스터는 최대 500개까지만 가능해요!")
-            boostCount = 500
+        
+        if boostCount > 0 {
+          if let feedModel = updatedFeedData[safe: boostResult.indexPath.item] {
+            if boostResult.count > 500 {
+              WalWalToast.shared.show(type: .boost, message: "부스터는 최대 500개까지만 가능해요!")
+              boostCount = 500
+            }
+            
+            var updatedModel = feedModel
+            updatedModel.boostCount += boostCount
+            updatedFeedData[boostResult.indexPath.item] = updatedModel
+            
+            owner.updatedBoost.accept(
+              (recordId: updatedModel.recordId,
+               count: boostCount)
+            )
           }
-          
-          var updatedModel = feedModel
-          updatedModel.boostCount += boostCount
-          updatedFeedData[boostResult.indexPath.item] = updatedModel
-          
-          owner.updatedBoost.accept(
-            (recordId: updatedModel.recordId,
-             count: boostCount)
-          )
         }
         
         return updatedFeedData
@@ -241,7 +244,6 @@ public final class WalWalFeed: UIView {
     updatedRecord = feedModel
     collectionView.collectionViewLayout.invalidateLayout()
     feedData.accept(updatedFeedData)
-    
   }
   
   // MARK: - Scroll
