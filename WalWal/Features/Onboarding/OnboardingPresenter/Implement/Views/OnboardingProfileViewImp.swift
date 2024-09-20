@@ -296,6 +296,12 @@ extension OnboardingProfileViewControllerImp: View {
         WalWalToast.shared.show(type: .error, message: message, keyboardHeight: owner.keyboardHeight)
       }
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.showIndicator }
+      .distinctUntilChanged()
+      .bind(to: ActivityIndicator.shared.showIndicator)
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
