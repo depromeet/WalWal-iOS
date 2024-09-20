@@ -61,6 +61,7 @@ final class WalWalBoostGenerator {
     for gesture: UILongPressGestureRecognizer,
     in collectionView: UICollectionView
   ) {
+    walwalBoostCounter.resetCount()
     let point = gesture.location(in: collectionView)
     guard let indexPath = collectionView.indexPathForItem(at: point),
           let cell = collectionView.cellForItem(at: indexPath) as? WalWalFeedCell,
