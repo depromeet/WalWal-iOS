@@ -20,6 +20,10 @@ final class WalWalBoostCounter {
   private var countLabel: UILabel?
   private var borderLabel: UILabel?
   
+  func resetCount(){
+    currentCount = 0
+  }
+  
   func setupCountLabel(in window: UIWindow, detailView: UIView) {
     currentCount = 0
     countLabel = UILabel()
