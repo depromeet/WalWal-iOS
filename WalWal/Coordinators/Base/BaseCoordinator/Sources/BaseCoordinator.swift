@@ -110,6 +110,8 @@ public extension BaseCoordinator {
   /// 현재 Navigation Stack에 새로운 ViewController를 Push 함
   func pushViewController(viewController vc: UIViewController, animated: Bool ){
     self.navigationController.setNavigationBarHidden(true, animated: false)
+    self.navigationController.interactivePopGestureRecognizer?.isEnabled = true
+    self.navigationController.interactivePopGestureRecognizer?.delegate = nil
     self.navigationController.pushViewController(vc, animated: animated)
   }
   
