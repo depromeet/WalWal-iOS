@@ -21,6 +21,7 @@ public enum ProfileSettingReactorAction {
   case tapBackButton
   case movePrivacyTab
   case settingAction(type: SettingType)
+  case isHiddenTabBar(Bool)
 }
 
 public enum ProfileSettingReactorMutation {

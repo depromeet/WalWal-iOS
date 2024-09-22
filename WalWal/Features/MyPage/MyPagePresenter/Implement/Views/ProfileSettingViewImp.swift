@@ -47,7 +47,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   // MARK: - Properties
   
   public var disposeBag = DisposeBag()
-  public var profileSetting: R
+  public var profileSettingReactor: R
   
   private let logoutAction = PublishRelay<Void>()
   private let withdrawAction = PublishRelay<Void>()
@@ -59,7 +59,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   public init(
     reactor: R
   ) {
-    self.profileSetting = reactor
+    self.profileSettingReactor = reactor
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -70,7 +70,7 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
   // MARK: - Lifecycle
   
   public override func viewDidLoad() {
-    self.reactor = profileSetting
+    self.reactor = profileSettingReactor
     super.viewDidLoad()
     setAttribute()
     setLayout()
@@ -83,7 +83,15 @@ public final class ProfileSettingViewControllerImp<R: ProfileSettingReactor>: UI
     containerView.flex
       .layout()
   }
+  public override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    profileSettingReactor.action.onNext(.isHiddenTabBar(true))
+  }
   
+  public override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    profileSettingReactor.action.onNext(.isHiddenTabBar(false))
+  }
   
   public func setAttribute() {
     view.backgroundColor = AssetColor.white.color
