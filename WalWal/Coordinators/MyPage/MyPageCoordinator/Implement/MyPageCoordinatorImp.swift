@@ -225,7 +225,7 @@ extension MyPageCoordinatorImp {
     self.pushViewController(viewController: recordDetailVC, animated: true)
   }
   
-  /// 프로필 설정뷰
+  /// 설정뷰
   fileprivate func showProfileSettingVC() {
     
     let reactor = myPageDependencyFactory.injectProfileSettingReactor(
@@ -265,7 +265,7 @@ extension MyPageCoordinatorImp {
       uploadMemberUseCase: uploadMemberInfoUseCase,
       memberInfoUseCase: memberInfoUseCase
     )
-    let ProfileEditVC = myPageDependencyFactory.injectProfileEditViewController(
+    let profileEditVC = myPageDependencyFactory.injectProfileEditViewController(
       reactor: reactor,
       nickname: nickname,
       defaultProfile: defaultProfile,
@@ -275,8 +275,9 @@ extension MyPageCoordinatorImp {
     guard let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController else {
       return
     }
+    
     tabBarViewController.hideCustomTabBar()
-    self.pushViewController(viewController: ProfileEditVC, animated: false)
+    self.presentViewController(viewController: profileEditVC, style: .fullScreen)
   }
 }
 

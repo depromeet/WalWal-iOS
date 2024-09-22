@@ -91,7 +91,7 @@ public final class ProfileEditReactorImp: ProfileEditReactor {
         return state
       }
       tabBarViewController.showCustomTabBar()
-      coordinator.popViewController(animated: true)
+      coordinator.dismissViewController(completion: nil)
     case let .profileInfo(info):
       newState.profileInfo = info
     case let .errorMessage(message):
