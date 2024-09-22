@@ -83,6 +83,16 @@ public final class RecordDetailViewControllerImp<R: RecordDetailReactor>: UIView
     self.reactor = recordDetailReactor
   }
   
+  public override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    recordDetailReactor.action.onNext(.isHiddenTabBar(true))
+  }
+  
+  public override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    recordDetailReactor.action.onNext(.isHiddenTabBar(false))
+  }
+  
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     containerView.pin
