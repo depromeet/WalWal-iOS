@@ -104,7 +104,11 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
         return
       }
       tabBarViewController.hideCustomTabBar()
-      self.pushViewController(viewController: cameraShootDuringTheMissionViewController, animated: true)
+      self.pushViewController(
+        viewController: cameraShootDuringTheMissionViewController,
+        animated: true,
+        swipe: false
+      )
     }
   }
   
@@ -130,7 +134,11 @@ public final class MissionUploadCoordinatorImp: MissionUploadCoordinator {
       return
     }
     tabBarViewController.hideCustomTabBar()
-    self.pushViewController(viewController: writeContentDuringTheMissionViewController, animated: true)
+    self.pushViewController(
+      viewController: writeContentDuringTheMissionViewController, 
+      animated: true,
+      swipe: false
+    )
   }
 }
 
@@ -167,7 +175,11 @@ extension MissionUploadCoordinatorImp {
       reactor: reactor,
       capturedImage: capturedImage
     )
-    self.pushViewController(viewController: writeContentDuringTheMissionViewController, animated: true)
+    self.pushViewController(
+      viewController: writeContentDuringTheMissionViewController,
+      animated: true,
+      swipe: false
+    )
   }
 }
 

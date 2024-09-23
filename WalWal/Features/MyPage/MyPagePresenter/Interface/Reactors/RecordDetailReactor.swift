@@ -21,6 +21,7 @@ import RxSwift
 public enum RecordDetailReactorAction {
   case loadFeed(memberId: Int, cursorDate: String?)
   case tapBackButton
+  case isHiddenTabBar(Bool)
 }
 
 public enum RecordDetailReactorMutation {

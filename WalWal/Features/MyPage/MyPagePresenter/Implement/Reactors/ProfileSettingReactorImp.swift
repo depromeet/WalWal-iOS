@@ -87,6 +87,8 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
         return .just(.moveToService)
       }
       return .never()
+    case let .isHiddenTabBar(isHidden):
+      return configTabBar(isHidden)
     }
   }
   
@@ -110,10 +112,6 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
     case let .setIsRecentVersion(isRecent):
       newState.isRecent = isRecent
     case .moveToBack:
-      guard let tabBarViewController = coordinator.navigationController.tabBarController as? WalWalTabBarViewController else {
-        return state
-      }
-      tabBarViewController.showCustomTabBar()
       coordinator.popViewController(animated: true)
     case let .errorMessage(msg):
       newState.errorMessage = msg
@@ -127,6 +125,18 @@ public final class ProfileSettingReactorImp: ProfileSettingReactor {
 }
 
 extension ProfileSettingReactorImp {
+  
+  private func configTabBar(_ isHidden: Bool) -> Observable<Mutation> {
+    guard let tabBarViewController = coordinator.navigationController.tabBarController as? WalWalTabBarViewController else {
+      return .never()
+    }
+    if isHidden {
+      tabBarViewController.hideCustomTabBar()
+    } else {
+      tabBarViewController.showCustomTabBar()
+    }
+    return .never()
+  }
   private func logoutFlow() -> Observable<Mutation> {
     return fcmDeleteUseCase.execute()
       .asObservable()

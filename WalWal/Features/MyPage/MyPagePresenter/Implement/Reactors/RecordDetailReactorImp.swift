@@ -65,6 +65,8 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       return fetchFeedData(memberId: memberId, cursor: cursorDate, limit: 30)
     case .tapBackButton:
       return .just(Mutation.moveToBack)
+    case let .isHiddenTabBar(isHidden):
+      return configTabBar(isHidden)
     }
   }
   
@@ -80,14 +82,25 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
     case .userFeedFetchFailed(let error):
       newState.feedErrorMessage = error
     case .moveToBack:
-      if let tabBarViewController = coordinator.navigationController.tabBarController
-          as? WalWalTabBarViewController {
-        tabBarViewController.showCustomTabBar()
-      }
       coordinator.popViewController(animated: true)
     }
     
     return newState
+  }
+}
+
+extension RecordDetailReactorImp {
+  
+  private func configTabBar(_ isHidden: Bool) -> Observable<Mutation> {
+    guard let tabBarViewController = coordinator.navigationController.tabBarController as? WalWalTabBarViewController else {
+      return .never()
+    }
+    if isHidden {
+      tabBarViewController.hideCustomTabBar()
+    } else {
+      tabBarViewController.showCustomTabBar()
+    }
+    return .never()
   }
   
   private func fetchFeedData(memberId: Int, cursor: String?, limit: Int) -> Observable<Mutation> {
