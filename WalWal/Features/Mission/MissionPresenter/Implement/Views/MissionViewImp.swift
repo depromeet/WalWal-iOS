@@ -204,6 +204,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
       self.missionCompletedView.configureStartView(recordImageURL: status.imageUrl)
       self.missionStartView.isHidden = true
       self.missionCompletedView.isHidden = false
+      requestStoreReview()
     case .notCompleted, .inProgress:
       self.missionStartView.isHidden = false
       self.missionCompletedView.isHidden = true
@@ -253,6 +254,11 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
       window?.addSubview(missionMarkView)
       missionMarkView.pin.all()
     }
+  }
+  
+  private func requestStoreReview() {
+    let missionCompletedCount = missionReactor.currentState.totalCompletedRecordsCount
+    StoreReviewManager.shared.requestReview(missionCount: missionCompletedCount)
   }
   
   // MARK: - Notification Setup
