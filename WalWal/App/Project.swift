@@ -30,11 +30,31 @@ let project = Project(
       infoPlistPath: "App/WalWal-Info.plist",
       removeResource: "Release",
       entitlements: "App/Resources/Dev/WalWal-Dev.entitlements",
+      script: [
+        .pre(script: """
+              # 실제 경로 확인
+              echo "SRCROOT: ${SRCROOT}"
+              GOOGLE_SERVICE_INFO_PATH="${SRCROOT}/Resources/Dev/GoogleService-Info.plist"
+              echo "GoogleService-Info.plist path: $GOOGLE_SERVICE_INFO_PATH"
+              
+              DEST_DIR="${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app"
+              
+              if [ ! -f "$GOOGLE_SERVICE_INFO_PATH" ]; then
+                echo "Error: GoogleService-Info.plist for Dev does not exist at $GOOGLE_SERVICE_INFO_PATH"
+                exit 1
+              fi
+              
+              mkdir -p "$DEST_DIR"
+              cp "$GOOGLE_SERVICE_INFO_PATH" "$DEST_DIR/GoogleService-Info.plist"
+              echo "Successfully copied Dev GoogleService-Info.plist to $DEST_DIR"
+              """, name: "Copy Firebase Config for Dev", basedOnDependencyAnalysis: false)
+      ],
       dependencies: [
         .ThirdParty.KakaoSDKCommon,
         .ThirdParty.FirebaseMessaging,
+        .ThirdParty.FirebaseCrashlytics,
         
-          .DependencyFactory.Auth.Implement,
+        .DependencyFactory.Auth.Implement,
         .DependencyFactory.Splash.Implement,
         .DependencyFactory.WalWalTabBar.Implement,
         .DependencyFactory.Mission.Implement,
@@ -61,11 +81,28 @@ let project = Project(
       infoPlistPath: "App/WalWal-Info.plist",
       removeResource: "Dev",
       entitlements: "App/Resources/Release/WalWal-Release.entitlements",
+      script: [
+        .pre(script: """
+              # GoogleService-Info.plist 복사
+              GOOGLE_SERVICE_INFO_PATH="${SRCROOT}/Resources/Release/GoogleService-Info.plist"
+              DEST_DIR="${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app"
+              
+              if [ ! -f "$GOOGLE_SERVICE_INFO_PATH" ]; then
+                echo "Error: GoogleService-Info.plist for Release does not exist."
+                exit 1
+              fi
+              
+              mkdir -p "$DEST_DIR"
+              cp "$GOOGLE_SERVICE_INFO_PATH" "$DEST_DIR/GoogleService-Info.plist"
+              echo "Successfully copied Release GoogleService-Info.plist to $DEST_DIR"
+              """, name: "Copy Firebase Config for Release", basedOnDependencyAnalysis: false)
+      ],
       dependencies: [
         .ThirdParty.KakaoSDKCommon,
         .ThirdParty.FirebaseMessaging,
+        .ThirdParty.FirebaseCrashlytics,
         
-          .DependencyFactory.Auth.Implement,
+        .DependencyFactory.Auth.Implement,
         .DependencyFactory.Splash.Implement,
         .DependencyFactory.WalWalTabBar.Implement,
         .DependencyFactory.Mission.Implement,
