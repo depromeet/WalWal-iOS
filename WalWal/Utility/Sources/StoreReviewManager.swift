@@ -17,7 +17,7 @@ public final class StoreReviewManager {
   private let minimumReviewRequestCount = 5
   
   public func requestReview(missionCount: Int) {
-    guard missionCount > minimumReviewRequestCount else { return }
+    guard missionCount >= minimumReviewRequestCount else { return }
     
     guard let scene = UIApplication.shared.connectedScenes.first(where: {
       $0.activationState == .foregroundActive
