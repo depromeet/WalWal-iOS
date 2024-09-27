@@ -8,11 +8,13 @@
 
 import UIKit
 import ResourceKit
+
 import FlexLayout
 import PinLayout
 import Then
 import RxSwift
 import RxCocoa
+import RxGesture
 
 class TabBarItemView: UIView {
   
@@ -107,7 +109,7 @@ extension TabBarItemView {
   }
   
   private func updateAppearance(isSelected: Bool) {
-    iconImageView.image = isSelected 
+    iconImageView.image = isSelected
     ? item.selectedIcon
     : item.icon
     titleLabel.textColor = isSelected
@@ -133,5 +135,17 @@ extension Reactive where Base: TabBarItemView {
     return Binder(base) { view, isSelected in
       view.selected(isSelected)
     }
+  }
+  
+  var doubleTapped: ControlEvent<Void> {
+    let event: Observable<Void> = base.rx
+      .tapGesture { gesture, _ in
+          gesture.numberOfTapsRequired = 2
+      }
+      .when(.recognized)
+    
+      .map { _ in }
+    
+    return ControlEvent(events: event)
   }
 }
