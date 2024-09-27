@@ -48,6 +48,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   private let forceMoveTab = PublishRelay<Flow>()
+  public private(set) var doubleTapRelay = PublishRelay<Int>()
   
   public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var missionDependencyFactory: MissionDependencyFactory
@@ -103,6 +104,15 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
         let tabBarItem = Flow(rawValue: idx) ?? .startMission
         owner.destination.accept(tabBarItem)
       })
+      .disposed(by: disposeBag)
+    
+    self.tabBarController.doubleTapRelay
+      .subscribe(with: self) { owner, index in
+        // 현재 활성화된 FeedCoordinator를 확인하고 doubleTap 메서드 호출
+        if let feedCoordinator = owner.tabCoordinators[.startFeed] as? (any FeedCoordinator) {
+            feedCoordinator.doubleTap(index: index) // doubleTap 이벤트 전달
+        }
+      }
       .disposed(by: disposeBag)
     
     self.destination

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import DesignSystem
 import FeedDependencyFactory
 import RecordsDependencyFactory
 import FCMDependencyFactory
@@ -25,6 +25,7 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   
   public let disposeBag = DisposeBag()
   public let destination = PublishRelay<Flow>()
+  public let doubleTapRelay = PublishRelay<Int>()
   public let requireFromChild = PublishSubject<CoordinatorEvent<Action>>()
   public let navigationController: UINavigationController
   public weak var parentCoordinator: (any BaseCoordinator)?
@@ -77,9 +78,17 @@ public final class FeedCoordinatorImp: FeedCoordinator {
       updateBoostCountUseCase: updateBoostCountUseCase,
       removeGlobalRecordIdUseCase: removeGlobalRecordIdUseCase
     )
+    
     let feedVC = feedDependencyFactory.injectFeedViewController(reactor: reactor)
     self.baseViewController = feedVC
+    doubleTapRelay
+      .subscribe(with: self, onNext: { owner, index in
+        reactor.action.onNext(.doubleTap(index))
+      })
+      .disposed(by: disposeBag)
+    
     self.pushViewController(viewController: feedVC, animated: false)
+    
   }
 }
 
@@ -126,5 +135,9 @@ extension FeedCoordinatorImp {
 extension FeedCoordinatorImp {
   public func startProfile(memberId: Int, nickName: String) {
     requireParentAction(.startProfile(memberId: memberId, nickName: nickName))
+  }
+  
+  public func doubleTap(index: Int) {
+    doubleTapRelay.accept(index)
   }
 }
