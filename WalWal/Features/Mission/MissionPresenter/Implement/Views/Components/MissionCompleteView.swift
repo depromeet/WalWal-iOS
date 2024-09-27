@@ -10,10 +10,14 @@ import UIKit
 import Utility
 import DesignSystem
 import ResourceKit
+import RecordsDomain
 
 import Then
 import FlexLayout
 import PinLayout
+import RxSwift
+import RxCocoa
+
 
 final class MissionCompleteView: UIView {
   
@@ -21,47 +25,104 @@ final class MissionCompleteView: UIView {
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
+  // MARK: Property
+  private enum Const {
+    static let itemSize = CGSize(width: 255.adjusted, height: 436.adjusted)
+    static let itemSpacing = 30.0
+    
+    static var insetX: CGFloat {
+      (UIScreen.main.bounds.width - Self.itemSize.width) / 2.0
+    }
+    static var collectionViewContentInset: UIEdgeInsets {
+      UIEdgeInsets(top: 0, left: Self.insetX, bottom: 0, right: Self.insetX)
+    }
+  }
+  private var focusIndex = BehaviorRelay<IndexPath>(value: IndexPath(item: 0, section: 0))
+  private let disposeBag = DisposeBag()
+  private let missionRecordListRelay = BehaviorRelay<[RecordList]>(value: [])
+  
   // MARK: - UI
   
   private let rootContainer = UIView()
   
-  private let recordImageView = UIImageView().then {
-    $0.image = ResourceKitAsset.Sample.feedSample.image
-    $0.contentMode = .scaleAspectFill
-    $0.layer.borderColor = Colors.walwalOrange.color.cgColor
-    $0.layer.borderWidth = 6
-    
-    $0.layer.cornerRadius = 130.adjusted
-    
-    $0.clipsToBounds = true
-  }
-  private let SucessIconImageView = UIImageView().then {
-    $0.image = Images.succes.image
-  }
   private let missionCompletedLabel = CustomLabel(font: Fonts.KR.H2).then {
-    $0.text = "소중한 추억을\n쌓아가고 있어요!"
-    $0.font = Fonts.KR.H2
+    $0.text = "📮 이번 달 함께한 추억이에요!"
+    $0.textAlignment = .center
+    $0.font = Fonts.KR.H6.B
     $0.textColor = Colors.black.color
     $0.numberOfLines = 2
     $0.textAlignment = .center
   }
   
-  private let guideLabel = CustomLabel(font: Fonts.KR.H7.M).then {
-    $0.text = "미션 기록에서 그 동안 쌓은 추억을 확인해보세요."
-    $0.textAlignment = .center
-    $0.font = Fonts.KR.H7.M
-    $0.textColor = Colors.gray700.color.withAlphaComponent(0.5)
+  private let collectionViewFlowLayout: UICollectionViewFlowLayout = {
+    let layout = UICollectionViewFlowLayout()
+    layout.scrollDirection = .horizontal
+    layout.itemSize = Const.itemSize
+    layout.minimumLineSpacing = Const.itemSpacing
+    layout.minimumInteritemSpacing = 0
+    return layout
+  }()
+  
+  private lazy var missionRecordCollectionView = UICollectionView(
+    frame: .zero,
+    collectionViewLayout: collectionViewFlowLayout
+  ).then {
+    $0.backgroundColor = .clear
+    $0.register(RecordCarouselCell.self)
+    $0.isPagingEnabled = false
+    $0.decelerationRate = .fast
+    $0.showsHorizontalScrollIndicator = false
+    $0.showsVerticalScrollIndicator = true
+    $0.clipsToBounds = true
+    $0.contentInsetAdjustmentBehavior = .never
+    $0.contentInset = Const.collectionViewContentInset
   }
   
   override init(frame: CGRect) {
     super.init(frame: .zero)
     
+    configureCollectionView()
     configureAttribute()
     configureLayout()
   }
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+  
+  private func configureCollectionView() {
+    let customLayout = CarouselFlowLayout()
+    missionRecordCollectionView.collectionViewLayout = customLayout
+    
+    missionRecordListRelay
+      .asObservable()
+      .bind(to: missionRecordCollectionView.rx.items(RecordCarouselCell.self)) { index, data, cell in
+        cell.configureCell(record: data)
+        
+      }
+      .disposed(by: disposeBag)
+    
+    missionRecordCollectionView.rx.itemSelected
+      .bind(with: self) { owner , index in
+        owner.missionRecordCollectionView.scrollToItem(
+          at: index,
+          at: .centeredHorizontally,
+          animated: true
+        )
+      }
+      .disposed(by: disposeBag)
+    
+    focusIndex
+      .asDriver()
+      .drive(with: self) { owner, index in
+        if owner.missionRecordListRelay.value.count > 0 {
+          DispatchQueue.main.async {
+            owner.missionRecordCollectionView.reloadItems(at: owner.missionRecordCollectionView.indexPathsForVisibleItems)
+            owner.missionRecordCollectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: false)
+          }
+        }
+      }
+      .disposed(by: disposeBag)
   }
   
   private func configureAttribute() {
@@ -75,26 +136,78 @@ final class MissionCompleteView: UIView {
   
   private func configureLayout() {
     rootContainer.flex
+      .width(100%)
       .define {
-        $0.addItem(recordImageView)
-          .size(260.adjusted)
-          .alignSelf(.center)
-        $0.addItem(SucessIconImageView)
-          .alignSelf(.center)
-          .size(.init(width: 54.adjusted, height: 56.adjusted))
-          .marginTop(-30.adjusted)
         $0.addItem(missionCompletedLabel)
-          .marginHorizontal(20.adjusted)
-          .marginTop(24.adjusted)
-        $0.addItem(guideLabel)
-          .marginHorizontal(20.adjusted)
-          .marginTop(4.adjusted)
-          .marginBottom(35.adjusted)
+          .marginTop(0)
+          .marginHorizontal(24.adjusted)
+        $0.addItem(missionRecordCollectionView)
+          .height(496.adjusted)
+          .grow(1)
+          .shrink(1)
       }
   }
   
-  func configureStartView(recordImageURL: String) {
-    self.recordImageView.kf.setImage(with: URL(string: recordImageURL))
+  func configureCompleteView(recordList: [RecordList]) {
+    missionRecordListRelay.accept(recordList)
+    
+    if !recordList.isEmpty {
+      let lastIndex = IndexPath(item: recordList.count - 1, section: 0)
+      focusIndex.accept(lastIndex) // 포커스를 마지막 아이템으로 설정
+    }
+  }
+}
+
+extension Reactive where Base: MissionCompleteView {
+  var configureStartView: Binder<([RecordList])> {
+    return Binder(base) { view, data in
+      view.configureCompleteView(recordList: data)
+    }
+  }
+}
+
+final class CarouselFlowLayout: UICollectionViewFlowLayout {
+  
+  private var isInit: Bool = false
+  
+  override func prepare() {
+    super.prepare()
+    guard !isInit else { return }
+    
+    itemSize = CGSize(width: 255.adjusted, height: 436.adjusted)
+    
+    self.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    
+    scrollDirection = .horizontal
+    
+    minimumLineSpacing = 30 - (itemSize.width - itemSize.width*0.7)/2
+    
+    isInit = true
   }
   
+  override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+    return true
+  }
+  
+  override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+    let superAttributes = super.layoutAttributesForElements(in: rect)
+    
+    superAttributes?.forEach { attributes in
+      guard let collectionView = self.collectionView else { return }
+      
+      let collectionViewCenter = collectionView.frame.size.width / 2
+      let offsetX = collectionView.contentOffset.x
+      let center = attributes.center.x - offsetX
+      
+      let maxDis = self.itemSize.width + self.minimumLineSpacing
+      let dis = min(abs(collectionViewCenter-center), maxDis)
+      
+      let ratio = (maxDis - dis)/maxDis
+      let scale = ratio * (1-0.7) + 0.7
+      
+      attributes.transform = CGAffineTransform(scaleX: scale, y: scale)
+    }
+    
+    return superAttributes
+  }
 }

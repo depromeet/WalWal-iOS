@@ -69,6 +69,8 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private var isMissionCompleted: Bool = false
   private var recordImageURL: String = ""
   
+  private var recordList: [RecordList] = []
+  
   public var disposeBag = DisposeBag()
   public var missionReactor: R
   
@@ -153,7 +155,8 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
           .alignSelf(.center)
         flex.addItem(missionCompletedView)
           .position(.absolute)
-          .top(95)
+          .top(39.adjusted)
+          .width(100%)
           .alignSelf(.center)
       }
     
@@ -201,7 +204,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     switch status.statusMessage {
     case .completed:
       print("미션 완료 페이지 업데이트")
-      self.missionCompletedView.configureStartView(recordImageURL: status.imageUrl)
+      self.missionCompletedView.configureCompleteView(recordList: status.recordList)
       self.missionStartView.isHidden = true
       self.missionCompletedView.isHidden = false
     case .notCompleted, .inProgress:
