@@ -11,11 +11,13 @@ import UIKit
 public class UnderlinedTextView: UITextView {
   
   /// 밑줄 간격
-  private let underLineHeight: CGFloat = 40
+  private var underLineHeight: CGFloat = 40
   /// 엔터 눌렀을 때 텍스트 간의 간격
   private let enterSpacing: CGFloat = 21
   /// 밑줄 최대 라인 수
   private let numberOfMaxLines: Int
+  /// 텍스트와 밑줄 간격
+  private var lineSpacing: CGFloat = 0
   
   private let fontStyle: UIFont
   private let foregroundColor: UIColor
@@ -27,13 +29,17 @@ public class UnderlinedTextView: UITextView {
     textColor: UIColor,
     tintColor: UIColor,
     underLineColor: UIColor,
-    numberOfLines: Int
+    numberOfLines: Int,
+    underLineHeight: CGFloat = 40,
+    lineSpacing: CGFloat = 0
   ) {
     self.fontStyle = font
     self.foregroundColor = textColor
     self.underLineColor = underLineColor.cgColor
     self.walwalColor = tintColor
     self.numberOfMaxLines = numberOfLines
+    self.underLineHeight = underLineHeight
+    self.lineSpacing = lineSpacing
     super.init(frame: .zero, textContainer: nil)
     self.font = font
     self.tintColor = tintColor
@@ -127,7 +133,6 @@ public class UnderlinedTextView: UITextView {
     context.setStrokeColor(underLineColor)
     context.setLineWidth(1.0)
     
-    let lineSpacing: CGFloat = 0
     let fontLineHeight: CGFloat = self.font?.lineHeight ?? 0
     
     var currentBaseline = self.textContainerInset.top + self.textContainer.lineFragmentPadding + underLineHeight - fontLineHeight - 10
