@@ -12,6 +12,7 @@ import FCMDomain
 import RecordsDomain
 import MembersDomain
 import AppCoordinator
+import Utility
 
 import ReactorKit
 import RxSwift
@@ -52,6 +53,9 @@ public final class SplashReactorImp: SplashReactor {
         .flatMap { isAlreadyLoaded in
           isAlreadyLoaded ? self.handleTokenCheckFlow() : .just(.startAuth)
         }
+        .do(onDispose:  {
+          AppUpdateManager.shared.checkForUpdate()
+        })
     }
   }
   
