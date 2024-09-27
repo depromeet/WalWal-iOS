@@ -82,6 +82,8 @@ public final class FeedReactorImp: FeedReactor {
       return .just(.moveToProfile(memberId: feedData.authorId, nickName: feedData.nickname))
     case .checkScrollItem:
       return checkScrollEvent()
+    case let .doubleTap(index):
+      return .just(.scrollToTop(index == 1))
     }
   }
   
@@ -103,6 +105,8 @@ public final class FeedReactorImp: FeedReactor {
       coordinator.startProfile(memberId: memberId, nickName: nickName)
     case let .scrollToFeedItem(id):
       newState.scrollToFeedItem = id
+    case let .scrollToTop(isDoubleTapped):
+      newState.isDoubleTap = isDoubleTapped
     }
     return newState
   }
