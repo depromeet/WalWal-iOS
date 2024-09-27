@@ -41,6 +41,11 @@ final class WalWalTabBarView: UIView {
   
   let selectedIndex = BehaviorRelay<Int>(value: 0)
   let moveIndex = PublishRelay<Int>()
+  private let doubleTapRelay = PublishRelay<Int>()
+  
+  var doubleTapEvent: Observable<Int> {
+    return doubleTapRelay.asObservable()
+  }
   
   private let disposeBag = DisposeBag()
   
@@ -108,6 +113,14 @@ extension WalWalTabBarView {
     )
     .bind(to: selectedIndex)
     .disposed(by: disposeBag)
+    
+    tabBarItems.enumerated().forEach { index, item in
+      item.rx.doubleTapped
+        .subscribe(onNext: { [weak self] in
+          self?.doubleTapRelay.accept(index)
+        })
+        .disposed(by: disposeBag)
+    }
     
     selectedIndex
       .subscribe(with: self, onNext: { owner, index in

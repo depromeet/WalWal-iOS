@@ -32,6 +32,9 @@ public final class WalWalTabBarViewController: UITabBarController {
   // MARK: - Properties
   
   public private(set) var selectedFlow = PublishRelay<Int>()
+  public private(set) var doubleTapRelay = PublishRelay<Int>()
+  
+  
   public let forceMoveTab = PublishRelay<Int>()
   
   private let disposeBag = DisposeBag()
@@ -63,7 +66,7 @@ public final class WalWalTabBarViewController: UITabBarController {
   }
   
   // MARK: - Methods
-
+  
   public func hideCustomTabBar() {
     self.tabBar.isHidden = true
     containerView.isHidden = true
@@ -104,6 +107,12 @@ extension WalWalTabBarViewController {
     
     forceMoveTab
       .bind(to: customTabBar.moveIndex)
+      .disposed(by: disposeBag)
+    
+    customTabBar.doubleTapEvent
+      .subscribe(with: self, onNext: { owner, index in
+        owner.doubleTapRelay.accept(index)
+      })
       .disposed(by: disposeBag)
   }
 }
