@@ -27,6 +27,7 @@ extension Target {
     infoPlistPath: String,
     removeResource: String,
     entitlements: String,
+    script: [TargetScript] = [],
     dependencies: [TargetDependency] = [],
     settings: Settings
   ) -> Target {
@@ -46,6 +47,7 @@ extension Target {
         )
       ],
       entitlements: .file(path: .relativeToRoot(entitlements)),
+      scripts: script,
       dependencies: dependencies,
       settings: settings
     )

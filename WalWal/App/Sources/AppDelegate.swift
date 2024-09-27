@@ -15,6 +15,7 @@ import KakaoSDKCommon
 import KakaoSDKAuth
 import FirebaseCore
 import FirebaseMessaging
+import FirebaseCrashlytics
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -78,6 +79,7 @@ private extension AppDelegate {
   
   func configure(_ application: UIApplication) {
     /// Firebase설정
+    FirebaseConfiguration.shared.setLoggerLevel(.min)
     FirebaseApp.configure()
     Messaging.messaging().delegate = self
     UNUserNotificationCenter.current().delegate = self

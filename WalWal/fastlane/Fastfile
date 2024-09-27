@@ -13,6 +13,9 @@ platform :ios do
       scheme: "DEV-WalWal",
       configuration: "Debug"
     )
+
+    # dSYM 다운로드 및 Firebase 업로드
+    download_and_upload_dsyms(app_identifier: "olderStoneBed.io.walwal.dev")
   end
 
   desc "배포용 앱을 TestFlight에 업로드"
@@ -22,6 +25,9 @@ platform :ios do
       scheme: "PROD-WalWal",
       configuration: "Release"
     )
+
+    # dSYM 다운로드 및 Firebase 업로드
+    download_and_upload_dsyms(app_identifier: "olderStoneBed.io.walwal")
   end
 
   lane :certificates do
@@ -96,4 +102,27 @@ def build_and_upload_app(app_identifier:, scheme:, configuration:)
 
   upload_to_testflight
 
+end
+
+# dSYM 다운로드 및 Firebase Crashlytics 업로드 함수
+def download_and_upload_dsyms(app_identifier:)
+  # dSYM 파일 다운로드
+  download_dsyms(
+    app_identifier: app_identifier,
+    version: latest_testflight_build_number(
+      app_identifier: app_identifier,
+      username: "cocoa9805@naver.com"
+    )
+  )
+
+  # 압축 해제
+  unzip_dsyms
+
+  # Firebase Crashlytics에 dSYM 업로드
+  upload_symbols_to_crashlytics(
+    gsp_path: "App/Resources/#{app_identifier.include?('dev') ? 'Dev' : 'Release'}/GoogleService-Info.plist"
+  )
+
+  # 사용한 dSYM 파일 삭제
+  clean_build_artifacts
 end
