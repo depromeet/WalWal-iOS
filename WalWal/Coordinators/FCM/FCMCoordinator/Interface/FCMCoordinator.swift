@@ -21,4 +21,5 @@ public enum FCMCoordinatorFlow: CoordinatorFlow {
 public protocol FCMCoordinator: BaseCoordinator {
   func startMission()
   func startFeed()
+  func doubleTap(index: Int)
 }

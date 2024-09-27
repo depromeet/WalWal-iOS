@@ -58,6 +58,8 @@ public final class FCMReactorImp: FCMReactor {
       return selectedItemAction(item: item)
     case let .updateItem(index):
       return .just(.updateItem(index: index))
+    case let .doubleTap(index):
+      return .just(.scrollToTop(index == 2))
     }
   }
   
@@ -81,6 +83,8 @@ public final class FCMReactorImp: FCMReactor {
       newState.isLastPage = isLast
     case let .isHiddenEdgePage(isHidden):
       newState.isHiddenEdgePage = isHidden
+    case let .scrollToTop(isDoubleTapped):
+      newState.isDoubleTap = isDoubleTapped
     }
     return newState
   }

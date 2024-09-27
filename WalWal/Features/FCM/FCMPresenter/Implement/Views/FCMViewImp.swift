@@ -258,6 +258,18 @@ extension FCMViewControllerImp: View {
         owner.edgeView.isHidden = isHidden
       }
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map{ $0.isDoubleTap }
+      .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance) 
+      .subscribe(with: self, onNext: { owner, isTapped in
+        if isTapped {
+          owner.collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true)
+          owner.reactor?.action.onNext(.doubleTap(nil))
+        }
+      })
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

@@ -108,9 +108,17 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     
     self.tabBarController.doubleTapRelay
       .subscribe(with: self) { owner, index in
-        // 현재 활성화된 FeedCoordinator를 확인하고 doubleTap 메서드 호출
-        if let feedCoordinator = owner.tabCoordinators[.startFeed] as? (any FeedCoordinator) {
-            feedCoordinator.doubleTap(index: index) // doubleTap 이벤트 전달
+        switch index {
+        case 1:
+          if let feedCoordinator = owner.tabCoordinators[.startFeed] as? (any FeedCoordinator) {
+            feedCoordinator.doubleTap(index: index)
+          }
+        case 2:
+          if let notificationCoordinator = owner.tabCoordinators[.startNotification] as? (any FCMCoordinator) {
+            notificationCoordinator.doubleTap(index: index)
+          }
+        default:
+          break
         }
       }
       .disposed(by: disposeBag)
