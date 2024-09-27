@@ -170,10 +170,12 @@ extension FeedViewControllerImp: View {
     
     reactor.state
       .map{ $0.isDoubleTap }
-      .observe(on: MainScheduler.instance)
+      .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance) 
       .subscribe(with: self, onNext: { owner, isTapped in
         if isTapped {
           owner.feed.collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true)
+          owner.reactor?.action.onNext(.doubleTap(nil))
         }
       })
       .disposed(by: disposeBag)

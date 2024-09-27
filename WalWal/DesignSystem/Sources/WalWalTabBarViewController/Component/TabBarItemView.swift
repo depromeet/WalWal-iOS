@@ -143,9 +143,7 @@ extension Reactive where Base: TabBarItemView {
           gesture.numberOfTapsRequired = 2
       }
       .when(.recognized)
-    
       .map { _ in }
-    
     return ControlEvent(events: event)
   }
 }

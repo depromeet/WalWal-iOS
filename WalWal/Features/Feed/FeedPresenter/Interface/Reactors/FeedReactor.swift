@@ -23,7 +23,7 @@ public enum FeedReactorAction {
   case endedBoost(recordId: Int, count: Int)
   case profileTapped(WalWalFeedModel)
   case checkScrollItem
-  case doubleTap(Int)
+  case doubleTap(Int?)
 }
 
 public enum FeedReactorMutation {
