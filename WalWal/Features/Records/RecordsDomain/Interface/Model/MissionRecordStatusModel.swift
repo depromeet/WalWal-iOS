@@ -12,9 +12,39 @@ import RecordsData
 public struct MissionRecordStatusModel: Equatable, Hashable {
   public let imageUrl: String
   public let statusMessage: StatusMessage
+  public let recordList: [RecordList]
   
   public init(dto: MissionRecordStatusDTO) {
-    self.imageUrl = dto.imageUrl ?? ""
+    self.imageUrl = dto.imageURL ?? ""
+    self.recordList = [.init(
+      recordId: dto.recordID ?? 0,
+      recordImageURL: dto.imageURL ?? "",
+      recordContent: dto.content ?? "",
+      missionTitle: dto.missionTitle,
+      missionIllustrationURL: dto.illustrationURL,
+      completedAt: dto.completedAt ?? ""
+    ), .init(
+      recordId: dto.recordID ?? 0,
+      recordImageURL: dto.imageURL ?? "",
+      recordContent: dto.content ?? "",
+      missionTitle: dto.missionTitle,
+      missionIllustrationURL: dto.illustrationURL,
+      completedAt: dto.completedAt ?? ""
+    ), .init(
+      recordId: dto.recordID ?? 0,
+      recordImageURL: dto.imageURL ?? "",
+      recordContent: dto.content ?? "",
+      missionTitle: dto.missionTitle,
+      missionIllustrationURL: dto.illustrationURL,
+      completedAt: dto.completedAt ?? ""
+    ), .init(
+      recordId: dto.recordID ?? 0,
+      recordImageURL: dto.imageURL ?? "",
+      recordContent: dto.content ?? "",
+      missionTitle: dto.missionTitle,
+      missionIllustrationURL: dto.illustrationURL,
+      completedAt: dto.completedAt ?? ""
+    )]
     self.statusMessage = StatusMessage(rawValue: dto.status) ?? .notCompleted
   }
   
@@ -26,6 +56,24 @@ public struct MissionRecordStatusModel: Equatable, Hashable {
   public func hash(into hasher: inout Hasher) {
     hasher.combine(imageUrl)
     hasher.combine(statusMessage)
+  }
+}
+
+public struct RecordList {
+  public let recordId: Int
+  public let recordImageURL: String
+  public let recordContent: String
+  public let missionTitle: String
+  public let missionIllustrationURL: String
+  public let completedAt: String
+  
+  public init(recordId: Int, recordImageURL: String, recordContent: String, missionTitle: String, missionIllustrationURL: String, completedAt: String) {
+    self.recordId = recordId
+    self.recordImageURL = recordImageURL
+    self.recordContent = recordContent
+    self.missionTitle = missionTitle
+    self.missionIllustrationURL = missionIllustrationURL
+    self.completedAt = completedAt
   }
 }
 

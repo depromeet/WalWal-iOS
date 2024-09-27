@@ -9,6 +9,16 @@
 import Foundation
 
 public struct MissionRecordStatusDTO: Decodable {
-  public let imageUrl: String?
-  public let status: String
+  public let recordID: Int?
+  public let imageURL: String?
+  public let status, missionTitle, illustrationURL: String
+  public let content, completedAt: String?
+
+  enum CodingKeys: String, CodingKey {
+      case recordID = "recordId"
+      case imageURL = "imageUrl"
+      case status, missionTitle
+      case illustrationURL = "illustrationUrl"
+      case content, completedAt
+  }
 }
