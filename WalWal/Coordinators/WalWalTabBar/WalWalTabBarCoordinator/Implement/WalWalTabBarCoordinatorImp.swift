@@ -48,7 +48,6 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   private let forceMoveTab = PublishRelay<Flow>()
-  public private(set) var doubleTapRelay = PublishRelay<Int>()
   
   public var walwalTabBarDependencyFactory: WalWalTabBarDependencyFactory
   public var missionDependencyFactory: MissionDependencyFactory
@@ -63,6 +62,9 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   private let deepLinkObservable: Observable<String?>
   private var deeplinkFlag: Bool = false
   private var checkDeepLink: String? = nil
+  
+  private var lastSelectedIndex: Int? // 마지막 선택된 인덱스
+  private var tapCount: Int = 0 // 같은 인덱스가 선택된 횟수
   
   public required init(
     navigationController: UINavigationController,
@@ -102,25 +104,28 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     self.tabBarController.selectedFlow
       .subscribe(with: self, onNext: { owner, idx in
         let tabBarItem = Flow(rawValue: idx) ?? .startMission
-        owner.destination.accept(tabBarItem)
-      })
-      .disposed(by: disposeBag)
-    
-    self.tabBarController.doubleTapRelay
-      .subscribe(with: self) { owner, index in
-        switch index {
-        case 1:
-          if let feedCoordinator = owner.tabCoordinators[.startFeed] as? (any FeedCoordinator) {
-            feedCoordinator.doubleTap(index: index)
+        
+        if owner.lastSelectedIndex == idx {
+          // 같은 탭을 두 번 눌렀을 때
+          switch idx {
+          case 1:
+            if let feedCoordinator = owner.tabCoordinators[.startFeed] as? (any FeedCoordinator) {
+              feedCoordinator.doubleTap(index: idx)
+            }
+          case 2:
+            if let notificationCoordinator = owner.tabCoordinators[.startNotification] as? (any FCMCoordinator) {
+              notificationCoordinator.doubleTap(index: idx)
+            }
+          default:
+            break
           }
-        case 2:
-          if let notificationCoordinator = owner.tabCoordinators[.startNotification] as? (any FCMCoordinator) {
-            notificationCoordinator.doubleTap(index: index)
-          }
-        default:
-          break
+          
+        } else {
+          // 새로운 탭으로 이동할 때
+          owner.destination.accept(tabBarItem)
+          owner.lastSelectedIndex = idx
         }
-      }
+      })
       .disposed(by: disposeBag)
     
     self.destination

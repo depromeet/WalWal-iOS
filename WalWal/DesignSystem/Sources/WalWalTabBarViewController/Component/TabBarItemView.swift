@@ -136,14 +136,4 @@ extension Reactive where Base: TabBarItemView {
       view.selected(isSelected)
     }
   }
-  
-  var doubleTapped: ControlEvent<Void> {
-    let event: Observable<Void> = base.rx
-      .tapGesture { gesture, _ in
-          gesture.numberOfTapsRequired = 2
-      }
-      .when(.recognized)
-      .map { _ in }
-    return ControlEvent(events: event)
-  }
 }
