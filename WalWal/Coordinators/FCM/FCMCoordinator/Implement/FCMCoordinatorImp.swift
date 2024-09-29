@@ -140,7 +140,6 @@ extension FCMCoordinatorImp {
   }
   
   public func doubleTap(index: Int) {
-    print("index:\(index)")
     doubleTapRelay.accept(index)
   }
 }

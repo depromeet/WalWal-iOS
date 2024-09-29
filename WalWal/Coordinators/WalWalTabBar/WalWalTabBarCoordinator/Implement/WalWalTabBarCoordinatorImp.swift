@@ -107,12 +107,12 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
         
         if owner.lastSelectedIndex == idx {
           // 같은 탭을 두 번 눌렀을 때
-          switch idx {
-          case 1:
+          switch tabBarItem {
+          case .startFeed:
             if let feedCoordinator = owner.tabCoordinators[.startFeed] as? (any FeedCoordinator) {
               feedCoordinator.doubleTap(index: idx)
             }
-          case 2:
+          case .startNotification:
             if let notificationCoordinator = owner.tabCoordinators[.startNotification] as? (any FCMCoordinator) {
               notificationCoordinator.doubleTap(index: idx)
             }
