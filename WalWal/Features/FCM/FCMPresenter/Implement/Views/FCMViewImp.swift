@@ -260,9 +260,11 @@ extension FCMViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map{ $0.isDoubleTap }
+      .map { $0.isDoubleTap }
       .distinctUntilChanged()
-      .observe(on: MainScheduler.asyncInstance) 
+      .filter { $0 }
+      .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
+      .observe(on: MainScheduler.instance)
       .subscribe(with: self, onNext: { owner, isTapped in
         if isTapped {
           owner.collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true)
