@@ -252,7 +252,6 @@ extension FCMViewControllerImp: View {
     reactor.state
       .map { $0.isHiddenEdgePage }
       .distinctUntilChanged()
-      .debug()
       .asDriver(onErrorJustReturn: false)
       .drive(with: self) { owner, isHidden in
         owner.edgeView.isHidden = isHidden
