@@ -21,6 +21,7 @@ enum RecordEndpoint<T>: APIEndpoint where T: Decodable {
   case checkCalendarRecords(query: CalendarRecordQuery)
   case checkCompletedTotalRecords(query: CheckCompletedTotalRecordsQuery?)
   case postBoostCount(recordId: Int, body: PostBoostCountBody)
+  case fetchRecords(query: FetchRecordsQuery)
 }
 
 extension RecordEndpoint {
@@ -42,6 +43,8 @@ extension RecordEndpoint {
       return "/records/complete/total"
     case let .postBoostCount(recordId, _):
       return "/records/\(recordId)/boost"
+    case .fetchRecords(query: let query):
+      return "/records"
     }
   }
   
@@ -49,7 +52,7 @@ extension RecordEndpoint {
     switch self {
     case .saveRecord, .startRecord, .postBoostCount:
       return .post
-    case .checkRecordStatus, .checkCalendarRecords, .checkCompletedTotalRecords:
+    case .checkRecordStatus, .checkCalendarRecords, .checkCompletedTotalRecords, .fetchRecords:
       return .get
     }
   }
@@ -71,6 +74,8 @@ extension RecordEndpoint {
       return .requestPlain
     case let .postBoostCount(_, body):
       return .requestWithbody(body)
+    case .fetchRecords(query: let query):
+      return .requestQuery(query)
     }
   }
   
