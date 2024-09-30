@@ -21,7 +21,16 @@ public final class CheckRecordStatusUseCaseImp: CheckRecordStatusUseCase {
   
   public func execute(missionId: Int) -> Single<MissionRecordStatusModel> {
     return recordRepository.checkRecordStatus(missionId: missionId)
-      .map{ MissionRecordStatusModel(dto: $0) }
+      .flatMap { dto -> Single<MissionRecordStatusModel> in
+        if StatusMessage(rawValue: dto.status) == .completed {
+          return self.recordRepository.fetchRecordList(missionId: missionId)
+            .map { recordListDTO in
+              return MissionRecordStatusModel(dto: dto, recordListDTO: recordListDTO.list)
+            }
+        } else {
+          return Single.just(MissionRecordStatusModel(dto: dto, recordListDTO: []))
+        }
+      }
       .asObservable()
       .asSingle()
   }

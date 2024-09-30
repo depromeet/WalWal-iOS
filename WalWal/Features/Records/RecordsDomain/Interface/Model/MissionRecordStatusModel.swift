@@ -12,40 +12,25 @@ import RecordsData
 public struct MissionRecordStatusModel: Equatable, Hashable {
   public let imageUrl: String
   public let statusMessage: StatusMessage
-  public let recordList: [RecordList]
+  public let missionTitle: String
+  public let recordId: Int?
+  public let records: [RecordList]
   
-  public init(dto: MissionRecordStatusDTO) {
+  public init(dto: MissionRecordStatusDTO, recordListDTO: [RecordDTO]) {
     self.imageUrl = dto.imageURL ?? ""
-    self.recordList = [.init(
-      recordId: dto.recordID ?? 0,
-      recordImageURL: dto.imageURL ?? "",
-      recordContent: dto.content ?? "",
-      missionTitle: dto.missionTitle,
-      missionIllustrationURL: dto.illustrationURL,
-      completedAt: dto.completedAt ?? ""
-    ), .init(
-      recordId: dto.recordID ?? 0,
-      recordImageURL: dto.imageURL ?? "",
-      recordContent: dto.content ?? "",
-      missionTitle: dto.missionTitle,
-      missionIllustrationURL: dto.illustrationURL,
-      completedAt: dto.completedAt ?? ""
-    ), .init(
-      recordId: dto.recordID ?? 0,
-      recordImageURL: dto.imageURL ?? "",
-      recordContent: dto.content ?? "",
-      missionTitle: dto.missionTitle,
-      missionIllustrationURL: dto.illustrationURL,
-      completedAt: dto.completedAt ?? ""
-    ), .init(
-      recordId: dto.recordID ?? 0,
-      recordImageURL: dto.imageURL ?? "",
-      recordContent: dto.content ?? "",
-      missionTitle: dto.missionTitle,
-      missionIllustrationURL: dto.illustrationURL,
-      completedAt: dto.completedAt ?? ""
-    )]
     self.statusMessage = StatusMessage(rawValue: dto.status) ?? .notCompleted
+    self.missionTitle = dto.missionTitle
+    self.recordId = dto.recordID
+    self.records = recordListDTO.map{ record in
+      RecordList(
+        recordId: record.recordID,
+        recordImageURL: record.imageURL,
+        recordContent: record.content,
+        missionTitle: record.missionTitle,
+        missionIllustrationURL: record.illustrationURL,
+        completedAt: record.completedAt
+      )
+    }
   }
   
   public static func == (lhs: MissionRecordStatusModel, rhs: MissionRecordStatusModel) -> Bool {
@@ -59,6 +44,7 @@ public struct MissionRecordStatusModel: Equatable, Hashable {
   }
 }
 
+// 미션 완료 시 기록 리스트
 public struct RecordList {
   public let recordId: Int
   public let recordImageURL: String
