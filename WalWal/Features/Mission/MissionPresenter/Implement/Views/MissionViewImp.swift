@@ -204,7 +204,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     switch status.statusMessage {
     case .completed:
       print("미션 완료 페이지 업데이트")
-      self.missionCompletedView.configureCompleteView(recordList: status.recordList)
+      self.missionCompletedView.configureCompleteView(recordList: status.records)
       self.missionStartView.isHidden = true
       self.missionCompletedView.isHidden = false
     case .notCompleted, .inProgress:

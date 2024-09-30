@@ -70,9 +70,9 @@ final class MissionCompleteView: UIView {
     $0.backgroundColor = .clear
     $0.register(RecordCarouselCell.self)
     $0.isPagingEnabled = false
-    $0.decelerationRate = .fast
+    $0.decelerationRate = .normal
     $0.showsHorizontalScrollIndicator = false
-    $0.showsVerticalScrollIndicator = true
+    $0.showsVerticalScrollIndicator = false
     $0.clipsToBounds = true
     $0.contentInsetAdjustmentBehavior = .never
     $0.contentInset = Const.collectionViewContentInset
@@ -169,6 +169,8 @@ extension Reactive where Base: MissionCompleteView {
 final class CarouselFlowLayout: UICollectionViewFlowLayout {
   
   private var isInit: Bool = false
+  private var previousOffset: CGFloat = 0
+  private var currentPage: Int = 0
   
   override func prepare() {
     super.prepare()
@@ -210,4 +212,38 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
     
     return superAttributes
   }
+  
+  override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
+    guard let collectionView = collectionView else {
+      return super.targetContentOffset(forProposedContentOffset: proposedContentOffset, withScrollingVelocity: velocity)
+    }
+    
+    let collectionViewCenterX = collectionView.bounds.size.width / 2
+    let proposedContentOffsetCenterX = proposedContentOffset.x + collectionViewCenterX
+    
+    guard let attributesArray = self.layoutAttributesForElements(in: collectionView.bounds) else {
+      return super.targetContentOffset(forProposedContentOffset: proposedContentOffset, withScrollingVelocity: velocity)
+    }
+    
+    var closestAttribute: UICollectionViewLayoutAttributes?
+    var minDistance = CGFloat.greatestFiniteMagnitude
+    
+    for attributes in attributesArray {
+      let itemCenterX = attributes.center.x
+      let distance = abs(itemCenterX - proposedContentOffsetCenterX)
+      
+      if distance < minDistance {
+        minDistance = distance
+        closestAttribute = attributes
+      }
+    }
+    
+    guard let closest = closestAttribute else {
+      return super.targetContentOffset(forProposedContentOffset: proposedContentOffset, withScrollingVelocity: velocity)
+    }
+    
+    let targetOffsetX = closest.center.x - collectionViewCenterX
+    return CGPoint(x: targetOffsetX, y: proposedContentOffset.y)
+  }
+  
 }
