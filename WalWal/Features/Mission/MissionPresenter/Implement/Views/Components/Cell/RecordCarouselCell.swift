@@ -57,7 +57,10 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     $0.backgroundColor = Colors.white.color
     $0.layer.cornerRadius = 15.adjusted
   }
-  private let recordimageView = UIImageView()
+  private let recordimageView = UIImageView().then {
+    $0.contentMode = .scaleAspectFill
+    $0.clipsToBounds = true
+  }
   private let dateChipView = UIView().then {
     $0.backgroundColor = Colors.black60.color
     $0.layer.cornerRadius = 15.adjusted
@@ -74,7 +77,7 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     underLineHeight: 30.adjusted,
     lineSpacing: 4.adjusted
   ).then {
-    $0.backgroundColor = .clear
+    $0.backgroundColor = Colors.white.color
     $0.isEditable = false
     $0.isScrollEnabled = false
     $0.textContainerInset = .zero
@@ -82,7 +85,7 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     $0.returnKeyType = .done
   }
   /// 미션 정보 보기
-  private let todayMission = CustomLabel(font: Fonts.KR.H7.B).then {
+  private let todayMissionLabel = CustomLabel(font: Fonts.KR.H7.B).then {
     $0.text = "오늘의 미션"
     $0.font = Fonts.KR.H7.B
     $0.textColor = Colors.walwalOrange.color
@@ -94,6 +97,7 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
   }
   private let missionImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFit
+    $0.clipsToBounds = true
   }
   
   // MARK: - Initializers
@@ -147,7 +151,10 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     
     recordimageView.addSubview(dateChipView)
     
-    missionInfoContainer.addSubview(todayMission)
+    missionImageView.addSubview(todayMissionLabel)
+    missionImageView.addSubview(missionTitleLabel)
+    
+    missionInfoContainer.addSubview(todayMissionLabel)
     missionInfoContainer.addSubview(missionTitleLabel)
     missionInfoContainer.addSubview(missionImageView)
   }
@@ -177,11 +184,9 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     missionInfoContainer.flex
       .alignItems(.center)
       .define{ flex in
-        flex.addItem(todayMission)
-          .marginTop(68.adjusted)
-          .marginBottom(4.adjusted)
-        flex.addItem(missionTitleLabel)
         flex.addItem(missionImageView)
+          .width(255.adjusted)
+          .height(436.adjusted)
       }
     
     swapButton.flex
@@ -190,6 +195,14 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
       .size(30.adjusted)
       .marginTop(18.adjusted)
       .right(18.adjusted)
+    
+    
+    todayMissionLabel.flex
+      .marginTop(68.adjusted)
+      .marginHorizontal(20.adjusted)
+    
+    missionTitleLabel.flex
+      .marginTop(4.adjusted)
     
     dateChipView.flex
       .position(.absolute)
