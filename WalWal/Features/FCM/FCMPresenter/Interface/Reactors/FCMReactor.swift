@@ -31,6 +31,7 @@ public enum FCMReactorMutation {
   case isLastPage(Bool)
   case isHiddenEdgePage(Bool)
   case scrollToTop(Bool)
+  case resetTabEvent
 }
 
 public struct FCMReactorState {

@@ -34,6 +34,7 @@ public enum FeedReactorMutation {
   case moveToProfile(memberId: Int, nickName: String)
   case scrollToFeedItem(id: Int?)
   case scrollToTop(Bool)
+  case resetTabEvent
 }
 
 public struct FeedReactorState {

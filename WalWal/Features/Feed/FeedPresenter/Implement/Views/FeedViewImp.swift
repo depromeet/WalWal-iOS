@@ -169,17 +169,14 @@ extension FeedViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map { $0.isDoubleTap }
+      .map{ $0.isDoubleTap }
       .distinctUntilChanged()
       .filter { $0 }
-      .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
       .observe(on: MainScheduler.instance)
-      .subscribe(with: self, onNext: { owner, _ in
+      .subscribe(with: self, onNext: { owner, isTapped in
         owner.feed.collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true)
-        owner.reactor?.action.onNext(.doubleTap(nil))
       })
       .disposed(by: disposeBag)
-
   }
   
   public func bindEvent() {

@@ -260,16 +260,12 @@ extension FCMViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map { $0.isDoubleTap }
+      .map{ $0.isDoubleTap }
       .distinctUntilChanged()
-      .filter { $0 }
-      .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
+      .filter { $0 } // 여기서 true인 값만 거르고
       .observe(on: MainScheduler.instance)
       .subscribe(with: self, onNext: { owner, isTapped in
-        if isTapped {
-          owner.collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true)
-          owner.reactor?.action.onNext(.doubleTap(nil))
-        }
+        owner.collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true) // true인 경우에는 상단 이동
       })
       .disposed(by: disposeBag)
   }

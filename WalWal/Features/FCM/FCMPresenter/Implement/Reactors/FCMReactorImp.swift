@@ -59,7 +59,9 @@ public final class FCMReactorImp: FCMReactor {
     case let .updateItem(index):
       return .just(.updateItem(index: index))
     case let .doubleTap(index):
-      return .just(.scrollToTop(index == 2))
+      let scrollObservable = Observable.just(Mutation.scrollToTop(index == 2))
+      let resetTabObservable = Observable.just(Mutation.resetTabEvent)
+      return Observable.concat([scrollObservable, resetTabObservable])
     }
   }
   
@@ -85,6 +87,8 @@ public final class FCMReactorImp: FCMReactor {
       newState.isHiddenEdgePage = isHidden
     case let .scrollToTop(isDoubleTapped):
       newState.isDoubleTap = isDoubleTapped
+    case .resetTabEvent:
+      newState.isDoubleTap = false
     }
     return newState
   }
