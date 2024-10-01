@@ -7,3 +7,38 @@
 //
 
 import Foundation
+import FeedCoordinator
+import ReactorKit
+
+public enum ReportTypeReactorAction {
+  case didPan(translation: CGPoint, velocity: CGPoint)
+  case didEndPan(velocity: CGPoint)
+  case tapDimView
+}
+
+public enum ReportTypeReactorMutation {
+  case setSheetPosition(CGFloat)
+  case dismissSheet
+}
+
+public struct ReportTypeReactorState {
+  public let recordId: Int
+  public var sheetPosition: CGFloat = 0
+  public init(
+    recordId: Int
+  ) {
+    self.recordId = recordId
+  }
+}
+
+public protocol ReportTypeReactor: Reactor
+where Action == ReportTypeReactorAction,
+      Mutation == ReportTypeReactorMutation,
+      State == ReportTypeReactorState {
+  var coordinator: any FeedCoordinator { get }
+  
+  init(
+    coordinator: any FeedCoordinator,
+    recordId: Int
+  )
+}

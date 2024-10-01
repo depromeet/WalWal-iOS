@@ -38,14 +38,24 @@ public protocol FeedDependencyFactory {
     updateBoostCountUseCase: UpdateBoostCountUseCase,
     removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
   ) -> any FeedReactor
+  
   func injectFeedMenuReactor<T: FeedCoordinator>(
     coordinator: T,
     recordId: Int
   ) -> any FeedMenuReactor
   
+  func injectReportTypeReactor<T: FeedCoordinator>(
+    coordinator: T,
+    recordId: Int
+  ) -> any ReportTypeReactor
+  
   // MARK: - ViewController
   
   func injectFeedViewController<T: FeedReactor>(reactor: T) -> any FeedViewController
+  
   func injectFeedMenuViewController<T: FeedMenuReactor>(reactor: T) -> any FeedMenuViewController
+  
+  func injectReportTypeViewController<T: ReportTypeReactor>(reactor: T) -> any ReportTypeViewController
+  
   
 }

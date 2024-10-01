@@ -55,6 +55,8 @@ public final class FeedCoordinatorImp: FeedCoordinator {
         switch flow {
         case let .showFeedMenu(recordId):
           self.showFeedMenu(recordId: recordId)
+        case let .showReportView(recordId):
+          self.showReportType(recordId: recordId)
         }
       })
       .disposed(by: disposeBag)
@@ -122,6 +124,20 @@ extension FeedCoordinatorImp {
     self.presentViewController(viewController: vc, style: .overFullScreen, animated: false)
   }
   
+  private func showReportType(recordId: Int) {
+    let reactor = feedDependencyFactory.injectReportTypeReactor(
+      coordinator: self,
+      recordId: recordId
+    )
+    let vc = feedDependencyFactory.injectReportTypeViewController(
+      reactor: reactor
+    )
+    self.presentViewController(
+      viewController: vc,
+      style: .overFullScreen,
+      animated: false
+    )
+  }
 }
 
 
@@ -135,5 +151,10 @@ extension FeedCoordinatorImp {
   
   public func doubleTap(index: Int) {
     doubleTapRelay.accept(index)
+  }
+  
+  public func startReport() {
+    self.dismissViewController(animated: false, completion: nil)
+    showReportType(recordId: 1)
   }
 }
