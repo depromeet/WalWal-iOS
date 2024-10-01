@@ -88,7 +88,7 @@ public final class FeedViewControllerImp<R: FeedReactor>: UIViewController, Feed
           .grow(1)
       }
   }
-
+  
   private func showCoachView() {
     if UserDefaults.bool(forUserDefaultsKey: .isFirstFeedAppear) {
       let scenes = UIApplication.shared.connectedScenes
@@ -167,9 +167,19 @@ extension FeedViewControllerImp: View {
         owner.feed.scrollToRecord(withId: recordId, animated: true)
       }
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map{ $0.isDoubleTap }
+      .distinctUntilChanged()
+      .filter { $0 }
+      .observe(on: MainScheduler.instance)
+      .subscribe(with: self, onNext: { owner, isTapped in
+        owner.feed.collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true)
+      })
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
-
+    
   }
 }

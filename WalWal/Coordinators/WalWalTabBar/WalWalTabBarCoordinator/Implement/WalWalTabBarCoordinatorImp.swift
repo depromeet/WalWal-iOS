@@ -63,6 +63,9 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   private var deeplinkFlag: Bool = false
   private var checkDeepLink: String? = nil
   
+  private var lastSelectedIndex: Int? // 마지막 선택된 인덱스
+  private var tapCount: Int = 0 // 같은 인덱스가 선택된 횟수
+  
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
@@ -101,7 +104,27 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     self.tabBarController.selectedFlow
       .subscribe(with: self, onNext: { owner, idx in
         let tabBarItem = Flow(rawValue: idx) ?? .startMission
-        owner.destination.accept(tabBarItem)
+        
+        if owner.lastSelectedIndex == idx {
+          // 같은 탭을 두 번 눌렀을 때
+          switch tabBarItem {
+          case .startFeed:
+            if let feedCoordinator = owner.tabCoordinators[.startFeed] as? (any FeedCoordinator) {
+              feedCoordinator.doubleTap(index: idx)
+            }
+          case .startNotification:
+            if let notificationCoordinator = owner.tabCoordinators[.startNotification] as? (any FCMCoordinator) {
+              notificationCoordinator.doubleTap(index: idx)
+            }
+          default:
+            break
+          }
+          
+        } else {
+          // 새로운 탭으로 이동할 때
+          owner.destination.accept(tabBarItem)
+          owner.lastSelectedIndex = idx
+        }
       })
       .disposed(by: disposeBag)
     

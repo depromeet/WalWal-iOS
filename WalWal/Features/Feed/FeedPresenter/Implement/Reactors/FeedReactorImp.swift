@@ -77,11 +77,15 @@ public final class FeedReactorImp: FeedReactor {
         .observe(on: MainScheduler.asyncInstance)
     case let .endedBoost(recordId, count):
       return postBoostCount(recordId: recordId, count: count)
-        .observe(on: MainScheduler.asyncInstance) 
+        .observe(on: MainScheduler.asyncInstance)
     case .profileTapped(let feedData):
       return .just(.moveToProfile(memberId: feedData.authorId, nickName: feedData.nickname))
     case .checkScrollItem:
       return checkScrollEvent()
+    case let .doubleTap(index):
+      let scrollObservable = Observable.just(Mutation.scrollToTop(index == 1))
+      let resetTabObservable = Observable.just(Mutation.resetTabEvent)
+      return Observable.concat([scrollObservable, resetTabObservable])
     }
   }
   
@@ -103,6 +107,10 @@ public final class FeedReactorImp: FeedReactor {
       coordinator.startProfile(memberId: memberId, nickName: nickName)
     case let .scrollToFeedItem(id):
       newState.scrollToFeedItem = id
+    case let .scrollToTop(isDoubleTapped):
+      newState.isDoubleTap = isDoubleTapped
+    case .resetTabEvent:
+      newState.isDoubleTap = false
     }
     return newState
   }

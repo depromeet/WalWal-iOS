@@ -27,6 +27,8 @@ public final class FCMCoordinatorImp: FCMCoordinator {
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
   
+  public let doubleTapRelay = PublishRelay<Int>()
+  
   public var fcmDependencyFactory: FCMDependencyFactory
   
   public required init(
@@ -77,6 +79,13 @@ public final class FCMCoordinatorImp: FCMCoordinator {
       saveFCMListGlobalStateUseCase: saveFCMListGlobalStateUseCase
     )
     let fcmVC = fcmDependencyFactory.injectFCMViewController(reactor: reactor)
+    
+    doubleTapRelay
+      .subscribe(with: self, onNext: { owner, index in
+        reactor.action.onNext(.doubleTap(index))
+      })
+      .disposed(by: disposeBag)
+    
     self.baseViewController = fcmVC
     self.pushViewController(viewController: fcmVC, animated: false)
   }
@@ -128,5 +137,9 @@ extension FCMCoordinatorImp {
   }
   public func startFeed() {
     requireParentAction(.startFeed)
+  }
+  
+  public func doubleTap(index: Int) {
+    doubleTapRelay.accept(index)
   }
 }

@@ -252,11 +252,20 @@ extension FCMViewControllerImp: View {
     reactor.state
       .map { $0.isHiddenEdgePage }
       .distinctUntilChanged()
-      .debug()
       .asDriver(onErrorJustReturn: false)
       .drive(with: self) { owner, isHidden in
         owner.edgeView.isHidden = isHidden
       }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map{ $0.isDoubleTap }
+      .distinctUntilChanged()
+      .filter { $0 } // 여기서 true인 값만 거르고
+      .observe(on: MainScheduler.instance)
+      .subscribe(with: self, onNext: { owner, isTapped in
+        owner.collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true) // true인 경우에는 상단 이동
+      })
       .disposed(by: disposeBag)
   }
   

@@ -17,6 +17,10 @@ public enum FeedCoordinatorFlow: CoordinatorFlow {
   
 }
 
-public protocol FeedCoordinator: BaseCoordinator where Flow == FeedCoordinatorFlow {
+public protocol FeedCoordinator: BaseCoordinator
+where Flow == FeedCoordinatorFlow,
+      Action == FeedCoordinatorAction
+{
   func startProfile(memberId: Int, nickName: String)
+  func doubleTap(index: Int)
 }

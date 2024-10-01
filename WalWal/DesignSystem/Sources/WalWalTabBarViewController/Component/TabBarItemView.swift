@@ -8,11 +8,13 @@
 
 import UIKit
 import ResourceKit
+
 import FlexLayout
 import PinLayout
 import Then
 import RxSwift
 import RxCocoa
+import RxGesture
 
 class TabBarItemView: UIView {
   
@@ -107,7 +109,7 @@ extension TabBarItemView {
   }
   
   private func updateAppearance(isSelected: Bool) {
-    iconImageView.image = isSelected 
+    iconImageView.image = isSelected
     ? item.selectedIcon
     : item.icon
     titleLabel.textColor = isSelected

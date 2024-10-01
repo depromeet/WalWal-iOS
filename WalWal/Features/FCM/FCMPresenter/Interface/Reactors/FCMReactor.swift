@@ -18,6 +18,7 @@ public enum FCMReactorAction {
   case refreshList
   case selectItem(item: FCMItemModel)
   case updateItem(index: IndexPath)
+  case doubleTap(Int?)
 }
 
 public enum FCMReactorMutation {
@@ -29,6 +30,8 @@ public enum FCMReactorMutation {
   case nextCursor(cursor: String?)
   case isLastPage(Bool)
   case isHiddenEdgePage(Bool)
+  case scrollToTop(Bool)
+  case resetTabEvent
 }
 
 public struct FCMReactorState {
@@ -38,6 +41,7 @@ public struct FCMReactorState {
   public var nextCursor: String? = nil
   public var isLastPage: Bool = false
   public var isHiddenEdgePage: Bool = true
+  public var isDoubleTap: Bool = false
 }
 
 public protocol FCMReactor: Reactor where Action == FCMReactorAction, Mutation == FCMReactorMutation, State == FCMReactorState {
