@@ -105,6 +105,10 @@ public final class WalWalFeedCellView: UIView {
   public var profileTapped: Observable<WalWalFeedModel> {
     return profileTappedSubject.asObservable()
   }
+  private let menuButtonTapEvent = PublishSubject<Int>()
+  public var menuButtonTapped: Observable<Int> {
+    return menuButtonTapEvent.asObservable()
+  }
   
   private let moreTappedSubject = PublishSubject<Bool>()
   public var moreTapped: Observable<Bool> {
@@ -172,6 +176,14 @@ public final class WalWalFeedCellView: UIView {
         return self?.feedData
       }
       .bind(to: profileTappedSubject)
+      .disposed(by: disposeBag)
+    
+    feedMenuButton.rx.tap
+      .withUnretained(self)
+      .compactMap { owner, _ in
+        owner.feedData?.recordId
+      }
+      .bind(to: menuButtonTapEvent)
       .disposed(by: disposeBag)
   }
   

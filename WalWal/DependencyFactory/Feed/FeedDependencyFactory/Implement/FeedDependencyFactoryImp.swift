@@ -58,12 +58,15 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
       recordsDependencyFactory: recordsDependencyFactory
     )
   }
-  public func injectFeedReactor<T>(
+  
+  // MARK: - Reactor
+  
+  public func injectFeedReactor<T: FeedCoordinator>(
     coordinator: T,
     fetchFeedUseCase: FetchFeedUseCase,
     updateBoostCountUseCase: UpdateBoostCountUseCase,
     removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
-  ) -> any FeedReactor where T : FeedCoordinator {
+  ) -> any FeedReactor {
     return FeedReactorImp(
       coordinator: coordinator,
       fetchFeedUseCase: fetchFeedUseCase,
@@ -72,8 +75,29 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     )
   }
   
-  public func injectFeedViewController<T>(reactor: T) -> any FeedViewController where T : FeedReactor {
+  public func injectFeedMenuReactor<T:FeedCoordinator>(
+    coordinator: T,
+    recordId: Int
+  )
+  -> any FeedMenuReactor {
+    return FeedMenuReactorImp(
+      coordinator: coordinator,
+      recordId: recordId
+    )
+  }
+  
+  // MARK: - ViewController
+  
+  public func injectFeedViewController<T: FeedReactor>(
+    reactor: T
+  ) -> any FeedViewController {
     return FeedViewControllerImp(reactor: reactor)
+  }
+  
+  public func injectFeedMenuViewController<T: FeedMenuReactor>(
+    reactor: T
+  ) -> any FeedMenuViewController {
+    return FeedMenuViewControllerImp(reactor: reactor)
   }
   
 }

@@ -14,7 +14,7 @@ public enum FeedCoordinatorAction: ParentAction {
 }
 
 public enum FeedCoordinatorFlow: CoordinatorFlow {
-  
+  case showFeedMenu(recordId: Int)
 }
 
 public protocol FeedCoordinator: BaseCoordinator

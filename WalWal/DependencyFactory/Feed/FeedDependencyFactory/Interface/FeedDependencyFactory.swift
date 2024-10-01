@@ -29,11 +29,23 @@ public protocol FeedDependencyFactory {
     parentCoordinator: any BaseCoordinator,
     recordsDependencyFactory: RecordsDependencyFactory
   ) -> any FeedCoordinator
+  
+  // MARK: - Reactor
+  
   func injectFeedReactor<T: FeedCoordinator>(
     coordinator: T,
     fetchFeedUseCase: FetchFeedUseCase,
     updateBoostCountUseCase: UpdateBoostCountUseCase,
     removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
   ) -> any FeedReactor
+  func injectFeedMenuReactor<T: FeedCoordinator>(
+    coordinator: T,
+    recordId: Int
+  ) -> any FeedMenuReactor
+  
+  // MARK: - ViewController
+  
   func injectFeedViewController<T: FeedReactor>(reactor: T) -> any FeedViewController
+  func injectFeedMenuViewController<T: FeedMenuReactor>(reactor: T) -> any FeedMenuViewController
+  
 }

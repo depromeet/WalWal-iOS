@@ -52,7 +52,10 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   public func bindState() {
     destination
       .subscribe(with: self, onNext: { owner, flow in
-        switch flow { }
+        switch flow {
+        case let .showFeedMenu(recordId):
+          self.showFeedMenu(recordId: recordId)
+        }
       })
       .disposed(by: disposeBag)
   }
@@ -110,22 +113,15 @@ extension FeedCoordinatorImp {
 
 extension FeedCoordinatorImp {
   
-  //  /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
-  //  fileprivate func start__() {
-  //    let feedCoordinator = feedDependencyFactory.make__Coordinator(
-  //      navigationController: navigationController,
-  //      parentCoordinator: self
-  //    )
-  //    childCoordinator = __Coordinator
-  //    __Coordinator.start()
-  //  }
-  //
-  //  /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
-  //  fileprivate func show__() {
-  //    let reactor = dependencyFactory.make__Reactor(coordinator: self)
-  //    let __VC = dependencyFactory.make__ViewController(reactor: reactor)
-  //    self.pushViewController(viewController: __VC, animated: false)
-  //  }
+  private func showFeedMenu(recordId: Int) {
+    let reactor = feedDependencyFactory.injectFeedMenuReactor(
+      coordinator: self,
+      recordId: recordId
+    )
+    let vc = feedDependencyFactory.injectFeedMenuViewController(reactor: reactor)
+    self.presentViewController(viewController: vc, style: .overFullScreen, animated: false)
+  }
+  
 }
 
 
