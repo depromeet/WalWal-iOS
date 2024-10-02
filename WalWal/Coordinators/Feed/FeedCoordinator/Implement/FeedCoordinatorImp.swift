@@ -34,6 +34,8 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   
   public var feedDependencyFactory: FeedDependencyFactory
   public var recordsDependencyFactory: RecordsDependencyFactory
+  /// 바텀시트 내부에서 네비게이션을 사용하기 위한 프로퍼티
+  private var bottomSheetNavigaionController: UINavigationController?
   
   public required init(
     navigationController: UINavigationController,
@@ -57,6 +59,8 @@ public final class FeedCoordinatorImp: FeedCoordinator {
           self.showFeedMenu(recordId: recordId)
         case let .showReportView(recordId):
           self.showReportType(recordId: recordId)
+        case let .showReportDetailView(recordId, reportType):
+          self.showReportDetail(recordId: recordId, reportType: reportType)
         }
       })
       .disposed(by: disposeBag)
@@ -132,11 +136,41 @@ extension FeedCoordinatorImp {
     let vc = feedDependencyFactory.injectReportTypeViewController(
       reactor: reactor
     )
+    let nav = UINavigationController(rootViewController: vc)
+    nav.navigationController?.setNavigationBarHidden(true, animated: false)
+    self.bottomSheetNavigaionController = nav
+    
+    /// 바텀시트 설정
+    if let sheet = nav.sheetPresentationController {
+      if #available(iOS 16.0, *) {
+        let medium: UISheetPresentationController.Detent = .custom { context in
+          return context.maximumDetentValue * 0.7
+        }
+        sheet.detents = [medium]
+      } else {
+        sheet.detents = [.medium()]
+      }
+      sheet.prefersGrabberVisible = false
+    }
+    
     self.presentViewController(
-      viewController: vc,
-      style: .overFullScreen,
-      animated: false
+      viewController: nav,
+      style: .pageSheet,
+      animated: true
     )
+  }
+  
+  private func showReportDetail(recordId: Int, reportType: String) {
+    let reactor = feedDependencyFactory.injectReportDetailReactor(
+      coordinator: self,
+      recordId: recordId,
+      reportType: reportType
+    )
+    let vc = feedDependencyFactory.injectReportDetailViewController(reactor: reactor)
+    bottomSheetNavigaionController?.setNavigationBarHidden(true, animated: false)
+    bottomSheetNavigaionController?.pushViewController(vc, animated: true)
+    bottomSheetNavigaionController?.interactivePopGestureRecognizer?.isEnabled = true
+    bottomSheetNavigaionController?.interactivePopGestureRecognizer?.delegate = nil
   }
 }
 
@@ -156,5 +190,8 @@ extension FeedCoordinatorImp {
   public func startReport() {
     self.dismissViewController(animated: false, completion: nil)
     showReportType(recordId: 1)
+  }
+  public func popReportDetail() {
+    bottomSheetNavigaionController?.popViewController(animated: true)
   }
 }

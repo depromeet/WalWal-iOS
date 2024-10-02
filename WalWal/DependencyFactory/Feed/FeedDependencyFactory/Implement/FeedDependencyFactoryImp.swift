@@ -97,6 +97,18 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     )
   }
   
+  public func injectReportDetailReactor<T: FeedCoordinator>(
+    coordinator: T,
+    recordId: Int,
+    reportType: String
+  ) -> any ReportDetailReactor {
+    return ReportDetailReactorImp(
+      coordinator: coordinator,
+      recordId: recordId,
+      reportType: reportType
+    )
+  }
+  
   // MARK: - ViewController
   
   public func injectFeedViewController<T: FeedReactor>(
@@ -117,4 +129,9 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     return ReportTypeViewControllerImp(reactor: reactor)
   }
   
+  public func injectReportDetailViewController<T: ReportDetailReactor>(
+    reactor: T
+  ) -> any ReportDetailViewController {
+    return ReportDetailViewControllerImp(reactor: reactor)
+  }
 }

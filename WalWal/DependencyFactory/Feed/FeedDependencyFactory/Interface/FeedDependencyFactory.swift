@@ -49,6 +49,12 @@ public protocol FeedDependencyFactory {
     recordId: Int
   ) -> any ReportTypeReactor
   
+  func injectReportDetailReactor<T: FeedCoordinator>(
+    coordinator: T,
+    recordId: Int,
+    reportType: String
+  ) -> any ReportDetailReactor
+  
   // MARK: - ViewController
   
   func injectFeedViewController<T: FeedReactor>(reactor: T) -> any FeedViewController
@@ -57,5 +63,6 @@ public protocol FeedDependencyFactory {
   
   func injectReportTypeViewController<T: ReportTypeReactor>(reactor: T) -> any ReportTypeViewController
   
+  func injectReportDetailViewController<T: ReportDetailReactor>(reactor: T) -> any ReportDetailViewController
   
 }

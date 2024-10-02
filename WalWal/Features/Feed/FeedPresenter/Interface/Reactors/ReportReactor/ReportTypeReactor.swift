@@ -11,14 +11,11 @@ import FeedCoordinator
 import ReactorKit
 
 public enum ReportTypeReactorAction {
-  case didPan(translation: CGPoint, velocity: CGPoint)
-  case didEndPan(velocity: CGPoint)
-  case tapDimView
+  case tapReportItem(item: ReportType)
 }
 
 public enum ReportTypeReactorMutation {
-  case setSheetPosition(CGFloat)
-  case dismissSheet
+  case moveDetailView(type: String)
 }
 
 public struct ReportTypeReactorState {
