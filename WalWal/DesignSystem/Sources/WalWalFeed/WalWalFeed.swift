@@ -315,7 +315,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
       
       let content = model.contents
       
-      let baseHeight: CGFloat = 486.adjusted
+      let baseHeight: CGFloat = 516.adjusted
       let numberOfLine = content.lineNumber(
         forWidth: width - 40,
         font: Fonts.B2
