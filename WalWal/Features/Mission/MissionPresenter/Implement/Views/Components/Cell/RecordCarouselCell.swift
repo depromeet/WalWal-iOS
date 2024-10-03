@@ -45,7 +45,6 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
   }
   
   let missionInfoContainer = UIView().then {
-    $0.backgroundColor = Colors.walwalBeige.color
     $0.isHidden = true
   }
   
@@ -151,12 +150,8 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     
     recordimageView.addSubview(dateChipView)
     
-    missionImageView.addSubview(todayMissionLabel)
-    missionImageView.addSubview(missionTitleLabel)
-    
-    missionInfoContainer.addSubview(todayMissionLabel)
-    missionInfoContainer.addSubview(missionTitleLabel)
-    missionInfoContainer.addSubview(missionImageView)
+    textView.endEditingWithDeleteNewLines()
+    textView.configureAttributeText()
   }
   
   private func configureLayout() {
@@ -167,6 +162,8 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
           .grow(1)
         flex.addItem(missionInfoContainer)
           .position(.absolute)
+          .width(100%)
+          .height(100%)
           .grow(1)
         flex.addItem(swapButton)
       }
@@ -183,10 +180,20 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     
     missionInfoContainer.flex
       .alignItems(.center)
+      .marginTop(-50.adjusted)
       .define{ flex in
         flex.addItem(missionImageView)
-          .width(255.adjusted)
-          .height(436.adjusted)
+          .width(120%)
+          .height(120%)
+        flex.addItem(todayMissionLabel)
+          .position(.absolute)
+          .alignSelf(.center)
+          .top(118.adjusted)
+        flex.addItem(missionTitleLabel)
+          .position(.absolute)
+          .alignSelf(.center)
+          .top(139.adjusted)
+          .marginHorizontal(20.adjusted)
       }
     
     swapButton.flex
@@ -195,14 +202,6 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
       .size(30.adjusted)
       .marginTop(18.adjusted)
       .right(18.adjusted)
-    
-    
-    todayMissionLabel.flex
-      .marginTop(68.adjusted)
-      .marginHorizontal(20.adjusted)
-    
-    missionTitleLabel.flex
-      .marginTop(4.adjusted)
     
     dateChipView.flex
       .position(.absolute)
