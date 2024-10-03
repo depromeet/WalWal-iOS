@@ -96,7 +96,7 @@ public final class WalWalFeed: UIView {
     isFeed: Bool = true
   ) {
     self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
-    self.headerHeight = isFeed ? 70.adjusted : 0
+    self.headerHeight = isFeed ? 66.adjusted : 0
     super.init(frame: .zero)
     
     self.collectionView.backgroundColor = isFeed ? Colors.gray150.color : Colors.gray100.color
@@ -318,11 +318,11 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
       let baseHeight: CGFloat = 516.adjusted
       let numberOfLine = content.lineNumber(
         forWidth: width - 40,
-        font: Fonts.B2
+        font: Fonts.B3
       )
       let lineHeight = isExpanded ? numberOfLine : max(1,min(2, numberOfLine))
       
-      let height: CGFloat =  baseHeight + (16 * (lineHeight - 1)).adjusted
+      let height: CGFloat =  baseHeight + (17 * (lineHeight - 1)).adjusted
       
       return CGSize(width: width, height: height)
     }

@@ -60,10 +60,12 @@ public final class WalWalFeedCellView: UIView {
   
   private let boostIconImageView = UIImageView().then {
     $0.image = Images.fire.image
+    $0.contentMode = .scaleAspectFit
   }
   
-  private let comentIconImageView = UIImageView().then {
+  private let commentIconImageView = UIImageView().then {
     $0.image = Images.messageCircle.image
+    $0.contentMode = .scaleAspectFit
   }
   
   let contentLabel = CustomLabel(font: Fonts.KR.B3).then {
@@ -77,12 +79,7 @@ public final class WalWalFeedCellView: UIView {
     $0.textColor = Colors.gray500.color
   }
   
-  
-  private let comentCountLabel = CustomLabel(font: Fonts.EN.H2).then {
-    $0.textColor = Colors.gray500.color
-  }
-  
-  private let boostLabel = CustomLabel(text: "부스터", font: Fonts.KR.B2).then {
+  private let commentCountLabel = CustomLabel(font: Fonts.EN.H2).then {
     $0.textColor = Colors.gray500.color
   }
   
@@ -191,14 +188,14 @@ public final class WalWalFeedCellView: UIView {
     if !isAlreadyExpanded  {
       if contents.lineNumber(forWidth: contentLabel.width, font: Fonts.KR.B3) > 2 {
         DispatchQueue.main.async {
-          self.contentLabel.configureSpacing(text: self.contentLabel.text, font: Fonts.KR.B2)
-          self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
+          self.contentLabel.configureSpacing(text: self.contentLabel.text, font: Fonts.KR.B3)
+          self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B3, moreTextColor: Colors.gray500.color)
           
         }
       }
     }
     
-    comentCountLabel.flex.markDirty()
+    commentCountLabel.flex.markDirty()
     boostCountLabel.flex.markDirty()
     
     missionDateLabel.flex
@@ -251,7 +248,7 @@ public final class WalWalFeedCellView: UIView {
         $0.addItem(imageContentView)
         $0.addItem(reactionView)
           .height(24.adjusted)
-          .marginTop(9.adjusted)
+          .marginTop(12.adjusted)
           .marginHorizontal(12.adjusted)
         $0.addItem(feedContentView)
           .minHeight(16.adjusted)
@@ -309,9 +306,9 @@ public final class WalWalFeedCellView: UIView {
     
     comentLabelView.flex.direction(.row)
       .define { flex in
-        flex.addItem(comentIconImageView)
+        flex.addItem(commentIconImageView)
           .marginRight(1.adjusted)
-        flex.addItem(comentCountLabel)
+        flex.addItem(commentCountLabel)
       }
     boostLabelView.flex.direction(.row)
       .define { flex in
@@ -339,7 +336,7 @@ public final class WalWalFeedCellView: UIView {
     
     let attributes: [NSAttributedString.Key: Any] = [
       .paragraphStyle: paragraphStyle,
-      .font: Fonts.KR.B2,
+      .font: Fonts.KR.B3,
       .foregroundColor: Colors.black.color
     ]
     
