@@ -175,8 +175,7 @@ public final class WalWalFeedCellView: UIView {
     missionLabel.text = sanitizeContent(feedData.missionTitle)
     profileImageView.image = feedData.profileImage
     missionImageView.image = feedData.missionImage
-    comentCountLabel.text = "\(feedData.boostCount)" // 댓글 개수 넣기
-    
+    comentCountLabel.text = "\(feedData.commentCount)" 
     boostCountLabel.text = "\(feedData.boostCount)"
     let isBoostImage = isBoost ? Images.fire.image.withTintColor(Colors.walwalOrange.color) : Images.fire.image
     let isBoostColor = isBoost ? Colors.walwalOrange.color : Colors.gray500.color

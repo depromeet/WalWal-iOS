@@ -16,7 +16,7 @@ public struct WalWalFeedModel: Equatable {
   var missionTitle: String
   var profileImage: UIImage?
   var missionImage: UIImage?
-  var boostCount: Int
+  var boostCount, commentCount: Int
   var contents: String
   
   public init(
@@ -28,6 +28,7 @@ public struct WalWalFeedModel: Equatable {
     profileImage: UIImage?,
     missionImage: UIImage?,
     boostCount: Int,
+    commentCount: Int,
     contents: String
   ) {
     self.recordId = recordId
@@ -38,6 +39,7 @@ public struct WalWalFeedModel: Equatable {
     self.profileImage = profileImage
     self.missionImage = missionImage
     self.boostCount = boostCount
+    self.commentCount = commentCount
     self.contents = contents
   }
   

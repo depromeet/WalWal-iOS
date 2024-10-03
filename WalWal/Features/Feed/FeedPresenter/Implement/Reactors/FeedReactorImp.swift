@@ -182,6 +182,7 @@ public final class FeedReactorImp: FeedReactor {
           profileImage: profileImageOrDefault,
           missionImage: missionImage,
           boostCount: feed.boostCount,
+          commentCount: feed.commentCount,
           contents: feed.contents ?? ""
         )
       }

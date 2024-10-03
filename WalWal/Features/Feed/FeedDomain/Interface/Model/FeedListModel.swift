@@ -16,7 +16,7 @@ public struct FeedListModel {
   public let missionTitle: String
   public let missionRecordImageURL, authorProfileImageURL: String?
   public let createdDate: String
-  public let totalBoostCount: Int
+  public let totalBoostCount, totalCommentCount: Int
   public let content: String?
   
   public init(dto: FeedListDTO) {
@@ -29,6 +29,7 @@ public struct FeedListModel {
     self.missionRecordImageURL = dto.missionRecordImageURL
     self.createdDate = dto.createdDate
     self.totalBoostCount = dto.totalBoostCount
+    self.totalCommentCount = dto.totalCommentCount
     self.content = dto.content
   }
 }

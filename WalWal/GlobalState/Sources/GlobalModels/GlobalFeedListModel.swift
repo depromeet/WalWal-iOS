@@ -17,6 +17,7 @@ public struct GlobalFeedListModel {
   public let profileImage: String?
   public let missionImage: String?
   public let boostCount: Int
+  public let commentCount: Int
   public let contents: String?
   
   public init(
@@ -29,6 +30,7 @@ public struct GlobalFeedListModel {
     profileImage: String?,
     missionImage: String?,
     boostCount: Int,
+    commentCount: Int,
     contents: String?
   ) {
     self.authorId = authorId
@@ -40,6 +42,7 @@ public struct GlobalFeedListModel {
     self.profileImage = profileImage
     self.missionImage = missionImage
     self.boostCount = boostCount
+    self.commentCount = commentCount
     self.contents = contents
   }
 }

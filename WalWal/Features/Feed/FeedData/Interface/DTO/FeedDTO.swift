@@ -23,6 +23,7 @@ public struct FeedListDTO: Codable {
   public let authorProfileImageURL: String?
   public let missionRecordImageURL: String?
   public let totalBoostCount: Int
+  public let totalCommentCount: Int
   public let content: String?
   
   enum CodingKeys: String, CodingKey {
@@ -33,6 +34,6 @@ public struct FeedListDTO: Codable {
     case authorProfileNickname
     case authorProfileImageURL = "authorProfileImageUrl"
     case missionRecordImageURL = "missionRecordImageUrl"
-    case createdDate, totalBoostCount, content
+    case createdDate, totalBoostCount, content, totalCommentCount
   }
 }

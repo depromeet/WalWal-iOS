@@ -163,6 +163,7 @@ extension RecordDetailReactorImp {
             profileImage: authorProfileImage,
             missionImage: missionRecordImage,
             boostCount: feed.totalBoostCount,
+            commentCount: feed.totalCommentCount,
             contents: feed.content ?? ""
           )
         })
@@ -189,6 +190,7 @@ extension RecordDetailReactorImp {
           profileImage: profileImageOrDefault,
           missionImage: missionImage,
           boostCount: feed.boostCount,
+          commentCount: feed.commentCount,
           contents: feed.contents ?? ""
         )
       }
