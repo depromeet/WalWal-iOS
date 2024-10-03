@@ -183,17 +183,20 @@ public final class WalWalFeedCellView: UIView {
     contentLabel.text = contents
     missionDateLabel.attributedText = setupDateLabel(to: feedData.date)
     self.feedData = feedData
-    
-    /// 부스트 애니메이션 시 이미 열려 있었으면 더보기 X
-    if !isAlreadyExpanded  {
-      if contents.lineNumber(forWidth: contentLabel.width, font: Fonts.KR.B3) > 2 {
+    self.isExpanded = isAlreadyExpanded
+
+    if isExpanded {
+        contentLabel.text = contents
+    } else {
+        contentLabel.text = contents
         DispatchQueue.main.async {
-          self.contentLabel.configureSpacing(text: self.contentLabel.text, font: Fonts.KR.B3)
-          self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B3, moreTextColor: Colors.gray500.color)
-          
+            if self.contents.lineNumber(forWidth: self.contentLabel.width, font: Fonts.KR.B3) > 2 {
+                self.contentLabel.configureSpacing(text: self.contents, font: Fonts.KR.B3)
+                self.contentLabel.addTrailing(with: "...", moreText: " 더 보기", moreTextFont: Fonts.KR.B3, moreTextColor: Colors.gray500.color)
+            }
         }
-      }
     }
+
     
     commentCountLabel.flex.markDirty()
     boostCountLabel.flex.markDirty()

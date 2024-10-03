@@ -54,32 +54,34 @@ public extension UILabel {
       context: nil
     ).width
     
-    if trimmedString.last == " " {
-      trimmedString.removeLast()
-      numberOfSpaces -= 1
+    if trimmedStringWidth + totalSpaceWidth > self.frame.width {
+      if trimmedString.last == " " {
+        trimmedString.removeLast()
+        numberOfSpaces -= 1
+      }
+      
+      let effectiveRemovalLength = readMoreLength + Int(totalSpaceWidth / spaceWidth)
+      
+      if trimmedString.count <= effectiveRemovalLength { return }
+      
+      var adjustedLength = trimmedString.count - effectiveRemovalLength
+      if totalSpaceWidth > 0 {
+        adjustedLength = max(0, trimmedString.count - effectiveRemovalLength + numberOfSpaces)
+      }
+      
+      var trimmedForReadMore = (trimmedString as NSString).substring(to: adjustedLength)
+      
+      trimmedForReadMore += convertedTrailingText
+      
+      let answerAttributed = NSMutableAttributedString(string: trimmedForReadMore, attributes: [.font: self.font as Any])
+      let readMoreAttributed = NSMutableAttributedString(string: moreText, attributes: [.font: moreTextFont, .foregroundColor: moreTextColor])
+      
+      answerAttributed.append(readMoreAttributed)
+      self.attributedText = answerAttributed
+    } else {
+      self.text = myText
     }
-    
-    // Calculate effective removal length considering space widths
-    let effectiveRemovalLength = readMoreLength + Int(totalSpaceWidth / spaceWidth)
-    
-    if trimmedString.count <= effectiveRemovalLength { return }
-    
-    var adjustedLength = trimmedString.count - effectiveRemovalLength
-    if totalSpaceWidth > 0 {
-      adjustedLength = max(0, trimmedString.count - effectiveRemovalLength + numberOfSpaces)
-    }
-    
-    var trimmedForReadMore = (trimmedString as NSString).substring(to: adjustedLength)
-    
-    trimmedForReadMore += convertedTrailingText
-    
-    let answerAttributed = NSMutableAttributedString(string: trimmedForReadMore, attributes: [.font: self.font as Any])
-    let readMoreAttributed = NSMutableAttributedString(string: moreText, attributes: [.font: moreTextFont, .foregroundColor: moreTextColor])
-    
-    answerAttributed.append(readMoreAttributed)
-    self.attributedText = answerAttributed
   }
-  
   
   /// 폰트 변경 함수
   func asFont(targetString: String, font: UIFont) {
