@@ -47,7 +47,6 @@ public struct FeedReactorState {
   public var feedFetchEnded: Bool = false
   @Pulse public var scrollToFeedItem: Int? = nil
   public var isDoubleTap: Bool = false
-  
   public init() {  }
 }
 

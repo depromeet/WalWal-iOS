@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import DesignSystem
 
 import FeedPresenter
 import FeedCoordinator
@@ -32,6 +33,17 @@ public final class ReportTypeReactorImp: ReportTypeReactor {
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
+    case let .didPan(translation, _):
+      return Observable.just(.setSheetPosition(translation.y))
+    case let .didEndPan(velocity):
+      if velocity.y > 1000 {
+        return Observable.just(.dismissSheet)
+      } else {
+        return Observable.just(.setSheetPosition(0))
+      }
+    case .tapDimView:
+      return Observable.just(.dismissSheet)
+      
     case let .tapReportItem(item):
       return .just(.moveDetailView(type: item.title))
     }
@@ -40,6 +52,10 @@ public final class ReportTypeReactorImp: ReportTypeReactor {
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
+    case let .setSheetPosition(position):
+      newState.sheetPosition = position
+    case .dismissSheet:
+      coordinator.dismissViewController(animated: false) { }
     case let .moveDetailView(type):
       coordinator.destination.accept(
         .showReportDetailView(

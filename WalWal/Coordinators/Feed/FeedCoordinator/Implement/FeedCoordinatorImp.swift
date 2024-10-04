@@ -36,7 +36,7 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   public var recordsDependencyFactory: RecordsDependencyFactory
   /// 바텀시트 내부에서 네비게이션을 사용하기 위한 프로퍼티
   private var bottomSheetNavigaionController: UINavigationController?
-  
+  private var bottomSheetRootViewController: UIViewController?
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
@@ -139,24 +139,10 @@ extension FeedCoordinatorImp {
     let nav = UINavigationController(rootViewController: vc)
     nav.navigationController?.setNavigationBarHidden(true, animated: false)
     self.bottomSheetNavigaionController = nav
-    
-    /// 바텀시트 설정
-    if let sheet = nav.sheetPresentationController {
-      if #available(iOS 16.0, *) {
-        let medium: UISheetPresentationController.Detent = .custom { context in
-          return context.maximumDetentValue * 0.7
-        }
-        sheet.detents = [medium]
-      } else {
-        sheet.detents = [.medium()]
-      }
-      sheet.prefersGrabberVisible = false
-    }
-    
     self.presentViewController(
       viewController: nav,
-      style: .pageSheet,
-      animated: true
+      style: .overFullScreen,
+      animated: false
     )
   }
   
@@ -168,9 +154,7 @@ extension FeedCoordinatorImp {
     )
     let vc = feedDependencyFactory.injectReportDetailViewController(reactor: reactor)
     bottomSheetNavigaionController?.setNavigationBarHidden(true, animated: false)
-    bottomSheetNavigaionController?.pushViewController(vc, animated: true)
-    bottomSheetNavigaionController?.interactivePopGestureRecognizer?.isEnabled = true
-    bottomSheetNavigaionController?.interactivePopGestureRecognizer?.delegate = nil
+    bottomSheetNavigaionController?.pushViewController(vc, animated: false)
   }
 }
 
@@ -192,6 +176,6 @@ extension FeedCoordinatorImp {
     showReportType(recordId: 1)
   }
   public func popReportDetail() {
-    bottomSheetNavigaionController?.popViewController(animated: true)
+    bottomSheetNavigaionController?.popViewController(animated: false)
   }
 }

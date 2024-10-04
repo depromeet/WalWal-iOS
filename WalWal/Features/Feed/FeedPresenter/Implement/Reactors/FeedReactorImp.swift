@@ -115,6 +115,7 @@ public final class FeedReactorImp: FeedReactor {
       newState.isDoubleTap = false
     case let .showMenu(recordId):
       coordinator.destination.accept(.showFeedMenu(recordId: recordId))
+      newState.showDimView = true
     }
     return newState
   }
