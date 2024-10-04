@@ -166,7 +166,6 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
           .position(.absolute)
           .width(100%)
           .height(100%)
-          .grow(1)
         flex.addItem(swapButton)
       }
     
@@ -231,19 +230,41 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
   
   // MARK: - Custom Method
   
-  func toggleContainers() {
+  private func toggleContainers() {
     isRecordContainerVisible.toggle()
     
-    if isRecordContainerVisible {
-      recordContainer.isHidden = false
-      missionInfoContainer.isHidden = true
-    } else {
-      recordContainer.isHidden = true
-      missionInfoContainer.isHidden = false
-    }
+    let fromView = isRecordContainerVisible ? missionInfoContainer : recordContainer
+    let toView = isRecordContainerVisible ? recordContainer : missionInfoContainer
     
-    setNeedsLayout()
-    layoutIfNeeded()
+    let rotationAngle = CGFloat.pi / 2
+    var transform = CATransform3DIdentity
+    transform.m34 = -1.0 / 900.0
+    
+    let rotatingContainer = rootContainer
+    
+    let originalPosition = rotatingContainer.layer.position
+    
+    rotatingContainer.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+    rotatingContainer.layer.position = originalPosition
+    
+    UIView.animate(withDuration: 0.3, animations: {
+      rotatingContainer.layer.transform = CATransform3DRotate(transform, rotationAngle, 0, 1, 0)
+      fromView.alpha = 0
+    }) { _ in
+      fromView.isHidden = true
+      rotatingContainer.layer.transform = CATransform3DIdentity
+      
+      toView.isHidden = false
+      toView.alpha = 0
+      rotatingContainer.layer.transform = CATransform3DRotate(transform, -rotationAngle, 0, 1, 0)
+
+      UIView.animate(withDuration: 0.3, animations: {
+        rotatingContainer.layer.transform = CATransform3DIdentity
+        toView.alpha = 1
+      }) { _ in
+        self.setNeedsLayout()
+      }
+    }
   }
   
   func configureCell(record: RecordList) {
