@@ -23,31 +23,45 @@ final class ReportTextView: UIView {
   
   // MARK: - UI
   
-  private let rootContainer = UIView()
-  private let textView = UITextView().then {
-    $0.textColor = Colors.gray900.color
-    $0.font = Fonts.KR.H7.M
-    
+  private let rootContainer = UIView().then {
     $0.layer.cornerRadius = 10
     $0.layer.borderWidth = 1
     $0.layer.borderColor = Colors.gray300.color.cgColor
-    $0.textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 34, right: 16)
   }
   
-  private let textCountLabel = CustomLabel(font: Fonts.EN.Caption).then {
+  private lazy var textView = CustomTextView(
+    placeHolderText: placeholderText,
+    placeHolderFont: Fonts.KR.B1,
+    placeHolderColor: Colors.gray500.color,
+    inputText: "",
+    inputTextFont: Fonts.KR.H7.M,
+    inputTextColor: Colors.gray900.color,
+    maxCount: maxCount
+  ).then {
+    $0.textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 4, right: 16)
+  }
+  private lazy var textCountLabel = CustomLabel(font: Fonts.EN.Caption).then {
+    $0.text = "0/\(maxCount)"
     $0.textColor = Colors.gray300.color
     $0.textAlignment = .right
   }
   
   // MARK: - Properties
   
-  public let inputText = BehaviorRelay<String>(value: "")
   public let textEndEditing = PublishRelay<Bool>()
-  private let isplaceHolderVisible = BehaviorRelay<Bool>(value: true)
+  
+  private(set) var textRelay = BehaviorRelay<String>(value: "")
+  
   private let placeholderText: String
+  
   private let maxCount: Int
+  
   private let maxHeight: CGFloat
+  
   private let minHeight: CGFloat
+  
+  private let textCountLabelMargin: CGFloat = 16.adjusted
+  
   private let disposeBag = DisposeBag()
   
   // MARK: - Initialize
@@ -79,82 +93,43 @@ final class ReportTextView: UIView {
     super.layoutSubviews()
     rootContainer.pin
       .all()
-    textCountLabel.pin
-      .bottomRight(16.adjusted)
     rootContainer.flex
       .grow(1)
-      .layout()
+      .layout(mode: .adjustHeight)
   }
   
   private func configAttribute() {
     addSubview(rootContainer)
-    textView.addSubview(textCountLabel)
   }
   
   private func configLayout() {
     rootContainer.flex
+      .justifyContent(.spaceBetween)
+      .height(minHeight)
       .define {
         $0.addItem(textView)
-          .height(minHeight)
+          .minHeight(70.adjusted)
           .width(100%)
-        $0.addItem()
-          .grow(1)
+        $0.addItem(textCountLabel)
+          .marginRight(textCountLabelMargin)
+          .marginBottom(textCountLabelMargin)
       }
   }
-  private func stylePlaceholderText() -> NSAttributedString {
-    return NSAttributedString(string: placeholderText, attributes: [
-      .foregroundColor: Colors.gray500.color,
-      .font: Fonts.KR.B1
-    ])
-  }
-  
   
   private func bind() {
+    textView.textRelay
+      .bind(to: textRelay)
+      .disposed(by: disposeBag)
     
-    /// placeholder 설정
-    isplaceHolderVisible
+    textRelay
       .asDriver()
-      .drive(with: self) { owner, isVisible in
-        if isVisible {
-          owner.textView.attributedText = owner.stylePlaceholderText()
-        } else {
-          owner.textView.text = nil
-        }
+      .drive(with: self) { owner, text in
+        owner.adjustTextViewHeight()
       }
       .disposed(by: disposeBag)
     
-    /// 입력 시작 시 placeholder 제거
-    textView.rx.didBeginEditing
-      .withLatestFrom(isplaceHolderVisible)
-      .filter { $0 }
-      .subscribe(with: self, onNext: { owner, _ in
-        owner.isplaceHolderVisible.accept(false)
-        
-      })
-      .disposed(by: disposeBag)
-    
-    /// 입력 끝난 후 placeholder처리
-    textView.rx.didEndEditing
-      .withLatestFrom(inputText)
-      .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-      .filter { $0.isEmpty }
-      .subscribe(with: self, onNext: { owner, _ in
-        owner.isplaceHolderVisible.accept(true)
-      })
-      .disposed(by: disposeBag)
-    
-    /// 입력 값
-    textView.rx.text.orEmpty
-      .bind(with: self) { owner, text in
-        if owner.isplaceHolderVisible.value {
-          owner.inputText.accept("")
-        } else {
-          owner.inputText.accept(text)
-        }
-      }
-      .disposed(by: disposeBag)
-    
-    inputText
+    /// 글자 수 Label
+    textRelay
       .map { "\($0.count)/\(self.maxCount)"}
       .bind(to: textCountLabel.rx.text)
       .disposed(by: disposeBag)
@@ -167,4 +142,30 @@ final class ReportTextView: UIView {
       .disposed(by: disposeBag)
   }
   
+  private func adjustTextViewHeight() {
+    let size = textView.sizeThatFits(CGSize(width: frame.width, height: .infinity))
+    let margin: CGFloat = textCountLabel.frame.height + 20
+    let rootContainerHeight: CGFloat = size.height + margin
+    let totalHeight: CGFloat
+    
+    // rootContainer가 maxHeight인 경우
+    if rootContainerHeight > maxHeight {
+      totalHeight = maxHeight
+      textView.flex.height(max(totalHeight - margin, minHeight))
+    } else {
+      totalHeight = max(rootContainerHeight, minHeight)
+      textView.flex.height(size.height)
+    }
+    rootContainer.flex.height(totalHeight)
+    rootContainer.flex.layout()
+    
+    textView.isScrollEnabled = rootContainerHeight >= maxHeight
+  }
+  
+}
+
+extension Reactive where Base: ReportTextView {
+  var text: Observable<String> {
+    return base.textRelay.asObservable()
+  }
 }
