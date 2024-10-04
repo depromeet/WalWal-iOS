@@ -52,12 +52,12 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
   
   private let textContainer = UIView()
   
-  private let textView = UITextView().then {
-    $0.layer.cornerRadius = 10
-    $0.layer.borderWidth = 1
-    $0.layer.borderColor = Colors.gray300.color.cgColor
-    $0.textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 34, right: 16)
-  }
+  private let textView = ReportTextView(
+    placeholder: "신고 내용을 더 빠르게 해결할 수 있도록 추가 정보를 제공해주세요",
+    maxHeight: 239.adjustedHeight,
+    minHeigh: 120.adjustedHeight,
+    maxCount: 500
+  )
   
   private let submitButton = WalWalButton(type: .dark, title: "왈왈팀에 전달하기")
   
@@ -93,6 +93,11 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
     self.view.backgroundColor = .clear
   }
   
+  public override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    changeBottomSheet()
+  }
+  
   // MARK: - Layout
   
   public override func viewDidLayoutSubviews() {
@@ -101,16 +106,6 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
     dimView.pin
       .all()
     dimView.flex
-      .layout()
-    contentContainer.flex
-      .marginBottom(self.view.pin.safeArea.bottom)
-      .layout()
-    
-    rootContainer.pin
-      .bottom()
-      .horizontally(0)
-      .height(563.adjustedHeight)
-    rootContainer.flex
       .layout()
     
   }
@@ -143,8 +138,8 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .justifyContent(.start)
     
     contentContainer.flex
-      .grow(1)
       .justifyContent(.spaceBetween)
+      .grow(1)
     
     navigation.flex
       .height(50.adjustedHeight)
@@ -156,45 +151,68 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .marginBottom(30.adjustedHeight)
       .marginHorizontal(20.adjustedWidth)
     
-    textContainer.flex
-      .marginHorizontal(20.adjustedWidth)
-      .marginBottom(20.adjustedWidth)
-      .grow(1)
-    
     submitButton.flex
       .marginHorizontal(20.adjustedWidth)
       .marginBottom(30.adjustedHeight)
       .height(50.adjustedHeight)
     
     textContainer.flex
+      .marginHorizontal(20.adjustedWidth)
+      .marginBottom(20.adjustedWidth)
+      .grow(1)
       .define {
         $0.addItem(textView)
-          .height(120.adjustedHeight)
+          .grow(1)
           .width(100%)
       }
+    
   }
   
   private func changeFullPage() {
     isBottomSheet = false
     dimView.backgroundColor = Colors.white.color
     
+    let keyboardTop = view.pin.keyboardArea.height
+    
+    contentContainer.flex.markDirty()
     rootContainer.pin
       .all()
+    contentContainer.pin
+      .all()
+    
     contentContainer.flex
       .markDirty()
       .marginTop(view.pin.safeArea.top)
-      .bottom(0)
+      .marginBottom(0)
       .layout()
-    submitButton.flex
-      .marginBottom(20.adjustedHeight)
+    
+    rootContainer.flex.markDirty()
     rootContainer.flex
+      .marginBottom(0)
+      .height(UIScreen.main.bounds.height)
       .layout()
+    
+    submitButton.pin
+      .bottom(keyboardTop + 20.adjustedHeight)
+    
+    textContainer.pin
+      .above(of: submitButton)
+      .marginBottom(20.adjustedHeight)
+      .below(of: discriptionLabel)
+      .marginTop(30.adjustedHeight)
+    
     view.layoutIfNeeded()
   }
   
   private func changeBottomSheet() {
     isBottomSheet = true
     dimView.backgroundColor = Colors.black30.color
+    
+    rootContainer.pin
+      .bottom()
+      .height(563.adjustedHeight)
+    
+    contentContainer.pin.bottom(self.view.pin.safeArea.bottom)
     
     contentContainer.flex
       .markDirty()
@@ -204,14 +222,15 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
     
     rootContainer.flex
       .markDirty()
-    rootContainer.pin
       .height(563.adjustedHeight)
-      .bottom()
+      .marginBottom(0)
+    
     submitButton.flex
       .marginBottom(30.adjustedHeight)
+    
     rootContainer.flex
       .layout()
-    view.layoutIfNeeded()
+    
   }
   
   
@@ -331,7 +350,7 @@ extension ReportDetailViewControllerImp: View {
     
     rootContainer.rx.tapped
       .bind(with: self) { owner, _ in
-        owner.textView.resignFirstResponder()
+        owner.textView.textEndEditing.accept(true)
       }
       .disposed(by: disposeBag)
     
