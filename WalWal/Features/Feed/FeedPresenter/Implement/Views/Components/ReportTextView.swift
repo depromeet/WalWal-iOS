@@ -38,6 +38,7 @@ final class ReportTextView: UIView {
     inputTextColor: Colors.gray900.color,
     maxCount: maxCount
   ).then {
+    $0.backgroundColor = Colors.white.color
     $0.textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 4, right: 16)
   }
   private lazy var textCountLabel = CustomLabel(font: Fonts.EN.Caption).then {
@@ -49,6 +50,10 @@ final class ReportTextView: UIView {
   // MARK: - Properties
   
   public let textEndEditing = PublishRelay<Bool>()
+  
+  public var isScrollEnable: Bool = false
+  
+  public let expandTextView = PublishRelay<Bool>()
   
   private(set) var textRelay = BehaviorRelay<String>(value: "")
   
@@ -160,6 +165,7 @@ final class ReportTextView: UIView {
     rootContainer.flex.layout()
     
     textView.isScrollEnabled = rootContainerHeight >= maxHeight
+    isScrollEnable = rootContainerHeight >= maxHeight
   }
   
 }

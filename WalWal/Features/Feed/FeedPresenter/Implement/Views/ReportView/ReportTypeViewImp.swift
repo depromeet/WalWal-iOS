@@ -61,6 +61,7 @@ public final class ReportTypeViewControllerImp<R: ReportTypeReactor>:
   }
   
   private let tableView = UITableView(frame: .zero, style: .plain).then {
+    $0.backgroundColor = Colors.white.color
     $0.register(ReportTypeCell.self)
     $0.rowHeight = 57.adjustedHeight
     $0.separatorStyle = .none

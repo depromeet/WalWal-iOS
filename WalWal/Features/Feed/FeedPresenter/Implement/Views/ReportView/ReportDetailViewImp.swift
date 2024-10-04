@@ -59,7 +59,10 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
     maxCount: 500
   )
   
-  private let submitButton = WalWalButton(type: .dark, title: "왈왈팀에 전달하기")
+  private let submitButton = WalWalButton(
+    type: .dark,
+    title: "왈왈팀에 전달하기"
+  )
   
   // MARK: - Properties
   
@@ -142,12 +145,12 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .grow(1)
     
     navigation.flex
-      .height(50.adjustedHeight)
+      .height(22.adjustedHeight)
       .marginTop(24.adjustedHeight)
       .width(100%)
     
     discriptionLabel.flex
-      .marginTop(15.adjustedHeight)
+      .marginTop(30.adjustedHeight)
       .marginBottom(30.adjustedHeight)
       .marginHorizontal(20.adjustedWidth)
     
@@ -157,12 +160,13 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .height(50.adjustedHeight)
     
     textContainer.flex
+      .backgroundColor(.red)
       .marginHorizontal(20.adjustedWidth)
       .marginBottom(20.adjustedWidth)
       .grow(1)
+      .shrink(1)
       .define {
         $0.addItem(textView)
-          .grow(1)
           .width(100%)
       }
     
@@ -174,7 +178,8 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
     
     let keyboardTop = view.pin.keyboardArea.height
     
-    contentContainer.flex.markDirty()
+    contentContainer.flex
+      .markDirty()
     rootContainer.pin
       .all()
     contentContainer.pin
@@ -212,12 +217,13 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .bottom()
       .height(563.adjustedHeight)
     
-    contentContainer.pin.bottom(self.view.pin.safeArea.bottom)
+    contentContainer.pin
+      .bottom(view.pin.safeArea.bottom)
     
     contentContainer.flex
       .markDirty()
       .marginTop(0)
-      .marginBottom(self.view.pin.safeArea.bottom)
+      .marginBottom(view.pin.safeArea.bottom)
       .layout()
     
     rootContainer.flex
@@ -237,18 +243,21 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
   // MARK: - Animations
   
   private func animateSheetUp() {
-    
     UIView.animate(withDuration: 0.3) {
       self.dimView.alpha = 1
-      self.rootContainer.pin.bottom(0)
-      self.rootContainer.flex.layout()
+      self.rootContainer.pin
+        .bottom(0)
+      self.rootContainer.flex
+        .layout()
     }
   }
   
   private func animateSheetDown(completion: (() -> Void)? = nil) {
     UIView.animate(withDuration: 0.3, animations: {
-      self.rootContainer.pin.bottom(-self.rootContainer.frame.height)
-      self.rootContainer.flex.layout()
+      self.rootContainer.pin
+        .bottom(-self.rootContainer.frame.height)
+      self.rootContainer.flex
+        .layout()
     }, completion: { _ in
       completion?()
     })
@@ -256,7 +265,8 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
   
   private func updateSheetPosition(_ position: CGFloat) {
     if position > 0 {
-      rootContainer.pin.bottom(-position)
+      rootContainer.pin
+        .bottom(-position)
     } else {
       animateSheetUp()
     }
@@ -311,7 +321,7 @@ extension ReportDetailViewControllerImp: View {
   }
   
   public func bindEvent() {
-    rootContainer.rx
+    navigation.rx
       .panGesture()
       .asObservable()
       .subscribe(with: self, onNext: { owner, gesture in
@@ -319,7 +329,6 @@ extension ReportDetailViewControllerImp: View {
         
         let translation = gesture.translation(in: owner.rootContainer)
         let velocity = gesture.velocity(in: owner.rootContainer)
-        
         switch gesture.state {
         case .changed:
           owner.changePanGesture.accept((translation, velocity))
@@ -365,7 +374,6 @@ extension ReportDetailViewControllerImp: View {
         owner.changeBottomSheet()
       }
       .disposed(by: disposeBag)
-    
   }
 }
 
