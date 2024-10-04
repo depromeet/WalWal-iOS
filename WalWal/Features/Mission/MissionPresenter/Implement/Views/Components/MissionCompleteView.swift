@@ -116,10 +116,8 @@ final class MissionCompleteView: UIView {
       .asDriver()
       .drive(with: self) { owner, index in
         if owner.missionRecordListRelay.value.count > 0 {
-          DispatchQueue.main.async {
-            owner.missionRecordCollectionView.reloadItems(at: owner.missionRecordCollectionView.indexPathsForVisibleItems)
-            owner.missionRecordCollectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: false)
-          }
+          owner.missionRecordCollectionView.reloadItems(at: owner.missionRecordCollectionView.indexPathsForVisibleItems)
+          owner.missionRecordCollectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: false)
         }
       }
       .disposed(by: disposeBag)

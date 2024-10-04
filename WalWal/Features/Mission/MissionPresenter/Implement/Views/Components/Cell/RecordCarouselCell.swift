@@ -238,7 +238,7 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     
     let rotationAngle = CGFloat.pi / 2
     var transform = CATransform3DIdentity
-    transform.m34 = -1.0 / 900.0
+    transform.m34 = -1.0 / 1200.0
     
     let rotatingContainer = rootContainer
     
