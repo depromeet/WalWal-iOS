@@ -74,13 +74,14 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     underLineColor: Colors.gray150.color,
     numberOfLines: 4,
     underLineHeight: 30.adjusted,
-    lineSpacing: 4.adjusted
+    lineSpacing: 4.adjusted,
+    enterSpacing: 18.adjusted
   ).then {
     $0.backgroundColor = Colors.white.color
     $0.isEditable = false
     $0.isScrollEnabled = false
     $0.textContainerInset = .zero
-    $0.textContainer.lineFragmentPadding = 0
+    $0.textContainer.lineFragmentPadding = 4
     $0.returnKeyType = .done
   }
   /// 미션 정보 보기
@@ -159,7 +160,8 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
       .define { flex in
         flex.addItem(recordContainer)
           .position(.absolute)
-          .grow(1)
+          .width(100%)
+          .height(100%)
         flex.addItem(missionInfoContainer)
           .position(.absolute)
           .width(100%)
@@ -173,9 +175,10 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
         flex.addItem(recordimageView)
           .size(255.adjusted)
         flex.addItem(textView)
+          .height(100%)
           .marginTop(17.adjusted)
           .marginHorizontal(17.adjusted)
-          .height(142.adjusted)
+          .marginBottom(20.adjusted)
       }
     
     missionInfoContainer.flex
