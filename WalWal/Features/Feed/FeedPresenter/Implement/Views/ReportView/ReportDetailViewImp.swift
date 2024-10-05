@@ -39,7 +39,18 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
   
   private let contentContainer = UIView()
   
-  private let navigation = WalWalNavigationBar(leftItems: [.darkBack], leftItemSize: 32, title: "신고", rightItems: [])
+  private let navigationContainer = UIView()
+  private let navigationLabel = CustomLabel(
+    text: "신고",
+    font: Fonts.KR.H5.B
+  ).then {
+    $0.textColor = Colors.black.color
+    $0.textAlignment = .center
+  }
+  private let backButton = UIButton().then {
+    let image = Images.backL.image.withTintColor(Colors.black.color, renderingMode: .alwaysOriginal)
+    $0.setImage(image, for: .normal)
+  }
   
   private let discriptionLabel = CustomLabel(
     text: "구체적인 상황과 사유를 함께 적어주시면\n더 빠르고 정확하게 처리할 수 있어요! (선택)",
@@ -128,7 +139,7 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner
     )
     rootContainer.addSubview(contentContainer)
-    [navigation, discriptionLabel, textContainer, submitButton].forEach {
+    [navigationContainer, discriptionLabel, textContainer, submitButton].forEach {
       contentContainer.addSubview($0)
     }
     
@@ -151,10 +162,24 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .justifyContent(.spaceBetween)
       .grow(1)
     
-    navigation.flex
-      .height(22.adjustedHeight)
-      .marginTop(24.adjustedHeight)
-      .width(100%)
+    navigationContainer.flex
+      .paddingTop(24.adjustedHeight)
+      .marginHorizontal(20.adjusted)
+      .define {
+        $0.addItem()
+          .direction(.row)
+          .justifyContent(.spaceBetween)
+          .alignItems(.center)
+          .height(22.adjustedHeight)
+          .define {
+            $0.addItem(backButton)
+              .size(32.adjusted)
+            $0.addItem(navigationLabel)
+              .grow(1)
+            $0.addItem()
+              .size(32.adjusted)
+          }
+      }
     
     discriptionLabel.flex
       .marginTop(30.adjustedHeight)
@@ -311,7 +336,7 @@ extension ReportDetailViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    navigation.leftItems?[0].rx.tapped
+    backButton.rx.tap
       .map { Reactor.Action.backButtonTapped }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
@@ -385,7 +410,7 @@ extension ReportDetailViewControllerImp: View {
   }
   
   public func bindEvent() {
-    navigation.rx
+    navigationContainer.rx
       .panGesture()
       .asObservable()
       .subscribe(with: self, onNext: { owner, gesture in

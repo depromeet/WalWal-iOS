@@ -35,7 +35,10 @@ public final class ReportTypeViewControllerImp<R: ReportTypeReactor>:
     $0.isUserInteractionEnabled = true
   }
   
-  private let navTitle = CustomLabel(text: "신고", font: Fonts.KR.H5.B).then {
+  private let navTitle = CustomLabel(
+    text: "신고",
+    font: Fonts.KR.H5.B
+  ).then {
     $0.textColor = Colors.black.color
     $0.textAlignment = .center
   }
