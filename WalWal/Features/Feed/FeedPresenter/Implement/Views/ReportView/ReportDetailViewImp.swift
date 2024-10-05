@@ -61,7 +61,8 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
   
   private let submitButton = WalWalButton(
     type: .dark,
-    title: "왈왈팀에 전달하기"
+    title: "왈왈팀에 전달하기",
+    buttonHeight: 50.adjustedHeight
   )
   
   // MARK: - Properties
