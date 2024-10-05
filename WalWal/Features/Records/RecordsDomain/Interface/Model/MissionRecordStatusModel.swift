@@ -12,10 +12,25 @@ import RecordsData
 public struct MissionRecordStatusModel: Equatable, Hashable {
   public let imageUrl: String
   public let statusMessage: StatusMessage
+  public let missionTitle: String
+  public let recordId: Int?
+  public let records: [RecordList]
   
-  public init(dto: MissionRecordStatusDTO) {
-    self.imageUrl = dto.imageUrl ?? ""
+  public init(dto: MissionRecordStatusDTO, recordListDTO: [RecordDTO]) {
+    self.imageUrl = dto.imageURL ?? ""
     self.statusMessage = StatusMessage(rawValue: dto.status) ?? .notCompleted
+    self.missionTitle = dto.missionTitle
+    self.recordId = dto.recordID
+    self.records = recordListDTO.map{ record in
+      RecordList(
+        recordId: record.recordID,
+        recordImageURL: record.imageURL,
+        recordContent: record.content,
+        missionTitle: record.missionTitle,
+        missionIllustrationURL: record.illustrationURL,
+        completedAt: record.completedAt
+      )
+    }
   }
   
   public static func == (lhs: MissionRecordStatusModel, rhs: MissionRecordStatusModel) -> Bool {
@@ -26,6 +41,25 @@ public struct MissionRecordStatusModel: Equatable, Hashable {
   public func hash(into hasher: inout Hasher) {
     hasher.combine(imageUrl)
     hasher.combine(statusMessage)
+  }
+}
+
+// 미션 완료 시 기록 리스트
+public struct RecordList {
+  public let recordId: Int
+  public let recordImageURL: String
+  public let recordContent: String
+  public let missionTitle: String
+  public let missionIllustrationURL: String
+  public let completedAt: String
+  
+  public init(recordId: Int, recordImageURL: String, recordContent: String, missionTitle: String, missionIllustrationURL: String, completedAt: String) {
+    self.recordId = recordId
+    self.recordImageURL = recordImageURL
+    self.recordContent = recordContent
+    self.missionTitle = missionTitle
+    self.missionIllustrationURL = missionIllustrationURL
+    self.completedAt = completedAt
   }
 }
 

@@ -70,4 +70,14 @@ public final class RecordRepositoryImp: RecordRepository {
     return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
       .map { _ in Void() }
   }
+  
+  public func fetchRecordList(missionId: Int) -> Single<CompletedRecordDTO> {
+    let query = FetchRecordsQuery(missionId: missionId)
+    let endpoint = RecordEndpoint<CompletedRecordDTO>.fetchRecords(query: query)
+    
+    return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
+      .compactMap{ $0 }
+      .asObservable()
+      .asSingle()
+  }
 }
