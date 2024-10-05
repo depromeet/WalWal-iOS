@@ -39,6 +39,8 @@ extension ResourceKitFontFamily {
     }
     /// 14px regular
     public static let B1 = UIFont.systemFont(ofSize: 14, weight: .regular)
+    /// 13px regular
+    public static let B3 = UIFont.systemFont(ofSize: 13, weight: .regular)
     /// 12px regular
     public static let B2 = UIFont.systemFont(ofSize: 12, weight: .regular)
     /// 10px regular
@@ -88,7 +90,7 @@ extension ResourceKitFontFamily {
   }
   
   public static func lineHeightPercent(of font: ResourceKitFontConvertible.Font) -> CGFloat? {
-    if font == KR.H2 || font == KR.H6.B || font == KR.H6.M || font == KR.B2 {
+    if font == KR.H2 || font == KR.H6.B || font == KR.H6.M || font == KR.B2 || font == KR.B3 {
       return 130
     } else {
       return nil

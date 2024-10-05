@@ -16,7 +16,7 @@ import RxSwift
 
 public final class WalWalFeedCellView: UIView {
   
-  private typealias Images = ResourceKitAsset.Sample
+  private typealias Images = ResourceKitAsset.Assets
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
@@ -33,6 +33,8 @@ public final class WalWalFeedCellView: UIView {
   private let imageContentView = UIView()
   private let feedContentView = UIView()
   private let boostLabelView = UIView()
+  private let comentLabelView = UIView()
+  private let reactionView = UIView()
   
   private let profileImageView = UIImageView().then {
     $0.layer.cornerRadius = 20.adjusted
@@ -57,21 +59,27 @@ public final class WalWalFeedCellView: UIView {
   }
   
   private let boostIconImageView = UIImageView().then {
-    $0.image = Images.fireDef.image
+    $0.image = Images.fire.image
+    $0.contentMode = .scaleAspectFit
   }
   
-  let contentLabel = CustomLabel(font: Fonts.KR.B2).then {
+  private let commentIconImageView = UIImageView().then {
+    $0.image = Images.messageCircle.image
+    $0.contentMode = .scaleAspectFit
+  }
+  
+  let contentLabel = CustomLabel(font: Fonts.KR.B3).then {
     $0.textColor = Colors.black.color
     $0.translatesAutoresizingMaskIntoConstraints = false
     $0.numberOfLines = 2
     $0.lineBreakStrategy = .hangulWordPriority
   }
   
-  private let boostCountLabel = CustomLabel(font: Fonts.EN.B2).then {
+  private let boostCountLabel = CustomLabel(font: Fonts.EN.H2).then {
     $0.textColor = Colors.gray500.color
   }
   
-  private let boostLabel = CustomLabel(text: "부스터", font: Fonts.KR.B2).then {
+  private let commentCountLabel = CustomLabel(font: Fonts.EN.H2).then {
     $0.textColor = Colors.gray500.color
   }
   
@@ -136,7 +144,7 @@ public final class WalWalFeedCellView: UIView {
       .layout(mode: .adjustHeight)
     
   }
-
+  
   
   // MARK: - Methods
   
@@ -164,32 +172,34 @@ public final class WalWalFeedCellView: UIView {
     missionLabel.text = sanitizeContent(feedData.missionTitle)
     profileImageView.image = feedData.profileImage
     missionImageView.image = feedData.missionImage
-    
+    commentCountLabel.text = "\(feedData.commentCount)" 
     boostCountLabel.text = "\(feedData.boostCount)"
-    let isBoostImage = isBoost ? ResourceKitAsset.Sample.fireActive.image : ResourceKitAsset.Sample.fireDef.image
+    let isBoostImage = isBoost ? Images.fire.image.withTintColor(Colors.walwalOrange.color) : Images.fire.image
     let isBoostColor = isBoost ? Colors.walwalOrange.color : Colors.gray500.color
     boostIconImageView.image = isBoostImage
     boostCountLabel.textColor = isBoostColor
-    boostLabel.textColor = isBoostColor
     contents = sanitizeContent(feedData.contents)
     
     contentLabel.text = contents
     missionDateLabel.attributedText = setupDateLabel(to: feedData.date)
     self.feedData = feedData
-    
-    /// 부스트 애니메이션 시 이미 열려 있었으면 더보기 X
-    if !isAlreadyExpanded  {
-      if contents.lineNumber(forWidth: contentLabel.width, font: Fonts.KR.B2) > 2 {
+    self.isExpanded = isAlreadyExpanded
+
+    if isExpanded {
+        contentLabel.text = contents
+    } else {
+        contentLabel.text = contents
         DispatchQueue.main.async {
-          self.contentLabel.configureSpacing(text: self.contentLabel.text, font: Fonts.KR.B2)
-          self.contentLabel.addTrailing(with: "...", moreText: "더 보기", moreTextFont: Fonts.KR.B2, moreTextColor: Colors.gray500.color)
-          
+            if self.contents.lineNumber(forWidth: self.contentLabel.width, font: Fonts.KR.B3) > 2 {
+                self.contentLabel.configureSpacing(text: self.contents, font: Fonts.KR.B3)
+                self.contentLabel.addTrailing(with: "...", moreText: " 더 보기", moreTextFont: Fonts.KR.B3, moreTextColor: Colors.gray500.color)
+            }
         }
-      }
     }
+
     
-    boostCountLabel.flex
-      .markDirty()
+    commentCountLabel.flex.markDirty()
+    boostCountLabel.flex.markDirty()
     
     missionDateLabel.flex
       .markDirty()
@@ -197,7 +207,13 @@ public final class WalWalFeedCellView: UIView {
     boostLabelView.flex
       .markDirty()
     
+    comentLabelView.flex
+      .markDirty()
+    
     feedContentView.flex
+      .markDirty()
+    
+    reactionView.flex
       .markDirty()
     
     containerView.flex
@@ -219,13 +235,10 @@ public final class WalWalFeedCellView: UIView {
       profileInfoView.addSubview($0)
     }
     
-    [missionImageView, boostLabelView].forEach {
+    [missionImageView, reactionView].forEach {
       feedContentView.addSubview($0)
     }
     
-    [boostIconImageView, boostCountLabel, boostLabel, missionDateLabel].forEach {
-      boostLabelView.addSubview($0)
-    }
   }
   
   private func setLayouts() {
@@ -236,13 +249,16 @@ public final class WalWalFeedCellView: UIView {
           .marginHorizontal(16.adjusted)
           .marginVertical(15.adjusted)
         $0.addItem(imageContentView)
+        $0.addItem(reactionView)
+          .height(24.adjusted)
+          .marginTop(12.adjusted)
+          .marginHorizontal(12.adjusted)
         $0.addItem(feedContentView)
           .minHeight(16.adjusted)
           .marginHorizontal(16.adjusted)
-          .marginTop(14.adjusted)
-        $0.addItem(boostLabelView)
-          .height(16.adjusted)
           .marginTop(9.adjusted)
+          .marginBottom(9.adjusted)
+        $0.addItem(missionDateLabel)
           .marginHorizontal(16.adjusted)
           .marginBottom(20.adjusted)
       }
@@ -282,17 +298,26 @@ public final class WalWalFeedCellView: UIView {
         $0.addItem(contentLabel)
       }
     
-    boostLabelView.flex
-      .width(100%)
+    reactionView.flex
       .direction(.row)
-      .alignItems(.center)
-      .define {
-        $0.addItem(boostIconImageView)
-        $0.addItem(boostCountLabel)
-          .marginRight(1.adjusted)
-        $0.addItem(boostLabel)
+      .width(100%)
+      .define{ flex in
+        flex.addItem(comentLabelView)
           .marginRight(8.adjusted)
-        $0.addItem(missionDateLabel)
+        flex.addItem(boostLabelView)
+      }
+    
+    comentLabelView.flex.direction(.row)
+      .define { flex in
+        flex.addItem(commentIconImageView)
+          .marginRight(1.adjusted)
+        flex.addItem(commentCountLabel)
+      }
+    boostLabelView.flex.direction(.row)
+      .define { flex in
+        flex.addItem(boostIconImageView)
+          .marginRight(1.adjusted)
+        flex.addItem(boostCountLabel)
       }
   }
   
@@ -314,7 +339,7 @@ public final class WalWalFeedCellView: UIView {
     
     let attributes: [NSAttributedString.Key: Any] = [
       .paragraphStyle: paragraphStyle,
-      .font: Fonts.KR.B2,
+      .font: Fonts.KR.B3,
       .foregroundColor: Colors.black.color
     ]
     
