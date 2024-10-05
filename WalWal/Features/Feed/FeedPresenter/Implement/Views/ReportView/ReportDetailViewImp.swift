@@ -355,7 +355,8 @@ extension ReportDetailViewControllerImp: View {
         WalWalAlert.shared.showOkAlert(
           title: "소중한 정보 고마워요!",
           bodyMessage: "더 귀여운 왈왈을 위해 열심히 노력할게요",
-          okTitle: "완료"
+          okTitle: "완료",
+          tintColor: Colors.black.color
         )
       }
       .disposed(by: disposeBag)
