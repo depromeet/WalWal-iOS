@@ -10,6 +10,7 @@
 import UIKit
 import DesignSystem
 
+import FeedDomain
 import FeedPresenter
 import FeedCoordinator
 
@@ -24,13 +25,17 @@ public final class ReportDetailReactorImp: ReportDetailReactor {
   public let initialState: State
   public let coordinator: any FeedCoordinator
   
+  private let reportUseCase: ReportUseCase
+  
   public init(
     coordinator: any FeedCoordinator,
+    reportUseCase: ReportUseCase,
     recordId: Int,
     reportType: String
   ) {
     self.initialState = State(recordId: recordId, reportType: reportType)
     self.coordinator = coordinator
+    self.reportUseCase = reportUseCase
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -43,11 +48,19 @@ public final class ReportDetailReactorImp: ReportDetailReactor {
       } else {
         return Observable.just(.setSheetPosition(0))
       }
-    case .tapDimView:
+    case .dismissView:
       return Observable.just(.dismissSheet)
-      
     case .backButtonTapped:
       return .just(.backButtonTapped)
+    case let .submitTapped(details):
+      return .concat([
+        .just(.showIndicator(true)),
+        report(
+          recordId: initialState.recordId,
+          type: initialState.reportType,
+          details: details
+        )
+      ])
     }
   }
   
@@ -60,8 +73,37 @@ public final class ReportDetailReactorImp: ReportDetailReactor {
       coordinator.dismissViewController(animated: false) { }
     case .backButtonTapped:
       coordinator.popReportDetail()
+    case .sheetDown:
+      newState.sheetDown = true
+    case .showAlert:
+      newState.showAlert = true
+    case let .showIndicator(isShow):
+      newState.showIndicator = isShow
+    case let .showErrorToast(msg):
+      newState.showErrorToast = msg
     }
     return newState
+  }
+  
+}
+
+extension ReportDetailReactorImp {
+  private func report(recordId: Int, type: String, details: String?) -> Observable<Mutation> {
+    return reportUseCase.execute(recordId: recordId, type: type, details: details)
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        return .concat([
+          .just(.showIndicator(false)),
+          .just(.sheetDown),
+          .just(.showAlert)
+        ])
+      }
+      .catch { error in
+        return .concat([
+          .just(.showIndicator(false)),
+          .just(.showErrorToast(error.localizedDescription))
+        ])
+      }
   }
 }
 

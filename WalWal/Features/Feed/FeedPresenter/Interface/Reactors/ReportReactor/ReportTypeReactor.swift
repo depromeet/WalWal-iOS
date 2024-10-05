@@ -14,7 +14,6 @@ public enum ReportTypeReactorAction {
   case didPan(translation: CGPoint, velocity: CGPoint)
   case didEndPan(velocity: CGPoint)
   case tapDimView
-
   case tapReportItem(item: ReportType)
 }
 

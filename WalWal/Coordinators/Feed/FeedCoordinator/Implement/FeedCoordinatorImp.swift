@@ -124,7 +124,6 @@ extension FeedCoordinatorImp {
       coordinator: self,
       recordId: recordId
     )
-    print(recordId)
     let vc = feedDependencyFactory.injectFeedMenuViewController(reactor: reactor)
     self.presentViewController(viewController: vc, style: .overFullScreen, animated: false)
   }
@@ -134,7 +133,6 @@ extension FeedCoordinatorImp {
       coordinator: self,
       recordId: recordId
     )
-    print(recordId)
     let vc = feedDependencyFactory.injectReportTypeViewController(
       reactor: reactor
     )

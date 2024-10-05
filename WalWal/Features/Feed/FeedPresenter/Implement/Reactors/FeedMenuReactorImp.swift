@@ -58,7 +58,7 @@ public final class FeedMenuReactorImp: FeedMenuReactor {
     case .dismissSheet:
       coordinator.dismissViewController(animated: false) { }
     case .moveReport:
-      coordinator.startReport()
+      coordinator.startReport(recordId: state.recordId)
     }
     return newState
   }

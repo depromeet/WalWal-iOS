@@ -67,11 +67,17 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
   // MARK: - Properties
   
   public var reportDetailReactor: R
+  
   public var disposeBag = DisposeBag()
+  
   private let sheetDownEvent = PublishRelay<Void>()
+  
   private let endPanGesture = PublishRelay<CGPoint>()
+  
   private let changePanGesture = PublishRelay<(CGPoint, CGPoint)>()
+  
   private let dismissView = PublishRelay<Void>()
+  
   private var isBottomSheet: Bool = true
   
   // MARK: - Initalize
@@ -160,7 +166,6 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .height(50.adjustedHeight)
     
     textContainer.flex
-      .backgroundColor(.red)
       .marginHorizontal(20.adjustedWidth)
       .marginBottom(20.adjustedWidth)
       .grow(1)
@@ -172,6 +177,7 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
     
   }
   
+  /// 키보드 올라갔을 경우 전체 화면으로 전환
   private func changeFullPage() {
     isBottomSheet = false
     dimView.backgroundColor = Colors.white.color
@@ -209,6 +215,7 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
     view.layoutIfNeeded()
   }
   
+  /// 바텀시트로 되돌아오기
   private func changeBottomSheet() {
     isBottomSheet = true
     dimView.backgroundColor = Colors.black30.color
@@ -238,7 +245,6 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .layout()
     
   }
-  
   
   // MARK: - Animations
   
@@ -300,7 +306,7 @@ extension ReportDetailViewControllerImp: View {
       .disposed(by: disposeBag)
     
     sheetDownEvent
-      .map { Reactor.Action.tapDimView }
+      .map { Reactor.Action.dismissView }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
@@ -308,6 +314,18 @@ extension ReportDetailViewControllerImp: View {
       .map { Reactor.Action.backButtonTapped }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    submitButton.rx.tapped
+      .withLatestFrom(textView.textRelay)
+      .map { Reactor.Action.submitTapped(details: $0)}
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    dismissView
+      .map { Reactor.Action.dismissView }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+      
   }
   
   public func bindState(reactor: R) {
@@ -318,6 +336,50 @@ extension ReportDetailViewControllerImp: View {
         owner.updateSheetPosition(position)
       })
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.showIndicator }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, show in
+        ActivityIndicator.shared.showIndicator.accept(show)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.showAlert }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .filter { $0 }
+      .drive(with: self) { owner, _ in
+        WalWalAlert.shared.showOkAlert(
+          title: "소중한 정보 고마워요!",
+          bodyMessage: "더 귀여운 왈왈을 위해 열심히 노력할게요",
+          okTitle: "완료"
+        )
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.sheetDown }
+      .asDriver(onErrorJustReturn: false)
+      .filter { $0 }
+      .drive(with: self) { owner, _ in
+        owner.textView.textEndEditing.accept(true)
+        owner.animateSheetDown()
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.showErrorToast }
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, msg in
+        owner.textView.textEndEditing.accept(true)
+        WalWalToast.shared.show(type: .error, message: msg)
+      }
+      .disposed(by: disposeBag)
+    
   }
   
   public func bindEvent() {
@@ -363,6 +425,7 @@ extension ReportDetailViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
+    /// 키보드 액션
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
       .bind(with: self) { owner, _ in
         owner.changeFullPage()
@@ -372,6 +435,14 @@ extension ReportDetailViewControllerImp: View {
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
       .bind(with: self) { owner, _ in
         owner.changeBottomSheet()
+      }
+      .disposed(by: disposeBag)
+    
+    /// 제출 완료 얼럿 닫은 후 dismiss 액션 수행
+    WalWalAlert.shared.resultRelay
+      .map { _ in Void() }
+      .bind(with: self) { owner, _ in
+        owner.dismissView.accept(())
       }
       .disposed(by: disposeBag)
   }
