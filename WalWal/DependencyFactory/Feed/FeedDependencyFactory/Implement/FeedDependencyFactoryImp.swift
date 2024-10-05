@@ -29,10 +29,32 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
   
   public init() { }
   
+  public func injectFeedCoordinator(
+    navigationController: UINavigationController,
+    parentCoordinator: any BaseCoordinator,
+    recordsDependencyFactory: RecordsDependencyFactory
+  ) -> any FeedCoordinator {
+    return FeedCoordinatorImp(
+      navigationController: navigationController,
+      parentCoordinator: parentCoordinator,
+      feedDependencyFactory: self,
+      recordsDependencyFactory: recordsDependencyFactory
+    )
+  }
+  
+  // MARK: - Repository
+  
   public func injectFeedRepository() -> FeedRepository {
     let networkService = NetworkService()
     return FeedRepositoryImp(networkService: networkService)
   }
+  
+  public func injectReportRepostioy() -> ReportRepository {
+    let networkService = NetworkService()
+    return ReportRepositoryImp(networkService: networkService)
+  }
+  
+  // MARK: - UseCase
   
   public func injectFetchFeedUseCase() -> FetchFeedUseCase {
     return FetchFeedUseCaseImp(feedRepository: injectFeedRepository())
@@ -46,17 +68,8 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     return RemoveGlobalRecordIdUseCaseImp()
   }
   
-  public func injectFeedCoordinator(
-    navigationController: UINavigationController,
-    parentCoordinator: any BaseCoordinator,
-    recordsDependencyFactory: RecordsDependencyFactory
-  ) -> any FeedCoordinator {
-    return FeedCoordinatorImp(
-      navigationController: navigationController,
-      parentCoordinator: parentCoordinator,
-      feedDependencyFactory: self,
-      recordsDependencyFactory: recordsDependencyFactory
-    )
+  public func injectReportUseCase() -> ReportUseCase {
+    return ReportUseCaseImp(reportRepository: injectReportRepostioy())
   }
   
   // MARK: - Reactor
@@ -99,11 +112,13 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
   
   public func injectReportDetailReactor<T: FeedCoordinator>(
     coordinator: T,
+    reportUseCase: ReportUseCase,
     recordId: Int,
     reportType: String
   ) -> any ReportDetailReactor {
     return ReportDetailReactorImp(
       coordinator: coordinator,
+      reportUseCase: reportUseCase,
       recordId: recordId,
       reportType: reportType
     )

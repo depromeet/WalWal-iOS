@@ -15,6 +15,7 @@ import Alamofire
 enum FeedEndpoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
   case fetchFeed(query: FetchFeedQuery)
+  case reports(body: ReportParameter)
 }
 
 extension FeedEndpoint {
@@ -26,6 +27,8 @@ extension FeedEndpoint {
     switch self {
     case .fetchFeed(let query):
       return "/feed"
+    case .reports:
+      return "/reports"
     }
   }
   
@@ -33,19 +36,23 @@ extension FeedEndpoint {
     switch self {
     case .fetchFeed:
       return .get
+    case .reports:
+      return .post
     }
   }
   
   var parameters: RequestParams {
     switch self {
     case let .fetchFeed(query):
-        return .requestQuery(query)
+      return .requestQuery(query)
+    case let .reports(body):
+      return .requestWithbody(body)
     }
   }
   
   var headerType: HTTPHeaderType {
     switch self {
-    case .fetchFeed:
+    case .fetchFeed, .reports:
       if let accessToken = KeychainWrapper.shared.accessToken {
         return .authorization(accessToken)
       } else{

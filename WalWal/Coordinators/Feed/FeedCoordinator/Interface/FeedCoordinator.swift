@@ -25,6 +25,6 @@ where Flow == FeedCoordinatorFlow,
 {
   func startProfile(memberId: Int, nickName: String)
   func doubleTap(index: Int)
-  func startReport()
+  func startReport(recordId: Int)
   func popReportDetail()
 }

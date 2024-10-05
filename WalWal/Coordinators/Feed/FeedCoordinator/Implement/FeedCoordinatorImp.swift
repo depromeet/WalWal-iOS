@@ -124,6 +124,7 @@ extension FeedCoordinatorImp {
       coordinator: self,
       recordId: recordId
     )
+    print(recordId)
     let vc = feedDependencyFactory.injectFeedMenuViewController(reactor: reactor)
     self.presentViewController(viewController: vc, style: .overFullScreen, animated: false)
   }
@@ -133,6 +134,7 @@ extension FeedCoordinatorImp {
       coordinator: self,
       recordId: recordId
     )
+    print(recordId)
     let vc = feedDependencyFactory.injectReportTypeViewController(
       reactor: reactor
     )
@@ -147,8 +149,11 @@ extension FeedCoordinatorImp {
   }
   
   private func showReportDetail(recordId: Int, reportType: String) {
+
+    let reportUseCase = feedDependencyFactory.injectReportUseCase()
     let reactor = feedDependencyFactory.injectReportDetailReactor(
       coordinator: self,
+      reportUseCase: reportUseCase,
       recordId: recordId,
       reportType: reportType
     )
@@ -170,11 +175,12 @@ extension FeedCoordinatorImp {
   public func doubleTap(index: Int) {
     doubleTapRelay.accept(index)
   }
-  
-  public func startReport() {
+
+  public func startReport(recordId: Int) {
     self.dismissViewController(animated: false, completion: nil)
-    showReportType(recordId: 1)
+    showReportType(recordId: recordId)
   }
+  
   public func popReportDetail() {
     bottomSheetNavigaionController?.popViewController(animated: false)
   }

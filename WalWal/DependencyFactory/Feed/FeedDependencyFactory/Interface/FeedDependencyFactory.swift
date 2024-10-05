@@ -19,16 +19,28 @@ import RecordsDomain
 import RecordsDependencyFactory
 
 public protocol FeedDependencyFactory {
-  func injectFeedRepository() -> FeedRepository
-  func injectFetchFeedUseCase() -> FetchFeedUseCase
-  func injectFetchUserFeedUseCase() -> FetchUserFeedUseCase
-  func injectRemoveGlobalRecordIdUseCase() -> RemoveGlobalRecordIdUseCase
   
   func injectFeedCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     recordsDependencyFactory: RecordsDependencyFactory
   ) -> any FeedCoordinator
+  
+  // MARK: - Repository
+  
+  func injectFeedRepository() -> FeedRepository
+  
+  func injectReportRepostioy() -> ReportRepository
+  
+  // MARK: - UseCase
+  
+  func injectFetchFeedUseCase() -> FetchFeedUseCase
+  
+  func injectFetchUserFeedUseCase() -> FetchUserFeedUseCase
+  
+  func injectRemoveGlobalRecordIdUseCase() -> RemoveGlobalRecordIdUseCase
+  
+  func injectReportUseCase() -> ReportUseCase
   
   // MARK: - Reactor
   
@@ -51,6 +63,7 @@ public protocol FeedDependencyFactory {
   
   func injectReportDetailReactor<T: FeedCoordinator>(
     coordinator: T,
+    reportUseCase: ReportUseCase,
     recordId: Int,
     reportType: String
   ) -> any ReportDetailReactor
