@@ -108,7 +108,6 @@ public final class ReportTypeViewControllerImp<R: ReportTypeReactor>:
   public override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     animateSheetUp()
-    
   }
   
   public override func viewDidLayoutSubviews() {
@@ -173,16 +172,20 @@ public final class ReportTypeViewControllerImp<R: ReportTypeReactor>:
   private func animateSheetUp() {
     UIView.animate(withDuration: 0.3) {
       self.dimView.alpha = 1
-      self.rootContainer.pin.bottom(0)
-      self.rootContainer.flex.layout()
+      self.rootContainer.pin
+        .bottom(0)
+      self.rootContainer.flex
+        .layout()
     }
   }
   
   private func animateSheetDown(completion: (() -> Void)? = nil) {
     UIView.animate(withDuration: 0.3, animations: {
       self.dimView.alpha = 0
-      self.rootContainer.pin.bottom(-self.rootContainer.frame.height)
-      self.rootContainer.flex.layout()
+      self.rootContainer.pin
+        .bottom(-self.rootContainer.frame.height)
+      self.rootContainer.flex
+        .layout()
     }, completion: { _ in
       completion?()
     })
@@ -190,7 +193,8 @@ public final class ReportTypeViewControllerImp<R: ReportTypeReactor>:
   
   private func updateSheetPosition(_ position: CGFloat) {
     if position > 0 {
-      rootContainer.pin.bottom(-position)
+      rootContainer.pin
+        .bottom(-position)
     } else {
       animateSheetUp()
     }

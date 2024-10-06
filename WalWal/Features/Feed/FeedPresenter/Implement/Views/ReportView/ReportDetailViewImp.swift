@@ -111,7 +111,7 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
     self.reactor = reportDetailReactor
     configureAttribute()
     configureLayout()
-    self.view.backgroundColor = .clear
+    view.backgroundColor = .clear
   }
   
   public override func viewDidAppear(_ animated: Bool) {
@@ -223,8 +223,8 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .marginBottom(0)
       .layout()
     
-    rootContainer.flex.markDirty()
     rootContainer.flex
+      .markDirty()
       .marginBottom(0)
       .height(UIScreen.main.bounds.height)
       .layout()
