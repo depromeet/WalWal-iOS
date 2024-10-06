@@ -31,12 +31,12 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   public weak var parentCoordinator: (any BaseCoordinator)?
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
+  /// 바텀시트 내부에서 네비게이션을 사용하기 위한 프로퍼티
+  private var bottomSheetNavigaionController: UINavigationController?
   
   public var feedDependencyFactory: FeedDependencyFactory
   public var recordsDependencyFactory: RecordsDependencyFactory
-  /// 바텀시트 내부에서 네비게이션을 사용하기 위한 프로퍼티
-  private var bottomSheetNavigaionController: UINavigationController?
-  private var bottomSheetRootViewController: UIViewController?
+  
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
