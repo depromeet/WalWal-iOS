@@ -58,7 +58,7 @@ public final class ReportDetailReactorImp: ReportDetailReactor {
         report(
           recordId: initialState.recordId,
           type: initialState.reportType,
-          details: details
+          details: details?.trimmingCharacters(in: .whitespacesAndNewlines)
         )
       ])
     }
