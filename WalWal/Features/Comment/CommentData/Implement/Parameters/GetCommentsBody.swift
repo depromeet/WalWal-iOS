@@ -8,6 +8,6 @@
 
 import Foundation
 
-struct GetCommentsBody: Encodable {
+struct GetCommentsQuery: Encodable {
   let recordId: Int?
 }
