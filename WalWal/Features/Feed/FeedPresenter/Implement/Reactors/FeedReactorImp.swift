@@ -66,12 +66,12 @@ public final class FeedReactorImp: FeedReactor {
       guard !isLoading && !currentState.feedFetchEnded else {
         return .empty()
       }
-      isLoading = true // 데이터를 불러오기 시작할 때 isLoading을 true로 설정
+      isLoading = true
       return fetchFeedData(cursor: cursor, limit: 10)
         .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
         .observe(on: MainScheduler.asyncInstance)
         .do(onCompleted: { [weak self] in
-          self?.isLoading = false // 데이터 로드가 끝나면 다시 false로 설정
+          self?.isLoading = false
         })
     case .refresh(cursor: let cursor):
       // refresh도 isLoading 확인 후 처리
@@ -79,8 +79,8 @@ public final class FeedReactorImp: FeedReactor {
         return .empty()
       }
       isLoading = true
-      let initialFeedData: [WalWalFeedModel] = [] // 초기화할 feedData
-      let nextCursor: String? = nil // 초기 커서 설정
+      let initialFeedData: [WalWalFeedModel] = []
+      let nextCursor: String? = nil
       GlobalState.shared.feedList.accept([])
       return Observable.just(.feedLoadEnded(nextCursor: nextCursor, feedData: initialFeedData))
         .concat(fetchFeedData(cursor: cursor, limit: 10))
@@ -154,6 +154,7 @@ public final class FeedReactorImp: FeedReactor {
       .withUnretained(self)
       .flatMap { owner, feedModel -> Observable<Mutation> in
         let cursor = feedModel.nextCursor
+        // 기존에는 global state에 저장되어 있던 값 사용 -> 네트워크 결과로 나온 list 사용
         return owner.convertFeedModel(feedList: feedModel.list)
           .withUnretained(self)
           .flatMap { owner, feedData -> Observable<Mutation> in
@@ -204,12 +205,12 @@ public final class FeedReactorImp: FeedReactor {
             contents: feed.content ?? ""
           )
           
-          return .just(feedModel) // Observable 반환
+          return .just(feedModel)
         }
     }
     
-    return Observable.zip(feedObservables) // 모든 Observable을 병합
-      .map { $0.compactMap { $0 } } // nil 값 필터링
+    return Observable.zip(feedObservables)
+      .map { $0.compactMap { $0 } }
   }
   
   

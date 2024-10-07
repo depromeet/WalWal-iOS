@@ -286,7 +286,8 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
       options: [
         .processor(processor),
         .scaleFactor(UIScreen.main.scale),
-        .cacheOriginalImage
+        .cacheOriginalImage,
+        .transition(.fade(0.2))
       ])
     
     self.dateLabel.text = record.completedAt.replacingOccurrences(of: "-", with: ".")

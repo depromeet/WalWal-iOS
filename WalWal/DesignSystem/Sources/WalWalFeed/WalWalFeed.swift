@@ -260,7 +260,6 @@ public final class WalWalFeed: UIView {
     updatedFeedData[indexPath.item] = updatedRecord
     feedData.accept(updatedFeedData)
     
-    // Efficiently update only the affected item
     collectionView.performBatchUpdates({
       collectionView.reloadItems(at: [indexPath])
     }, completion: nil)
