@@ -11,6 +11,6 @@ import UIKit
 import RxSwift
 
 public protocol GetCommentsUsecase {
-  func excute(recordId: Int) -> Single<GetCommentsModel>
+  func execute(recordId: Int) -> Single<GetCommentsModel>
 }
 
