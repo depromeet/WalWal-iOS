@@ -32,7 +32,6 @@ public final class CommentReactorImp: CommentReactor {
     self.getCommentsUsecase = getCommentsUsecase
     self.postCommentUsecase = postCommentUsecase
     self.flattenCommentUsecase = flattenCommentUsecase
-    self.useDummyData = useDummyData
     
     self.initialState = State()
   }
