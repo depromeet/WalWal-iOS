@@ -91,7 +91,7 @@ public final class WalWalFeedCellView: UIView {
   
   var feedData: WalWalFeedModel?
   public private(set) var contents = ""
-  private let disposeBag = DisposeBag()
+  var disposeBag = DisposeBag()
   
   private let profileTappedSubject = PublishSubject<WalWalFeedModel>()
   public var profileTapped: Observable<WalWalFeedModel> {
@@ -306,6 +306,11 @@ public final class WalWalFeedCellView: UIView {
     contentLabel.numberOfLines = 3
     contentLabel.text = contents
     setNeedsLayout()
+  }
+  
+  func clearImageView() {
+    self.missionImageView.image = nil
+    self.profileImageView.image = nil
   }
   
   private func sanitizeContent(_ content: String) -> String {

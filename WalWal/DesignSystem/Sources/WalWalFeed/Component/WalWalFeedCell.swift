@@ -22,7 +22,7 @@ public final class WalWalFeedCell: UICollectionViewCell {
   // MARK: - Components
   public private(set) var feedView = WalWalFeedCellView()
   static let identifier = "WalWalFeedCell"
-  private let disposeBag = DisposeBag()
+  private var disposeBag = DisposeBag()
   
   // MARK: - Initializers
   
@@ -57,6 +57,8 @@ public final class WalWalFeedCell: UICollectionViewCell {
   
   public override func prepareForReuse() {
     super.prepareForReuse()
+    feedView.disposeBag = DisposeBag()
+    disposeBag = DisposeBag()
     feedView.isExpanded = false
     feedView.contentLabel.numberOfLines = 2
   }
