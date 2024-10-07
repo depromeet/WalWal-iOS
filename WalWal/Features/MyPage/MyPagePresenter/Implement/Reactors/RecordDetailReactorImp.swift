@@ -207,12 +207,12 @@ extension RecordDetailReactorImp {
     
     if let defaultImage = DefaultProfile(rawValue: imageURL) {
       return .just(defaultImage.image) // 기본 이미지 반환
-    } else if let cachedImage = GlobalState.shared.imageStore[imageURL] {
+    } else if let cachedImage = GlobalState.shared.imageStore.object(forKey: imageURL as NSString)  {
       return .just(cachedImage)
     } else {
       return GlobalState.shared.downloadAndCacheImage(for: imageURL)
         .map { _ in
-          GlobalState.shared.imageStore[imageURL]
+          GlobalState.shared.imageStore.object(forKey: imageURL as NSString) 
         }
     }
   }
