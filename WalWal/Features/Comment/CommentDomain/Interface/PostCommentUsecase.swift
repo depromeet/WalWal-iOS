@@ -11,5 +11,5 @@ import UIKit
 import RxSwift
 
 public protocol PostCommentUsecase {
-  func execute(content: String, recordId: Int, parentId: Int?) -> Single<Void>
+  func execute(content: String, recordId: Int, parentId: Int?) -> Single<PostCommentModel>
 }

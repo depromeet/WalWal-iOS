@@ -19,7 +19,7 @@ public final class GetCommentsUsecaseImp: GetCommentsUsecase {
     self.repository = repository
   }
   
-  public func excute(recordId: Int) -> Single<GetCommentsModel> {
+  public func execute(recordId: Int) -> Single<GetCommentsModel> {
     return repository.getComments(recordId: recordId)
       .map { GetCommentsModel(dto: $0) }
   }
