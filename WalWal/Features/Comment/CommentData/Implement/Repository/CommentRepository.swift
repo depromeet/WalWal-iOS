@@ -21,8 +21,8 @@ public final class CommentRepositoryImp: CommentRepository {
   }
   
   public func getComments(recordId: Int) -> Single<GetCommentsDTO> {
-    let body = GetCommentsBody(recordId: recordId)
-    let endpoint = CommentEndpoint<GetCommentsDTO>.getComments(body: body)
+    let query = GetCommentsQuery(recordId: recordId)
+    let endpoint = CommentEndpoint<GetCommentsDTO>.getComments(query: query)
     return networkService.request(endpoint: endpoint, isNeedInterceptor: true)
       .compactMap { $0 }
       .asObservable()

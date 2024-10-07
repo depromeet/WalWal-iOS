@@ -15,7 +15,7 @@ import Alamofire
 enum CommentEndpoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
   
-  case getComments(body: GetCommentsBody)
+  case getComments(query: GetCommentsQuery)
   case postComments(body: PostCommentsBody)
 }
 
@@ -27,9 +27,9 @@ extension CommentEndpoint {
   var path: String{
     switch self {
     case .getComments:
-      return "/coments"
+      return "/comments"
     case .postComments:
-      return "/coments"
+      return "/comments"
     }
   }
   
@@ -44,8 +44,8 @@ extension CommentEndpoint {
   
   var parameters: RequestParams {
     switch self {
-    case let .getComments(body):
-      return .requestWithbody(body)
+    case let .getComments(query):
+      return .requestQuery(query)
     case let .postComments(body):
       return .requestWithbody(body)
     }
@@ -57,7 +57,6 @@ extension CommentEndpoint {
       if let accessToken = KeychainWrapper.shared.accessToken {
         return .authorization(accessToken)
       } else{
-        return .plain
       }
     }
   }

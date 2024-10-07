@@ -39,8 +39,7 @@ final class CommentAppDelegate: UIResponder, UIApplicationDelegate {
           networkService: NetworkService()
         )
       ),
-      flattenCommentUsecase: FlattenCommentsUsecaseImp(),
-      useDummyData: true
+      flattenCommentUsecase: FlattenCommentsUsecaseImp()
     )
     let viewController = CommentViewControllerImp(reactor: reactor)
     
