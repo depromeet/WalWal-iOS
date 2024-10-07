@@ -25,6 +25,7 @@ enum DependencyFactoryStr: String {
   case mission = "Mission"
   case myPage = "MyPage"
   case feed = "Feed"
+  case comment = "Comment"
   case fcm = "FCM"
   case records = "Records"
   case image = "Image"
@@ -55,6 +56,7 @@ enum FeatureStr: String {
   case records = "Records"
   case image = "Image"
   case feed = "Feed"
+  case comment = "Comment"
   case missionUpload = "MissionUpload"
   case members = "Members"
 }
@@ -116,6 +118,7 @@ extension TargetDependency {
     public struct Records: WalWalDependency { }
     public struct Image: WalWalDependency { }
     public struct Feed: WalWalDependency { }
+    public struct Comment: WalWalDependency { }
     public struct MissionUpload: WalWalDependency { }
     public struct Members: WalWalDependency { }
   }
@@ -165,6 +168,12 @@ extension TargetDependency {
     }
     
     public struct Feed: WalWalDependency {
+      public struct Data: WalWalDependency {}
+      public struct Domain: WalWalDependency {}
+      public struct Presenter: WalWalDependency {}
+    }
+    
+    public struct Comment: WalWalDependency {
       public struct Data: WalWalDependency {}
       public struct Domain: WalWalDependency {}
       public struct Presenter: WalWalDependency {}
@@ -248,6 +257,11 @@ public extension TargetDependency.DependencyFactory.Image {
 public extension TargetDependency.DependencyFactory.Feed {
   static let Interface = Self.project(dependencyName: .feed, isInterface: true)
   static let Implement = Self.project(dependencyName: .feed, isInterface: false)
+}
+
+public extension TargetDependency.DependencyFactory.Comment {
+  static let Interface = Self.project(dependencyName: .comment, isInterface: true)
+  static let Implement = Self.project(dependencyName: .comment, isInterface: false)
 }
 
 public extension TargetDependency.DependencyFactory.MissionUpload {
@@ -351,6 +365,22 @@ public extension TargetDependency.Feature.Feed.Data {
   static let Interface = Self.project(name: .feed, layer: .data, isInterface: true)
   static let Implement = Self.project(name: .feed, layer: .data, isInterface: false)
 }
+
+public extension TargetDependency.Feature.Comment.Presenter {
+  static let Interface = Self.project(name: .comment, layer: .presenter, isInterface: true)
+  static let Implement = Self.project(name: .comment, layer: .presenter, isInterface: false)
+}
+
+public extension TargetDependency.Feature.Comment.Domain {
+  static let Interface = Self.project(name: .comment, layer: .domain, isInterface: true)
+  static let Implement = Self.project(name: .comment, layer: .domain, isInterface: false)
+}
+
+public extension TargetDependency.Feature.Comment.Data {
+  static let Interface = Self.project(name: .comment, layer: .data, isInterface: true)
+  static let Implement = Self.project(name: .comment, layer: .data, isInterface: false)
+}
+
 public extension TargetDependency.Feature.FCM.Presenter {
   static let Interface = Self.project(name: .fcm, layer: .presenter, isInterface: true)
   static let Implement = Self.project(name: .fcm, layer: .presenter, isInterface: false)
