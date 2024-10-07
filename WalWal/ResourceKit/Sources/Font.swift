@@ -37,6 +37,8 @@ extension ResourceKitFontFamily {
       public static let SB = UIFont.systemFont(ofSize: 14, weight: .semibold)
       public static let M = UIFont.systemFont(ofSize: 14, weight: .medium)
     }
+    /// 12px medium
+    public static let M1 = UIFont.systemFont(ofSize: 12, weight: .medium)
     /// 14px regular
     public static let B1 = UIFont.systemFont(ofSize: 14, weight: .regular)
     /// 13px regular
@@ -90,16 +92,12 @@ extension ResourceKitFontFamily {
   }
   
   public static func lineHeightPercent(of font: ResourceKitFontConvertible.Font) -> CGFloat? {
-    if font == KR.H2 || font == KR.H6.B || font == KR.H6.M || font == KR.B2 || font == KR.B3 {
-      return 130
-    } else {
-      return nil
-    }
+    if [KR.H2, KR.H6.B, KR.H6.M, KR.B2, KR.B3, KR.M1].contains(font) { return 130 } 
+    else { return nil }
   }
   
   public static func spacingPercent(of font: ResourceKitFontConvertible.Font) -> CGFloat {
-    if font == Self.KR.B1 || font == Self.KR.B2 || font == Self.KR.Caption { return 0 }
-    else if font == Self.EN.B1 || font == Self.EN.B2 || font == Self.EN.Caption { return 0 }
+    if [KR.B1, KR.B2, KR.Caption, EN.B1, EN.B2, EN.Caption].contains(font) { return 0 }
     else { return -2.5 }
   }
 }
