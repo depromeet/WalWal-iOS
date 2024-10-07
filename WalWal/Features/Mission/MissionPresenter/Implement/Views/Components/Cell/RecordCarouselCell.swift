@@ -14,6 +14,7 @@ import RecordsDomain
 import Then
 import PinLayout
 import FlexLayout
+import Kingfisher
 import RxSwift
 
 final class RecordCarouselCell: UICollectionViewCell, ReusableView {
@@ -257,7 +258,7 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
       toView.isHidden = false
       toView.alpha = 0
       rotatingContainer.layer.transform = CATransform3DRotate(transform, -rotationAngle, 0, 1, 0)
-
+      
       UIView.animate(withDuration: 0.3, animations: {
         rotatingContainer.layer.transform = CATransform3DIdentity
         toView.alpha = 1
@@ -268,11 +269,25 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
   }
   
   func configureCell(record: RecordList) {
+    let processor = DownsamplingImageProcessor(size: CGSize(width: 255, height: 255))
+    
     self.textView.text = record.recordContent
     self.textView.textColor = Colors.gray600.color
     self.missionTitleLabel.text = record.missionTitle
-    self.missionImageView.kf.setImage(with: URL(string: record.missionIllustrationURL))
-    self.recordimageView.kf.setImage(with: URL(string: record.recordImageURL))
+    self.missionImageView.kf.setImage(
+      with: URL(string: record.missionIllustrationURL),
+      options: [
+        .processor(processor),
+        .scaleFactor(UIScreen.main.scale),
+        .cacheOriginalImage
+      ])
+    self.recordimageView.kf.setImage(
+      with: URL(string: record.recordImageURL),
+      options: [
+        .processor(processor),
+        .scaleFactor(UIScreen.main.scale),
+        .cacheOriginalImage
+      ])
     
     self.dateLabel.text = record.completedAt.replacingOccurrences(of: "-", with: ".")
   }
