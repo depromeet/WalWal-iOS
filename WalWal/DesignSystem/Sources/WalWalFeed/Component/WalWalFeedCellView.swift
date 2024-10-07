@@ -148,25 +148,6 @@ public final class WalWalFeedCellView: UIView {
   
   // MARK: - Methods
   
-  private func bind() {
-    contentLabel.rx.tapped
-      .withUnretained(self)
-      .compactMap { _ in
-        self.isExpanded.toggle()
-        self.toggleContent()
-        return self.isExpanded
-      }
-      .bind(to: moreTappedSubject)
-      .disposed(by: disposeBag)
-    
-    profileHeaderView.rx.tapped
-      .compactMap { [weak self] in
-        return self?.feedData
-      }
-      .bind(to: profileTappedSubject)
-      .disposed(by: disposeBag)
-  }
-  
   func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false, isAlreadyExpanded: Bool = false) {
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = sanitizeContent(feedData.missionTitle)
@@ -367,6 +348,26 @@ public final class WalWalFeedCellView: UIView {
     return attributedString
   }
   
+  // MARK: - Binding
+  
+  private func bind() {
+    contentLabel.rx.tapped
+      .withUnretained(self)
+      .compactMap { _ in
+        self.isExpanded.toggle()
+        self.toggleContent()
+        return self.isExpanded
+      }
+      .bind(to: moreTappedSubject)
+      .disposed(by: disposeBag)
+    
+    profileHeaderView.rx.tapped
+      .compactMap { [weak self] in
+        return self?.feedData
+      }
+      .bind(to: profileTappedSubject)
+      .disposed(by: disposeBag)
+  }
 }
 
 extension String {
