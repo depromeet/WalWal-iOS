@@ -20,7 +20,7 @@ public struct Comment: Codable {
   public let content: String
   public let writerID: Int
   public let writerNickname, writerProfileImageURL, createdAt: String
-  public let children: [Comment]
+  public let replyComments: [Comment]
   
   enum CodingKeys: String, CodingKey {
     case parentID = "parentId"
@@ -29,6 +29,6 @@ public struct Comment: Codable {
     case writerID = "writerId"
     case writerNickname
     case writerProfileImageURL = "writerProfileImageUrl"
-    case createdAt, children
+    case createdAt, replyComments
   }
 }

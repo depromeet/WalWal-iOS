@@ -19,7 +19,7 @@ public struct GetCommentsModel {
 }
 
 // MARK: - CommentModel
-public struct CommentModel {
+public struct CommentModel: Hashable {
   public let parentID: Int?
   public let commentID: Int
   public let content: String
@@ -27,7 +27,7 @@ public struct CommentModel {
   public let writerNickname: String
   public let writerProfileImageURL: String
   public let createdAt: String
-  public let children: [CommentModel]
+  public let replyComments: [CommentModel]
   
   public init(dto: Comment) {
     self.parentID = dto.parentID
@@ -37,6 +37,30 @@ public struct CommentModel {
     self.writerNickname = dto.writerNickname
     self.writerProfileImageURL = dto.writerProfileImageURL
     self.createdAt = dto.createdAt
-    self.children = dto.children.map { CommentModel(dto: $0) }
+    self.replyComments = dto.replyComments.map { CommentModel(dto: $0) }
+  }
+  
+  public init(
+    parentID: Int?,
+    commentID: Int,
+    content: String,
+    writerID: Int,
+    writerNickname: String,
+    writerProfileImageURL: String,
+    createdAt: String,
+    replyComments: [CommentModel]
+  ) {
+    self.parentID = parentID
+    self.commentID = commentID
+    self.content = content
+    self.writerID = writerID
+    self.writerNickname = writerNickname
+    self.writerProfileImageURL = writerProfileImageURL
+    self.createdAt = createdAt
+    self.replyComments = replyComments
+  }
+  
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(commentID)
   }
 }
