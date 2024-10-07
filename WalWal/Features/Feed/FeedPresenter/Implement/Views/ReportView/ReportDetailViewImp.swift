@@ -128,7 +128,6 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .all()
     dimView.flex
       .layout()
-    
   }
   
   public func configureAttribute() {
@@ -142,7 +141,6 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
     [navigationContainer, discriptionLabel, textContainer, submitButton].forEach {
       contentContainer.addSubview($0)
     }
-    
   }
   
   public func configureLayout() {
@@ -163,14 +161,14 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .grow(1)
     
     navigationContainer.flex
-      .paddingTop(24.adjustedHeight)
-      .marginHorizontal(20.adjusted)
+      .margin(24.adjustedHeight, 20.adjustedWidth, 12.adjustedHeight)
+      .height(22.adjustedHeight)
+      .justifyContent(.center)
       .define {
         $0.addItem()
           .direction(.row)
           .justifyContent(.spaceBetween)
           .alignItems(.center)
-          .height(22.adjustedHeight)
           .define {
             $0.addItem(backButton)
               .size(32.adjusted)
@@ -182,8 +180,7 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       }
     
     discriptionLabel.flex
-      .marginTop(30.adjustedHeight)
-      .marginBottom(30.adjustedHeight)
+      .paddingVertical(30.adjustedHeight)
       .marginHorizontal(20.adjustedWidth)
     
     submitButton.flex
@@ -217,6 +214,11 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
     contentContainer.pin
       .all()
     
+    navigationContainer.flex
+      .height(60.adjusted)
+      .marginBottom(0)
+      .marginTop(0)
+    
     contentContainer.flex
       .markDirty()
       .marginTop(view.pin.safeArea.top)
@@ -236,7 +238,6 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .above(of: submitButton)
       .marginBottom(20.adjustedHeight)
       .below(of: discriptionLabel)
-      .marginTop(30.adjustedHeight)
     
     view.layoutIfNeeded()
   }
@@ -259,6 +260,11 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       .marginBottom(view.pin.safeArea.bottom)
       .layout()
     
+    navigationContainer.flex
+      .height(22.adjusted)
+      .marginTop(24.adjustedHeight)
+      .marginBottom(12.adjustedHeight)
+    
     rootContainer.flex
       .markDirty()
       .height(563.adjustedHeight)
@@ -269,7 +275,6 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
     
     rootContainer.flex
       .layout()
-    
   }
   
   // MARK: - Animations
