@@ -161,7 +161,9 @@ final class CommentCell: UITableViewCell, ReusableView {
   func configure(with comment: FlattenCommentModel) {
     nicknameLabel.text = comment.writerNickname
     contentLabel.text = comment.content
-    timeLabel.text = comment.createdAt
+    
+    if let timeText = timeAgo(from: comment.createdAt) { timeLabel.text = timeText }
+    else { timeLabel.text = comment.createdAt }
     
     if let imageUrl = URL(string: comment.writerProfileImageURL) {
       profileImageView.kf.setImage(with: imageUrl)
@@ -176,4 +178,28 @@ final class CommentCell: UITableViewCell, ReusableView {
     
     layoutIfNeeded()
   }
+  
+  private func timeAgo(from dateString: String) -> String? {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+    formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+    
+    guard let date = formatter.date(from: dateString) else { return nil }
+    
+    let now = Date()
+    let calendar = Calendar.current
+    
+    let components = calendar.dateComponents([.minute, .hour, .day], from: date, to: now)
+    
+    if let day = components.day, day >= 1 {
+      return "\(day)일 전"
+    } else if let hour = components.hour, hour >= 1 {
+      return "\(hour)시간 전"
+    } else if let minute = components.minute, minute >= 1 {
+      return "\(minute)분 전"
+    } else {
+      return "조금 전"
+    }
+  }
+
 }
