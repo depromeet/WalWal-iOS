@@ -1,9 +1,9 @@
 //
-//  FeedPresenterProject.swift
+//  CommentPresenterProject.swift
 //
-//  Feed
+//  Comment
 //
-//  Created by 이지희
+//  Created by 조용인
 //
 
 import ProjectDescription
@@ -11,22 +11,20 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.invertedPresenterWithDemoApp(
-  name: "FeedPresenter",
+  name: "CommentPresenter",
   platform: .iOS,
   iOSTargetVersion: "15.0.0",
   interfaceDependencies: [
     .ThirdParty.ReactorKit,
     
-    .Feature.Feed.Domain.Interface,
-    
-    .Coordinator.Feed.Interface,
-    .DesignSystem,
+    .Feature.Comment.Domain.Interface,
+    .DesignSystem
   ],
   implementDependencies: [
-    .DependencyFactory.Feed.Interface,
+    .DependencyFactory.Comment.Interface,
   ],
   demoAppDependencies: [
-    .DependencyFactory.Feed.Implement
+    .DependencyFactory.Comment.Implement
   ],
   infoPlist: .extendingDefault(
     with:
