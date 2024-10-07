@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CommentDependencyFactory
 
 public class CommentDependencyFactoryImp: CommentDependencyFactory {
   

@@ -8,12 +8,16 @@
 
 import UIKit
 
-import DependencyFactory
-import DependencyFactoryImp
+import CommentDependencyFactory
+import CommentDependencyFactoryImp
 import CommentData
 import CommentDomain
-import CommentCoordinator
 import CommentPresenter
+
+import WalWalNetwork
+import CommentDataImp
+import CommentDomainImp
+import CommentPresenterImp
 
 @main
 final class CommentAppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,11 +25,24 @@ final class CommentAppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     let window = UIWindow(frame: UIScreen.main.bounds)
     
-    let dependencyFactory = DependencyFactoryImp()
+    let dependencyFactory = CommentDependencyFactoryImp()
     let navigationController = UINavigationController()
-    let coordinator = dependencyFactory.make__Coordinator(navigationController: navigationController)
-    let reactor = dependencyFactory.makeCommentReactor(coordinator: coordinator)
-    let viewController = dependencyFactory.makeCommentViewController(reactor: reactor)
+
+    let reactor = CommentReactorImp(
+      getCommentsUsecase: GetCommentsUsecaseImp(
+        repository: CommentRepositoryImp(
+          networkService: NetworkService()
+        )
+      ),
+      postCommentUsecase: PostCommentUsecaseImp(
+        repository: CommentRepositoryImp(
+          networkService: NetworkService()
+        )
+      ),
+      flattenCommentUsecase: FlattenCommentsUsecaseImp(),
+      useDummyData: true
+    )
+    let viewController = CommentViewControllerImp(reactor: reactor)
     
     window.rootViewController = viewController
     window.makeKeyAndVisible()
