@@ -34,6 +34,8 @@ public final class FeedReactorImp: FeedReactor {
   private let updateBoostCountUseCase: UpdateBoostCountUseCase
   private let removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
   
+  private var isLoading: Bool = false
+  
   public init(
     coordinator: any FeedCoordinator,
     fetchFeedUseCase: FetchFeedUseCase,
@@ -61,13 +63,22 @@ public final class FeedReactorImp: FeedReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .loadFeedData(cursor):
-      if currentState.feedFetchEnded {
+      guard !isLoading && !currentState.feedFetchEnded else {
         return .empty()
       }
+      isLoading = true // 데이터를 불러오기 시작할 때 isLoading을 true로 설정
       return fetchFeedData(cursor: cursor, limit: 10)
         .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
         .observe(on: MainScheduler.asyncInstance)
+        .do(onCompleted: { [weak self] in
+          self?.isLoading = false // 데이터 로드가 끝나면 다시 false로 설정
+        })
     case .refresh(cursor: let cursor):
+      // refresh도 isLoading 확인 후 처리
+      guard !isLoading else {
+        return .empty()
+      }
+      isLoading = true
       let initialFeedData: [WalWalFeedModel] = [] // 초기화할 feedData
       let nextCursor: String? = nil // 초기 커서 설정
       GlobalState.shared.feedList.accept([])
@@ -75,6 +86,9 @@ public final class FeedReactorImp: FeedReactor {
         .concat(fetchFeedData(cursor: cursor, limit: 10))
         .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
         .observe(on: MainScheduler.asyncInstance)
+        .do(onCompleted: { [weak self] in
+          self?.isLoading = false
+        })
     case let .endedBoost(recordId, count):
       return postBoostCount(recordId: recordId, count: count)
         .observe(on: MainScheduler.asyncInstance)
@@ -140,7 +154,7 @@ public final class FeedReactorImp: FeedReactor {
       .withUnretained(self)
       .flatMap { owner, feedModel -> Observable<Mutation> in
         let cursor = feedModel.nextCursor
-        return owner.convertFeedModel(feedList: GlobalState.shared.feedList.value)
+        return owner.convertFeedModel(feedList: feedModel.list)
           .withUnretained(self)
           .flatMap { owner, feedData -> Observable<Mutation> in
             if let cursor {
@@ -165,34 +179,41 @@ public final class FeedReactorImp: FeedReactor {
   
   // MARK: - Helper
   
-  private func convertFeedModel(feedList: [GlobalFeedListModel]) -> Observable<[WalWalFeedModel]> {
-    let feedObservables = feedList.map { feed -> Observable<WalWalFeedModel?> in
-      return Observable.zip(
-        convertImage(imageURL: feed.missionImage),
-        convertImage(imageURL: feed.profileImage)
-      )
-      .map { missionImage, profileImage in
-        let profileImageOrDefault = profileImage ?? ResourceKitAsset.Assets.yellowDog.image
-        return WalWalFeedModel(
-          recordId: feed.recordID,
-          authorId: feed.authorID,
-          date: feed.createdDate,
-          nickname: feed.authorNickname,
-          missionTitle: feed.missionTitle,
-          profileImage: profileImageOrDefault,
-          missionImage: missionImage,
-          boostCount: feed.boostCount,
-          commentCount: feed.commentCount,
-          contents: feed.contents ?? ""
-        )
-      }
+  private func convertFeedModel(feedList: [FeedListModel]) -> Observable<[WalWalFeedModel]> {
+    let feedObservables = feedList.map { feed -> Observable<WalWalFeedModel> in
+      // 이미지 URL로부터 이미지를 비동기적으로 로드
+      let missionImageObservable = convertImage(imageURL: feed.missionRecordImageURL)
+      let profileImageObservable = convertImage(imageURL: feed.authorProfileImageURL, isSmallImage: true)
+      
+      return Observable.zip(missionImageObservable, profileImageObservable)
+        .flatMap { missionImage, profileImage -> Observable<WalWalFeedModel> in
+          // 기본 프로필 이미지 설정
+          let profileImageOrDefault = profileImage ?? ResourceKitAsset.Assets.yellowDog.image
+          
+          // WalWalFeedModel 객체 생성
+          let feedModel = WalWalFeedModel(
+            recordId: feed.missionRecordID,
+            authorId: feed.authorID,
+            date: feed.createdDate,
+            nickname: feed.authorNickName,
+            missionTitle: feed.missionTitle,
+            profileImage: profileImageOrDefault,
+            missionImage: missionImage,
+            boostCount: feed.totalBoostCount,
+            commentCount: feed.totalCommentCount,
+            contents: feed.content ?? ""
+          )
+          
+          return .just(feedModel) // Observable 반환
+        }
     }
     
-    return Observable.zip(feedObservables)
-      .map { $0.compactMap { $0 } }
+    return Observable.zip(feedObservables) // 모든 Observable을 병합
+      .map { $0.compactMap { $0 } } // nil 값 필터링
   }
   
-  private func convertImage(imageURL: String?) -> Observable<UIImage?> {
+  
+  private func convertImage(imageURL: String?, isSmallImage: Bool = false) -> Observable<UIImage?> {
     guard let imageURL = imageURL else {
       return .just(nil)
     }

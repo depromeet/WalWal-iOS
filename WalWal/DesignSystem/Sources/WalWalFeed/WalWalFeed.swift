@@ -30,7 +30,7 @@ public final class WalWalFeed: UIView {
     let flowLayout = UICollectionViewFlowLayout()
     
     flowLayout.sectionInset = .init(top: 20.adjusted, left: 0, bottom: 20.adjusted, right: 0)
-    flowLayout.minimumLineSpacing = 13.adjusted 
+    flowLayout.minimumLineSpacing = 13.adjusted
     flowLayout.headerReferenceSize = .init(width: 0, height: headerHeight)
     
     $0.collectionViewLayout = flowLayout
@@ -150,7 +150,6 @@ public final class WalWalFeed: UIView {
       .asDriver(onErrorJustReturn: [])
       .drive(with: self) { owner, feedData in
         owner.currentFeedData = feedData
-        owner.collectionView.reloadData()
         owner.walwalIndicator.endRefreshing()
         owner.refreshLoading.accept(false)
       }
@@ -165,7 +164,9 @@ public final class WalWalFeed: UIView {
       .withUnretained(self)
       .bind { owner, _ in
         owner.refreshLoading.accept(true)
-        owner.feedData.accept(owner.feedData.value)
+        owner.currentFeedData.removeAll()
+        owner.feedData.accept([])
+        owner.collectionView.reloadData()
       }
       .disposed(by: disposeBag)
     
@@ -205,6 +206,7 @@ public final class WalWalFeed: UIView {
     
     collectionView.rx.contentOffset
       .distinctUntilChanged()
+      .debounce(.milliseconds(200), scheduler: MainScheduler.instance)
       .map(isNearBottom)
       .filter{ $0 }
       .bind(to: scrollEndReached )
@@ -224,6 +226,18 @@ public final class WalWalFeed: UIView {
     }
   }
   
+  public func addNewData(_ newData: [WalWalFeedModel]) {
+    let currentDataCount = currentFeedData.count
+    currentFeedData.append(contentsOf: newData)
+    feedData.accept(currentFeedData)
+    let newIndexPaths = (currentDataCount..<currentDataCount + newData.count).map { IndexPath(item: $0, section: 0) }
+    
+    collectionView.performBatchUpdates({
+      collectionView.insertItems(at: newIndexPaths)
+    }, completion: nil)
+  }
+  
+  
   /// 특정 레코드로 이동하는 메서드
   public func scrollToRecord(withId recordId: Int, animated: Bool = true) {
     if let index = currentFeedData.firstIndex(where: { $0.recordId == recordId }) {
@@ -239,11 +253,19 @@ public final class WalWalFeed: UIView {
     let point = gesture.location(in: collectionView)
     guard let indexPath = collectionView.indexPathForItem(at: point),
           let feedModel = feedData.value[safe: indexPath.item] else { return }
-    let updatedFeedData = feedData.value
+    var updatedFeedData = feedData.value
     var updatedRecord = updatedFeedData[indexPath.item]
     updatedRecord = feedModel
-    collectionView.collectionViewLayout.invalidateLayout()
+    
+    updatedFeedData[indexPath.item] = updatedRecord
     feedData.accept(updatedFeedData)
+    
+    // Efficiently update only the affected item
+    collectionView.performBatchUpdates({
+      collectionView.reloadItems(at: [indexPath])
+    }, completion: nil)
+    
+    collectionView.collectionViewLayout.invalidateLayout()
   }
   
   // MARK: - Scroll
@@ -309,7 +331,7 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
     layout collectionViewLayout: UICollectionViewLayout,
     sizeForItemAt indexPath: IndexPath) -> CGSize {
       let width = collectionView.bounds.width - 32.adjusted
-      let model = feedData.value[indexPath.row]
+      let model = currentFeedData[indexPath.row]
       let cell = collectionView.cellForItem(at: indexPath) as? WalWalFeedCell
       let isExpanded = cell?.feedView.isExpanded ?? false
       
