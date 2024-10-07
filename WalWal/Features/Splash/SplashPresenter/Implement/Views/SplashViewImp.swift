@@ -11,6 +11,7 @@ import UIKit
 import SplashPresenter
 import ResourceKit
 import Utility
+import DesignSystem
 
 import Then
 import PinLayout
@@ -108,13 +109,42 @@ extension SplashViewControllerImp: View {
       .just(Reactor.Action.checkToken)
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
+    WalWalAlert.shared.resultRelay
+      .map { _ in Reactor.Action.moveUpdate }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+      
   }
   
   public func bindState(reactor: R) {
-    
+    reactor.state
+      .map { $0.url }
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, url in
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
+    AppUpdateManager.shared.updateRequest
+      .bind(with: self) { owner, _ in
+        owner.showAlert()
+      }
+      .disposed(by: disposeBag)
+  }
+  
+  private func showAlert() {
+    let title = "신규 기능 업데이트"
+    let message = "왈왈에서 더 재밌게 소통할 수 있도록\n신규 기능을 업데이트 해보세요!"
+    let buttonTitle = "업데이트"
     
+    WalWalAlert.shared.showOkAlert(
+      title: title,
+      bodyMessage: message,
+      okTitle: buttonTitle
+    )
   }
 }
