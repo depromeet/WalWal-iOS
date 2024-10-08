@@ -326,6 +326,7 @@ extension CommentViewControllerImp: View {
       return !owner.rootContainerView.frame.contains(location)
     }
     .subscribe(with: self, onNext: { owner, _ in
+      owner.inputBox.rx.textEndEditing.onNext(())
       owner.animateSheetDown {
         reactor.action.onNext(.tapDimView)
       }
