@@ -57,7 +57,7 @@ extension CommentEndpoint {
       if let accessToken = KeychainWrapper.shared.accessToken {
         return .authorization(accessToken)
       } else{
-        return .authorization("eyJ0eXBlIjoiYWNjZXNzIiwiYWxnIjoiSFM1MTIiLCJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNzI4MzA4ODU2MTA1fQ.eyJzdWIiOiIxMDYiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTcyODMwODg1NiwiZXhwIjoxNzI4Mzk1MjU2fQ.SaUH0cqnDFC0PNgyTMuxJ7VC4JRqyDvq37PUjYbzBSfNaqGmfAXsSThpffcNrmZBMUEFRvYnY3QfdQWo14QJ4w")
+        return .plain
       }
     }
   }
