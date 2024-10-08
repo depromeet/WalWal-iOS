@@ -27,7 +27,7 @@ final class CommentAppDelegate: UIResponder, UIApplicationDelegate {
     
     let dependencyFactory = CommentDependencyFactoryImp()
     let navigationController = UINavigationController()
-
+    
     let reactor = CommentReactorImp(
       getCommentsUsecase: GetCommentsUsecaseImp(
         repository: CommentRepositoryImp(
