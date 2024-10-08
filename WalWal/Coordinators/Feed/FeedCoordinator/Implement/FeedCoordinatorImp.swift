@@ -31,6 +31,8 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   public weak var parentCoordinator: (any BaseCoordinator)?
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
+  /// 바텀시트 내부에서 네비게이션을 사용하기 위한 프로퍼티
+  private var bottomSheetNavigaionController: UINavigationController?
   
   public var feedDependencyFactory: FeedDependencyFactory
   public var recordsDependencyFactory: RecordsDependencyFactory
@@ -52,7 +54,14 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   public func bindState() {
     destination
       .subscribe(with: self, onNext: { owner, flow in
-        switch flow { }
+        switch flow {
+        case let .showFeedMenu(recordId):
+          self.showFeedMenu(recordId: recordId)
+        case let .showReportView(recordId):
+          self.showReportType(recordId: recordId)
+        case let .showReportDetailView(recordId, reportType):
+          self.showReportDetail(recordId: recordId, reportType: reportType)
+        }
       })
       .disposed(by: disposeBag)
   }
@@ -110,22 +119,46 @@ extension FeedCoordinatorImp {
 
 extension FeedCoordinatorImp {
   
-  //  /// 새로운 Coordinator를 통해서 새로운 Flow를 생성하기 때문에, start를 prefix로 사용합니다.
-  //  fileprivate func start__() {
-  //    let feedCoordinator = feedDependencyFactory.make__Coordinator(
-  //      navigationController: navigationController,
-  //      parentCoordinator: self
-  //    )
-  //    childCoordinator = __Coordinator
-  //    __Coordinator.start()
-  //  }
-  //
-  //  /// 단순히, VC를 보여주는 로직이기 때문에, show를 prefix로 사용합니다.
-  //  fileprivate func show__() {
-  //    let reactor = dependencyFactory.make__Reactor(coordinator: self)
-  //    let __VC = dependencyFactory.make__ViewController(reactor: reactor)
-  //    self.pushViewController(viewController: __VC, animated: false)
-  //  }
+  private func showFeedMenu(recordId: Int) {
+    let reactor = feedDependencyFactory.injectFeedMenuReactor(
+      coordinator: self,
+      recordId: recordId
+    )
+    let vc = feedDependencyFactory.injectFeedMenuViewController(reactor: reactor)
+    self.presentViewController(viewController: vc, style: .overFullScreen, animated: false)
+  }
+  
+  private func showReportType(recordId: Int) {
+    let reactor = feedDependencyFactory.injectReportTypeReactor(
+      coordinator: self,
+      recordId: recordId
+    )
+    let vc = feedDependencyFactory.injectReportTypeViewController(
+      reactor: reactor
+    )
+    let nav = UINavigationController(rootViewController: vc)
+    nav.navigationController?.setNavigationBarHidden(true, animated: false)
+    self.bottomSheetNavigaionController = nav
+    self.presentViewController(
+      viewController: nav,
+      style: .overFullScreen,
+      animated: false
+    )
+  }
+  
+  private func showReportDetail(recordId: Int, reportType: String) {
+
+    let reportUseCase = feedDependencyFactory.injectReportUseCase()
+    let reactor = feedDependencyFactory.injectReportDetailReactor(
+      coordinator: self,
+      reportUseCase: reportUseCase,
+      recordId: recordId,
+      reportType: reportType
+    )
+    let vc = feedDependencyFactory.injectReportDetailViewController(reactor: reactor)
+    bottomSheetNavigaionController?.setNavigationBarHidden(true, animated: false)
+    bottomSheetNavigaionController?.pushViewController(vc, animated: false)
+  }
 }
 
 
@@ -139,5 +172,14 @@ extension FeedCoordinatorImp {
   
   public func doubleTap(index: Int) {
     doubleTapRelay.accept(index)
+  }
+
+  public func startReport(recordId: Int) {
+    self.dismissViewController(animated: false, completion: nil)
+    showReportType(recordId: recordId)
+  }
+  
+  public func popReportDetail() {
+    bottomSheetNavigaionController?.popViewController(animated: false)
   }
 }

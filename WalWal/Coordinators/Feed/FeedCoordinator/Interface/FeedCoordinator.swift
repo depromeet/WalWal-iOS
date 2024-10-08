@@ -14,7 +14,9 @@ public enum FeedCoordinatorAction: ParentAction {
 }
 
 public enum FeedCoordinatorFlow: CoordinatorFlow {
-  
+  case showFeedMenu(recordId: Int)
+  case showReportView(recordId: Int)
+  case showReportDetailView(recordId: Int, reportType: String)
 }
 
 public protocol FeedCoordinator: BaseCoordinator
@@ -23,4 +25,6 @@ where Flow == FeedCoordinatorFlow,
 {
   func startProfile(memberId: Int, nickName: String)
   func doubleTap(index: Int)
+  func startReport(recordId: Int)
+  func popReportDetail()
 }

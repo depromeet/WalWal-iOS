@@ -147,16 +147,21 @@ public final class WalWalAlert {
   ///   - title: 상단 얼럿 제목
   ///   - bodyMessage: 얼럿에 대한 내용
   ///   - okTitle:얼럿 내용에 대한 확인 버튼 타이틀
+  ///   - tintColor: 하이라이팅 컬러 (default: WalWalOrange)
   public func showOkAlert(
     title: String,
     bodyMessage: String,
-    okTitle: String
+    okTitle: String,
+    tintColor: UIColor? = nil
   ) {
     titleLabel.text = title
     bodyLabel.text = bodyMessage
     cancelButton.title = okTitle
     isOneButtonAlert = true
     
+    if let tintColor = tintColor {
+      cancelButton.backgroundColor = tintColor
+    }
     guard let window = UIWindow.key else { return }
     window.addSubview(rootContainer)
     configureLayout()

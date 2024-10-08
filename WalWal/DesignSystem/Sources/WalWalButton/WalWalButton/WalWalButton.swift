@@ -53,10 +53,16 @@ public class WalWalButton: UIControl {
   
   fileprivate let disposeBag = DisposeBag()
   
+  private let buttonHeight: CGFloat
   
   // MARK: - Initialization
   
-  public init(type: WalWalButtonType, title: String) {
+  public init(
+    type: WalWalButtonType, 
+    title: String,
+    buttonHeight: CGFloat = 56
+  ) {
+    self.buttonHeight = buttonHeight
     super.init(frame: .zero)
     self.title = title
     buttonType.accept(type)
@@ -91,7 +97,7 @@ public class WalWalButton: UIControl {
     rootView.flex
       .justifyContent(.center)
       .alignItems(.center)
-      .height(56)
+      .height(buttonHeight)
       .define { flex in
         flex.addItem(titleLabel)
           .width(100%)

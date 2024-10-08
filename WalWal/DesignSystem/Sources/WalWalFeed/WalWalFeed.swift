@@ -53,6 +53,8 @@ public final class WalWalFeed: UIView {
   
   public let profileTapped = PublishRelay<WalWalFeedModel>()
   
+  public let menuButtonTapped = PublishRelay<Int>()
+  
   public var feedData = BehaviorRelay<[WalWalFeedModel]>(value: [])
   
   public var updatedBoost = PublishRelay<(recordId: Int, count: Int)>()
@@ -287,7 +289,10 @@ extension WalWalFeed: UICollectionViewDataSource {
       .bind(with: self) { owner, data in
         owner.profileTapped.accept(data)
       }
-      .disposed(by: disposeBag)
+      .disposed(by: cell.disposeBag)
+    cell.feedView.menuButtonTapped
+      .bind(to: menuButtonTapped)
+      .disposed(by: cell.disposeBag)
     return cell
   }
   
