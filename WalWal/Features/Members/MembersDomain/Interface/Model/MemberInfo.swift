@@ -26,7 +26,7 @@ public struct MemeberInfo {
     if let defaultProfile = DefaultProfile(rawValue: global.profileURL) {
       self.profileImage = defaultProfile.image
     } else {
-      self.profileImage = GlobalState.shared.imageStore[global.profileURL]
+      self.profileImage = GlobalState.shared.imageStore.object(forKey: global.profileURL as NSString)
     }
   }
   

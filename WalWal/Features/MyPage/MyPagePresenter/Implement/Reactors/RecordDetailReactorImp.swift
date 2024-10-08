@@ -109,7 +109,7 @@ extension RecordDetailReactorImp {
       .withUnretained(self)
       .flatMap { owner, feedModel -> Observable<Mutation> in
         let cursor = feedModel.nextCursor
-        return owner.convertGlobaltoFeedModel(feedList: GlobalState.shared.recordList.value)
+        return owner.convertGlobaltoFeedModel(feedList: feedModel.list)
           .map { feedData in
             if let cursor {
               return Mutation.fetchUseFeed(memberId: memberId, nextCursor: cursor, newRecord: feedData)
@@ -173,25 +173,25 @@ extension RecordDetailReactorImp {
       .map { $0.compactMap { $0 } }
   }
   
-  private func convertGlobaltoFeedModel(feedList: [GlobalFeedListModel]) -> Observable<[WalWalFeedModel]> {
+  private func convertGlobaltoFeedModel(feedList: [FeedListModel]) -> Observable<[WalWalFeedModel]> {
     let feedObservables = feedList.map { feed -> Observable<WalWalFeedModel?> in
       return Observable.zip(
-        convertImage(imageURL: feed.missionImage),
-        convertImage(imageURL: feed.profileImage)
+        convertImage(imageURL: feed.missionRecordImageURL),
+        convertImage(imageURL: feed.authorProfileImageURL)
       )
       .map { missionImage, profileImage in
         let profileImageOrDefault = profileImage ?? ResourceKitAsset.Assets.yellowDog.image
         return WalWalFeedModel(
-          recordId: feed.recordID,
+          recordId: feed.missionRecordID,
           authorId: feed.authorID,
           date: feed.createdDate,
-          nickname: feed.authorNickname,
+          nickname: feed.authorNickName,
           missionTitle: feed.missionTitle,
           profileImage: profileImageOrDefault,
           missionImage: missionImage,
-          boostCount: feed.boostCount,
-          commentCount: feed.commentCount,
-          contents: feed.contents ?? ""
+          boostCount: feed.totalBoostCount,
+          commentCount: feed.totalCommentCount,
+          contents: feed.content ?? ""
         )
       }
     }
@@ -207,12 +207,12 @@ extension RecordDetailReactorImp {
     
     if let defaultImage = DefaultProfile(rawValue: imageURL) {
       return .just(defaultImage.image) // 기본 이미지 반환
-    } else if let cachedImage = GlobalState.shared.imageStore[imageURL] {
+    } else if let cachedImage = GlobalState.shared.imageStore.object(forKey: imageURL as NSString)  {
       return .just(cachedImage)
     } else {
       return GlobalState.shared.downloadAndCacheImage(for: imageURL)
         .map { _ in
-          GlobalState.shared.imageStore[imageURL]
+          GlobalState.shared.imageStore.object(forKey: imageURL as NSString) 
         }
     }
   }

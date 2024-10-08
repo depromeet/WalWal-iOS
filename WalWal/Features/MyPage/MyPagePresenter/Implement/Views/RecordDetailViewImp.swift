@@ -167,8 +167,7 @@ extension RecordDetailViewControllerImp: View {
       .map {  $0.feedData }
       .observe(on: MainScheduler.instance)
       .subscribe(with: self, onNext: { owner, feed in
-        owner.feed.feedData.accept(feed)
-        
+        owner.feed.addNewData(feed)
         owner.feed.scrollToRecord(withId: owner.recordId, animated: true)
       })
       .disposed(by: disposeBag)

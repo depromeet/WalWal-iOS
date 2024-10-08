@@ -99,7 +99,7 @@ public final class WalWalFeedCellView: UIView {
   
   var feedData: WalWalFeedModel?
   public private(set) var contents = ""
-  private let disposeBag = DisposeBag()
+  var disposeBag = DisposeBag()
   
   private let profileTappedSubject = PublishSubject<WalWalFeedModel>()
   public var profileTapped: Observable<WalWalFeedModel> {
@@ -157,35 +157,7 @@ public final class WalWalFeedCellView: UIView {
     
   }
   
-  
   // MARK: - Methods
-  
-  private func bind() {
-    contentLabel.rx.tapped
-      .withUnretained(self)
-      .compactMap { _ in
-        self.isExpanded.toggle()
-        self.toggleContent()
-        return self.isExpanded
-      }
-      .bind(to: moreTappedSubject)
-      .disposed(by: disposeBag)
-    
-    profileHeaderView.rx.tapped
-      .compactMap { [weak self] in
-        return self?.feedData
-      }
-      .bind(to: profileTappedSubject)
-      .disposed(by: disposeBag)
-    
-    feedMenuButton.rx.tap
-      .withUnretained(self)
-      .compactMap { owner, _ in
-        owner.feedData?.recordId
-      }
-      .bind(to: menuButtonTapEvent)
-      .disposed(by: disposeBag)
-  }
   
   func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false, isAlreadyExpanded: Bool = false) {
     userNickNameLabel.text = feedData.nickname
@@ -357,6 +329,11 @@ public final class WalWalFeedCellView: UIView {
     setNeedsLayout()
   }
   
+  func clearImageView() {
+    self.missionImageView.image = nil
+    self.profileImageView.image = nil
+  }
+  
   private func sanitizeContent(_ content: String) -> String {
     return content.replacingOccurrences(of: "\n", with: " ")
   }
@@ -395,6 +372,36 @@ public final class WalWalFeedCellView: UIView {
     }
     
     return attributedString
+  }
+  
+  // MARK: - Binding
+  
+    
+  private func bind() {
+    contentLabel.rx.tapped
+      .withUnretained(self)
+      .compactMap { _ in
+        self.isExpanded.toggle()
+        self.toggleContent()
+        return self.isExpanded
+      }
+      .bind(to: moreTappedSubject)
+      .disposed(by: disposeBag)
+    
+    profileHeaderView.rx.tapped
+      .compactMap { [weak self] in
+        return self?.feedData
+      }
+      .bind(to: profileTappedSubject)
+      .disposed(by: disposeBag)
+    
+    feedMenuButton.rx.tap
+      .withUnretained(self)
+      .compactMap { owner, _ in
+        owner.feedData?.recordId
+      }
+      .bind(to: menuButtonTapEvent)
+      .disposed(by: disposeBag)
   }
   
 }

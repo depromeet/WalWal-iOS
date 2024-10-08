@@ -51,7 +51,7 @@ public struct FCMItemModel: Hashable {
     self.isRead = global.isRead
     self.recordID = global.recordID
     self.createdAt = global.createdAt
-    self.image = GlobalState.shared.imageStore[global.imageURL]
+    self.image = GlobalState.shared.imageStore.object(forKey: (global.imageURL ?? "") as NSString)
   }
   public init(
     id: Int,

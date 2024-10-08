@@ -27,7 +27,7 @@ public final class GlobalState {
   public let moveToFeedRecord = BehaviorRelay<Int?>(value: nil)
   
   /// 이미지 저장소 (캐시된 이미지를 저장하는 딕셔너리)
-  public private(set) var imageStore: [String?: UIImage] = [:]
+  public private(set) var imageStore = NSCache<NSString, UIImage>()
   
   private let disposeBag = DisposeBag()
   
@@ -98,7 +98,7 @@ public final class GlobalState {
   }
   
   public func fetchProfileImage(url: String) -> UIImage? {
-    return imageStore[url]
+    return imageStore.object(forKey: url as NSString)
   }
   
   // MARK: - Calendar
@@ -118,12 +118,13 @@ public final class GlobalState {
   /// 캘린더 기록 초기화 (cursor를 불러올 때 처음부터 불러오니까 일단 비워야함)
   public func resetRecords() {
     calendarRecords.accept([])
-    imageStore.removeAll() /// 이미지도 초기화
+    imageStore.removeAllObjects() /// 이미지도 초기화
   }
   
   /// 특정 기록에 대한 이미지를 반환하는 메서드 (캐시된 이미지가 없으면 nil 반환)
   public func getCachedImage(for record: GlobalMissonRecordListModel) -> UIImage? {
-    return imageStore[record.imageUrl]
+    guard let imageURL = record.imageUrl else { return nil }
+    return imageStore.object(forKey: imageURL as NSString)
   }
   
   // MARK: - Feed
@@ -181,12 +182,12 @@ public final class GlobalState {
   
   public func getCachedMissionImage(for feed: GlobalFeedListModel) -> UIImage? {
     guard let imageURL = feed.missionImage else { return nil }
-    return imageStore[imageURL]
+    return imageStore.object(forKey: imageURL as NSString)
   }
   
   public func getCachedProfileImage(for feed: GlobalFeedListModel) -> UIImage? {
     guard let imageURL = feed.profileImage else { return nil }
-    return imageStore[imageURL]
+    return imageStore.object(forKey: imageURL as NSString)
   }
   
   /// 이미지 미리 불러오기 메서드
@@ -212,7 +213,7 @@ public final class GlobalState {
       let downloadTasks = self.recordList.value.flatMap { record -> [Observable<Void>] in
         let missionDownload = downloadAndCacheImage(for: record.missionImage)
           .catchAndReturn(())
-        let profileDownload = downloadAndCacheImage(for: record.profileImage)
+        let profileDownload = downloadAndCacheImage(for: record.profileImage, isSmallImage: true)
           .catchAndReturn(())
         return [missionDownload, profileDownload]
       }
@@ -226,13 +227,13 @@ public final class GlobalState {
   }
   
   /// 이미지를 다운로드하고 캐시에 저장하는 메서드
-  public func downloadAndCacheImage(for imageUrl: String?) -> Observable<Void> {
+  public func downloadAndCacheImage(for imageUrl: String?, isSmallImage: Bool = false) -> Observable<Void> {
     guard let imageUrl else { return Observable.just(()) }
-    return ImageCacheManager().downloadImage(for: imageUrl)
+    return ImageCacheManager.shared.downloadImage(for: imageUrl, isSmallImage: isSmallImage)
       .withUnretained(self)
       .do(onNext: { owner, image in
         guard let image = image else { return }
-        owner.imageStore[imageUrl] = image
+        owner.imageStore.setObject(image, forKey: imageUrl as NSString)
       })
       .map { _ in }
   }

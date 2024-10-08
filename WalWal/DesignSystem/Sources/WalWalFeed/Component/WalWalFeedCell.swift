@@ -57,6 +57,7 @@ public final class WalWalFeedCell: UICollectionViewCell {
   
   public override func prepareForReuse() {
     super.prepareForReuse()
+    feedView.disposeBag = DisposeBag()
     disposeBag = DisposeBag()
     feedView.isExpanded = false
     feedView.contentLabel.numberOfLines = 2

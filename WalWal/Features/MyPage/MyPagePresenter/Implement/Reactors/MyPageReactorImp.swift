@@ -182,7 +182,7 @@ public final class MyPageReactorImp: MyPageReactor {
 extension MyPageReactorImp {
   private func convertToWalWalCalendarModels(from records: [GlobalMissonRecordListModel]) -> [WalWalCalendarModel] {
     return records.compactMap { record in
-      let image = GlobalState.shared.imageStore[record.imageUrl]
+      let image = GlobalState.shared.imageStore.object(forKey: (record.imageUrl ?? "") as NSString)
       return WalWalCalendarModel(
         recordId: record.recordId,
         date: record.missionDate,
@@ -192,7 +192,7 @@ extension MyPageReactorImp {
   }
   
   private func convertToWalWalCalendarModels(from records: [MissionRecordListModel]) -> Observable<[WalWalCalendarModel]> {
-    let imageCacheManager = ImageCacheManager()
+    let imageCacheManager = ImageCacheManager.shared
     
     let observables = records.map { record -> Observable<WalWalCalendarModel> in
       return imageCacheManager.downloadImage(for: record.imageUrl ?? "")
