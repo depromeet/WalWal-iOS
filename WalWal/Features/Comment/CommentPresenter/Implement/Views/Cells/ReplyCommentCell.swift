@@ -50,7 +50,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
   private let contentLabel = CustomLabel(font: FontKR.B3).then {
     $0.textColor = AssetColor.black.color
     $0.numberOfLines = 2
-    $0.lineBreakMode = .byTruncatingTail
+    $0.lineBreakMode = .byWordWrapping
   }
   
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -75,10 +75,9 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
   }
   
   override func sizeThatFits(_ size: CGSize) -> CGSize {
-    // 셀의 적절한 크기를 계산하여 반환
     let targetWidth = size.width
-    rootContainerView.pin.width(targetWidth) // rootContainerView의 너비를 설정
-    rootContainerView.flex.layout(mode: .adjustHeight) // FlexLayout으로 레이아웃 조정
+    rootContainerView.pin.width(targetWidth)
+    rootContainerView.flex.layout(mode: .adjustHeight)
     let height = rootContainerView.frame.height
     return CGSize(width: targetWidth, height: height)
   }
@@ -94,10 +93,10 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
   private func setAttribute() {
     self.selectionStyle = .none
     contentView.backgroundColor = AssetColor.white.color
+    contentView.addSubview(rootContainerView)
   }
   
   private func setLayout() {
-    contentView.addSubview(rootContainerView)
     
     rootContainerView.flex
       .width(100%)
@@ -139,7 +138,6 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
       }
   }
   
-  // 댓글과 대댓글을 설정하는 메서드
   func configure(with comment: FlattenCommentModel) {
     nicknameLabel.text = comment.writerNickname
     contentLabel.text = comment.content
@@ -154,7 +152,11 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
       profileImageView.kf.setImage(with: imageUrl)
     }
     
-    layoutIfNeeded() // 레이아웃을 즉시 업데이트하여 셀의 크기를 동적으로 조정
+    contentLabel.flex.markDirty()
+    nicknameLabel.flex.markDirty()
+    timeLabel.flex.markDirty()
+    
+    layoutIfNeeded()
   }
   
   private func timeAgo(from dateString: String) -> String? {
