@@ -51,7 +51,7 @@ final class CommentCell: UITableViewCell, ReusableView {
   private let contentLabel = CustomLabel(font: FontKR.B3).then {
     $0.textColor = AssetColor.black.color
     $0.numberOfLines = 2
-    $0.lineBreakMode = .byTruncatingTail
+    $0.lineBreakMode = .byWordWrapping
   }
   
   private let replyButton = CustomLabel(font: FontKR.M1).then {
@@ -100,10 +100,10 @@ final class CommentCell: UITableViewCell, ReusableView {
   private func setAttribute() {
     self.selectionStyle = .none
     contentView.backgroundColor = AssetColor.white.color
+    contentView.addSubview(rootContainerView)
   }
   
   private func setLayout() {
-    contentView.addSubview(rootContainerView)
     
     rootContainerView.flex
       .justifyContent(.spaceBetween)
@@ -119,7 +119,8 @@ final class CommentCell: UITableViewCell, ReusableView {
     profileImageAndBodyContainer.flex
       .direction(.row)
       .define { flex in
-        flex.addItem(profileImageContainer)
+        flex.addItem(profileImageView)
+          .size(34)
         flex.addItem(bodyContainer)
           .marginLeft(8)
           .grow(1)
@@ -133,6 +134,7 @@ final class CommentCell: UITableViewCell, ReusableView {
         flex.addItem(nicknameAndTimeContainer)
         flex.addItem(contentLabel)
           .marginTop(2)
+          .grow(1)
       }
     
     nicknameAndTimeContainer.flex
@@ -141,12 +143,6 @@ final class CommentCell: UITableViewCell, ReusableView {
         flex.addItem(nicknameLabel)
         flex.addItem(timeLabel)
           .marginLeft(4)
-      }
-    
-    profileImageContainer.flex
-      .define { flex in
-        flex.addItem(profileImageView)
-          .size(34)
       }
   }
   
@@ -163,6 +159,10 @@ final class CommentCell: UITableViewCell, ReusableView {
     if let imageUrl = URL(string: comment.writerProfileImageURL) {
       profileImageView.kf.setImage(with: imageUrl)
     }
+    
+    contentLabel.flex.markDirty()
+    nicknameLabel.flex.markDirty()
+    timeLabel.flex.markDirty()
     
     layoutIfNeeded()
   }
