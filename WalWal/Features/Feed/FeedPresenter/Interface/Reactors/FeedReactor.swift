@@ -24,6 +24,7 @@ public enum FeedReactorAction {
   case profileTapped(WalWalFeedModel)
   case checkScrollItem
   case doubleTap(Int?)
+  case menuTapped(recordId: Int)
 }
 
 public enum FeedReactorMutation {
@@ -35,17 +36,16 @@ public enum FeedReactorMutation {
   case scrollToFeedItem(id: Int?)
   case scrollToTop(Bool)
   case resetTabEvent
+  case showMenu(recordId: Int)
 }
 
 public struct FeedReactorState {
   @Pulse public var feedErrorMessage: String = ""
-  
   public var feedData: [WalWalFeedModel] = []
   public var nextCursor: String? = nil
   public var feedFetchEnded: Bool = false
   @Pulse public var scrollToFeedItem: Int? = nil
   public var isDoubleTap: Bool = false
-  
   public init() {  }
 }
 

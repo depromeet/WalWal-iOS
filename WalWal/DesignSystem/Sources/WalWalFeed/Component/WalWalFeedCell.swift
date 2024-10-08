@@ -22,7 +22,7 @@ public final class WalWalFeedCell: UICollectionViewCell {
   // MARK: - Components
   public private(set) var feedView = WalWalFeedCellView()
   static let identifier = "WalWalFeedCell"
-  private var disposeBag = DisposeBag()
+  public var disposeBag = DisposeBag()
   
   // MARK: - Initializers
   

@@ -16,7 +16,10 @@ import RxSwift
 
 public final class WalWalFeedCellView: UIView {
   
-  private typealias Images = ResourceKitAsset.Assets
+  private typealias Assets = ResourceKitAsset.Assets
+  private typealias Sample = ResourceKitAsset.Sample
+  private typealias Images = ResourceKitAsset.Images
+
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
   
@@ -28,6 +31,7 @@ public final class WalWalFeedCellView: UIView {
     $0.addBorder(with: Colors.gray200.color, width: 1)
   }
   
+  private let headerView = UIView()
   private let profileHeaderView = UIView()
   private let profileInfoView = UIView()
   private let imageContentView = UIView()
@@ -53,18 +57,22 @@ public final class WalWalFeedCellView: UIView {
     $0.isUserInteractionEnabled = false
   }
   
+  public let feedMenuButton = UIButton().then {
+    $0.setImage(Images.menu.image, for: .normal)
+  }
+  
   private let missionImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFill
     $0.clipsToBounds = true
   }
   
   private let boostIconImageView = UIImageView().then {
-    $0.image = Images.fire.image
+    $0.image = Assets.fire.image
     $0.contentMode = .scaleAspectFit
   }
   
   private let commentIconImageView = UIImageView().then {
-    $0.image = Images.messageCircle.image
+    $0.image = Assets.messageCircle.image
     $0.contentMode = .scaleAspectFit
   }
   
@@ -96,6 +104,10 @@ public final class WalWalFeedCellView: UIView {
   private let profileTappedSubject = PublishSubject<WalWalFeedModel>()
   public var profileTapped: Observable<WalWalFeedModel> {
     return profileTappedSubject.asObservable()
+  }
+  private let menuButtonTapEvent = PublishSubject<Int>()
+  public var menuButtonTapped: Observable<Int> {
+    return menuButtonTapEvent.asObservable()
   }
   
   private let moreTappedSubject = PublishSubject<Bool>()
@@ -145,7 +157,6 @@ public final class WalWalFeedCellView: UIView {
     
   }
   
-  
   // MARK: - Methods
   
   func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false, isAlreadyExpanded: Bool = false) {
@@ -155,7 +166,7 @@ public final class WalWalFeedCellView: UIView {
     missionImageView.image = feedData.missionImage
     commentCountLabel.text = "\(feedData.commentCount)" 
     boostCountLabel.text = "\(feedData.boostCount)"
-    let isBoostImage = isBoost ? Images.fire.image.withTintColor(Colors.walwalOrange.color) : Images.fire.image
+    let isBoostImage = isBoost ? Assets.fire.image.withTintColor(Colors.walwalOrange.color) : Assets.fire.image
     let isBoostColor = isBoost ? Colors.walwalOrange.color : Colors.gray500.color
     boostIconImageView.image = isBoostImage
     boostCountLabel.textColor = isBoostColor
@@ -226,7 +237,7 @@ public final class WalWalFeedCellView: UIView {
     
     containerView.flex
       .define {
-        $0.addItem(profileHeaderView)
+        $0.addItem(headerView)
           .marginHorizontal(16.adjusted)
           .marginVertical(15.adjusted)
         $0.addItem(imageContentView)
@@ -244,19 +255,29 @@ public final class WalWalFeedCellView: UIView {
           .marginBottom(20.adjusted)
       }
     
+    headerView.flex
+      .direction(.row)
+      .justifyContent(.spaceBetween)
+      .alignItems(.center)
+      .define {
+        $0.addItem(profileHeaderView)
+          .grow(1)
+        $0.addItem(feedMenuButton)
+          .size(24)
+      }
+    
     profileHeaderView.flex
       .direction(.row)
       .alignItems(.center)
-      .width(100%)
       .define {
         $0.addItem(profileImageView)
           .size(40.adjusted)
         $0.addItem(profileInfoView)
+          .grow(1)
           .marginLeft(10.adjusted)
       }
     
     profileInfoView.flex
-      .width(100%)
       .define {
         $0.addItem(userNickNameLabel)
         $0.addItem(missionLabel)
@@ -355,6 +376,7 @@ public final class WalWalFeedCellView: UIView {
   
   // MARK: - Binding
   
+    
   private func bind() {
     contentLabel.rx.tapped
       .withUnretained(self)
@@ -372,7 +394,16 @@ public final class WalWalFeedCellView: UIView {
       }
       .bind(to: profileTappedSubject)
       .disposed(by: disposeBag)
+    
+    feedMenuButton.rx.tap
+      .withUnretained(self)
+      .compactMap { owner, _ in
+        owner.feedData?.recordId
+      }
+      .bind(to: menuButtonTapEvent)
+      .disposed(by: disposeBag)
   }
+  
 }
 
 extension String {

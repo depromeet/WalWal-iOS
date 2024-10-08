@@ -6,6 +6,7 @@
 //  Created by 조용인
 //
 
+import UIKit
 import SplashDomain
 import SplashPresenter
 import FCMDomain
@@ -56,24 +57,37 @@ public final class SplashReactorImp: SplashReactor {
         .do(onDispose:  {
           AppUpdateManager.shared.checkForUpdate()
         })
+    case .moveUpdate:
+      return moveAppStore()
     }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
-    
+    var newState = state
     switch mutation {
     case .startAuth:
       coordinator.destination.accept(.startAuth)
     case .startMain:
       coordinator.destination.accept(.startHome)
+    case let .openAppStore(url):
+      newState.url = url
     }
-    return state
+    return newState
   }
 }
 
 // MARK: - Private Methods
 
 extension SplashReactorImp {
+  
+  private func moveAppStore() -> Observable<Mutation> {
+    var country = "kr"
+    if #available(iOS 16.0, *){ country = NSLocale.current.language.region!.identifier }
+    guard let url = URL(string: "https://apps.apple.com/\(country)/app/%EC%99%88%EC%99%88/id6553981069") else {
+      return .never()
+    }
+    return .just(.openAppStore(url: url))
+  }
   
   private func checkToken() -> Observable<Bool> {
     guard let _ = checkTokenUseCase.execute() else {

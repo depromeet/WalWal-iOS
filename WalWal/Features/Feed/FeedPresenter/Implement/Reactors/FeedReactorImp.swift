@@ -100,6 +100,8 @@ public final class FeedReactorImp: FeedReactor {
       let scrollObservable = Observable.just(Mutation.scrollToTop(index == 1))
       let resetTabObservable = Observable.just(Mutation.resetTabEvent)
       return Observable.concat([scrollObservable, resetTabObservable])
+    case let .menuTapped(recordId):
+      return .just(.showMenu(recordId: recordId))
     }
   }
   
@@ -125,6 +127,8 @@ public final class FeedReactorImp: FeedReactor {
       newState.isDoubleTap = isDoubleTapped
     case .resetTabEvent:
       newState.isDoubleTap = false
+    case let .showMenu(recordId):
+      coordinator.destination.accept(.showFeedMenu(recordId: recordId))
     }
     return newState
   }
