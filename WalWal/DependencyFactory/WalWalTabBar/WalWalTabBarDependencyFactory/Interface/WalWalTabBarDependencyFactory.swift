@@ -17,6 +17,7 @@ import RecordsDependencyFactory
 import ImageDependencyFactory
 import MembersDependencyFactory
 import ImageDependencyFactory
+import CommentDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -36,6 +37,7 @@ public protocol WalWalTabBarDependencyFactory {
     recordDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory,
     deepLinkObservable: Observable<String?>
   ) -> any WalWalTabBarCoordinator
 }

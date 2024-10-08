@@ -19,6 +19,7 @@ import FCMDependencyFactoryImp
 import RecordsDependencyFactoryImp
 import ImageDependencyFactoryImp
 import MembersDependencyFactoryImp
+import CommentDependencyFactoryImp
 
 import RxSwift
 
@@ -40,6 +41,7 @@ extension AppDelegate {
     let recordsDependencyFactory = RecordsDependencyFactoryImp()
     let imageDependencyFactory = ImageDependencyFactoryImp()
     let membersDependencyFactory = MembersDependencyFactoryImp()
+    let commentDependencyFactory = CommentDependencyFactoryImp()
     
     return splashDependencyFactory.injectAppCoordinator(
       navigationController: navigation,
@@ -54,6 +56,7 @@ extension AppDelegate {
       feedDependencyFactory: feedDependencyFactory,
       recordsDependencyFactory: recordsDependencyFactory,
       memberDependencyFactory: membersDependencyFactory,
+      commentDependencyFactory: commentDependencyFactory,
       deepLinkObservable: deepLinkObservable
     )
   }
