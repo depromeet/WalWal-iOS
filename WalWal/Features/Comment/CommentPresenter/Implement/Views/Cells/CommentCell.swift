@@ -74,11 +74,10 @@ final class CommentCell: UITableViewCell, ReusableView {
     rootContainerView.pin
       .top(0)
       .left(15)
-      .right(15)
+      .right(0)
       .bottom(0)
-    rootContainerView.flex.layout(mode: .adjustHeight)
-    
-    rootContainerView.flex.markDirty()
+    rootContainerView.flex
+      .layout(mode: .adjustHeight)
   }
   
   override func sizeThatFits(_ size: CGSize) -> CGSize {
@@ -110,7 +109,7 @@ final class CommentCell: UITableViewCell, ReusableView {
       .justifyContent(.spaceBetween)
       .define { flex in
         flex.addItem(profileImageAndBodyContainer)
-        flex.addItem(replyButtonContainer)
+        flex.addItem(replyButton)
           .marginTop(8)
           .marginLeft(42)
         flex.addItem()
@@ -123,20 +122,24 @@ final class CommentCell: UITableViewCell, ReusableView {
         flex.addItem(profileImageContainer)
         flex.addItem(bodyContainer)
           .marginLeft(8)
+          .grow(1)
+          .shrink(1)
+        flex.addItem()
+          .width(15)
       }
     
     bodyContainer.flex
       .define { flex in
         flex.addItem(nicknameAndTimeContainer)
-        flex.addItem(contentLabelContainer)
+        flex.addItem(contentLabel)
           .marginTop(2)
       }
     
     nicknameAndTimeContainer.flex
       .direction(.row)
       .define { flex in
-        flex.addItem(nicknameContainer)
-        flex.addItem(timeLabelContainer)
+        flex.addItem(nicknameLabel)
+        flex.addItem(timeLabel)
           .marginLeft(4)
       }
     
@@ -144,26 +147,6 @@ final class CommentCell: UITableViewCell, ReusableView {
       .define { flex in
         flex.addItem(profileImageView)
           .size(34)
-      }
-    
-    nicknameContainer.flex
-      .define { flex in
-        flex.addItem(nicknameLabel)
-      }
-    
-    timeLabelContainer.flex
-      .define { flex in
-        flex.addItem(timeLabel)
-      }
-    
-    contentLabelContainer.flex
-      .define { flex in
-        flex.addItem(contentLabel)
-      }
-    
-    replyButtonContainer.flex
-      .define { flex in
-        flex.addItem(replyButton)
       }
   }
   
