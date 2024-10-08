@@ -37,14 +37,14 @@ public final class CommentReactorImp: CommentReactor {
     self.flattenCommentUsecase = flattenCommentUsecase
     
     self.recordId = recordId
-    self.initialState = State()
+    self.initialState = State(recordId: recordId)
   }
   
   /// `transform` 메서드를 사용하여 액션 스트림을 변형합니다.
   public func transform(action: Observable<Action>) -> Observable<Action> {
     /// 초기 액션으로 `initialLoadAction`를 추가
     let initialLoadAction = Observable.just(
-      Action.fetchComments(recordId: recordId)
+      Action.fetchComments
     )
     /// 기존 액션 스트림과 초기 액션 스트림을 병합
     return Observable.merge(initialLoadAction, action)
@@ -60,7 +60,7 @@ public final class CommentReactorImp: CommentReactor {
         .withUnretained(self)
         .map { owner, model in owner.flattenCommentUsecase.execute(comments: model.comments)}
         .observe(on: MainScheduler.instance)
-        .map { Mutation.setComments($0) } /// 전체 댓글 갱신
+        .map { Mutation.setComments($0) }
     case .postComment(let content):
       let recordId = currentState.recordId
       return postCommentUsecase.execute(content: content, recordId: recordId, parentId: nil)
@@ -72,7 +72,7 @@ public final class CommentReactorImp: CommentReactor {
         .map { owner, model in owner.flattenCommentUsecase.execute(comments: model.comments)}
         .asObservable()
         .observe(on: MainScheduler.instance)
-        .map { Mutation.setComments($0) } /// 댓글 추가 후 전체 목록 갱신
+        .map { Mutation.setComments($0) }
     case .replyToComment(let parentId, let content):
       let recordId = currentState.recordId
       return postCommentUsecase.execute(content: content, recordId: recordId, parentId: parentId)
@@ -84,7 +84,7 @@ public final class CommentReactorImp: CommentReactor {
         .map { owner, model in owner.flattenCommentUsecase.execute(comments: model.comments)}
         .asObservable()
         .observe(on: MainScheduler.instance)
-        .map { Mutation.setComments($0) } /// 대댓글 추가 후 전체 목록 갱신
+        .map { Mutation.setComments($0) }
     case let .didPan(translation, _):
       return Observable.just(.setSheetPosition(translation.y))
     case let .didEndPan(velocity):
@@ -99,7 +99,7 @@ public final class CommentReactorImp: CommentReactor {
       var newState = currentState
       newState.isReply = isReply
       newState.parentId = parentId
-      return .just(Mutation.setComments(newState.comments)) // 상태 갱신
+      return .just(Mutation.setComments(newState.comments))
     }
   }
   
@@ -107,7 +107,7 @@ public final class CommentReactorImp: CommentReactor {
     var newState = state
     switch mutation {
     case let .setComments(comments):
-      newState.comments = comments /// 전체 댓글 상태 업데이트
+      newState.comments = comments
     case let .setSheetPosition(position):
       newState.sheetPosition = position
     case .dismissSheet:

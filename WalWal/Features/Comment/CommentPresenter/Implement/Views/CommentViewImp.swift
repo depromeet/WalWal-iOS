@@ -68,8 +68,6 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public init(reactor: R) {
     self.commentReactor = reactor
     super.init(nibName: nil, bundle: nil)
-    
-    commentReactor.action.onNext(.fetchComments)
   }
   
   required init?(coder: NSCoder) {
@@ -179,7 +177,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     } else {
       animateSheetUp()
     }
-    
+  }
+  
   /// 키보드 올라갔을 때 레이아웃 재설정
   private func keyboardShowLayout() {
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
@@ -301,14 +300,7 @@ extension CommentViewControllerImp: View {
     // 댓글 작성 시 액션
     inputBox.rx.postButtonTap
       .withLatestFrom(inputBox.rx.text)
-      .compactMap { [weak reactor] content -> Reactor.Action? in
-        guard let reactor = reactor else { return nil }
-        if reactor.currentState.isReply, let parentId = reactor.currentState.parentId {
-          return Reactor.Action.replyToComment(parentId: parentId, content: content)
-        } else {
-          return Reactor.Action.postComment(content: content)
-        }
-      }
+      .map { Reactor.Action.postComment(content: $0) }
       .do(onNext: { [weak self] _ in
         self?.inputBox.rx.textEndEditing.onNext(())
       })
