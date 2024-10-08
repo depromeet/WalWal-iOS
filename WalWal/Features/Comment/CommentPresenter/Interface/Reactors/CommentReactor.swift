@@ -12,9 +12,9 @@ import ReactorKit
 import RxSwift
 
 public enum CommentReactorAction {
-  case fetchComments(recordId: Int) /// 전체 댓글을 불러오는 액션
-  case postComment(content: String, recordId: Int) /// 댓글을 추가하는 액션
-  case replyToComment(parentId: Int, content: String, recordId: Int) /// 대댓글을 추가하는 액션
+  case fetchComments /// 전체 댓글을 불러오는 액션
+  case postComment(content: String) /// 댓글을 추가하는 액션
+  case replyToComment(parentId: Int, content: String) /// 대댓글을 추가하는 액션
 }
 
 
@@ -26,8 +26,10 @@ public enum CommentReactorMutation {
 public struct CommentReactorState {
   public var comments: [FlattenCommentModel] = []
   public var isLoading: Bool = false
-  
-  public init() { }
+  public let recordId: Int
+  public init(recordId: Int) {
+    self.recordId = recordId
+  }
 }
 
 public protocol CommentReactor: Reactor where Action == CommentReactorAction, Mutation == CommentReactorMutation, State == CommentReactorState {
@@ -35,6 +37,7 @@ public protocol CommentReactor: Reactor where Action == CommentReactorAction, Mu
   init(
     getCommentsUsecase: GetCommentsUsecase,
     postCommentUsecase: PostCommentUsecase,
-    flattenCommentUsecase: FlattenCommentsUsecase
+    flattenCommentUsecase: FlattenCommentsUsecase,
+    recordId: Int
   )
 }

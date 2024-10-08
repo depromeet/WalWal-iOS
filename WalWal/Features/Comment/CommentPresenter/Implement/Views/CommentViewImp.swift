@@ -63,7 +63,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     self.commentReactor = reactor
     super.init(nibName: nil, bundle: nil)
     
-    commentReactor.action.onNext(.fetchComments(recordId: 503))
+    commentReactor.action.onNext(.fetchComments)
   }
   
   required init?(coder: NSCoder) {
@@ -208,12 +208,10 @@ extension CommentViewControllerImp: View {
   
   public func bindAction(reactor: R) {
     
-    /// 리액터로 액션 전달해서 post 진행
     inputBox.rx.postButtonTap
       .withLatestFrom(inputBox.rx.text)
-      .bind(with: self) { owner, text in
-        print(text)
-      }
+      .map{ Reactor.Action.postComment(content: $0) }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
   
