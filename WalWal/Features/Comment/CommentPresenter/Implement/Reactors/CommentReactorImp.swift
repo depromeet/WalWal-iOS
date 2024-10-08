@@ -95,6 +95,11 @@ public final class CommentReactorImp: CommentReactor {
       }
     case .tapDimView:
       return Observable.just(.dismissSheet)
+    case let .setReplyMode(isReply, parentId):
+      var newState = currentState
+      newState.isReply = isReply
+      newState.parentId = parentId
+      return .just(Mutation.setComments(newState.comments)) // 상태 갱신
     }
   }
   
