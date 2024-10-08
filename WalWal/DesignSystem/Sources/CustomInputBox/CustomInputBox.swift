@@ -223,4 +223,11 @@ extension Reactive where Base: CustomInputBox {
       target.textView.text = nil
     }
   }
+  
+  /// 텍스트뷰 키보드 올라오기 (입력 시작)
+  public var startEditing: Binder<Void> {
+    return Binder(base) { target, _ in
+      target.textView.becomeFirstResponder() // 키보드 활성화
+    }
+  }
 }
