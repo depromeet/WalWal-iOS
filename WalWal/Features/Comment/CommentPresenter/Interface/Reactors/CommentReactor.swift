@@ -21,12 +21,13 @@ public enum CommentReactorAction {
   case postComment(content: String) /// 댓글을 추가하는 액션
   case replyToComment(parentId: Int, content: String) /// 대댓글을 추가하는 액션
   case setReplyMode(isReply: Bool, parentId: Int?) /// 대댓글 모드 설정 액션
+  case resetParentId /// 대댓글 모드 해제 액션
 }
 
 
 public enum CommentReactorMutation {
   case setComments([FlattenCommentModel]) /// 댓글 데이터를 설정하는 Mutation
-  
+  case setReplyMode(Int?, Bool)
   // 바텀 시트 관련 Mutation
   case setSheetPosition(CGFloat)
   case dismissSheet

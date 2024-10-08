@@ -96,10 +96,9 @@ public final class CommentReactorImp: CommentReactor {
     case .tapDimView:
       return Observable.just(.dismissSheet)
     case let .setReplyMode(isReply, parentId):
-      var newState = currentState
-      newState.isReply = isReply
-      newState.parentId = parentId
-      return .just(Mutation.setComments(newState.comments))
+      return Observable.just(.setReplyMode(parentId, isReply))
+    case .resetParentId:
+      return Observable.just(.setReplyMode(nil, false))
     }
   }
   
@@ -113,6 +112,9 @@ public final class CommentReactorImp: CommentReactor {
       newState.sheetPosition = position
     case .dismissSheet:
       newState.isSheetDismissed = true
+    case let .setReplyMode(parentId, isReply):
+      newState.parentId = parentId
+      newState.isReply = isReply
     }
     return newState
     
