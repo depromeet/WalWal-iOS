@@ -227,6 +227,12 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
           .bind(to: owner.parentIdRelay)
           .disposed(by: cell.disposeBag)
         
+        cell.replyButton.rx.tapped
+          .subscribe(onNext: { _ in
+            owner.inputBox.rx.startEditing.onNext(())
+          })
+          .disposed(by: cell.disposeBag)
+        
         return cell
       } else {
         let cell = tableView.dequeue(ReplyCommentCell.self, for: indexPath)

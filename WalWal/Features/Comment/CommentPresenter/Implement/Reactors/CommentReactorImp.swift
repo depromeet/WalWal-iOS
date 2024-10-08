@@ -63,18 +63,7 @@ public final class CommentReactorImp: CommentReactor {
         .map { Mutation.setComments($0) }
     case .postComment(let content):
       let recordId = currentState.recordId
-      return postCommentUsecase.execute(content: content, recordId: recordId, parentId: nil)
-        .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-        .asObservable()
-        .withUnretained(self)
-        .flatMap { owner, _ in owner.getCommentsUsecase.execute(recordId: recordId) }
-        .withUnretained(self)
-        .map { owner, model in owner.flattenCommentUsecase.execute(comments: model.comments)}
-        .asObservable()
-        .observe(on: MainScheduler.instance)
-        .map { Mutation.setComments($0) }
-    case .replyToComment(let parentId, let content):
-      let recordId = currentState.recordId
+      let parentId = currentState.parentId
       return postCommentUsecase.execute(content: content, recordId: recordId, parentId: parentId)
         .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
         .asObservable()

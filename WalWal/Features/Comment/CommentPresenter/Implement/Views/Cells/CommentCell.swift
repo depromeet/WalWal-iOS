@@ -165,7 +165,7 @@ final class CommentCell: UITableViewCell, ReusableView {
   func configure(with comment: FlattenCommentModel) {
     nicknameLabel.text = comment.writerNickname
     contentLabel.text = comment.content
-    parentId = comment.writerID
+    parentId = comment.commentID
     
     if let timeText = timeAgo(from: comment.createdAt) {
       timeLabel.text = timeText

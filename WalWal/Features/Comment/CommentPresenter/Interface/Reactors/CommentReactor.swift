@@ -19,7 +19,6 @@ public enum CommentReactorAction {
   case tapDimView
   case fetchComments /// 전체 댓글을 불러오는 액션
   case postComment(content: String) /// 댓글을 추가하는 액션
-  case replyToComment(parentId: Int, content: String) /// 대댓글을 추가하는 액션
   case setReplyMode(isReply: Bool, parentId: Int?) /// 대댓글 모드 설정 액션
   case resetParentId /// 대댓글 모드 해제 액션
 }
