@@ -18,7 +18,6 @@ import WalWalNetwork
 import CommentDataImp
 import CommentDomainImp
 import CommentPresenterImp
-import LocalStorage
 
 @main
 final class CommentAppDelegate: UIResponder, UIApplicationDelegate {
