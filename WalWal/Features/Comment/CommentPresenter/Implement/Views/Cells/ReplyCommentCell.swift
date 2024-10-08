@@ -1,8 +1,8 @@
 //
-//  CommentCell.swift
-//  CommentPresenter
+//  ReplyCommentCell.swift
+//  CommentPresenterImp
 //
-//  Created by 조용인 on 10/7/24.
+//  Created by 조용인 on 10/8/24.
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
@@ -15,7 +15,7 @@ import Then
 import FlexLayout
 import PinLayout
 
-final class CommentCell: UITableViewCell, ReusableView {
+final class ReplyCommentCell: UITableViewCell, ReusableView {
   
   private typealias FontKR = ResourceKitFontFamily.KR
   private typealias AssetColor = ResourceKitAsset.Colors
@@ -23,19 +23,24 @@ final class CommentCell: UITableViewCell, ReusableView {
   // 컨테이너 뷰 추가
   private let rootContainerView = UIView()
   
-  private let profileImageAndBodyContainer = UIView()
-  private let bodyContainer = UIView()
-  private let nicknameAndTimeContainer = UIView()
+  private let profileImageAndBodyContainer = UIView().then {
+    $0.backgroundColor = .blue
+  }
+  private let bodyContainer = UIView().then {
+    $0.backgroundColor = .red.withAlphaComponent(0.5)
+  }
+  private let nicknameAndTimeContainer = UIView().then {
+    $0.backgroundColor = .green.withAlphaComponent(0.5)
+  }
   
   private let profileImageContainer = UIView()
   private let nicknameContainer = UIView()
   private let timeLabelContainer = UIView()
   private let contentLabelContainer = UIView()
-  private let replyButtonContainer = UIView()
   
   private let profileImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFill
-    $0.backgroundColor = AssetColor.gray200.color
+    $0.backgroundColor = AssetColor.gray200.color // 이미지가 없을 때 보여줄 배경색
     $0.layer.cornerRadius = 17
     $0.clipsToBounds = true
   }
@@ -54,11 +59,6 @@ final class CommentCell: UITableViewCell, ReusableView {
     $0.lineBreakMode = .byTruncatingTail
   }
   
-  private let replyButton = CustomLabel(font: FontKR.M1).then {
-    $0.textColor = AssetColor.gray500.color
-    $0.text = "답글 달기"
-  }
-  
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setAttribute()
@@ -73,18 +73,20 @@ final class CommentCell: UITableViewCell, ReusableView {
     super.layoutSubviews()
     rootContainerView.pin
       .top(0)
-      .left(15)
+      .left(44 + 15)
       .right(15)
       .bottom(0)
-    rootContainerView.flex.layout(mode: .adjustHeight)
+    rootContainerView.flex
+      .layout(mode: .adjustHeight)
     
     rootContainerView.flex.markDirty()
   }
   
   override func sizeThatFits(_ size: CGSize) -> CGSize {
+    // 셀의 적절한 크기를 계산하여 반환
     let targetWidth = size.width
-    rootContainerView.pin.width(targetWidth)
-    rootContainerView.flex.layout(mode: .adjustHeight)
+    rootContainerView.pin.width(targetWidth) // rootContainerView의 너비를 설정
+    rootContainerView.flex.layout(mode: .adjustHeight) // FlexLayout으로 레이아웃 조정
     let height = rootContainerView.frame.height
     return CGSize(width: targetWidth, height: height)
   }
@@ -95,7 +97,6 @@ final class CommentCell: UITableViewCell, ReusableView {
     nicknameLabel.text = nil
     contentLabel.text = nil
     timeLabel.text = nil
-    replyButton.isHidden = false
   }
   
   private func setAttribute() {
@@ -110,9 +111,6 @@ final class CommentCell: UITableViewCell, ReusableView {
       .justifyContent(.spaceBetween)
       .define { flex in
         flex.addItem(profileImageAndBodyContainer)
-        flex.addItem(replyButtonContainer)
-          .marginTop(8)
-          .marginLeft(42)
         flex.addItem()
           .height(20)
       }
@@ -120,53 +118,31 @@ final class CommentCell: UITableViewCell, ReusableView {
     profileImageAndBodyContainer.flex
       .direction(.row)
       .define { flex in
-        flex.addItem(profileImageContainer)
+        flex.addItem(profileImageView)
+          .size(34)
         flex.addItem(bodyContainer)
           .marginLeft(8)
       }
     
+    
     bodyContainer.flex
       .define { flex in
         flex.addItem(nicknameAndTimeContainer)
-        flex.addItem(contentLabelContainer)
+        flex.addItem(contentLabel)
           .marginTop(2)
+          .grow(1)
       }
     
     nicknameAndTimeContainer.flex
       .direction(.row)
       .define { flex in
-        flex.addItem(nicknameContainer)
-        flex.addItem(timeLabelContainer)
-          .marginLeft(4)
-      }
-    
-    profileImageContainer.flex
-      .define { flex in
-        flex.addItem(profileImageView)
-          .size(34)
-      }
-    
-    nicknameContainer.flex
-      .define { flex in
         flex.addItem(nicknameLabel)
-      }
-    
-    timeLabelContainer.flex
-      .define { flex in
         flex.addItem(timeLabel)
-      }
-    
-    contentLabelContainer.flex
-      .define { flex in
-        flex.addItem(contentLabel)
-      }
-    
-    replyButtonContainer.flex
-      .define { flex in
-        flex.addItem(replyButton)
+          .marginLeft(4)
       }
   }
   
+  // 댓글과 대댓글을 설정하는 메서드
   func configure(with comment: FlattenCommentModel) {
     nicknameLabel.text = comment.writerNickname
     contentLabel.text = comment.content
@@ -181,7 +157,7 @@ final class CommentCell: UITableViewCell, ReusableView {
       profileImageView.kf.setImage(with: imageUrl)
     }
     
-    layoutIfNeeded()
+    layoutIfNeeded() // 레이아웃을 즉시 업데이트하여 셀의 크기를 동적으로 조정
   }
   
   private func timeAgo(from dateString: String) -> String? {

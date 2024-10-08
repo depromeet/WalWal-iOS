@@ -22,19 +22,29 @@ import RxCocoa
 public final class CommentViewControllerImp<R: CommentReactor>: UIViewController, CommentViewController, UITableViewDelegate {
   
   private typealias FontKR = ResourceKitFontFamily.KR
+  private typealias AssetColor = ResourceKitAsset.Colors
   
   public var disposeBag = DisposeBag()
   public var commentReactor: R
   
-  private let commentLabel = CustomLabel(font: <#T##UIFont#>, ).then {
-    $0.text = "댓글"
-    $0.font = .boldSystemFont(ofSize: 20)
+  private let rootContainerView = UIView().then {
+    $0.backgroundColor = .white
+  }
+  
+  private let headerContainerView = UIView()
+  private let tableViewContainerView = UIView()
+  
+  private let commentLabel = CustomLabel(text: "댓글", font: FontKR.H5.B ).then {
+    $0.textColor = AssetColor.black.color
   }
   
   private let tableView = UITableView().then {
     $0.register(CommentCell.self)
+    $0.register(ReplyCommentCell.self)
     $0.separatorStyle = .none
     $0.showsVerticalScrollIndicator = false
+    $0.estimatedRowHeight = 60
+    $0.rowHeight = UITableView.automaticDimension
   }
   
   private var dataSource: UITableViewDiffableDataSource<Section, FlattenCommentModel>!
@@ -43,7 +53,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     self.commentReactor = reactor
     super.init(nibName: nil, bundle: nil)
     
-    commentReactor.action.onNext(.fetchComments(recordId: 123))
+    commentReactor.action.onNext(.fetchComments(recordId: 503))
   }
   
   required init?(coder: NSCoder) {
@@ -54,19 +64,56 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public override func viewDidLoad() {
     super.viewDidLoad()
     setAttribute()
-    setupTableView()
-    setupDataSource()
-    bind(reactor: commentReactor)
+    setLayout()
+    self.reactor = commentReactor
+  }
+  
+  public override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    rootContainerView.pin
+      .vertically(view.pin.safeArea)
+      .horizontally()
+    
+    rootContainerView.flex
+      .layout()
   }
   
   // MARK: - UI Setup
   public func setAttribute() {
-    view.backgroundColor = .white
-    view.addSubview(tableView)
-    tableView.pin.all() // PinLayout을 사용하여 테이블뷰 레이아웃 설정
+    view.backgroundColor = AssetColor.white.color
+    view.addSubview(rootContainerView)
+    
+    setupTableView()
+    setupDataSource()
   }
   
-  public func setLayout() { }
+  public func setLayout() {
+    
+    headerContainerView.flex
+      .height(58)
+      .width(100%)
+      .justifyContent(.center)
+      .alignItems(.center)
+      .define { flex in
+        flex.addItem(commentLabel)
+      }
+    
+    tableViewContainerView.flex
+      .grow(1)
+      .define { flex in
+        flex.addItem(tableView)
+          .position(.absolute)
+          .top(20)
+          .width(100%)
+          .bottom(0)
+      }
+    
+    rootContainerView.flex
+      .define { flex in
+        flex.addItem(headerContainerView)
+        flex.addItem(tableViewContainerView)
+      }
+  }
   
   private func setupTableView() {
     tableView.delegate = self
@@ -74,9 +121,15 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   private func setupDataSource() {
     dataSource = UITableViewDiffableDataSource<Section, FlattenCommentModel>(tableView: tableView) { (tableView, indexPath, comment) -> UITableViewCell? in
-      let cell = tableView.dequeue(CommentCell.self, for: indexPath)
-      cell.configure(with: comment)
-      return cell
+      if comment.parentID == nil {
+        let cell = tableView.dequeue(CommentCell.self, for: indexPath)
+        cell.configure(with: comment)
+        return cell
+      } else {
+        let cell = tableView.dequeue(ReplyCommentCell.self, for: indexPath)
+        cell.configure(with: comment)
+        return cell
+      }
     }
   }
   
@@ -84,7 +137,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     var snapshot = NSDiffableDataSourceSnapshot<Section, FlattenCommentModel>()
     snapshot.appendSections([.main])
     snapshot.appendItems(comments, toSection: .main)
-    dataSource.apply(snapshot, animatingDifferences: true)
+    dataSource.apply(snapshot, animatingDifferences: false)
   }
   
   public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -92,7 +145,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return 60
+    return UITableView.automaticDimension
   }
 }
 
