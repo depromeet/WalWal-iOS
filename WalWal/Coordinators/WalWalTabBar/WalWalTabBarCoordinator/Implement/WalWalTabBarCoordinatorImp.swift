@@ -19,6 +19,7 @@ import RecordsDependencyFactory
 import ImageDependencyFactory
 import MembersDependencyFactory
 import ImageDependencyFactory
+import CommentDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -59,6 +60,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   private var authDependencyFactory: AuthDependencyFactory
   private let imageDependencyFactory: ImageDependencyFactory
   private var membersDependencyFactory: MembersDependencyFactory
+  private var commentDependencyFactory: CommentDependencyFactory
   private let deepLinkObservable: Observable<String?>
   private var deeplinkFlag: Bool = false
   private var checkDeepLink: String? = nil
@@ -79,6 +81,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     recordDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory,
     deepLinkObservable: Observable<String?>
   ) {
     self.navigationController = navigationController
@@ -94,6 +97,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     self.imageDependencyFactory = imageDependencyFactory
     self.tabBarController = WalWalTabBarViewController()
     self.membersDependencyFactory = membersDependencyFactory
+    self.commentDependencyFactory = commentDependencyFactory
     self.deepLinkObservable = deepLinkObservable
     
     bindChildToParentAction()
@@ -287,7 +291,8 @@ extension WalWalTabBarCoordinatorImp {
     let feedCoordinator = feedDependencyFactory.injectFeedCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
-      recordsDependencyFactory: recordDependencyFactory
+      recordsDependencyFactory: recordDependencyFactory,
+      commentDependencyFactory: commentDependencyFactory
     )
     childCoordinator = feedCoordinator
     feedCoordinator.start()

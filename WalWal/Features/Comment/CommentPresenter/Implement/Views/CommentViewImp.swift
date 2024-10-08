@@ -22,11 +22,16 @@ import RxCocoa
 public final class CommentViewControllerImp<R: CommentReactor>: UIViewController, CommentViewController, UITableViewDelegate {
   
   private typealias FontKR = ResourceKitFontFamily.KR
+  private typealias Colors = ResourceKitAsset.Colors
   private typealias AssetColor = ResourceKitAsset.Colors
   
+  private let panGesture = UIPanGestureRecognizer()
   public var disposeBag = DisposeBag()
   public var commentReactor: R
   
+  private let dimView = UIView().then {
+    $0.backgroundColor = Colors.black30.color
+  }
   private let rootContainerView = UIView().then {
     $0.backgroundColor = .white
   }
@@ -39,6 +44,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   private let tableView = UITableView().then {
+    $0.backgroundColor = .white
     $0.register(CommentCell.self)
     $0.register(ReplyCommentCell.self)
     $0.separatorStyle = .none
@@ -78,8 +84,17 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     self.reactor = commentReactor
   }
   
+  public override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    animateSheetUp()
+  }
+  
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    dimView.pin.all()
+    dimView.flex.layout()
+    rootContainerView.pin.bottom(-rootContainerView.frame.height)
+    
     let _ = view.pin.keyboardArea.height
     
     rootContainerView.pin
@@ -93,14 +108,23 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   // MARK: - UI Setup
   public func setAttribute() {
-    view.backgroundColor = AssetColor.white.color
-    view.addSubview(rootContainerView)
+    view.backgroundColor = .clear
+    view.addSubview(dimView)
     
+    rootContainerView.layer.cornerRadius = 30
+    rootContainerView.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
     setupTableView()
     setupDataSource()
   }
   
   public func setLayout() {
+    dimView.flex
+      .define { flex in
+        flex.addItem(rootContainerView)
+          .position(.absolute)
+          .bottom(0)
+          .width(100%)
+      }
     
     headerContainerView.flex
       .height(58)
@@ -122,6 +146,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       }
     
     rootContainerView.flex
+      .height(580.adjustedHeight)
       .define { flex in
         flex.addItem(headerContainerView)
         flex.addItem(tableViewContainerView)
@@ -130,6 +155,31 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       }
   }
   
+  private func animateSheetUp() {
+    UIView.animate(withDuration: 0.3) {
+      self.dimView.alpha = 1
+      self.rootContainerView.pin.bottom(0)
+      self.rootContainerView.flex.layout()
+    }
+  }
+  
+  private func animateSheetDown(completion: (() -> Void)? = nil) {
+    UIView.animate(withDuration: 0.3, animations: {
+      self.dimView.alpha = 0
+      self.rootContainerView.pin.bottom(-self.rootContainerView.frame.height)
+      self.rootContainerView.flex.layout()
+    }, completion: { _ in
+      completion?()
+    })
+  }
+  
+  private func updateSheetPosition(_ position: CGFloat) {
+    if position > 0 {
+      rootContainerView.pin.bottom(-position)
+    } else {
+      animateSheetUp()
+    }
+    
   /// 키보드 올라갔을 때 레이아웃 재설정
   private func keyboardShowLayout() {
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
@@ -204,9 +254,49 @@ extension CommentViewControllerImp: View {
         self.updateSnapshot(with: comments)
       })
       .disposed(by: disposeBag)
+    
+    reactor.state.map { $0.sheetPosition }
+      .distinctUntilChanged()
+      .subscribe(onNext: { [weak self] position in
+        guard let self = self else { return }
+        self.updateSheetPosition(position)
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.state.map { $0.isSheetDismissed }
+      .filter { $0 }
+      .subscribe(with: self) { owner, isSheetDismissed in
+        owner.dismiss(animated: false)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindAction(reactor: R) {
+    rootContainerView.rx
+      .panGesture()
+      .asObservable()
+      .subscribe(with: self, onNext: { owner, gesture in
+        let translation = gesture.translation(in: owner.rootContainerView)
+        let velocity = gesture.velocity(in: owner.rootContainerView)
+        
+        switch gesture.state {
+        case .changed:
+          reactor.action.onNext(.didPan(translation: translation, velocity: velocity))
+        case .ended:
+          reactor.action.onNext(.didEndPan(velocity: velocity))
+        default:
+          break
+        }
+      })
+      .disposed(by: disposeBag)
+    
+    dimView.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.animateSheetDown {
+          reactor.action.onNext(.tapDimView)
+        }
+      })
+      .disposed(by: disposeBag)
     
     // 댓글 작성 시 액션
     inputBox.rx.postButtonTap

@@ -11,6 +11,7 @@ import DesignSystem
 import FeedDependencyFactory
 import RecordsDependencyFactory
 import FCMDependencyFactory
+import CommentDependencyFactory
 
 import BaseCoordinator
 import FeedCoordinator
@@ -36,17 +37,20 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   
   public var feedDependencyFactory: FeedDependencyFactory
   public var recordsDependencyFactory: RecordsDependencyFactory
+  public var commentDependencyFactory: CommentDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     feedDependencyFactory: FeedDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.feedDependencyFactory = feedDependencyFactory
     self.recordsDependencyFactory = recordsDependencyFactory
+    self.commentDependencyFactory = commentDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -61,6 +65,8 @@ public final class FeedCoordinatorImp: FeedCoordinator {
           self.showReportType(recordId: recordId)
         case let .showReportDetailView(recordId, reportType):
           self.showReportDetail(recordId: recordId, reportType: reportType)
+        case .showCommentView(recordId: let recordId):
+          self.showComment(recordId: recordId)
         }
       })
       .disposed(by: disposeBag)
@@ -159,6 +165,24 @@ extension FeedCoordinatorImp {
     bottomSheetNavigaionController?.setNavigationBarHidden(true, animated: false)
     bottomSheetNavigaionController?.pushViewController(vc, animated: false)
   }
+  
+  public func showComment(recordId: Int) {
+    let getCommentUseCase = commentDependencyFactory.injectGetCommentsUseCase()
+    let postCommentUseCase = commentDependencyFactory.injectPostCommentUsecase()
+    let flatternedCommentUseCase = commentDependencyFactory.injectFlattenCommentsUsecase()
+    let reactor = commentDependencyFactory.injectCommentReactor(
+      getCommentsUsecase: getCommentUseCase,
+      postCommentUsecase: postCommentUseCase,
+      flattenCommentUsecase: flatternedCommentUseCase,
+      recordId: recordId
+    )
+    let vc = commentDependencyFactory.injectCommentViewController(reactor: reactor)
+    self.presentViewController(
+      viewController: vc,
+      style: .overFullScreen,
+      animated: false
+    )
+  }
 }
 
 
@@ -182,4 +206,5 @@ extension FeedCoordinatorImp {
   public func popReportDetail() {
     bottomSheetNavigaionController?.popViewController(animated: false)
   }
+  
 }

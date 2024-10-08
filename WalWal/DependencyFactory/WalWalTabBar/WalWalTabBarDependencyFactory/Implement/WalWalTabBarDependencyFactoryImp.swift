@@ -18,6 +18,7 @@ import RecordsDependencyFactory
 import ImageDependencyFactory
 import MembersDependencyFactory
 import ImageDependencyFactory
+import CommentDependencyFactory
 
 import BaseCoordinator
 import WalWalTabBarCoordinator
@@ -43,6 +44,7 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
     recordDependencyFactory: RecordsDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
     membersDependencyFactory: MembersDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory,
     deepLinkObservable: Observable<String?>
   ) -> any WalWalTabBarCoordinator {
     return WalWalTabBarCoordinatorImp(
@@ -58,6 +60,7 @@ public class WalWalTabBarDependencyFactoryImp: WalWalTabBarDependencyFactory {
       recordDependencyFactory: recordDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,
       membersDependencyFactory: membersDependencyFactory,
+      commentDependencyFactory: commentDependencyFactory,
       deepLinkObservable: deepLinkObservable
     )
   }

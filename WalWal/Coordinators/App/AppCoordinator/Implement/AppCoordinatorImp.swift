@@ -25,6 +25,7 @@ import MyPageDependencyFactory
 import RecordsDependencyFactory
 import ImageDependencyFactory
 import MembersDependencyFactory
+import CommentDependencyFactory
 
 import RxSwift
 import RxCocoa
@@ -54,6 +55,7 @@ public final class AppCoordinatorImp: AppCoordinator {
   private let feedDependencyFactory: FeedDependencyFactory
   private let recordsDependencyFactory: RecordsDependencyFactory
   private let memberDependencyFactory: MembersDependencyFactory
+  private let commentDependencyFactory: CommentDependencyFactory
   
   private let deepLinkObservable: Observable<String?>
   
@@ -73,6 +75,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     feedDependencyFactory: FeedDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory,
     memberDependencyFactory: MembersDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory,
     deepLinkObservable: Observable<String?>
   ) {
     self.navigationController = navigationController
@@ -88,6 +91,7 @@ public final class AppCoordinatorImp: AppCoordinator {
     self.feedDependencyFactory = feedDependencyFactory
     self.recordsDependencyFactory = recordsDependencyFactory
     self.memberDependencyFactory = memberDependencyFactory
+    self.commentDependencyFactory = commentDependencyFactory
     self.deepLinkObservable = deepLinkObservable
     bindChildToParentAction()
     bindState()
@@ -212,6 +216,7 @@ extension AppCoordinatorImp {
       recordDependencyFactory: recordsDependencyFactory, 
       imageDependencyFactory: imageDependencyFactory,
       membersDependencyFactory: memberDependencyFactory,
+      commentDependencyFactory: commentDependencyFactory,
       deepLinkObservable: deepLinkObservable
     )
     childCoordinator = walwalTabBarCoordinator
