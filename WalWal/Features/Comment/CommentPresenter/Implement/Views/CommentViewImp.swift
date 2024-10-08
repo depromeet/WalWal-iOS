@@ -141,7 +141,10 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   private func keyboardHideLayout() {
-    
+    inputBox.flex
+      .marginBottom(0)
+    rootContainerView.flex
+      .layout()
   }
   
   private func setupTableView() {
@@ -203,6 +206,13 @@ extension CommentViewControllerImp: View {
   
   public func bindAction(reactor: R) {
     
+    /// 리액터로 액션 전달해서 post 진행
+    inputBox.rx.postButtonTap
+      .withLatestFrom(inputBox.rx.text)
+      .bind(with: self) { owner, text in
+        print(text)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
@@ -215,15 +225,12 @@ extension CommentViewControllerImp: View {
     
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
       .bind(with: self) { owner, _ in
-        
+        owner.keyboardHideLayout()
       }
       .disposed(by: disposeBag)
     
-    inputBox.rx.postButtonTap
-      .withLatestFrom(inputBox.rx.text)
-      .bind(with: self) { owner, text in
-        // 입력 완료 처리
-      }
+    tableViewContainerView.rx.tapped
+      .bind(to: inputBox.rx.textEndEditing)
       .disposed(by: disposeBag)
   }
   

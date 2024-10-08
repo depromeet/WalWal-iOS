@@ -30,7 +30,7 @@ public final class CustomInputBox: UIView {
   private let inputContainer = UIView().then {
     $0.backgroundColor = Colors.gray150.color
   }
-  private lazy var textView = CustomTextView(
+  fileprivate lazy var textView = CustomTextView(
     placeHolderText: placeHolderText,
     placeHolderFont: placeHolderFont,
     placeHolderColor: placeHolderColor,
@@ -197,6 +197,14 @@ extension Reactive where Base: CustomInputBox {
     return base.postButton.rx.tapGesture()
       .when(.recognized)
       .filter { _ in base.buttonEnable }
-      .map { _ in }
+      .map { _ in
+        textEndEditing.onNext(())
+      }
+  }
+  
+  public var textEndEditing: Binder<Void> {
+    return Binder(base) { target, _ in
+      target.textView.resignFirstResponder()
+    }
   }
 }
