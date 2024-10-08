@@ -97,6 +97,7 @@ public final class CommentReactorImp: CommentReactor {
     case let .setComments(comments):
       newState.comments = comments
       newState.isReply = false // 한번 보내면 대댓글 상태 초기화 하자
+      newState.parentId = nil // 한번 보내면 parentID도 초기화
     case let .setSheetPosition(position):
       newState.sheetPosition = position
     case .dismissSheet:
