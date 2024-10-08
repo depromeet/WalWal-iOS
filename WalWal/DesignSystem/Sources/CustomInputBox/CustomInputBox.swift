@@ -13,6 +13,7 @@ import Then
 import FlexLayout
 import PinLayout
 import RxSwift
+import RxCocoa
 
 public final class CustomInputBox: UIView {
   
@@ -29,22 +30,23 @@ public final class CustomInputBox: UIView {
   private let inputContainer = UIView().then {
     $0.backgroundColor = Colors.gray150.color
   }
-  private let textView = CustomTextView(
-    placeHolderText: "댓글을 입력해주세요!",
-    placeHolderFont: Fonts.KR.H7.M,
-    placeHolderColor: Colors.gray500.color,
-    inputText: "",
-    inputTextFont: Fonts.KR.H7.M,
-    inputTextColor: Colors.black.color
+  private lazy var textView = CustomTextView(
+    placeHolderText: placeHolderText,
+    placeHolderFont: placeHolderFont,
+    placeHolderColor: placeHolderColor,
+    inputText: inputText,
+    inputTextFont: inputTextFont,
+    inputTextColor: inputTextColor
   ).then {
-    $0.tintColor = Colors.blue.color
+    $0.tintColor = inputTintColor
     $0.backgroundColor = .clear
   }
-  private let postButton = UIView().then {
-    $0.backgroundColor = Colors.walwalOrange.color
+  fileprivate lazy var postButton = UIView().then {
+    $0.backgroundColor = buttonInactiveColor
   }
   private let buttonImage = UIImageView().then {
     $0.image = Images.postIcon.image
+    $0.isUserInteractionEnabled = true
   }
   
   // MARK: - Properties
@@ -63,6 +65,17 @@ public final class CustomInputBox: UIView {
   
   private let inputText: String
   
+  private let buttonActiveColor: UIColor
+  
+  private let buttonInactiveColor: UIColor
+  
+  fileprivate let textRelay = PublishRelay<String>()
+  
+  public var buttonEnable: Bool = false
+  
+  private let disposeBag = DisposeBag()
+  
+  
   public init(
     placeHolderText: String? = nil,
     placeHolderFont: UIFont? = nil,
@@ -70,7 +83,10 @@ public final class CustomInputBox: UIView {
     inputText: String? = nil,
     inputTextFont: UIFont,
     inputTextColor: UIColor,
-    inputTintColor: UIColor? = nil
+    inputTintColor: UIColor? = nil,
+    buttonActiveColor: UIColor,
+    buttonInactiveColor: UIColor? = nil,
+    submitButtonEnable: Bool = false
   ) {
     self.placeHolderText = placeHolderText
     self.placeHolderFont = placeHolderFont
@@ -79,8 +95,13 @@ public final class CustomInputBox: UIView {
     self.inputTextFont = inputTextFont
     self.inputTextColor = inputTextColor
     self.inputTintColor = inputTintColor ?? Colors.black.color
+    self.buttonActiveColor = buttonActiveColor
+    self.buttonInactiveColor = buttonInactiveColor ?? Colors.gray400.color
+    self.buttonEnable = submitButtonEnable
+    self.buttonEnable = submitButtonEnable
     super.init(frame: .zero)
     configLayout()
+    bind()
   }
   
   required init?(coder: NSCoder) {
@@ -147,5 +168,35 @@ public final class CustomInputBox: UIView {
       }
   }
   
+  private func bind() {
+    textView.textRelay
+      .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+      .bind(to: textRelay)
+      .disposed(by: disposeBag)
+    
+    textRelay
+      .map { $0.isEmpty }
+      .distinctUntilChanged()
+      .bind(with: self) { owner, isEmpty in
+        owner.postButton.backgroundColor = isEmpty ? owner.buttonInactiveColor: owner.buttonActiveColor
+        owner.buttonEnable = !isEmpty
+      }
+      .disposed(by: disposeBag)
+      
+  }
   
+}
+
+extension Reactive where Base: CustomInputBox {
+  public var text: Observable<String> {
+    return base.textRelay.asObservable()
+  }
+  
+  /// post button 탭 이벤트
+  public var postButtonTap: Observable<Void> {
+    return base.postButton.rx.tapGesture()
+      .when(.recognized)
+      .filter { _ in base.buttonEnable }
+      .map { _ in }
+  }
 }

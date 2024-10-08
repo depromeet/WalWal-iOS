@@ -53,7 +53,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     placeHolderColor: AssetColor.gray500.color,
     inputTextFont: FontKR.H7.M,
     inputTextColor: AssetColor.black.color,
-    inputTintColor: AssetColor.blue.color
+    inputTintColor: AssetColor.blue.color,
+    buttonActiveColor: AssetColor.walwalOrange.color
   )
   
   private var dataSource: UITableViewDiffableDataSource<Section, FlattenCommentModel>!
@@ -215,6 +216,13 @@ extension CommentViewControllerImp: View {
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
       .bind(with: self) { owner, _ in
         
+      }
+      .disposed(by: disposeBag)
+    
+    inputBox.rx.postButtonTap
+      .withLatestFrom(inputBox.rx.text)
+      .bind(with: self) { owner, text in
+        // 입력 완료 처리
       }
       .disposed(by: disposeBag)
   }
