@@ -130,6 +130,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       }
   }
   
+  /// 키보드 올라갔을 때 레이아웃 재설정
   private func keyboardShowLayout() {
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
     
@@ -140,6 +141,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       .layout()
   }
   
+  /// 키보드 내려갔을 때 레이아웃 재설정
   private func keyboardHideLayout() {
     inputBox.flex
       .marginBottom(0)
@@ -217,7 +219,6 @@ extension CommentViewControllerImp: View {
   
   public func bindEvent() {
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
-      .debug()
       .bind(with: self) { owner, _ in
         owner.keyboardShowLayout()
       }

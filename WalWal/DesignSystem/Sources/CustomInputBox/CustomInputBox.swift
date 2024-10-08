@@ -69,13 +69,28 @@ public final class CustomInputBox: UIView {
   
   private let buttonInactiveColor: UIColor
   
-  fileprivate let textRelay = PublishRelay<String>()
+  fileprivate var buttonEnable: Bool = false
   
-  public var buttonEnable: Bool = false
+  fileprivate let textRelay = PublishRelay<String>()
   
   private let disposeBag = DisposeBag()
   
+  // MARK: - Initialize
   
+  /// 제출 버튼이 있는 InputBox
+  ///
+  /// - Parameters:
+  ///   - placeHolderText: 플레이스 홀더 들어갈 텍스트 (optional)
+  ///   - placeHolderFont: 플레이스 홀더 폰트 (optional)
+  ///   - placeHolderColor: 플레이스 홀더 텍스트 컬러 (optional)
+  ///   - inputText: 텍스트뷰에 들어갈 기본 텍스트 데이터 (optional)
+  ///   - inputTextFont: 텍스트뷰 텍스트 폰트
+  ///   - inputTextColor: 텍스트뷰 텍스트 컬러
+  ///   - inputTintColor: 텍트스뷰 커서 컬러 (default: black)
+  ///   - buttonActiveColor: 제출 버튼 활성 시 컬러
+  ///   - buttonInactiveColor: 제출 버튼 비활성화 시 컬러 (defualt: gray400)
+  ///   - buttonEnable: 제출 버튼 활성화 여부 (default: false)
+  ///
   public init(
     placeHolderText: String? = nil,
     placeHolderFont: UIFont? = nil,
@@ -86,7 +101,7 @@ public final class CustomInputBox: UIView {
     inputTintColor: UIColor? = nil,
     buttonActiveColor: UIColor,
     buttonInactiveColor: UIColor? = nil,
-    submitButtonEnable: Bool = false
+    buttonEnable: Bool = false
   ) {
     self.placeHolderText = placeHolderText
     self.placeHolderFont = placeHolderFont
@@ -97,8 +112,8 @@ public final class CustomInputBox: UIView {
     self.inputTintColor = inputTintColor ?? Colors.black.color
     self.buttonActiveColor = buttonActiveColor
     self.buttonInactiveColor = buttonInactiveColor ?? Colors.gray400.color
-    self.buttonEnable = submitButtonEnable
-    self.buttonEnable = submitButtonEnable
+    self.buttonEnable = buttonEnable
+    
     super.init(frame: .zero)
     configLayout()
     bind()
@@ -142,7 +157,6 @@ public final class CustomInputBox: UIView {
               .marginLeft(15.adjustedWidth)
               .marginRight(14.adjustedWidth)
           }
-        
       }
     
     inputContainer.flex
@@ -182,12 +196,11 @@ public final class CustomInputBox: UIView {
         owner.buttonEnable = !isEmpty
       }
       .disposed(by: disposeBag)
-      
   }
-  
 }
 
 extension Reactive where Base: CustomInputBox {
+  
   public var text: Observable<String> {
     return base.textRelay.asObservable()
   }
@@ -201,7 +214,9 @@ extension Reactive where Base: CustomInputBox {
         textEndEditing.onNext(())
       }
   }
-  
+  /// 텍스트뷰 키보드 내려가기
+  ///
+  /// `inputBox.rx.textEndEditing.onNext()`
   public var textEndEditing: Binder<Void> {
     return Binder(base) { target, _ in
       target.textView.resignFirstResponder()
