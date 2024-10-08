@@ -50,7 +50,7 @@ final class CommentCell: UITableViewCell, ReusableView {
   
   private let contentLabel = CustomLabel(font: FontKR.B3, lineBreakMode: .byCharWrapping).then {
     $0.textColor = AssetColor.black.color
-    $0.numberOfLines = 2
+    $0.numberOfLines = 0
   }
   
   private let replyButton = CustomLabel(font: FontKR.M1).then {

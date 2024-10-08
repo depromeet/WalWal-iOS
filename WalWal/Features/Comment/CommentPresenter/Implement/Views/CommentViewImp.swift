@@ -53,13 +53,23 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     $0.rowHeight = UITableView.automaticDimension
   }
   
+  private let inputBox = CustomInputBox(
+    placeHolderText: "댓글을 입력하세요!",
+    placeHolderFont: FontKR.H7.M,
+    placeHolderColor: AssetColor.gray500.color,
+    inputTextFont: FontKR.H7.M,
+    inputTextColor: AssetColor.black.color,
+    inputTintColor: AssetColor.blue.color,
+    buttonActiveColor: AssetColor.walwalOrange.color
+  )
+  
   private var dataSource: UITableViewDiffableDataSource<Section, FlattenCommentModel>!
   
   public init(reactor: R) {
     self.commentReactor = reactor
     super.init(nibName: nil, bundle: nil)
     
-    commentReactor.action.onNext(.fetchComments(recordId: 503))
+    commentReactor.action.onNext(.fetchComments)
   }
   
   required init?(coder: NSCoder) {
@@ -84,6 +94,14 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     dimView.pin.all()
     dimView.flex.layout()
     rootContainerView.pin.bottom(-rootContainerView.frame.height)
+    
+    let _ = view.pin.keyboardArea.height
+    
+    rootContainerView.pin
+      .vertically(view.pin.safeArea)
+      .horizontally()
+    inputBox.pin
+      .height(58)
     rootContainerView.flex
       .layout()
   }
@@ -132,6 +150,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       .define { flex in
         flex.addItem(headerContainerView)
         flex.addItem(tableViewContainerView)
+        flex.addItem(inputBox)
+          .height(58)
       }
   }
   
@@ -159,6 +179,24 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     } else {
       animateSheetUp()
     }
+    
+  /// 키보드 올라갔을 때 레이아웃 재설정
+  private func keyboardShowLayout() {
+    let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
+    
+    inputBox.flex
+      .marginBottom(keyboardTop)
+      .height(58)
+    rootContainerView.flex
+      .layout()
+  }
+  
+  /// 키보드 내려갔을 때 레이아웃 재설정
+  private func keyboardHideLayout() {
+    inputBox.flex
+      .marginBottom(0)
+    rootContainerView.flex
+      .layout()
   }
   
   private func setupTableView() {
@@ -260,10 +298,29 @@ extension CommentViewControllerImp: View {
       })
       .disposed(by: disposeBag)
     
+    inputBox.rx.postButtonTap
+      .withLatestFrom(inputBox.rx.text)
+      .map{ Reactor.Action.postComment(content: $0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {
+    NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
+      .bind(with: self) { owner, _ in
+        owner.keyboardShowLayout()
+      }
+      .disposed(by: disposeBag)
     
+    NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
+      .bind(with: self) { owner, _ in
+        owner.keyboardHideLayout()
+      }
+      .disposed(by: disposeBag)
+    
+    tableViewContainerView.rx.tapped
+      .bind(to: inputBox.rx.textEndEditing)
+      .disposed(by: disposeBag)
   }
   
 }

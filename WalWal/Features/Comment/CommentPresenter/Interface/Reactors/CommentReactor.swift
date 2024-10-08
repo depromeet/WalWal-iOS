@@ -21,7 +21,6 @@ public enum CommentReactorAction {
   case didPan(translation: CGPoint, velocity: CGPoint)
   case didEndPan(velocity: CGPoint)
   case tapDimView
-  
 }
 
 
@@ -40,8 +39,11 @@ public struct CommentReactorState {
   public var isLoading: Bool = false
   public var sheetPosition: CGFloat = 0
   public var isSheetDismissed: Bool = false
+  public let recordId: Int
   
-  public init() { }
+  public init(recordId: Int) {
+    self.recordId = recordId
+  }
 }
 
 public protocol CommentReactor: Reactor where Action == CommentReactorAction, Mutation == CommentReactorMutation, State == CommentReactorState {

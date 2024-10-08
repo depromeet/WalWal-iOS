@@ -27,7 +27,7 @@ final class CommentAppDelegate: UIResponder, UIApplicationDelegate {
     
     let dependencyFactory = CommentDependencyFactoryImp()
     let navigationController = UINavigationController()
-
+    
     let reactor = CommentReactorImp(
       getCommentsUsecase: GetCommentsUsecaseImp(
         repository: CommentRepositoryImp(
@@ -39,7 +39,8 @@ final class CommentAppDelegate: UIResponder, UIApplicationDelegate {
           networkService: NetworkService()
         )
       ),
-      flattenCommentUsecase: FlattenCommentsUsecaseImp()
+      flattenCommentUsecase: FlattenCommentsUsecaseImp(),
+      recordId: 503 /// 임시로 집어넣기
     )
     let viewController = CommentViewControllerImp(reactor: reactor)
     
