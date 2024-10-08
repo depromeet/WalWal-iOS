@@ -47,10 +47,9 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     $0.textColor = AssetColor.gray600.color
   }
   
-  private let contentLabel = CustomLabel(font: FontKR.B3).then {
+  private let contentLabel = CustomLabel(font: FontKR.B3, lineBreakMode: .byCharWrapping).then {
     $0.textColor = AssetColor.black.color
     $0.numberOfLines = 2
-    $0.lineBreakMode = .byWordWrapping
   }
   
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

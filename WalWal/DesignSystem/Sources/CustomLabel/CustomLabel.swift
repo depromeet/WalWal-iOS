@@ -13,15 +13,16 @@ public final class CustomLabel: UILabel {
   
   public override var text: String? {
     didSet {
-      configureSpacing(text: text, font: self.font)
+      configureSpacing(text: text, font: self.font, lineBreakMode: lineBreakMode)
     }
   }
   
-  public init(text: String? = "", font: UIFont) {
+  public init(text: String? = "", font: UIFont, lineBreakMode: NSLineBreakMode = .byWordWrapping) {
     super.init(frame: .zero)
     self.text = text
     self.font = font
-    configureSpacing(text: text, font: font)
+    self.lineBreakMode = lineBreakMode
+    configureSpacing(text: text, font: font, lineBreakMode: lineBreakMode)
   }
   
   required init?(coder: NSCoder) {
@@ -32,7 +33,7 @@ public final class CustomLabel: UILabel {
 
 extension UILabel {
   /// 줄간격
-  func configureSpacing(text: String?, font: UIFont) {
+  func configureSpacing(text: String?, font: UIFont, lineBreakMode: NSLineBreakMode = .byWordWrapping) {
     let lineHeight = ResourceKitFontFamily.lineHeightPercent(of: font)
     let spacing = ResourceKitFontFamily.spacingPercent(of: font) * font.pointSize / 100
 
@@ -40,6 +41,7 @@ extension UILabel {
       let style = NSMutableParagraphStyle()
       style.alignment = self.textAlignment
       style.lineSpacing = 1
+      style.lineBreakMode = lineBreakMode
       
       if let lineHeight = lineHeight {
         let lineHeight = font.pointSize * (lineHeight / 100)
