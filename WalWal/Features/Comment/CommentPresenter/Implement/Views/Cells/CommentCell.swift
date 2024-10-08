@@ -35,10 +35,10 @@ final class CommentCell: UITableViewCell, ReusableView {
   private let contentLabelContainer = UIView()
   private let replyButtonContainer = UIView()
   
-  public var parentId = 0
+  public var parentId: Int? = nil
   
   public var disposeBag = DisposeBag()
-  public var parentIdGetted = BehaviorRelay<Int>(value: 0)
+  public var parentIdGetted = BehaviorRelay<Int?>(value: nil)
   
   private let profileImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFill

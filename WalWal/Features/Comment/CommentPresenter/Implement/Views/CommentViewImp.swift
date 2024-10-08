@@ -65,7 +65,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   )
   
   private var dataSource: UITableViewDiffableDataSource<Section, FlattenCommentModel>!
-  private var parentIdRelay = BehaviorRelay<Int>(value: 0)
+  private var parentIdRelay = BehaviorRelay<Int?>(value: nil)
   
   public init(reactor: R) {
     self.commentReactor = reactor
