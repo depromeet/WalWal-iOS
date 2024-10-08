@@ -15,6 +15,7 @@ import Then
 import FlexLayout
 import PinLayout
 import RxSwift
+import RxCocoa
 
 final class CommentCell: UITableViewCell, ReusableView {
   
@@ -36,9 +37,8 @@ final class CommentCell: UITableViewCell, ReusableView {
   
   public var parentId = 0
   
-  public var replyButtonTapped: Observable<Void> {
-    return replyButton.rx.tapped.asObservable()
-  }
+  public var disposeBag = DisposeBag()
+  public var parentIdGetted = BehaviorRelay<Int>(value: 0)
   
   private let profileImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFill
@@ -69,10 +69,20 @@ final class CommentCell: UITableViewCell, ReusableView {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setAttribute()
     setLayout()
+    bind()
   }
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+  
+  private func bind() {
+    replyButton.rx.tapped
+      .withUnretained(self)
+      .map{ owner, _ in return owner.parentId }
+      .debug()
+      .bind(to: parentIdGetted)
+      .disposed(by: disposeBag)
   }
   
   override func layoutSubviews() {

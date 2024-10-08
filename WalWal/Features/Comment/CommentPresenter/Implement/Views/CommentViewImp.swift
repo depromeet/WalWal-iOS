@@ -65,6 +65,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   )
   
   private var dataSource: UITableViewDiffableDataSource<Section, FlattenCommentModel>!
+  private var parentIdRelay = BehaviorRelay<Int>(value: 0)
   
   public init(reactor: R) {
     self.commentReactor = reactor
@@ -99,6 +100,11 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     
     let _ = view.pin.keyboardArea.height
     
+    dimView.pin
+      .all()
+    dimView.flex
+      .layout()
+    
     rootContainerView.pin
       .bottom(-rootContainerView.frame.height)
       .horizontally()
@@ -113,6 +119,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func setAttribute() {
     view.backgroundColor = .clear
     view.addSubview(dimView)
+    view.addSubview(rootContainerView)
     
     rootContainerView.layer.cornerRadius = 30
     rootContainerView.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
@@ -121,12 +128,14 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   public func setLayout() {
-    dimView.flex
+    
+    rootContainerView.flex
+      .height(580.adjustedHeight)
       .define { flex in
-        flex.addItem(rootContainerView)
-          .position(.absolute)
-          .bottom(0)
-          .width(100%)
+        flex.addItem(headerContainerView)
+        flex.addItem(tableViewContainerView)
+        flex.addItem(inputBox)
+          .height(58)
       }
     
     headerContainerView.flex
@@ -146,15 +155,6 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
           .top(20)
           .width(100%)
           .bottom(0)
-      }
-    
-    rootContainerView.flex
-      .height(580.adjustedHeight)
-      .define { flex in
-        flex.addItem(headerContainerView)
-        flex.addItem(tableViewContainerView)
-        flex.addItem(inputBox)
-          .height(58)
       }
   }
   
@@ -217,10 +217,16 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   private func setupDataSource() {
-    dataSource = UITableViewDiffableDataSource<Section, FlattenCommentModel>(tableView: tableView) { (tableView, indexPath, comment) -> UITableViewCell? in
+    dataSource = UITableViewDiffableDataSource<Section, FlattenCommentModel>(tableView: tableView) { [weak self] (tableView, indexPath, comment) -> UITableViewCell? in
+      guard let owner = self else { return nil }
       if comment.parentID == nil {
         let cell = tableView.dequeue(CommentCell.self, for: indexPath)
         cell.configure(with: comment)
+        
+        cell.parentIdGetted
+          .bind(to: owner.parentIdRelay)
+          .disposed(by: cell.disposeBag)
+        
         return cell
       } else {
         let cell = tableView.dequeue(ReplyCommentCell.self, for: indexPath)
@@ -329,21 +335,13 @@ extension CommentViewControllerImp: View {
       })
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
-
     
-    // 댓글 셀에서 "답글 달기" 버튼을 누를 때
-    tableView.rx.itemSelected
-      .compactMap { [weak self] indexPath -> CommentCell? in
-        self?.tableView.cellForRow(at: indexPath) as? CommentCell
-      }
-      .flatMap { $0.replyButtonTapped }
-      .withLatestFrom(tableView.rx.modelSelected(FlattenCommentModel.self))
-      .map{ [weak self] comment in
-        self?.inputBox.rx.startEditing.onNext(())
-        return Reactor.Action.setReplyMode(isReply: true, parentId: comment.commentID)
-      }
+    // 답글 달기 눌렀을 때
+    parentIdRelay.asObservable()
+      .map { Reactor.Action.setReplyMode(isReply: true, parentId: $0) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
   }
   
   public func bindEvent() {

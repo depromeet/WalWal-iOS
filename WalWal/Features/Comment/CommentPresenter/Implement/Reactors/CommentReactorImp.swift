@@ -108,6 +108,7 @@ public final class CommentReactorImp: CommentReactor {
     switch mutation {
     case let .setComments(comments):
       newState.comments = comments
+      newState.isReply = false // 한번 보내면 대댓글 상태 초기화 하자
     case let .setSheetPosition(position):
       newState.sheetPosition = position
     case .dismissSheet:
