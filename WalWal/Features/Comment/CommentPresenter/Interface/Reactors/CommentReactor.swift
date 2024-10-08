@@ -35,6 +35,7 @@ public protocol CommentReactor: Reactor where Action == CommentReactorAction, Mu
   init(
     getCommentsUsecase: GetCommentsUsecase,
     postCommentUsecase: PostCommentUsecase,
-    flattenCommentUsecase: FlattenCommentsUsecase
+    flattenCommentUsecase: FlattenCommentsUsecase,
+    recordId: Int
   )
 }
