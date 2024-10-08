@@ -23,15 +23,9 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
   // 컨테이너 뷰 추가
   private let rootContainerView = UIView()
   
-  private let profileImageAndBodyContainer = UIView().then {
-    $0.backgroundColor = .blue
-  }
-  private let bodyContainer = UIView().then {
-    $0.backgroundColor = .red.withAlphaComponent(0.5)
-  }
-  private let nicknameAndTimeContainer = UIView().then {
-    $0.backgroundColor = .green.withAlphaComponent(0.5)
-  }
+  private let profileImageAndBodyContainer = UIView()
+  private let bodyContainer = UIView()
+  private let nicknameAndTimeContainer = UIView()
   
   private let profileImageContainer = UIView()
   private let nicknameContainer = UIView()
@@ -40,7 +34,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
   
   private let profileImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFill
-    $0.backgroundColor = AssetColor.gray200.color // 이미지가 없을 때 보여줄 배경색
+    $0.backgroundColor = AssetColor.gray200.color
     $0.layer.cornerRadius = 17
     $0.clipsToBounds = true
   }
@@ -74,12 +68,10 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     rootContainerView.pin
       .top(0)
       .left(44 + 15)
-      .right(15)
+      .right(0)
       .bottom(0)
     rootContainerView.flex
       .layout(mode: .adjustHeight)
-    
-    rootContainerView.flex.markDirty()
   }
   
   override func sizeThatFits(_ size: CGSize) -> CGSize {
@@ -108,6 +100,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     contentView.addSubview(rootContainerView)
     
     rootContainerView.flex
+      .width(100%)
       .justifyContent(.spaceBetween)
       .define { flex in
         flex.addItem(profileImageAndBodyContainer)
@@ -122,6 +115,10 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
           .size(34)
         flex.addItem(bodyContainer)
           .marginLeft(8)
+          .grow(1)
+          .shrink(1)
+        flex.addItem()
+          .width(15)
       }
     
     
