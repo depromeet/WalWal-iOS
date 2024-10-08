@@ -73,6 +73,11 @@ public final class CommentReactorImp: CommentReactor {
         .asObservable()
         .observe(on: MainScheduler.instance)
         .map { Mutation.setComments($0) } /// 대댓글 추가 후 전체 목록 갱신
+    case let .setReplyMode(isReply, parentId):
+      var newState = currentState
+      newState.isReply = isReply
+      newState.parentId = parentId
+      return .just(Mutation.setComments(newState.comments)) // 상태 갱신
     }
   }
   

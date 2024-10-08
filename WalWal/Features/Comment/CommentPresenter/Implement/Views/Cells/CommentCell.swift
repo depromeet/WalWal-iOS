@@ -14,6 +14,7 @@ import CommentDomain
 import Then
 import FlexLayout
 import PinLayout
+import RxSwift
 
 final class CommentCell: UITableViewCell, ReusableView {
   
@@ -32,6 +33,12 @@ final class CommentCell: UITableViewCell, ReusableView {
   private let timeLabelContainer = UIView()
   private let contentLabelContainer = UIView()
   private let replyButtonContainer = UIView()
+  
+  public var parentId = 0
+  
+  public var replyButtonTapped: Observable<Void> {
+    return replyButton.rx.tapped.asObservable()
+  }
   
   private let profileImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFill
@@ -53,7 +60,7 @@ final class CommentCell: UITableViewCell, ReusableView {
     $0.numberOfLines = 0
   }
   
-  private let replyButton = CustomLabel(font: FontKR.M1).then {
+  public let replyButton = CustomLabel(font: FontKR.M1).then {
     $0.textColor = AssetColor.gray500.color
     $0.text = "답글 달기"
   }
@@ -148,6 +155,7 @@ final class CommentCell: UITableViewCell, ReusableView {
   func configure(with comment: FlattenCommentModel) {
     nicknameLabel.text = comment.writerNickname
     contentLabel.text = comment.content
+    parentId = comment.writerID
     
     if let timeText = timeAgo(from: comment.createdAt) {
       timeLabel.text = timeText

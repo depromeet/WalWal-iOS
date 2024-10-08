@@ -208,9 +208,35 @@ extension CommentViewControllerImp: View {
   
   public func bindAction(reactor: R) {
     
+    // 댓글 작성 시 액션
     inputBox.rx.postButtonTap
       .withLatestFrom(inputBox.rx.text)
-      .map{ Reactor.Action.postComment(content: $0) }
+      .compactMap { [weak reactor] content -> Reactor.Action? in
+        guard let reactor = reactor else { return nil }
+        if reactor.currentState.isReply, let parentId = reactor.currentState.parentId {
+          return Reactor.Action.replyToComment(parentId: parentId, content: content)
+        } else {
+          return Reactor.Action.postComment(content: content)
+        }
+      }
+      .do(onNext: { [weak self] _ in
+        self?.inputBox.rx.textEndEditing.onNext(())
+      })
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
+    
+    // 댓글 셀에서 "답글 달기" 버튼을 누를 때
+    tableView.rx.itemSelected
+      .compactMap { [weak self] indexPath -> CommentCell? in
+        self?.tableView.cellForRow(at: indexPath) as? CommentCell
+      }
+      .flatMap { $0.replyButtonTapped }
+      .withLatestFrom(tableView.rx.modelSelected(FlattenCommentModel.self))
+      .map{ [weak self] comment in
+        self?.inputBox.rx.startEditing.onNext(())
+        return Reactor.Action.setReplyMode(isReply: true, parentId: comment.commentID)
+      }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
