@@ -47,6 +47,15 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     $0.rowHeight = UITableView.automaticDimension
   }
   
+  private let inputBox = CustomInputBox(
+    placeHolderText: "댓글을 입력하세요!",
+    placeHolderFont: FontKR.H7.M,
+    placeHolderColor: AssetColor.gray500.color,
+    inputTextFont: FontKR.H7.M,
+    inputTextColor: AssetColor.black.color,
+    inputTintColor: AssetColor.blue.color
+  )
+  
   private var dataSource: UITableViewDiffableDataSource<Section, FlattenCommentModel>!
   
   public init(reactor: R) {
@@ -70,10 +79,13 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    let _ = view.pin.keyboardArea.height
+    
     rootContainerView.pin
       .vertically(view.pin.safeArea)
       .horizontally()
-    
+    inputBox.pin
+      .height(58)
     rootContainerView.flex
       .layout()
   }
@@ -112,7 +124,23 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       .define { flex in
         flex.addItem(headerContainerView)
         flex.addItem(tableViewContainerView)
+        flex.addItem(inputBox)
+          .height(58)
       }
+  }
+  
+  private func keyboardShowLayout() {
+    let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
+    
+    inputBox.flex
+      .marginBottom(keyboardTop)
+      .height(58)
+    rootContainerView.flex
+      .layout()
+  }
+  
+  private func keyboardHideLayout() {
+    
   }
   
   private func setupTableView() {
@@ -177,7 +205,18 @@ extension CommentViewControllerImp: View {
   }
   
   public func bindEvent() {
+    NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
+      .debug()
+      .bind(with: self) { owner, _ in
+        owner.keyboardShowLayout()
+      }
+      .disposed(by: disposeBag)
     
+    NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
+      .bind(with: self) { owner, _ in
+        
+      }
+      .disposed(by: disposeBag)
   }
   
 }
