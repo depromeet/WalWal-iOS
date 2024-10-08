@@ -89,17 +89,18 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    dimView.pin.all()
-    dimView.flex.layout()
+    
     rootContainerView.pin.bottom(-rootContainerView.frame.height)
     
     let _ = view.pin.keyboardArea.height
     
+    dimView.pin
+      .all()
+    dimView.flex
+      .layout()
+    
     rootContainerView.pin
-      .vertically(view.pin.safeArea)
-      .horizontally()
-    inputBox.pin
-      .height(58)
+      .all(view.pin.safeArea)
     rootContainerView.flex
       .layout()
   }
@@ -108,6 +109,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func setAttribute() {
     view.backgroundColor = .clear
     view.addSubview(dimView)
+    view.addSubview(rootContainerView)
     
     rootContainerView.layer.cornerRadius = 30
     rootContainerView.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
@@ -116,12 +118,14 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   public func setLayout() {
-    dimView.flex
+    
+    rootContainerView.flex
+      .height(580.adjustedHeight)
       .define { flex in
-        flex.addItem(rootContainerView)
-          .position(.absolute)
-          .bottom(0)
-          .width(100%)
+        flex.addItem(headerContainerView)
+        flex.addItem(tableViewContainerView)
+        flex.addItem(inputBox)
+          .height(58)
       }
     
     headerContainerView.flex
@@ -141,15 +145,6 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
           .top(20)
           .width(100%)
           .bottom(0)
-      }
-    
-    rootContainerView.flex
-      .height(580.adjustedHeight)
-      .define { flex in
-        flex.addItem(headerContainerView)
-        flex.addItem(tableViewContainerView)
-        flex.addItem(inputBox)
-          .height(58)
       }
   }
   
