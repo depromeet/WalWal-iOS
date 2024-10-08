@@ -75,6 +75,16 @@ public final class CommentReactorImp: CommentReactor {
         .map { owner, model in owner.flattenCommentUsecase.execute(comments: model.comments)}
         .asObservable()
         .map { Mutation.setComments($0) } /// 대댓글 추가 후 전체 목록 갱신
+    case let .didPan(translation, _):
+      return Observable.just(.setSheetPosition(translation.y))
+    case let .didEndPan(velocity):
+      if velocity.y > 1000 {
+        return Observable.just(.dismissSheet)
+      } else {
+        return Observable.just(.setSheetPosition(0))
+      }
+    case .tapDimView:
+      return Observable.just(.dismissSheet)
     }
   }
   
@@ -83,7 +93,12 @@ public final class CommentReactorImp: CommentReactor {
     switch mutation {
     case let .setComments(comments):
       newState.comments = comments /// 전체 댓글 상태 업데이트
+    case let .setSheetPosition(position):
+      newState.sheetPosition = position
+    case .dismissSheet:
+      newState.isSheetDismissed = true
     }
     return newState
+    
   }
 }
