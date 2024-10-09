@@ -173,8 +173,13 @@ final class CommentCell: UITableViewCell, ReusableView {
       timeLabel.text = comment.createdAt
     }
     
-    if let imageUrl = URL(string: comment.writerProfileImageURL) {
+    if let defaultImage =  DefaultProfile(rawValue: comment.writerProfileImageURL) {
+      profileImageView.image = defaultImage.image
+    } else if let imageUrl = URL(string: comment.writerProfileImageURL) {
       profileImageView.kf.setImage(with: imageUrl)
+    } else {
+      profileImageView.image = DefaultProfile.yellowDog.image
+      
     }
     
     contentLabel.flex.markDirty()
