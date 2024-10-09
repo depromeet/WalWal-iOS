@@ -12,7 +12,7 @@ import RxSwift
 public final class AppUpdateManager {
   
   public static let shared = AppUpdateManager()
-  public private(set) var updateRequest = PublishSubject<Void>()
+  public private(set) var updateRequest = PublishSubject<Bool>()
   
   private init() {}
   
@@ -37,9 +37,7 @@ public final class AppUpdateManager {
         guard let window = windowScene?.windows.first else { return }
         
         let isNewVersionAvailable = currentVersion.compare(appStoreVersion, options: .numeric) == .orderedAscending
-        if isNewVersionAvailable {
-          self.updateRequest.onNext(())
-        }
+        self.updateRequest.onNext(isNewVersionAvailable)
       }
     }
   }

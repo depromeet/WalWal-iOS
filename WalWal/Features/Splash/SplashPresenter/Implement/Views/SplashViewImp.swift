@@ -110,10 +110,16 @@ extension SplashViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    WalWalAlert.shared.resultRelay
-      .map { _ in Reactor.Action.moveUpdate }
-      .bind(to: reactor.action)
-      .disposed(by: disposeBag)
+    Observable.combineLatest(
+      WalWalAlert.shared.resultRelay,
+      AppUpdateManager.shared.updateRequest
+    )
+    .map { $0.1 }
+    .distinctUntilChanged()
+    .filter { $0 }
+    .map { _ in Reactor.Action.moveUpdate }
+    .bind(to: reactor.action)
+    .disposed(by: disposeBag)
       
   }
   
