@@ -33,7 +33,6 @@ public enum FeedReactorMutation {
   case feedFetchFailed(error: String)
   case feedReachEnd(feedData: [WalWalFeedModel])
   case feedLoadEnded(nextCursor: String?, feedData: [WalWalFeedModel])
-  case updateBoost
   case moveToProfile(memberId: Int, nickName: String)
   case scrollToFeedItem(id: Int?)
   case scrollToTop(Bool)

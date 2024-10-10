@@ -66,32 +66,9 @@ public final class FeedReactorImp: FeedReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .loadFeedData(cursor):
-      guard !isLoading && !currentState.feedFetchEnded else {
-        return .empty()
-      }
-      isLoading = true
-      return fetchFeedData(cursor: cursor, limit: 10)
-        .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-        .observe(on: MainScheduler.asyncInstance)
-        .do(onCompleted: { [weak self] in
-          self?.isLoading = false
-        })
-    case .refresh(cursor: let cursor):
-      // refresh도 isLoading 확인 후 처리
-      guard !isLoading else {
-        return .empty()
-      }
-      isLoading = true
-      let initialFeedData: [WalWalFeedModel] = []
-      let nextCursor: String? = nil
-      GlobalState.shared.feedList.accept([])
-      return Observable.just(.feedLoadEnded(nextCursor: nextCursor, feedData: initialFeedData))
-        .concat(fetchFeedData(cursor: cursor, limit: 10))
-        .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-        .observe(on: MainScheduler.asyncInstance)
-        .do(onCompleted: { [weak self] in
-          self?.isLoading = false
-        })
+      return loadFeedData(cursor: cursor)
+    case let .refresh(cursor):
+      return refreshFeedData(cursor: cursor)
     case let .endedBoost(recordId, count):
       return postBoostCount(recordId: recordId, count: count)
         .observe(on: MainScheduler.asyncInstance)
@@ -124,8 +101,6 @@ public final class FeedReactorImp: FeedReactor {
     case .feedReachEnd(let feedData):
       newState.feedData = feedData
       newState.feedFetchEnded = true
-    case .updateBoost:
-      break
     case .moveToProfile(let memberId, let nickName):
       coordinator.startProfile(memberId: memberId, nickName: nickName)
     case let .scrollToFeedItem(id):
@@ -146,7 +121,39 @@ public final class FeedReactorImp: FeedReactor {
     return newState
   }
   
-  //MARK: - Method
+}
+
+extension FeedReactorImp {
+  
+  private func loadFeedData(cursor: String?) -> Observable<Mutation> {
+    guard !isLoading && !currentState.feedFetchEnded else {
+      return .empty()
+    }
+    isLoading = true
+    return fetchFeedData(cursor: cursor, limit: 10)
+      .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+      .observe(on: MainScheduler.asyncInstance)
+      .do(onCompleted: { [weak self] in
+        self?.isLoading = false
+      })
+  }
+  private func refreshFeedData(cursor: String?) -> Observable<Mutation> {
+    // refresh도 isLoading 확인 후 처리
+    guard !isLoading else {
+      return .empty()
+    }
+    isLoading = true
+    let initialFeedData: [WalWalFeedModel] = []
+    let nextCursor: String? = nil
+    GlobalState.shared.feedList.accept([])
+    return Observable.just(.feedLoadEnded(nextCursor: nextCursor, feedData: initialFeedData))
+      .concat(fetchFeedData(cursor: cursor, limit: 10))
+      .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+      .observe(on: MainScheduler.asyncInstance)
+      .do(onCompleted: { [weak self] in
+        self?.isLoading = false
+      })
+  }
   
   /// 알림 - 피드 넘어왔을 때 스크롤이 넘어가야 하는지 여부
   private func checkScrollEvent() -> Observable<Mutation> {
@@ -156,7 +163,6 @@ public final class FeedReactorImp: FeedReactor {
       .compactMap { $0 }
       .filter { $0.0 != nil }
       .withUnretained(self)
-      .debug()
       .map { owner, fcmData -> (Int?, Bool) in
         let (id, isComment) = fcmData
         owner.removeGlobalRecordIdUseCase.execute()
@@ -200,7 +206,7 @@ public final class FeedReactorImp: FeedReactor {
     return updateBoostCountUseCase.execute(recordId: recordId, count: count)
       .asObservable()
       .flatMap { _ -> Observable<Mutation> in
-        return .just(.updateBoost)
+        return .never()
       }
   }
   
