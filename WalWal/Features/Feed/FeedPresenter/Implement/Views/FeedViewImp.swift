@@ -147,6 +147,12 @@ extension FeedViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
+    feed.commentButtonTapped
+      .throttle(.microseconds(300), scheduler: MainScheduler.instance)
+      .map { Reactor.Action.commentTapped(recordId: $0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
     checkScrollItem
       .observe(on: MainScheduler.asyncInstance)
       .map { Reactor.Action.checkScrollItem }

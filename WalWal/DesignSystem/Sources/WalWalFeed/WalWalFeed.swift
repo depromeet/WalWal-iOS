@@ -55,6 +55,8 @@ public final class WalWalFeed: UIView {
   
   public let menuButtonTapped = PublishRelay<Int>()
   
+  public let commentButtonTapped = PublishRelay<Int>()
+  
   public var feedData = BehaviorRelay<[WalWalFeedModel]>(value: [])
   
   public var updatedBoost = PublishRelay<(recordId: Int, count: Int)>()
@@ -306,13 +308,19 @@ extension WalWalFeed: UICollectionViewDataSource {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WalWalFeedCell.identifier, for: indexPath) as! WalWalFeedCell
     let model = currentFeedData[indexPath.row]
     cell.configureCell(feedData: model)
+    // 프로필 영역 터치
     cell.feedView.profileTapped
       .bind(with: self) { owner, data in
         owner.profileTapped.accept(data)
       }
       .disposed(by: cell.disposeBag)
+    // 메뉴 버튼 클릭
     cell.feedView.menuButtonTapped
       .bind(to: menuButtonTapped)
+      .disposed(by: cell.disposeBag)
+    // 댓글 영역 터치
+    cell.feedView.commentButtonTapped
+      .bind(to: commentButtonTapped)
       .disposed(by: cell.disposeBag)
     return cell
   }

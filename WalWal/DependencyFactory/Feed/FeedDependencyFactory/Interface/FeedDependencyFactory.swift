@@ -17,13 +17,15 @@ import FeedPresenter
 
 import RecordsDomain
 import RecordsDependencyFactory
+import CommentDependencyFactory
 
 public protocol FeedDependencyFactory {
   
   func injectFeedCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
-    recordsDependencyFactory: RecordsDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory
   ) -> any FeedCoordinator
   
   // MARK: - Repository

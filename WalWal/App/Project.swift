@@ -65,6 +65,7 @@ let project = Project(
         .DependencyFactory.Onboarding.Implement,
         .DependencyFactory.Records.Implement,
         .DependencyFactory.Feed.Implement,
+        .DependencyFactory.Comment.Implement,
         .DependencyFactory.Members.Implement
       ],
       settings: .settings(
@@ -113,6 +114,7 @@ let project = Project(
         .DependencyFactory.Onboarding.Implement,
         .DependencyFactory.Records.Implement,
         .DependencyFactory.Feed.Implement,
+        .DependencyFactory.Comment.Implement,
         .DependencyFactory.Members.Implement
       ],
       settings: .settings(

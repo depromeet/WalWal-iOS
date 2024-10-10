@@ -102,6 +102,8 @@ public final class FeedReactorImp: FeedReactor {
       return Observable.concat([scrollObservable, resetTabObservable])
     case let .menuTapped(recordId):
       return .just(.showMenu(recordId: recordId))
+    case let .commentTapped(recordId: recordId):
+      return .just(.moveToComment(recordId: recordId))
     }
   }
   
@@ -129,6 +131,8 @@ public final class FeedReactorImp: FeedReactor {
       newState.isDoubleTap = false
     case let .showMenu(recordId):
       coordinator.destination.accept(.showFeedMenu(recordId: recordId))
+    case let .moveToComment(recordId: recordId):
+      coordinator.destination.accept(.showCommentView(recordId: recordId)) // 여기 댓글 이동으로 변경 필요
     }
     return newState
   }

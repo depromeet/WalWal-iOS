@@ -19,6 +19,7 @@ import OnboardingDependencyFactory
 import FeedDependencyFactory
 import RecordsDependencyFactory
 import MembersDependencyFactory
+import CommentDependencyFactory
 
 import WalWalNetwork
 
@@ -58,6 +59,7 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
     feedDependencyFactory: FeedDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory,
     memberDependencyFactory: MembersDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory,
     deepLinkObservable: Observable<String?>
   ) -> any AppCoordinator {
     return AppCoordinatorImp(
@@ -74,6 +76,7 @@ public class SplashDependencyFactoryImp: SplashDependencyFactory {
       feedDependencyFactory: feedDependencyFactory,
       recordsDependencyFactory: recordsDependencyFactory,
       memberDependencyFactory: memberDependencyFactory,
+      commentDependencyFactory: commentDependencyFactory,
       deepLinkObservable: deepLinkObservable
     )
   }

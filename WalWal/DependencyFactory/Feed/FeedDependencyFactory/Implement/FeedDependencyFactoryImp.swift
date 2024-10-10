@@ -9,6 +9,7 @@
 import UIKit
 import FeedDependencyFactory
 import RecordsDependencyFactory
+import CommentDependencyFactory
 
 import WalWalNetwork
 
@@ -32,13 +33,15 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
   public func injectFeedCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
-    recordsDependencyFactory: RecordsDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory
   ) -> any FeedCoordinator {
     return FeedCoordinatorImp(
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       feedDependencyFactory: self,
-      recordsDependencyFactory: recordsDependencyFactory
+      recordsDependencyFactory: recordsDependencyFactory,
+      commentDependencyFactory: commentDependencyFactory
     )
   }
   

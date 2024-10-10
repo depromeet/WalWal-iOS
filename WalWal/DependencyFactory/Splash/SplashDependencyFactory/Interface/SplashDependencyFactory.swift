@@ -19,6 +19,7 @@ import OnboardingDependencyFactory
 import FeedDependencyFactory
 import RecordsDependencyFactory
 import MembersDependencyFactory
+import CommentDependencyFactory
 
 import AppCoordinator
 
@@ -47,6 +48,7 @@ public protocol SplashDependencyFactory {
     feedDependencyFactory: FeedDependencyFactory,
     recordsDependencyFactory: RecordsDependencyFactory,
     memberDependencyFactory: MembersDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory,
     deepLinkObservable: Observable<String?>
   ) -> any AppCoordinator
   
