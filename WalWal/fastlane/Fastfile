@@ -110,8 +110,9 @@ def download_and_upload_dsyms(app_identifier:)
   download_dsyms(
     app_identifier: app_identifier,
     version: latest_testflight_build_number(
+      username: "cocoa9805@naver.com",
       app_identifier: app_identifier,
-      username: "cocoa9805@naver.com"
+      team_id: "126120741"
     )
   )
 
