@@ -38,8 +38,7 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView, View {
     $0.backgroundColor = Colors.gray150.color
     $0.contentMode = .scaleAspectFill
   }
-  private let boostBadge = UIImageView().then {
-    $0.image = Images.boostNoti.image
+  private let badgeImageView = UIImageView().then {
     $0.backgroundColor = .clear
   }
   
@@ -82,7 +81,7 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView, View {
   override func prepareForReuse() {
     super.prepareForReuse()
     iconImageView.image = nil
-    boostBadge.isHidden = true
+    badgeImageView.isHidden = true
     titleLabel.text = nil
     messageLabel.text = nil
     dateLabel.text = nil
@@ -96,7 +95,7 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView, View {
     rootContainer.flex
       .layout()
     
-    boostBadge.pin
+    badgeImageView.pin
       .bottomRight()
       .size(20.adjusted)
     iconImageView.pin
@@ -110,7 +109,7 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView, View {
   private func configAttribute() {
     contentView.backgroundColor = Colors.gray100.color
     contentView.addSubview(rootContainer)
-    [iconImageView, boostBadge].forEach {
+    [iconImageView, badgeImageView].forEach {
       iconContainer.addSubview($0)
     }
   }
@@ -179,8 +178,9 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView, View {
   }
   
   private func configureCell(items: FCMItemModel) {
-    let tintColor: UIColor = items.type == .mission ? Colors.walwalOrange.color : UIColor(hex: 0xFF6668)
-    let image = items.image ?? Images.missionNoti.image
+    let tintColor: UIColor = items.type.tintColor
+    let image = items.type == .mission ? Images.missionNoti.image : items.image
+    let badgeImage = items.type.badgeImage
     
     titleLabel.textColor = tintColor
     titleLabel.text = items.title
@@ -195,7 +195,9 @@ final class FCMCollectionViewCell: UICollectionViewCell, ReusableView, View {
     dateLabel.changeFont(to: FontKR.Caption)
     
     iconImageView.image = image
-    boostBadge.isHidden = items.type == .mission
+    badgeImageView.isHidden = items.type == .mission
+    badgeImageView.image = badgeImage
+    
     isRead = items.isRead
     
     titleLabel.flex.markDirty()
@@ -241,5 +243,32 @@ fileprivate extension UILabel {
     }
     
     self.attributedText = attributedString
+  }
+}
+
+fileprivate extension FCMTypes {
+  private typealias Images = ResourceKitAsset.Images
+  private typealias Colors = ResourceKitAsset.Colors
+  
+  var tintColor: UIColor {
+    switch self {
+    case .mission:
+      return Colors.walwalOrange.color
+    case .boost:
+      return UIColor(hex: 0xFF6668)
+    case .comment:
+      return Colors.blue.color
+    }
+  }
+  
+  var badgeImage: UIImage? {
+    switch self {
+    case .mission:
+      return nil
+    case .boost:
+      return Images.boostNoti.image
+    case .comment:
+      return Images.commentNoti.image
+    }
   }
 }

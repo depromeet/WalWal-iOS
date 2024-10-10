@@ -154,14 +154,23 @@ public final class FeedReactorImp: FeedReactor {
       .observe(on: MainScheduler.asyncInstance)
       .asObservable()
       .compactMap { $0 }
+      .filter { $0.0 != nil }
       .withUnretained(self)
-      .map { owner, id -> Int in
+      .debug()
+      .map { owner, fcmData -> (Int?, Bool) in
+        let (id, isComment) = fcmData
         owner.removeGlobalRecordIdUseCase.execute()
-        return id
+        return (id, isComment)
       }
-      .flatMap { id -> Observable<Mutation> in
-        
-        return .just(.scrollToFeedItem(id: id))
+      .flatMap { id, isComment -> Observable<Mutation> in
+        if isComment, let id = id {
+          return .concat([
+            .just(.scrollToFeedItem(id: id)),
+            .just(.moveToComment(recordId: id))
+          ])
+        } else {
+          return .just(.scrollToFeedItem(id: id))
+        }
       }
   }
   

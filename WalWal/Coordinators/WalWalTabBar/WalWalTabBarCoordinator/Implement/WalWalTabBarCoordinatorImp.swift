@@ -209,7 +209,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     urlQueryItems.forEach { dictionaryData[$0.name] = $0.value }
     
     guard let recordId = dictionaryData["id"] else { return }
-    GlobalState.shared.updateRecordId(Int(recordId))
+    GlobalState.shared.updateRecordId(Int(recordId), isComment: false)
   }
 }
 
@@ -395,4 +395,5 @@ private extension WalWalTabBarCoordinatorImp {
 fileprivate enum DeepLinkTarget: String {
   case mission = "mission"
   case booster = "boost"
+  case comment = "comment"
 }

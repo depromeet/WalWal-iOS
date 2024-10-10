@@ -135,7 +135,11 @@ extension FCMReactorImp {
   private func selectedItemAction(item: FCMItemModel) -> Observable<Mutation> {
     return readFCMItem(item: item)
       .flatMap {
-        self.moveOtherTab(type: item.type, recordId: item.recordID)
+        self.moveOtherTab(
+          type: item.type,
+          recordId: item.recordID,
+          isComment: item.type == .comment
+        )
       }
   }
   
@@ -148,11 +152,11 @@ extension FCMReactorImp {
   }
   
   /// 알림 탭 시 화면 이동 요청
-  private func moveOtherTab(type: FCMTypes, recordId: Int?) -> Observable<Mutation> {
+  private func moveOtherTab(type: FCMTypes, recordId: Int?, isComment: Bool = false) -> Observable<Mutation> {
     if type == .mission {
       return  .just(.moveMission)
     } else {
-      return saveFeedRecordIDUseCase.execute(recordId: recordId)
+      return saveFeedRecordIDUseCase.execute(recordId: recordId, isComment: isComment)
         .flatMap { _ -> Observable<Mutation> in
             .just(.moveFeed)
         }
