@@ -256,7 +256,7 @@ fileprivate extension FCMTypes {
       return Colors.walwalOrange.color
     case .boost:
       return UIColor(hex: 0xFF6668)
-    case .comment:
+    case .comment, .recomment:
       return Colors.blue.color
     }
   }
@@ -267,7 +267,7 @@ fileprivate extension FCMTypes {
       return nil
     case .boost:
       return Images.boostNoti.image
-    case .comment:
+    case .comment, .recomment:
       return Images.commentNoti.image
     }
   }

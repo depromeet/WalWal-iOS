@@ -191,14 +191,17 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     case .mission:
       forceMoveTab.accept(.startMission)
     case .booster:
-      decodeDeepLink(url)
+      decodeDeepLink(url, type: .booster)
+      forceMoveTab.accept(.startFeed)
+    case .comment:
+      decodeDeepLink(url, type: .comment)
       forceMoveTab.accept(.startFeed)
     default:
       forceMoveTab.accept(.startMission)
     }
   }
   
-  private func decodeDeepLink(_ url: URL) {
+  private func decodeDeepLink(_ url: URL, type: DeepLinkTarget) {
     
     let urlString = url.absoluteString
     guard urlString.contains("id") else { return }
@@ -209,7 +212,7 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     urlQueryItems.forEach { dictionaryData[$0.name] = $0.value }
     
     guard let recordId = dictionaryData["id"] else { return }
-    GlobalState.shared.updateRecordId(Int(recordId), isComment: false)
+    GlobalState.shared.updateRecordId(Int(recordId), isComment: type == .comment)
   }
 }
 
@@ -396,4 +399,5 @@ fileprivate enum DeepLinkTarget: String {
   case mission = "mission"
   case booster = "boost"
   case comment = "comment"
+  case recomment = "recomment"
 }

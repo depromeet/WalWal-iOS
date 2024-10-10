@@ -164,9 +164,8 @@ extension FeedReactorImp {
       .filter { $0.0 != nil }
       .withUnretained(self)
       .map { owner, fcmData -> (Int?, Bool) in
-        let (id, isComment) = fcmData
         owner.removeGlobalRecordIdUseCase.execute()
-        return (id, isComment)
+        return fcmData
       }
       .flatMap { id, isComment -> Observable<Mutation> in
         if isComment, let id = id {
