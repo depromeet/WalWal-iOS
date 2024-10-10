@@ -32,6 +32,8 @@ import ImageDomain
 import RecordsDependencyFactory
 import RecordsDomain
 
+import CommentDependencyFactory
+
 public protocol MyPageDependencyFactory {
   
   func makeMyPageCoordinator(
@@ -42,7 +44,8 @@ public protocol MyPageDependencyFactory {
     membersDependencyFactory: MembersDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory
   ) -> any MyPageCoordinator
   
   func injectMyPageRepository() -> MyPageRepository

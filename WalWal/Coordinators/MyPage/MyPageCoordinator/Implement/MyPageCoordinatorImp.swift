@@ -15,6 +15,7 @@ import MembersDependencyFactory
 import FeedDependencyFactory
 import ImageDependencyFactory
 import RecordsDependencyFactory
+import CommentDependencyFactory
 import SafariServices
 
 import BaseCoordinator
@@ -45,6 +46,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   private let feedDependencyFactory: FeedDependencyFactory
   private let imageDependencyFactory: ImageDependencyFactory
   private let recordsDependencyFactory: RecordsDependencyFactory
+  private let commentDependencyFactory: CommentDependencyFactory
   
   public required init(
     navigationController: UINavigationController,
@@ -55,7 +57,8 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     membersDependencyFactory: MembersDependencyFactory,
     FeedDependencyFactory: FeedDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory
   ) {
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
@@ -66,6 +69,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
     self.feedDependencyFactory = FeedDependencyFactory
     self.imageDependencyFactory = imageDependencyFactory
     self.recordsDependencyFactory = recordsDependencyFactory
+    self.commentDependencyFactory = commentDependencyFactory
     bindChildToParentAction()
     bindState()
   }
@@ -93,6 +97,8 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
           owner.showPrivacyPageVC()
         case .showServiceInfoPage:
           owner.showServicePageVC()
+        case let .showCommentView(recordId: recordId):
+          owner.showComment(recordId: recordId)
         }
       })
       .disposed(by: disposeBag)
@@ -278,6 +284,24 @@ extension MyPageCoordinatorImp {
     
     tabBarViewController.hideCustomTabBar()
     self.presentViewController(viewController: profileEditVC, style: .fullScreen)
+  }
+  
+  public func showComment(recordId: Int) {
+    let getCommentUseCase = commentDependencyFactory.injectGetCommentsUseCase()
+    let postCommentUseCase = commentDependencyFactory.injectPostCommentUsecase()
+    let flatternedCommentUseCase = commentDependencyFactory.injectFlattenCommentsUsecase()
+    let reactor = commentDependencyFactory.injectCommentReactor(
+      getCommentsUsecase: getCommentUseCase,
+      postCommentUsecase: postCommentUseCase,
+      flattenCommentUsecase: flatternedCommentUseCase,
+      recordId: recordId
+    )
+    let vc = commentDependencyFactory.injectCommentViewController(reactor: reactor)
+    self.presentViewController(
+      viewController: vc,
+      style: .overFullScreen,
+      animated: false
+    )
   }
 }
 

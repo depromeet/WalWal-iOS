@@ -14,6 +14,7 @@ import MembersDependencyFactory
 import FeedDependencyFactory
 import ImageDependencyFactory
 import RecordsDependencyFactory
+import CommentDependencyFactory
 
 import BaseCoordinator
 import MyPageCoordinator
@@ -48,7 +49,8 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
     membersDependencyFactory: MembersDependencyFactory,
     feedDependencyFactory: FeedDependencyFactory,
     imageDependencyFactory: ImageDependencyFactory,
-    recordsDependencyFactory: RecordsDependencyFactory
+    recordsDependencyFactory: RecordsDependencyFactory,
+    commentDependencyFactory: CommentDependencyFactory
   ) -> any MyPageCoordinator {
     return MyPageCoordinatorImp(
       navigationController: navigationController,
@@ -59,7 +61,8 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
       membersDependencyFactory: membersDependencyFactory,
       FeedDependencyFactory: feedDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,
-      recordsDependencyFactory: recordsDependencyFactory
+      recordsDependencyFactory: recordsDependencyFactory,
+      commentDependencyFactory: commentDependencyFactory
     )
   }
   

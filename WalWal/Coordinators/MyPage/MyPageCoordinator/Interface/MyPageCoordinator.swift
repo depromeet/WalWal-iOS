@@ -28,6 +28,7 @@ public enum MyPageCoordinatorFlow: CoordinatorFlow {
   case showProfileSetting
   case showPrivacyInfoPage
   case showServiceInfoPage
+  case showCommentView(recordId: Int)
 }
 
 public protocol MyPageCoordinator: BaseCoordinator
@@ -39,4 +40,6 @@ where Flow == MyPageCoordinatorFlow,
     memberId: Int,
     nickName: String
   )
+  
+  func showComment(recordId: Int)
 }
