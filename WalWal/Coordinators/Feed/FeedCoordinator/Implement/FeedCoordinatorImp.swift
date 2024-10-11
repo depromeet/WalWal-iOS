@@ -8,6 +8,9 @@
 
 import UIKit
 import DesignSystem
+
+import FeedPresenter
+
 import FeedDependencyFactory
 import RecordsDependencyFactory
 import FCMDependencyFactory
@@ -15,6 +18,7 @@ import CommentDependencyFactory
 
 import BaseCoordinator
 import FeedCoordinator
+import CommentCoordinator
 
 import RxSwift
 import RxCocoa
@@ -34,6 +38,8 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   public var baseViewController: UIViewController?
   /// 바텀시트 내부에서 네비게이션을 사용하기 위한 프로퍼티
   private var bottomSheetNavigaionController: UINavigationController?
+  /// 댓글 dimiss 시 Reactor에 동작 요청을 위한 BaseReactor
+  public var baseReactor: (any FeedReactor)?
   
   public var feedDependencyFactory: FeedDependencyFactory
   public var recordsDependencyFactory: RecordsDependencyFactory
@@ -75,27 +81,29 @@ public final class FeedCoordinatorImp: FeedCoordinator {
   /// 자식 Coordinator들로부터 전달된 Action을 근거로, 이후 동작을 정의합니다.
   /// 여기도, Feed이 부모로써 Child로부터 받은 event가 있다면 처리해주면 됨.
   public func handleChildEvent<T: ParentAction>(_ event: T) {
-    //    if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
-    //      handle__Event(__Event)
-    //    } else if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
-    //      handle__Event(__Event)
-    //    }
+    if let commentEvent = event as? CommentCoordinatorAction {
+      handleCommentEvent(.requireParentAction(commentEvent))
+    }
   }
   
   public func start() {
     let fetchFeedUseCase = feedDependencyFactory.injectFetchFeedUseCase()
     let updateBoostCountUseCase =  recordsDependencyFactory.injectUpdateRecordUseCase()
     let removeGlobalRecordIdUseCase = feedDependencyFactory.injectRemoveGlobalRecordIdUseCase()
+    let fetchSingleFeedUseCase = feedDependencyFactory.injectFetchSingleFeedUseCase()
     
     let reactor = feedDependencyFactory.injectFeedReactor(
       coordinator: self,
       fetchFeedUseCase: fetchFeedUseCase,
       updateBoostCountUseCase: updateBoostCountUseCase,
-      removeGlobalRecordIdUseCase: removeGlobalRecordIdUseCase
+      removeGlobalRecordIdUseCase: removeGlobalRecordIdUseCase,
+      fetchSingleFeedUseCase: fetchSingleFeedUseCase
     )
     
     let feedVC = feedDependencyFactory.injectFeedViewController(reactor: reactor)
     self.baseViewController = feedVC
+    self.baseReactor = reactor
+    
     doubleTapRelay
       .subscribe(with: self, onNext: { owner, index in
         reactor.action.onNext(.doubleTap(index))
@@ -111,14 +119,18 @@ public final class FeedCoordinatorImp: FeedCoordinator {
 
 extension FeedCoordinatorImp {
   
-  //  fileprivate func handle__Event(_ event: CoordinatorEvent<__CoordinatorAction>) {
-  //    switch event {
-  //    case .finished:
-  //      childCoordinator = nil
-  //    case .requireParentAction(let action):
-  //      switch action { }
-  //    }
-  //  }
+  fileprivate func handleCommentEvent(_ event: CoordinatorEvent<CommentCoordinatorAction>) {
+    switch event {
+    case .finished:
+      childCoordinator = nil
+    case .requireParentAction(let action):
+      switch action {
+      case .dismissComment(let recordId):
+        self.childCoordinator = nil
+        self.baseReactor?.action.onNext(.refreshFeedData(recordId: recordId))
+      }
+    }
+  }
 }
 
 // MARK: - Create and Start(Show) with Flow(View)
@@ -153,7 +165,6 @@ extension FeedCoordinatorImp {
   }
   
   private func showReportDetail(recordId: Int, reportType: String) {
-
     let reportUseCase = feedDependencyFactory.injectReportUseCase()
     let reactor = feedDependencyFactory.injectReportDetailReactor(
       coordinator: self,
@@ -167,21 +178,14 @@ extension FeedCoordinatorImp {
   }
   
   public func showComment(recordId: Int) {
-    let getCommentUseCase = commentDependencyFactory.injectGetCommentsUseCase()
-    let postCommentUseCase = commentDependencyFactory.injectPostCommentUsecase()
-    let flatternedCommentUseCase = commentDependencyFactory.injectFlattenCommentsUsecase()
-    let reactor = commentDependencyFactory.injectCommentReactor(
-      getCommentsUsecase: getCommentUseCase,
-      postCommentUsecase: postCommentUseCase,
-      flattenCommentUsecase: flatternedCommentUseCase,
+    let coordinator = commentDependencyFactory.injectCommentCoordinator(
+      navigationController: navigationController,
+      parentCoordinator: self,
       recordId: recordId
     )
-    let vc = commentDependencyFactory.injectCommentViewController(reactor: reactor)
-    self.presentViewController(
-      viewController: vc,
-      style: .overFullScreen,
-      animated: false
-    )
+    childCoordinator = coordinator
+    coordinator.start()
+    
   }
 }
 
@@ -197,7 +201,7 @@ extension FeedCoordinatorImp {
   public func doubleTap(index: Int) {
     doubleTapRelay.accept(index)
   }
-
+  
   public func startReport(recordId: Int) {
     self.dismissViewController(animated: false, completion: nil)
     showReportType(recordId: recordId)
