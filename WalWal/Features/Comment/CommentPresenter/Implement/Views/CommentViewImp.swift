@@ -119,7 +119,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func setAttribute() {
     view.backgroundColor = .clear
     view.addSubview(dimView)
-    view.addSubview(rootContainerView)
+    dimView.addSubview(rootContainerView)
     
     rootContainerView.layer.cornerRadius = 30
     rootContainerView.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
@@ -197,17 +197,30 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   private func keyboardShowLayout() {
     let keyboardTop = view.pin.keyboardArea.height
     
-    inputBox.flex
-      .marginBottom(keyboardTop)
-      .height(58)
     rootContainerView.flex
       .layout()
+    
+    rootContainerView.pin
+      .top(65.adjustedHeight)
+      .bottom(0)
+    
+    inputBox.pin
+      .bottom(keyboardTop)
+    
+    tableView.pin
+      .above(of: inputBox)
+      .below(of: headerContainerView)
   }
   
   /// 키보드 내려갔을 때 레이아웃 재설정
   private func keyboardHideLayout() {
-    inputBox.flex
-      .marginBottom(view.pin.safeArea.bottom)
+    rootContainerView.pin
+      .bottom(0)
+      .height(580.adjustedHeight)
+    
+    inputBox.pin
+      .bottom(view.pin.safeArea.bottom)
+    
     rootContainerView.flex
       .layout()
   }
