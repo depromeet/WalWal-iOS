@@ -23,6 +23,7 @@ public enum RecordDetailReactorAction {
   case tapBackButton
   case isHiddenTabBar(Bool)
   case commentTapped(recordId: Int)
+  case refreshFeedData(recordId: Int)
 }
 
 public enum RecordDetailReactorMutation {
@@ -31,6 +32,7 @@ public enum RecordDetailReactorMutation {
   case userFeedFetchFailed(errorMessage: String)
   case moveToBack
   case moveToComment(recordId: Int)
+  case updateFeed(record: WalWalFeedModel?)
 }
 
 public struct RecordDetailReactorState {
@@ -39,6 +41,7 @@ public struct RecordDetailReactorState {
   public var nextCursor: String? = nil
   public var feedFetchEnded: Bool = false
   public var memberId: Int
+  public var updatedFeed: WalWalFeedModel? = nil
   
   public init(memberId: Int) {
     self.memberId = memberId
@@ -55,6 +58,7 @@ public protocol RecordDetailReactor: Reactor where Action == RecordDetailReactor
   init(
     coordinator: any MyPageCoordinator,
     fetchUserFeedUseCase: FetchUserFeedUseCase,
+    fetchSingleFeedUseCase: FetchSingleFeedUseCase,
     memberId: Int
   )
 }
