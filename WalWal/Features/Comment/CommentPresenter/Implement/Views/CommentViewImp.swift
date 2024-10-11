@@ -52,6 +52,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     $0.showsVerticalScrollIndicator = false
     $0.estimatedRowHeight = 60
     $0.rowHeight = UITableView.automaticDimension
+    $0.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
   }
   
   private let inputBox = CustomInputBox(
@@ -122,8 +123,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func setLayout() {
     
     rootContainerView.flex
-      .marginBottom(view.pin.keyboardArea.height)
-      .height(580.adjustedHeight)
+      .height(456.adjustedHeight)
       .define { flex in
         flex.addItem(headerContainerView)
         flex.addItem(tableViewContainerView)
@@ -145,7 +145,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       .define { flex in
         flex.addItem(tableView)
           .position(.absolute)
-          .top(20)
+          .top(0)
           .width(100%)
           .bottom(0)
       }
@@ -187,22 +187,36 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   /// 키보드 올라갔을 때 레이아웃 재설정
-  private func keyboardShowLayout() {
-    let keyboardTop = view.pin.keyboardArea.height
+  private func keyboardShowLayout(notification: Notification) {
+    guard let userInfo = notification.userInfo,
+          let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
     
-    inputBox.flex
-      .marginBottom(keyboardTop)
-      .height(58)
-    rootContainerView.flex
-      .layout()
+    let keyboardHeight = keyboardFrame.height
+    let animationDuration = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double) ?? 0.3
+    let animationCurve = (userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt) ?? UIView.AnimationOptions.curveEaseInOut.rawValue
+    
+    UIView.animate(withDuration: animationDuration,
+                   delay: 0,
+                   options: UIView.AnimationOptions(rawValue: animationCurve),
+                   animations: {
+      self.rootContainerView.pin
+        .bottom(keyboardHeight)
+    })
   }
   
   /// 키보드 내려갔을 때 레이아웃 재설정
-  private func keyboardHideLayout() {
-    inputBox.flex
-      .marginBottom(view.pin.safeArea.bottom)
-    rootContainerView.flex
-      .layout()
+  private func keyboardHideLayout(notification: Notification) {
+    guard let userInfo = notification.userInfo else { return }
+    let animationDuration = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double) ?? 0.3
+    let animationCurve = (userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt) ?? UIView.AnimationOptions.curveEaseInOut.rawValue
+    
+    UIView.animate(withDuration: animationDuration,
+                   delay: 0,
+                   options: UIView.AnimationOptions(rawValue: animationCurve),
+                   animations: {
+      self.rootContainerView.pin
+        .bottom()
+    })
   }
   
   private func setupTableView() {
@@ -337,14 +351,14 @@ extension CommentViewControllerImp: View {
   
   public func bindEvent() {
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
-      .bind(with: self) { owner, _ in
-        owner.keyboardShowLayout()
+      .bind(with: self) { owner, notification in
+        owner.keyboardShowLayout(notification: notification)
       }
       .disposed(by: disposeBag)
     
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
-      .bind(with: self) { owner, _ in
-        owner.keyboardHideLayout()
+      .bind(with: self) { owner, notification in
+        owner.keyboardHideLayout(notification: notification)
       }
       .disposed(by: disposeBag)
     
