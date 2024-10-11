@@ -132,7 +132,7 @@ public final class FeedReactorImp: FeedReactor {
     case let .showMenu(recordId):
       coordinator.destination.accept(.showFeedMenu(recordId: recordId))
     case let .moveToComment(recordId: recordId):
-      coordinator.destination.accept(.showCommentView(recordId: recordId)) // 여기 댓글 이동으로 변경 필요
+      coordinator.destination.accept(.showCommentView(recordId: recordId)) 
     }
     return newState
   }

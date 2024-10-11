@@ -67,6 +67,8 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       return .just(Mutation.moveToBack)
     case let .isHiddenTabBar(isHidden):
       return configTabBar(isHidden)
+    case let .commentTapped(recordId: recordId):
+      return .just(.moveToComment(recordId: recordId))
     }
   }
   
@@ -83,6 +85,8 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       newState.feedErrorMessage = error
     case .moveToBack:
       coordinator.popViewController(animated: true)
+    case let .moveToComment(recordId: recordId):
+      coordinator.destination.accept(.showCommentView(recordId: recordId)) 
     }
     
     return newState
