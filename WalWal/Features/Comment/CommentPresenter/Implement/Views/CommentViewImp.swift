@@ -365,6 +365,19 @@ extension CommentViewControllerImp: View {
     tableViewContainerView.rx.tapped
       .bind(to: inputBox.rx.textEndEditing)
       .disposed(by: disposeBag)
+    
+    inputBox.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        guard let dataSource = owner.dataSource else { return }
+        let lastSectionIndex = dataSource.numberOfSections(in: owner.tableView) - 1
+        let lastRowIndex = dataSource.tableView(owner.tableView, numberOfRowsInSection: lastSectionIndex) - 1
+        
+        if lastSectionIndex >= 0 && lastRowIndex >= 0 {
+          let lastIndexPath = IndexPath(row: lastRowIndex, section: lastSectionIndex)
+          self.tableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: true)
+        }
+      })
+      .disposed(by: disposeBag)
   }
   
 }
