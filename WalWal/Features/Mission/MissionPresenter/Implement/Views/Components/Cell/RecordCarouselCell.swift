@@ -183,11 +183,11 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     
     missionInfoContainer.flex
       .alignItems(.center)
-      .marginTop(-50.adjusted)
       .define{ flex in
         flex.addItem(missionImageView)
-          .width(120%)
-          .height(120%)
+          .position(.absolute)
+          .width(100%)
+          .height(100%)
         flex.addItem(todayMissionLabel)
           .position(.absolute)
           .alignSelf(.center)
@@ -269,7 +269,9 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
   }
   
   func configureCell(record: RecordList) {
-    let processor = DownsamplingImageProcessor(size: CGSize(width: 255, height: 255))
+    let recordImageProcessor = DownsamplingImageProcessor(size: CGSize(width: 255, height: 255))
+    let missionImageProcessor = DownsamplingImageProcessor(size: CGSize(width: 255, height: 436))
+    let round = RoundCornerImageProcessor(cornerRadius: 30.adjusted)
     
     self.textView.text = record.recordContent
     self.textView.textColor = Colors.gray600.color
@@ -277,14 +279,15 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     self.missionImageView.kf.setImage(
       with: URL(string: record.missionIllustrationURL),
       options: [
-        .processor(processor),
+        .processor(missionImageProcessor),
+        .processor(round),
         .scaleFactor(UIScreen.main.scale),
         .cacheOriginalImage
       ])
     self.recordimageView.kf.setImage(
       with: URL(string: record.recordImageURL),
       options: [
-        .processor(processor),
+        .processor(recordImageProcessor),
         .scaleFactor(UIScreen.main.scale),
         .cacheOriginalImage,
         .transition(.fade(0.2))
