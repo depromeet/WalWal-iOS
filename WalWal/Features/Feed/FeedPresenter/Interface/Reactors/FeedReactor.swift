@@ -25,7 +25,7 @@ public enum FeedReactorAction {
   case checkScrollItem
   case doubleTap(Int?)
   case menuTapped(recordId: Int)
-  case commentTapped(recordId: Int)
+  case commentTapped(recordId: Int, writerNickname: String)
 }
 
 public enum FeedReactorMutation {
@@ -38,7 +38,7 @@ public enum FeedReactorMutation {
   case scrollToTop(Bool)
   case resetTabEvent
   case showMenu(recordId: Int)
-  case moveToComment(recordId: Int)
+  case moveToComment(recordId: Int, writerNickname: String)
 }
 
 public struct FeedReactorState {

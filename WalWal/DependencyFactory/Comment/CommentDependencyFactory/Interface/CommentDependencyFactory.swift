@@ -32,7 +32,8 @@ public protocol CommentDependencyFactory {
       getCommentsUsecase: GetCommentsUsecase,
       postCommentUsecase: PostCommentUsecase,
       flattenCommentUsecase: FlattenCommentsUsecase,
-      recordId: Int
+      recordId: Int,
+      writerNickname: String
   ) -> any CommentReactor
   
   // MARK: - ViewController

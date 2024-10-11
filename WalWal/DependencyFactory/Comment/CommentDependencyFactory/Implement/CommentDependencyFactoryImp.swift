@@ -45,13 +45,15 @@ public class CommentDependencyFactoryImp: CommentDependencyFactory {
     getCommentsUsecase: any GetCommentsUsecase,
     postCommentUsecase: any PostCommentUsecase,
     flattenCommentUsecase: any FlattenCommentsUsecase,
-    recordId: Int
+    recordId: Int,
+    writerNickname: String
   ) -> any CommentReactor {
     return CommentReactorImp(
       getCommentsUsecase: getCommentsUsecase,
       postCommentUsecase: postCommentUsecase,
       flattenCommentUsecase: flattenCommentUsecase,
-      recordId: recordId
+      recordId: recordId,
+      writerNickname: writerNickname
     )
   }
   

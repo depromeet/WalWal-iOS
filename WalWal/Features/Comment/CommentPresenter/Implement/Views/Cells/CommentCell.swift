@@ -31,6 +31,7 @@ final class CommentCell: UITableViewCell, ReusableView {
   
   private let profileImageContainer = UIView()
   private let nicknameContainer = UIView()
+  private let writerNicknameContainer = UIView()
   private let timeLabelContainer = UIView()
   private let contentLabelContainer = UIView()
   private let replyButtonContainer = UIView()
@@ -53,6 +54,10 @@ final class CommentCell: UITableViewCell, ReusableView {
   
   private let timeLabel = CustomLabel(font: FontKR.B2).then {
     $0.textColor = AssetColor.gray600.color
+  }
+  
+  private let writerNicknameLabel = CustomLabel(font: FontKR.B2).then {
+    $0.textColor = AssetColor.walwalOrange.color
   }
   
   private let contentLabel = CustomLabel(font: FontKR.B3, lineBreakMode: .byCharWrapping).then {
@@ -125,11 +130,20 @@ final class CommentCell: UITableViewCell, ReusableView {
       .justifyContent(.spaceBetween)
       .define { flex in
         flex.addItem(profileImageAndBodyContainer)
-        flex.addItem(replyButton)
+        flex.addItem(replyButtonContainer)
           .marginTop(8)
           .marginLeft(42)
         flex.addItem()
           .height(20)
+      }
+    
+    replyButtonContainer.flex
+      .direction(.row)
+      .define { flex in
+        flex.addItem(replyButton)
+          .markDirty()
+        flex.addItem()
+          .grow(1)
       }
     
     profileImageAndBodyContainer.flex
@@ -159,13 +173,16 @@ final class CommentCell: UITableViewCell, ReusableView {
         flex.addItem(nicknameLabel)
         flex.addItem(timeLabel)
           .marginLeft(4)
+        flex.addItem(writerNicknameLabel)
+          .marginLeft(8)
       }
   }
   
-  func configure(with comment: FlattenCommentModel) {
+  func configure(with comment: FlattenCommentModel, writerNickname: String) {
     nicknameLabel.text = comment.writerNickname
     contentLabel.text = comment.content
     parentId = comment.commentID
+    writerNicknameLabel.text = writerNickname == comment.writerNickname ? "작성자" : ""
     
     if let timeText = timeAgo(from: comment.createdAt) {
       timeLabel.text = timeText

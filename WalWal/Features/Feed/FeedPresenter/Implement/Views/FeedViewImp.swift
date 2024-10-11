@@ -149,7 +149,7 @@ extension FeedViewControllerImp: View {
     
     feed.commentButtonTapped
       .throttle(.microseconds(300), scheduler: MainScheduler.instance)
-      .map { Reactor.Action.commentTapped(recordId: $0) }
+      .map { Reactor.Action.commentTapped(recordId: $0.recordId, writerNickname: $0.writerNickname) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     

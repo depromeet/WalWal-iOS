@@ -21,6 +21,7 @@ public final class CommentReactorImp: CommentReactor {
   public let initialState: State
   
   private var recordId: Int
+  private var writerNickname: String
   
   private let getCommentsUsecase: GetCommentsUsecase
   private let postCommentUsecase: PostCommentUsecase
@@ -30,14 +31,16 @@ public final class CommentReactorImp: CommentReactor {
     getCommentsUsecase: GetCommentsUsecase,
     postCommentUsecase: PostCommentUsecase,
     flattenCommentUsecase: FlattenCommentsUsecase,
-    recordId: Int
+    recordId: Int,
+    writerNickname: String
   ) {
     self.getCommentsUsecase = getCommentsUsecase
     self.postCommentUsecase = postCommentUsecase
     self.flattenCommentUsecase = flattenCommentUsecase
     
     self.recordId = recordId
-    self.initialState = State(recordId: recordId)
+    self.writerNickname = writerNickname
+    self.initialState = State(recordId: recordId, writerNickname: writerNickname)
   }
   
   /// `transform` 메서드를 사용하여 액션 스트림을 변형합니다.
@@ -53,7 +56,7 @@ public final class CommentReactorImp: CommentReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .fetchComments:
-      let recordId = currentState.recordId
+      let recordId = initialState.recordId
       return getCommentsUsecase.execute(recordId: recordId)
         .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
         .asObservable()

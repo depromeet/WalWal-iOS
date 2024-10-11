@@ -17,7 +17,7 @@ public enum FeedCoordinatorFlow: CoordinatorFlow {
   case showFeedMenu(recordId: Int)
   case showReportView(recordId: Int)
   case showReportDetailView(recordId: Int, reportType: String)
-  case showCommentView(recordId: Int)
+  case showCommentView(recordId: Int, writerNickname: String)
 }
 
 public protocol FeedCoordinator: BaseCoordinator
@@ -28,5 +28,5 @@ where Flow == FeedCoordinatorFlow,
   func doubleTap(index: Int)
   func startReport(recordId: Int)
   func popReportDetail()
-  func showComment(recordId: Int)
+  func showComment(recordId: Int, writerNickname: String)
 }

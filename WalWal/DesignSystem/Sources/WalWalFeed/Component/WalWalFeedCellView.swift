@@ -110,8 +110,8 @@ public final class WalWalFeedCellView: UIView {
     return menuButtonTapEvent.asObservable()
   }
   
-  private let commentButtonTapEvent = PublishSubject<Int>()
-  public var commentButtonTapped: Observable<Int> {
+  private let commentButtonTapEvent = PublishSubject<(recordId: Int, writerNickname: String)>()
+  public var commentButtonTapped: Observable<(recordId: Int, writerNickname: String)> {
     return commentButtonTapEvent.asObservable()
   }
   
@@ -410,9 +410,8 @@ public final class WalWalFeedCellView: UIView {
     
     comentLabelView.rx.tapped
       .withUnretained(self)
-      .compactMap { owner, _ in
-        owner.feedData?.recordId
-      }
+      .compactMap { owner, _  in return owner.feedData }
+      .map{ ($0.recordId, $0.nickname) }
       .bind(to: commentButtonTapEvent)
       .disposed(by: disposeBag)
   }

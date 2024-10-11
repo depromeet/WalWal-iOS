@@ -55,7 +55,7 @@ public final class WalWalFeed: UIView {
   
   public let menuButtonTapped = PublishRelay<Int>()
   
-  public let commentButtonTapped = PublishRelay<Int>()
+  public let commentButtonTapped = PublishRelay<(recordId: Int, writerNickname: String)>()
   
   public var feedData = BehaviorRelay<[WalWalFeedModel]>(value: [])
   
