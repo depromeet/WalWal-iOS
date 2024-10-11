@@ -28,11 +28,6 @@ final class CommentCell: UITableViewCell, ReusableView {
   private let profileImageAndBodyContainer = UIView()
   private let bodyContainer = UIView()
   private let nicknameAndTimeContainer = UIView()
-  
-  private let profileImageContainer = UIView()
-  private let nicknameContainer = UIView()
-  private let timeLabelContainer = UIView()
-  private let contentLabelContainer = UIView()
   private let replyButtonContainer = UIView()
   
   public var parentId: Int? = nil
@@ -80,7 +75,6 @@ final class CommentCell: UITableViewCell, ReusableView {
     replyButton.rx.tapped
       .withUnretained(self)
       .map{ owner, _ in return owner.parentId }
-      .debug()
       .bind(to: parentIdGetted)
       .disposed(by: disposeBag)
   }
@@ -125,11 +119,20 @@ final class CommentCell: UITableViewCell, ReusableView {
       .justifyContent(.spaceBetween)
       .define { flex in
         flex.addItem(profileImageAndBodyContainer)
-        flex.addItem(replyButton)
+        flex.addItem(replyButtonContainer)
           .marginTop(8)
           .marginLeft(42)
         flex.addItem()
           .height(20)
+      }
+    
+    replyButtonContainer.flex
+      .direction(.row)
+      .justifyContent(.spaceBetween)
+      .define {
+        $0.addItem(replyButton)
+        $0.addItem()
+          .grow(1)
       }
     
     profileImageAndBodyContainer.flex
