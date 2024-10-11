@@ -91,14 +91,6 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    dimView.pin
-      .all()
-    dimView.flex
-      .layout()
-    rootContainerView.pin
-      .bottom(-rootContainerView.frame.height)
-    
-    let _ = view.pin.keyboardArea.height
     
     dimView.pin
       .all()
@@ -130,6 +122,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func setLayout() {
     
     rootContainerView.flex
+      .marginBottom(view.pin.keyboardArea.height)
       .height(580.adjustedHeight)
       .define { flex in
         flex.addItem(headerContainerView)
@@ -315,16 +308,7 @@ extension CommentViewControllerImp: View {
       })
       .disposed(by: disposeBag)
     
-    dimView.rx.tapGesture { gestureRecognizer, delegate in
-      delegate.simultaneousRecognitionPolicy = .always
-      gestureRecognizer.cancelsTouchesInView = false // 터치가 뷰로 전달되도록 허용
-    }
-    .when(.recognized)
-    .withUnretained(self)
-    .filter { owner, gesture in
-      let location = gesture.location(in: self.view)
-      return !owner.rootContainerView.frame.contains(location)
-    }
+    dimView.rx.tapped
     .subscribe(with: self, onNext: { owner, _ in
       owner.inputBox.rx.textEndEditing.onNext(())
       owner.animateSheetDown {
