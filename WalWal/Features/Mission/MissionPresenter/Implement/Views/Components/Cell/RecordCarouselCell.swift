@@ -182,7 +182,6 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
       }
     
     missionInfoContainer.flex
-      .alignItems(.center)
       .define{ flex in
         flex.addItem(missionImageView)
           .position(.absolute)
@@ -191,11 +190,11 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
         flex.addItem(todayMissionLabel)
           .position(.absolute)
           .alignSelf(.center)
-          .top(118.adjusted)
+          .top(68.adjusted)
         flex.addItem(missionTitleLabel)
           .position(.absolute)
           .alignSelf(.center)
-          .top(139.adjusted)
+          .top(89.adjusted)
           .marginHorizontal(20.adjusted)
       }
     
