@@ -200,7 +200,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
       self.rootContainerView.pin
-        .bottom(keyboardHeight)
+        .bottom(keyboardHeight - self.view.pin.safeArea.bottom)
     })
   }
   
