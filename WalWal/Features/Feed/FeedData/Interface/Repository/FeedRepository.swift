@@ -12,4 +12,5 @@ import RxSwift
 
 public protocol FeedRepository {
   func fetchFeedData(memberId: Int?, cursor: String?, limit: Int) -> Single<FeedDTO>
+  func fetchSingleFeed(recordId: Int) -> Single<FeedListDTO>
 }

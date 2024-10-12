@@ -76,6 +76,7 @@ public protocol MyPageDependencyFactory {
   func injectRecordDetailReactor<T: MyPageCoordinator>(
     coordinator: T,
     fetchUserFeedUseCase: FetchUserFeedUseCase,
+    fetchSingleFeedUseCase: FetchSingleFeedUseCase,
     memberId: Int
   ) -> any RecordDetailReactor
   func injectRecordDetailViewController<T: RecordDetailReactor>(

@@ -16,6 +16,7 @@ enum FeedEndpoint<T>: APIEndpoint where T: Decodable {
   typealias ResponseType = T
   case fetchFeed(query: FetchFeedQuery)
   case reports(body: ReportParameter)
+  case fetchSingleFeed(Int)
 }
 
 extension FeedEndpoint {
@@ -29,6 +30,8 @@ extension FeedEndpoint {
       return "/feed"
     case .reports:
       return "/reports"
+    case let .fetchSingleFeed(recordId):
+      return "/feed/\(recordId)"
     }
   }
   
@@ -38,6 +41,8 @@ extension FeedEndpoint {
       return .get
     case .reports:
       return .post
+    case .fetchSingleFeed:
+      return .get
     }
   }
   
@@ -47,12 +52,14 @@ extension FeedEndpoint {
       return .requestQuery(query)
     case let .reports(body):
       return .requestWithbody(body)
+    case .fetchSingleFeed:
+      return .requestPlain
     }
   }
   
   var headerType: HTTPHeaderType {
     switch self {
-    case .fetchFeed, .reports:
+    case .fetchFeed, .reports, .fetchSingleFeed:
       if let accessToken = KeychainWrapper.shared.accessToken {
         return .authorization(accessToken)
       } else{

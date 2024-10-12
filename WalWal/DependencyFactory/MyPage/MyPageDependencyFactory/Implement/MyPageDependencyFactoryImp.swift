@@ -115,9 +115,14 @@ public class MyPageDependencyFactoryImp: MyPageDependencyFactory {
   public func injectRecordDetailReactor<T: MyPageCoordinator>(
     coordinator: T,
     fetchUserFeedUseCase: FetchUserFeedUseCase,
+    fetchSingleFeedUseCase: FetchSingleFeedUseCase,
     memberId: Int
   ) -> any RecordDetailReactor{
-    return RecordDetailReactorImp(coordinator: coordinator, fetchUserFeedUseCase: fetchUserFeedUseCase, memberId: memberId)
+    return RecordDetailReactorImp(
+      coordinator: coordinator,
+      fetchUserFeedUseCase: fetchUserFeedUseCase,
+      fetchSingleFeedUseCase: fetchSingleFeedUseCase,
+      memberId: memberId)
   }
   
   public func injectRecordDetailViewController<T: RecordDetailReactor>(

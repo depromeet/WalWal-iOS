@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import ProjectDescription
+@preconcurrency import ProjectDescription
 
 //MARK: - Target Dependency관련 확장 (Target별 상세 Dependency)
 
@@ -44,6 +44,7 @@ enum CoordinatorStr: String {
   case myPage = "MyPage"
   case fcm = "FCM"
   case missionUpload = "MissionUpload"
+  case comment = "Comment"
 }
 
 enum FeatureStr: String {
@@ -134,6 +135,7 @@ extension TargetDependency {
     public struct FCM: WalWalDependency { }
     public struct Feed: WalWalDependency { }
     public struct MissionUpload: WalWalDependency { }
+    public struct Comment: WalWalDependency { }
   }
   
   public struct Feature {
@@ -487,6 +489,10 @@ public extension TargetDependency.Coordinator.FCM {
   static let Implement = Self.project(name: .fcm, isInterface: false)
 }
 
+public extension TargetDependency.Coordinator.Comment {
+  static let Interface = Self.project(name: .comment, isInterface: true)
+  static let Implement = Self.project(name: .comment, isInterface: false)
+}
 
 public extension TargetDependency.ThirdParty {
   private static func framework(name: String) -> TargetDependency {

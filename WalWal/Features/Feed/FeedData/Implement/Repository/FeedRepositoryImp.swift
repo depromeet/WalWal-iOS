@@ -27,4 +27,12 @@ public final class FeedRepositoryImp: FeedRepository {
       .asObservable()
       .asSingle()
   }
+  
+  public func fetchSingleFeed(recordId: Int) -> Single<FeedListDTO> {
+    let endPoint = FeedEndpoint<FeedListDTO>.fetchSingleFeed(recordId)
+    return networkService.request(endpoint: endPoint, isNeedInterceptor: true)
+      .compactMap { $0 }
+      .asObservable()
+      .asSingle()
+  }
 }

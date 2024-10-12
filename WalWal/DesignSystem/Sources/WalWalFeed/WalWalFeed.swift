@@ -230,6 +230,7 @@ public final class WalWalFeed: UIView {
     }
   }
   
+  /// 피드 데이터 불러온 후 추가
   public func addNewData(_ newData: [WalWalFeedModel]) {
     let currentDataCount = currentFeedData.count
     currentFeedData.append(contentsOf: newData)
@@ -239,6 +240,20 @@ public final class WalWalFeed: UIView {
     collectionView.performBatchUpdates({
       collectionView.insertItems(at: newIndexPaths)
     }, completion: nil)
+  }
+  
+  /// 특정 피드만 업데이트
+  public func updateRecord(at recordId: Int, updatedFeed: WalWalFeedModel) {
+    if let index = currentFeedData.firstIndex(where: { $0.recordId == recordId }) {
+      currentFeedData[index] = updatedFeed
+      feedData.accept(currentFeedData)
+      
+      collectionView.performBatchUpdates({
+        collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
+      }, completion: nil)
+      
+      collectionView.collectionViewLayout.invalidateLayout()
+    }
   }
   
   
