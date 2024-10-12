@@ -28,7 +28,7 @@ final class CommentCell: UITableViewCell, ReusableView {
   private let profileImageAndBodyContainer = UIView()
   private let bodyContainer = UIView()
   private let nicknameAndTimeContainer = UIView()
-  
+
   private let profileImageContainer = UIView()
   private let nicknameContainer = UIView()
   private let writerNicknameContainer = UIView()
@@ -85,7 +85,6 @@ final class CommentCell: UITableViewCell, ReusableView {
     replyButton.rx.tapped
       .withUnretained(self)
       .map{ owner, _ in return owner.parentId }
-      .debug()
       .bind(to: parentIdGetted)
       .disposed(by: disposeBag)
   }
@@ -139,10 +138,10 @@ final class CommentCell: UITableViewCell, ReusableView {
     
     replyButtonContainer.flex
       .direction(.row)
-      .define { flex in
-        flex.addItem(replyButton)
-          .markDirty()
-        flex.addItem()
+      .justifyContent(.spaceBetween)
+      .define {
+        $0.addItem(replyButton)
+        $0.addItem()
           .grow(1)
       }
     

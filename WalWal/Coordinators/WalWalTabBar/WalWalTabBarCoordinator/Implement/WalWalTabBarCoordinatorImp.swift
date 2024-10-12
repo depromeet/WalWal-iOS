@@ -320,7 +320,8 @@ extension WalWalTabBarCoordinatorImp {
       membersDependencyFactory: membersDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,
-      recordsDependencyFactory: recordDependencyFactory
+      recordsDependencyFactory: recordDependencyFactory,
+      commentDependencyFactory: commentDependencyFactory
     )
     myPageCoordinator.start()
     return myPageCoordinator
@@ -338,7 +339,8 @@ extension WalWalTabBarCoordinatorImp {
       membersDependencyFactory: membersDependencyFactory,
       feedDependencyFactory: feedDependencyFactory,
       imageDependencyFactory: imageDependencyFactory,
-      recordsDependencyFactory: recordDependencyFactory
+      recordsDependencyFactory: recordDependencyFactory,
+      commentDependencyFactory: commentDependencyFactory
     )
     profileCoordinator.startProfile(memberId: memberId, nickName: nickName)
   }

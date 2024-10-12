@@ -219,8 +219,7 @@ extension Reactive where Base: CustomInputBox {
   /// `inputBox.rx.textEndEditing.onNext()`
   public var textEndEditing: Binder<Void> {
     return Binder(base) { target, _ in
-      target.textView.resignFirstResponder()
-      target.textView.text = nil
+      target.textView.endEditing(true)
     }
   }
   
