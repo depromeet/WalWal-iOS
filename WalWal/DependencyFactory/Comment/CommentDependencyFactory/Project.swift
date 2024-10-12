@@ -20,6 +20,7 @@ let project = Project.invertedDualTargetProject(
   implementDependencies: [
     .Feature.Comment.Data.Implement,
     .Feature.Comment.Domain.Implement,
-    .Feature.Comment.Presenter.Implement
+    .Feature.Comment.Presenter.Implement,
+    .Coordinator.Comment.Implement
   ]
 )

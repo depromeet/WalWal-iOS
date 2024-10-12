@@ -8,6 +8,9 @@
 
 import UIKit
 import DesignSystem
+
+import MyPagePresenter
+
 import MyPageDependencyFactory
 import FCMDependencyFactory
 import AuthDependencyFactory
@@ -20,6 +23,7 @@ import SafariServices
 
 import BaseCoordinator
 import MyPageCoordinator
+import CommentCoordinator
 
 import DesignSystem
 
@@ -38,6 +42,7 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   public weak var parentCoordinator: (any BaseCoordinator)?
   public var childCoordinator: (any BaseCoordinator)?
   public var baseViewController: UIViewController?
+  public var baseReactor: (any RecordDetailReactor)?
   
   private let myPageDependencyFactory: MyPageDependencyFactory
   private let fcmDependencyFactory: FCMDependencyFactory
@@ -105,11 +110,10 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
   }
   
   public func handleChildEvent<T: ParentAction>(_ event: T) {
-    /// if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
+    if let commentEvent = event as? CommentCoordinatorAction {
     ///   handle__Event(__Event)
-    /// } else if let __Event = event as? CoordinatorEvent<__CoordinatorAction> {
-    ///   handle__Event(__Event)
-    /// }
+      handleCommentEvent(.requireParentAction(commentEvent))
+    }
   }
   
   public func start() {
@@ -173,14 +177,19 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
 
 extension MyPageCoordinatorImp {
   
-  /// fileprivate func handle__Event(_ event: CoordinatorEvent<__CoordinatorAction>) {
-  ///   switch event {
-  ///   case .finished:
-  ///     childCoordinator = nil
-  ///   case .requireParentAction(let action):
-  ///     switch action { }
-  ///   }
-  /// }
+  fileprivate func handleCommentEvent(_ event: CoordinatorEvent<CommentCoordinatorAction>) {
+    switch event {
+    case .finished:
+      childCoordinator = nil
+    case .requireParentAction(let action):
+      switch action {
+      case .dismissComment(let recordId):
+        self.childCoordinator = nil
+        self.baseReactor?.action.onNext(.refreshFeedData(recordId: recordId))
+      }
+    }
+  }
+  
 }
 
 // MARK: - Create and Start(Show) with Flow(View)
@@ -214,9 +223,11 @@ extension MyPageCoordinatorImp {
     recordId: Int
   ) {
     let fetchUserFeedUseCase = feedDependencyFactory.injectFetchUserFeedUseCase()
+    let fetchSingleFeedUseCase = feedDependencyFactory.injectFetchSingleFeedUseCase()
     let reactor = myPageDependencyFactory.injectRecordDetailReactor(
       coordinator: self,
       fetchUserFeedUseCase: fetchUserFeedUseCase,
+      fetchSingleFeedUseCase: fetchSingleFeedUseCase,
       memberId: memberId
     )
     let recordDetailVC = myPageDependencyFactory.injectRecordDetailViewController(
@@ -225,6 +236,9 @@ extension MyPageCoordinatorImp {
       memberNickname: nickname,
       recordId: recordId
     )
+    
+    self.baseReactor = reactor
+    
     if let tabBarViewController = navigationController.tabBarController as? WalWalTabBarViewController {
       tabBarViewController.hideCustomTabBar()
     }
@@ -287,21 +301,13 @@ extension MyPageCoordinatorImp {
   }
   
   public func showComment(recordId: Int) {
-    let getCommentUseCase = commentDependencyFactory.injectGetCommentsUseCase()
-    let postCommentUseCase = commentDependencyFactory.injectPostCommentUsecase()
-    let flatternedCommentUseCase = commentDependencyFactory.injectFlattenCommentsUsecase()
-    let reactor = commentDependencyFactory.injectCommentReactor(
-      getCommentsUsecase: getCommentUseCase,
-      postCommentUsecase: postCommentUseCase,
-      flattenCommentUsecase: flatternedCommentUseCase,
+    let coordinator = commentDependencyFactory.injectCommentCoordinator(
+      navigationController: navigationController,
+      parentCoordinator: self,
       recordId: recordId
     )
-    let vc = commentDependencyFactory.injectCommentViewController(reactor: reactor)
-    self.presentViewController(
-      viewController: vc,
-      style: .overFullScreen,
-      animated: false
-    )
+    childCoordinator = coordinator
+    coordinator.start()
   }
 }
 

@@ -11,6 +11,10 @@ import WalWalNetwork
 
 import CommentDependencyFactory
 
+import BaseCoordinator
+import CommentCoordinator
+import CommentCoordinatorImp
+
 import CommentData
 import CommentDataImp
 import CommentDomain
@@ -24,31 +28,46 @@ public class CommentDependencyFactoryImp: CommentDependencyFactory {
     
   }
   
-  public func injectFeedRepository() -> any CommentRepository {
+  public func injectCommentCoordinator(
+    navigationController: UINavigationController,
+    parentCoordinator: any BaseCoordinator,
+    recordId: Int
+  ) -> any CommentCoordinator {
+    return CommentCoordinatorImp (
+      navigationController: navigationController,
+      parentCoordinator: parentCoordinator,
+      commentDependencyFactory: self,
+      recordId: recordId
+    )
+  }
+  
+  public func injectCommentRepository() -> any CommentRepository {
     let networkService = NetworkService()
     return CommentRepositoryImp(networkService: networkService)
   }
   
   public func injectGetCommentsUseCase() -> any GetCommentsUsecase {
-    return GetCommentsUsecaseImp(repository: injectFeedRepository())
+    return GetCommentsUsecaseImp(repository: injectCommentRepository())
   }
   
   public func injectPostCommentUsecase() -> any PostCommentUsecase {
-    return PostCommentUsecaseImp(repository: injectFeedRepository())
+    return PostCommentUsecaseImp(repository: injectCommentRepository())
   }
   
   public func injectFlattenCommentsUsecase() -> any FlattenCommentsUsecase {
     return FlattenCommentsUsecaseImp()
   }
   
-  public func injectCommentReactor(
+  public func injectCommentReactor<T: CommentCoordinator>(
+    coordinator: T,
     getCommentsUsecase: any GetCommentsUsecase,
     postCommentUsecase: any PostCommentUsecase,
     flattenCommentUsecase: any FlattenCommentsUsecase,
     recordId: Int,
-    writerNickname: String
+    writerNickname: Int
   ) -> any CommentReactor {
     return CommentReactorImp(
+      coordinator: coordinator,
       getCommentsUsecase: getCommentsUsecase,
       postCommentUsecase: postCommentUsecase,
       flattenCommentUsecase: flattenCommentUsecase,

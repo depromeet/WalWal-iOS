@@ -29,17 +29,22 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
   public let coordinator: any MyPageCoordinator
   
   private let fetchUserFeedUseCase: FetchUserFeedUseCase
+  private let fetchSingleFeedUseCase: FetchSingleFeedUseCase
   private let memberId: Int
   private var isOtherFeed: Bool
   
   public init(
     coordinator: any MyPageCoordinator,
     fetchUserFeedUseCase: FetchUserFeedUseCase,
+    fetchSingleFeedUseCase: FetchSingleFeedUseCase,
     memberId: Int
   ) {
     self.isOtherFeed = memberId != GlobalState.shared.profileInfo.value.memberId
     self.memberId = memberId
+    
     self.fetchUserFeedUseCase = fetchUserFeedUseCase
+    self.fetchSingleFeedUseCase = fetchSingleFeedUseCase
+    
     self.initialState = State(memberId: memberId)
     self.coordinator = coordinator
   }
@@ -69,6 +74,8 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       return configTabBar(isHidden)
     case let .commentTapped(recordId: recordId):
       return .just(.moveToComment(recordId: recordId))
+    case .refreshFeedData(recordId: let recordId):
+      return fetchUpdatedFeedAt(recordId: recordId)
     }
   }
   
@@ -87,6 +94,11 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       coordinator.popViewController(animated: true)
     case let .moveToComment(recordId: recordId):
       coordinator.destination.accept(.showCommentView(recordId: recordId)) 
+    case .updateFeed(record: let record):
+      print(record)
+      if let record {
+        newState.updatedFeed = record
+      }
     }
     
     return newState
@@ -149,6 +161,20 @@ extension RecordDetailReactorImp {
       .catch{ error in
         return .just(Mutation.userFeedFetchFailed(errorMessage: error.localizedDescription))}
   }
+  
+  private func fetchUpdatedFeedAt(recordId: Int) -> Observable<Mutation> {
+    return fetchSingleFeedUseCase.execute(recordId: recordId)
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, Singlefeed -> Observable<Mutation> in
+        return owner.convertGlobaltoFeedModel(feedList: [Singlefeed])
+          .withUnretained(self)
+          .flatMap { owner, feed -> Observable<Mutation> in
+            return .just(.updateFeed(record: feed.first))
+          }
+      }
+  }
+  
   
   private func convertRawFeedtoFeedModel(feedList: [FeedListModel]) -> Observable<[WalWalFeedModel]> {
     let feedObservables = feedList.map { feed -> Observable<WalWalFeedModel?> in

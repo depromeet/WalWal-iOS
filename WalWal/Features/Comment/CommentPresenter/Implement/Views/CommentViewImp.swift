@@ -294,13 +294,6 @@ extension CommentViewControllerImp: View {
         self.updateSheetPosition(position)
       })
       .disposed(by: disposeBag)
-    
-    reactor.state.map { $0.isSheetDismissed }
-      .filter { $0 }
-      .subscribe(with: self) { owner, isSheetDismissed in
-        owner.dismiss(animated: false)
-      }
-      .disposed(by: disposeBag)
   }
   
   public func bindAction(reactor: R) {

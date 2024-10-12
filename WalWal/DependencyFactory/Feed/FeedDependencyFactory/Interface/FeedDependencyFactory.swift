@@ -44,13 +44,16 @@ public protocol FeedDependencyFactory {
   
   func injectReportUseCase() -> ReportUseCase
   
+  func injectFetchSingleFeedUseCase() -> FetchSingleFeedUseCase
+  
   // MARK: - Reactor
   
   func injectFeedReactor<T: FeedCoordinator>(
     coordinator: T,
     fetchFeedUseCase: FetchFeedUseCase,
     updateBoostCountUseCase: UpdateBoostCountUseCase,
-    removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
+    removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase,
+    fetchSingleFeedUseCase: FetchSingleFeedUseCase
   ) -> any FeedReactor
   
   func injectFeedMenuReactor<T: FeedCoordinator>(

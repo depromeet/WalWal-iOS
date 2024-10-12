@@ -33,6 +33,7 @@ public final class FeedReactorImp: FeedReactor {
   private let fetchFeedUseCase: FetchFeedUseCase
   private let updateBoostCountUseCase: UpdateBoostCountUseCase
   private let removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
+  private let fetchSingleFeedUseCase: FetchSingleFeedUseCase
   
   private var isLoading: Bool = false
   
@@ -40,12 +41,14 @@ public final class FeedReactorImp: FeedReactor {
     coordinator: any FeedCoordinator,
     fetchFeedUseCase: FetchFeedUseCase,
     updateBoostCountUseCase: UpdateBoostCountUseCase,
-    removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
+    removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase,
+    fetchSingleFeedUseCase: FetchSingleFeedUseCase
   ) {
     self.coordinator = coordinator
     self.fetchFeedUseCase = fetchFeedUseCase
     self.updateBoostCountUseCase = updateBoostCountUseCase
     self.removeGlobalRecordIdUseCase = removeGlobalRecordIdUseCase
+    self.fetchSingleFeedUseCase = fetchSingleFeedUseCase
     
     self.initialState = State()
   }
@@ -104,6 +107,8 @@ public final class FeedReactorImp: FeedReactor {
       return .just(.showMenu(recordId: recordId))
     case let .commentTapped(recordId, writerNickname):
       return .just(.moveToComment(recordId: recordId, writerNickname: writerNickname))
+    case .refreshFeedData(recordId: let recordId):
+      return fetchUpdatedFeedAt(recordId: recordId)
     }
   }
   
@@ -133,6 +138,10 @@ public final class FeedReactorImp: FeedReactor {
       coordinator.destination.accept(.showFeedMenu(recordId: recordId))
     case let .moveToComment(recordId, writerNickname):
       coordinator.destination.accept(.showCommentView(recordId: recordId, writerNickname: writerNickname))
+    case let .updateFeed(record: updatedFeed):
+      if let updatedFeed {
+        newState.updatedFeed = updatedFeed
+      }
     }
     return newState
   }
@@ -183,6 +192,20 @@ public final class FeedReactorImp: FeedReactor {
       .asObservable()
       .flatMap { _ -> Observable<Mutation> in
         return .just(.updateBoost)
+      }
+  }
+  
+  private func fetchUpdatedFeedAt(recordId: Int) -> Observable<Mutation> {
+    // 여기 특정 피드만 불러오는 걸로 수정 필요
+    return fetchSingleFeedUseCase.execute(recordId: recordId)
+      .asObservable()
+      .withUnretained(self)
+      .flatMap { owner, singleFeed -> Observable<Mutation> in
+        return owner.convertFeedModel(feedList: [singleFeed])
+          .withUnretained(self)
+          .flatMap { owner, feed -> Observable<Mutation> in
+            return .just(.updateFeed(record: feed.first))
+          }
       }
   }
   

@@ -179,6 +179,17 @@ extension RecordDetailViewControllerImp: View {
         owner.feed.scrollToRecord(withId: owner.recordId, animated: true)
       })
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.updatedFeed }
+      .distinctUntilChanged()
+      .observe(on: MainScheduler.instance)
+      .subscribe(with: self) { owner, updatedFeed in
+        if let updatedFeed {
+          owner.feed.updateRecord(at: updatedFeed.recordId, updatedFeed: updatedFeed)
+        }
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

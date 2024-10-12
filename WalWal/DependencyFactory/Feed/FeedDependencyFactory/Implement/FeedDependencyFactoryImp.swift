@@ -75,19 +75,25 @@ public class FeedDependencyFactoryImp: FeedDependencyFactory {
     return ReportUseCaseImp(reportRepository: injectReportRepostioy())
   }
   
+  public func injectFetchSingleFeedUseCase() -> FetchSingleFeedUseCase {
+    return FetchSingleFeedUseCaseImp(feedRepository: injectFeedRepository())
+  }
+  
   // MARK: - Reactor
   
   public func injectFeedReactor<T: FeedCoordinator>(
     coordinator: T,
     fetchFeedUseCase: FetchFeedUseCase,
     updateBoostCountUseCase: UpdateBoostCountUseCase,
-    removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase
+    removeGlobalRecordIdUseCase: RemoveGlobalRecordIdUseCase,
+    fetchSingleFeedUseCase: FetchSingleFeedUseCase
   ) -> any FeedReactor {
     return FeedReactorImp(
       coordinator: coordinator,
       fetchFeedUseCase: fetchFeedUseCase,
       updateBoostCountUseCase: updateBoostCountUseCase,
-      removeGlobalRecordIdUseCase: removeGlobalRecordIdUseCase
+      removeGlobalRecordIdUseCase: removeGlobalRecordIdUseCase,
+      fetchSingleFeedUseCase: fetchSingleFeedUseCase
     )
   }
   

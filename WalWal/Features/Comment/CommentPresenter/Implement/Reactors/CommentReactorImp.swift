@@ -6,6 +6,7 @@
 //  Created by 조용인
 //
 
+import CommentCoordinator
 import CommentDomain
 import CommentPresenter
 
@@ -19,6 +20,7 @@ public final class CommentReactorImp: CommentReactor {
   public typealias State = CommentReactorState
   
   public let initialState: State
+  public let coordinator: any CommentCoordinator
   
   private var recordId: Int
   private var writerNickname: String
@@ -28,12 +30,15 @@ public final class CommentReactorImp: CommentReactor {
   private let flattenCommentUsecase: FlattenCommentsUsecase
   
   public init(
+    coordinator: any CommentCoordinator,
     getCommentsUsecase: GetCommentsUsecase,
     postCommentUsecase: PostCommentUsecase,
     flattenCommentUsecase: FlattenCommentsUsecase,
     recordId: Int,
     writerNickname: String
   ) {
+    self.coordinator = coordinator
+    
     self.getCommentsUsecase = getCommentsUsecase
     self.postCommentUsecase = postCommentUsecase
     self.flattenCommentUsecase = flattenCommentUsecase
@@ -104,7 +109,7 @@ public final class CommentReactorImp: CommentReactor {
     case let .setSheetPosition(position):
       newState.sheetPosition = position
     case .dismissSheet:
-      newState.isSheetDismissed = true
+      coordinator.reloadFeedAt(recordId)
     case let .setReplyMode(parentId, isReply):
       newState.parentId = parentId
       newState.isReply = isReply

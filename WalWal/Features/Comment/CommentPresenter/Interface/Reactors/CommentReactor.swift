@@ -8,6 +8,7 @@
 
 import Foundation
 import CommentDomain
+import CommentCoordinator
 
 import ReactorKit
 import RxSwift
@@ -55,7 +56,10 @@ public struct CommentReactorState {
 
 public protocol CommentReactor: Reactor where Action == CommentReactorAction, Mutation == CommentReactorMutation, State == CommentReactorState {
   
+  var coordinator: any CommentCoordinator { get }
+  
   init(
+    coordinator: any CommentCoordinator,
     getCommentsUsecase: GetCommentsUsecase,
     postCommentUsecase: PostCommentUsecase,
     flattenCommentUsecase: FlattenCommentsUsecase,
