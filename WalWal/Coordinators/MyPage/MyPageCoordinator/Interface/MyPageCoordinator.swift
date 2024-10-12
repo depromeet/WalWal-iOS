@@ -28,7 +28,7 @@ public enum MyPageCoordinatorFlow: CoordinatorFlow {
   case showProfileSetting
   case showPrivacyInfoPage
   case showServiceInfoPage
-  case showCommentView(recordId: Int)
+  case showCommentView(recordId: Int, writerNickname: String)
 }
 
 public protocol MyPageCoordinator: BaseCoordinator
@@ -41,5 +41,5 @@ where Flow == MyPageCoordinatorFlow,
     nickName: String
   )
   
-  func showComment(recordId: Int)
+  func showComment(recordId: Int, writerNickname: String)
 }

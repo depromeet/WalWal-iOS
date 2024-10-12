@@ -22,7 +22,7 @@ public enum RecordDetailReactorAction {
   case loadFeed(memberId: Int, cursorDate: String?)
   case tapBackButton
   case isHiddenTabBar(Bool)
-  case commentTapped(recordId: Int)
+  case commentTapped(recordId: Int, writerNickname: String)
   case refreshFeedData(recordId: Int)
 }
 
@@ -31,7 +31,7 @@ public enum RecordDetailReactorMutation {
   case userFeedReachEnd(newRecord: [WalWalFeedModel])
   case userFeedFetchFailed(errorMessage: String)
   case moveToBack
-  case moveToComment(recordId: Int)
+  case moveToComment(recordId: Int, writerNickname: String)
   case updateFeed(record: WalWalFeedModel?)
 }
 

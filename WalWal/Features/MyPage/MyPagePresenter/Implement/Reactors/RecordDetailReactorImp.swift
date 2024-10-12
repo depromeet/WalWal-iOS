@@ -72,8 +72,8 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       return .just(Mutation.moveToBack)
     case let .isHiddenTabBar(isHidden):
       return configTabBar(isHidden)
-    case let .commentTapped(recordId: recordId):
-      return .just(.moveToComment(recordId: recordId))
+    case let .commentTapped(recordId, writerNickname):
+      return .just(.moveToComment(recordId: recordId, writerNickname: writerNickname))
     case .refreshFeedData(recordId: let recordId):
       return fetchUpdatedFeedAt(recordId: recordId)
     }
@@ -92,10 +92,9 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       newState.feedErrorMessage = error
     case .moveToBack:
       coordinator.popViewController(animated: true)
-    case let .moveToComment(recordId: recordId):
-      coordinator.destination.accept(.showCommentView(recordId: recordId)) 
+    case let .moveToComment(recordId, writerNickname):
+      coordinator.destination.accept(.showCommentView(recordId: recordId, writerNickname: writerNickname)) 
     case .updateFeed(record: let record):
-      print(record)
       if let record {
         newState.updatedFeed = record
       }

@@ -30,14 +30,17 @@ public final class CommentCoordinatorImp: CommentCoordinator {
   public var commentDependencyFactory: CommentDependencyFactory
   
   private let recordId: Int
+  private var writerNickname: String
   
   public required init(
     navigationController: UINavigationController,
     parentCoordinator: (any BaseCoordinator)?,
     commentDependencyFactory: CommentDependencyFactory,
-    recordId: Int
+    recordId: Int,
+    writerNickname: String
   ) {
     self.recordId = recordId
+    self.writerNickname = writerNickname
     self.navigationController = navigationController
     self.parentCoordinator = parentCoordinator
     self.commentDependencyFactory = commentDependencyFactory
@@ -73,7 +76,8 @@ public final class CommentCoordinatorImp: CommentCoordinator {
       getCommentsUsecase: getCommentsUsecase,
       postCommentUsecase: postCommentUsecase,
       flattenCommentUsecase: flattenCommentUsecase,
-      recordId: self.recordId
+      recordId: recordId,
+      writerNickname: writerNickname
     )
     let commentVC = commentDependencyFactory.injectCommentViewController(reactor: reactor)
     self.baseViewController = commentVC

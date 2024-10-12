@@ -22,7 +22,8 @@ public protocol CommentDependencyFactory {
   func injectCommentCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
-    recordId: Int
+    recordId: Int,
+    writerNickname: String
   ) -> any CommentCoordinator
   
   func injectCommentRepository() -> CommentRepository

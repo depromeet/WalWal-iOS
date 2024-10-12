@@ -102,8 +102,8 @@ public final class MyPageCoordinatorImp: MyPageCoordinator {
           owner.showPrivacyPageVC()
         case .showServiceInfoPage:
           owner.showServicePageVC()
-        case let .showCommentView(recordId: recordId):
-          owner.showComment(recordId: recordId)
+        case let .showCommentView(recordId, writerNickname):
+          owner.showComment(recordId: recordId, writerNickname: writerNickname)
         }
       })
       .disposed(by: disposeBag)
@@ -300,11 +300,12 @@ extension MyPageCoordinatorImp {
     self.presentViewController(viewController: profileEditVC, style: .fullScreen)
   }
   
-  public func showComment(recordId: Int) {
+  public func showComment(recordId: Int, writerNickname: String) {
     let coordinator = commentDependencyFactory.injectCommentCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
-      recordId: recordId
+      recordId: recordId,
+      writerNickname: writerNickname
     )
     childCoordinator = coordinator
     coordinator.start()

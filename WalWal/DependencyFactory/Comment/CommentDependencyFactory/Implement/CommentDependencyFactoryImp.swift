@@ -31,13 +31,15 @@ public class CommentDependencyFactoryImp: CommentDependencyFactory {
   public func injectCommentCoordinator(
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
-    recordId: Int
+    recordId: Int,
+    writerNickname: String
   ) -> any CommentCoordinator {
     return CommentCoordinatorImp (
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       commentDependencyFactory: self,
-      recordId: recordId
+      recordId: recordId,
+      writerNickname: writerNickname
     )
   }
   
@@ -64,7 +66,7 @@ public class CommentDependencyFactoryImp: CommentDependencyFactory {
     postCommentUsecase: any PostCommentUsecase,
     flattenCommentUsecase: any FlattenCommentsUsecase,
     recordId: Int,
-    writerNickname: Int
+    writerNickname: String
   ) -> any CommentReactor {
     return CommentReactorImp(
       coordinator: coordinator,
