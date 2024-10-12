@@ -71,8 +71,8 @@ public final class FeedCoordinatorImp: FeedCoordinator {
           self.showReportType(recordId: recordId)
         case let .showReportDetailView(recordId, reportType):
           self.showReportDetail(recordId: recordId, reportType: reportType)
-        case .showCommentView(recordId: let recordId):
-          self.showComment(recordId: recordId)
+        case let .showCommentView(recordId, writerNickname):
+          self.showComment(recordId: recordId, writerNickname: writerNickname)
         }
       })
       .disposed(by: disposeBag)
@@ -177,11 +177,12 @@ extension FeedCoordinatorImp {
     bottomSheetNavigaionController?.pushViewController(vc, animated: false)
   }
   
-  public func showComment(recordId: Int) {
+  public func showComment(recordId: Int, writerNickname: String) {
     let coordinator = commentDependencyFactory.injectCommentCoordinator(
       navigationController: navigationController,
       parentCoordinator: self,
-      recordId: recordId
+      recordId: recordId,
+      writerNickname: writerNickname
     )
     childCoordinator = coordinator
     coordinator.start()

@@ -58,19 +58,21 @@ public class CommentDependencyFactoryImp: CommentDependencyFactory {
     return FlattenCommentsUsecaseImp()
   }
   
-  public func injectCommentReactor<T>(
+  public func injectCommentReactor<T: CommentCoordinator>(
     coordinator: T,
     getCommentsUsecase: any GetCommentsUsecase,
     postCommentUsecase: any PostCommentUsecase,
     flattenCommentUsecase: any FlattenCommentsUsecase,
-    recordId: Int
-  ) -> any CommentReactor where T: CommentCoordinator {
+    recordId: Int,
+    writerNickname: Int
+  ) -> any CommentReactor {
     return CommentReactorImp(
       coordinator: coordinator,
       getCommentsUsecase: getCommentsUsecase,
       postCommentUsecase: postCommentUsecase,
       flattenCommentUsecase: flattenCommentUsecase,
-      recordId: recordId
+      recordId: recordId,
+      writerNickname: writerNickname
     )
   }
   

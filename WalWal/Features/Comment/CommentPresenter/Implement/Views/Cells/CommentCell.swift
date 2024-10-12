@@ -28,6 +28,12 @@ final class CommentCell: UITableViewCell, ReusableView {
   private let profileImageAndBodyContainer = UIView()
   private let bodyContainer = UIView()
   private let nicknameAndTimeContainer = UIView()
+
+  private let profileImageContainer = UIView()
+  private let nicknameContainer = UIView()
+  private let writerNicknameContainer = UIView()
+  private let timeLabelContainer = UIView()
+  private let contentLabelContainer = UIView()
   private let replyButtonContainer = UIView()
   
   public var parentId: Int? = nil
@@ -48,6 +54,10 @@ final class CommentCell: UITableViewCell, ReusableView {
   
   private let timeLabel = CustomLabel(font: FontKR.B2).then {
     $0.textColor = AssetColor.gray600.color
+  }
+  
+  private let writerNicknameLabel = CustomLabel(font: FontKR.B2).then {
+    $0.textColor = AssetColor.walwalOrange.color
   }
   
   private let contentLabel = CustomLabel(font: FontKR.B3, lineBreakMode: .byCharWrapping).then {
@@ -162,13 +172,16 @@ final class CommentCell: UITableViewCell, ReusableView {
         flex.addItem(nicknameLabel)
         flex.addItem(timeLabel)
           .marginLeft(4)
+        flex.addItem(writerNicknameLabel)
+          .marginLeft(8)
       }
   }
   
-  func configure(with comment: FlattenCommentModel) {
+  func configure(with comment: FlattenCommentModel, writerNickname: String) {
     nicknameLabel.text = comment.writerNickname
     contentLabel.text = comment.content
     parentId = comment.commentID
+    writerNicknameLabel.text = writerNickname == comment.writerNickname ? "작성자" : ""
     
     if let timeText = timeAgo(from: comment.createdAt) {
       timeLabel.text = timeText

@@ -43,9 +43,14 @@ public struct CommentReactorState {
   public var sheetPosition: CGFloat = 0
   public var isSheetDismissed: Bool = false
   public let recordId: Int
+  public let writerNickname: String
   
-  public init(recordId: Int) {
+  public init(
+    recordId: Int,
+    writerNickname: String
+  ) {
     self.recordId = recordId
+    self.writerNickname = writerNickname
   }
 }
 
@@ -58,6 +63,7 @@ public protocol CommentReactor: Reactor where Action == CommentReactorAction, Mu
     getCommentsUsecase: GetCommentsUsecase,
     postCommentUsecase: PostCommentUsecase,
     flattenCommentUsecase: FlattenCommentsUsecase,
-    recordId: Int
+    recordId: Int,
+    writerNickname: String
   )
 }

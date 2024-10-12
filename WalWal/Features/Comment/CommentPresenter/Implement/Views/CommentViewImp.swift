@@ -52,6 +52,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     $0.showsVerticalScrollIndicator = false
     $0.estimatedRowHeight = 60
     $0.rowHeight = UITableView.automaticDimension
+    $0.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
   }
   
   private let inputBox = CustomInputBox(
@@ -91,14 +92,6 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    dimView.pin
-      .all()
-    dimView.flex
-      .layout()
-    rootContainerView.pin
-      .bottom(-rootContainerView.frame.height)
-    
-    let _ = view.pin.keyboardArea.height
     
     dimView.pin
       .all()
@@ -130,7 +123,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func setLayout() {
     
     rootContainerView.flex
-      .height(580.adjustedHeight)
+      .height(456.adjustedHeight)
       .define { flex in
         flex.addItem(headerContainerView)
         flex.addItem(tableViewContainerView)
@@ -152,7 +145,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       .define { flex in
         flex.addItem(tableView)
           .position(.absolute)
-          .top(20)
+          .top(0)
           .width(100%)
           .bottom(0)
       }
@@ -194,22 +187,36 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   /// 키보드 올라갔을 때 레이아웃 재설정
-  private func keyboardShowLayout() {
-    let keyboardTop = view.pin.keyboardArea.height
+  private func keyboardShowLayout(notification: Notification) {
+    guard let userInfo = notification.userInfo,
+          let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
     
-    inputBox.flex
-      .marginBottom(keyboardTop)
-      .height(58)
-    rootContainerView.flex
-      .layout()
+    let keyboardHeight = keyboardFrame.height
+    let animationDuration = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double) ?? 0.3
+    let animationCurve = (userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt) ?? UIView.AnimationOptions.curveEaseInOut.rawValue
+    
+    UIView.animate(withDuration: animationDuration,
+                   delay: 0,
+                   options: UIView.AnimationOptions(rawValue: animationCurve),
+                   animations: {
+      self.rootContainerView.pin
+        .bottom(keyboardHeight - self.view.pin.safeArea.bottom)
+    })
   }
   
   /// 키보드 내려갔을 때 레이아웃 재설정
-  private func keyboardHideLayout() {
-    inputBox.flex
-      .marginBottom(view.pin.safeArea.bottom)
-    rootContainerView.flex
-      .layout()
+  private func keyboardHideLayout(notification: Notification) {
+    guard let userInfo = notification.userInfo else { return }
+    let animationDuration = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double) ?? 0.3
+    let animationCurve = (userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt) ?? UIView.AnimationOptions.curveEaseInOut.rawValue
+    
+    UIView.animate(withDuration: animationDuration,
+                   delay: 0,
+                   options: UIView.AnimationOptions(rawValue: animationCurve),
+                   animations: {
+      self.rootContainerView.pin
+        .bottom()
+    })
   }
   
   private func setupTableView() {
@@ -221,7 +228,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       guard let owner = self else { return nil }
       if comment.parentID == nil {
         let cell = tableView.dequeue(CommentCell.self, for: indexPath)
-        cell.configure(with: comment)
+        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname)
         
         cell.parentIdGetted
           .bind(to: owner.parentIdRelay)
@@ -236,7 +243,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
         return cell
       } else {
         let cell = tableView.dequeue(ReplyCommentCell.self, for: indexPath)
-        cell.configure(with: comment)
+        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname)
         return cell
       }
     }
@@ -308,16 +315,7 @@ extension CommentViewControllerImp: View {
       })
       .disposed(by: disposeBag)
     
-    dimView.rx.tapGesture { gestureRecognizer, delegate in
-      delegate.simultaneousRecognitionPolicy = .always
-      gestureRecognizer.cancelsTouchesInView = false // 터치가 뷰로 전달되도록 허용
-    }
-    .when(.recognized)
-    .withUnretained(self)
-    .filter { owner, gesture in
-      let location = gesture.location(in: self.view)
-      return !owner.rootContainerView.frame.contains(location)
-    }
+    dimView.rx.tapped
     .subscribe(with: self, onNext: { owner, _ in
       owner.inputBox.rx.textEndEditing.onNext(())
       owner.animateSheetDown {
@@ -346,19 +344,32 @@ extension CommentViewControllerImp: View {
   
   public func bindEvent() {
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
-      .bind(with: self) { owner, _ in
-        owner.keyboardShowLayout()
+      .bind(with: self) { owner, notification in
+        owner.keyboardShowLayout(notification: notification)
       }
       .disposed(by: disposeBag)
     
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
-      .bind(with: self) { owner, _ in
-        owner.keyboardHideLayout()
+      .bind(with: self) { owner, notification in
+        owner.keyboardHideLayout(notification: notification)
       }
       .disposed(by: disposeBag)
     
     tableViewContainerView.rx.tapped
       .bind(to: inputBox.rx.textEndEditing)
+      .disposed(by: disposeBag)
+    
+    inputBox.rx.tapped
+      .subscribe(with: self, onNext: { owner, _ in
+        guard let dataSource = owner.dataSource else { return }
+        let lastSectionIndex = dataSource.numberOfSections(in: owner.tableView) - 1
+        let lastRowIndex = dataSource.tableView(owner.tableView, numberOfRowsInSection: lastSectionIndex) - 1
+        
+        if lastSectionIndex >= 0 && lastRowIndex >= 0 {
+          let lastIndexPath = IndexPath(row: lastRowIndex, section: lastSectionIndex)
+          self.tableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: true)
+        }
+      })
       .disposed(by: disposeBag)
   }
   

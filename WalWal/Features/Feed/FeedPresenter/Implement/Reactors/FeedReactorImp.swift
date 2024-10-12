@@ -105,8 +105,8 @@ public final class FeedReactorImp: FeedReactor {
       return Observable.concat([scrollObservable, resetTabObservable])
     case let .menuTapped(recordId):
       return .just(.showMenu(recordId: recordId))
-    case let .commentTapped(recordId: recordId):
-      return .just(.moveToComment(recordId: recordId))
+    case let .commentTapped(recordId, writerNickname):
+      return .just(.moveToComment(recordId: recordId, writerNickname: writerNickname))
     case .refreshFeedData(recordId: let recordId):
       return fetchUpdatedFeedAt(recordId: recordId)
     }
@@ -136,8 +136,8 @@ public final class FeedReactorImp: FeedReactor {
       newState.isDoubleTap = false
     case let .showMenu(recordId):
       coordinator.destination.accept(.showFeedMenu(recordId: recordId))
-    case let .moveToComment(recordId: recordId):
-      coordinator.destination.accept(.showCommentView(recordId: recordId)) 
+    case let .moveToComment(recordId, writerNickname):
+      coordinator.destination.accept(.showCommentView(recordId: recordId, writerNickname: writerNickname))
     case let .updateFeed(record: updatedFeed):
       if let updatedFeed {
         newState.updatedFeed = updatedFeed

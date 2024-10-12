@@ -47,6 +47,10 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     $0.textColor = AssetColor.gray600.color
   }
   
+  private let writerNicknameLabel = CustomLabel(font: FontKR.B2).then {
+    $0.textColor = AssetColor.walwalOrange.color
+  }
+  
   private let contentLabel = CustomLabel(font: FontKR.B3, lineBreakMode: .byCharWrapping).then {
     $0.textColor = AssetColor.black.color
     $0.numberOfLines = 0
@@ -134,22 +138,21 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
         flex.addItem(nicknameLabel)
         flex.addItem(timeLabel)
           .marginLeft(4)
+        flex.addItem(writerNicknameLabel)
+          .marginLeft(8)
       }
   }
   
-  func configure(with comment: FlattenCommentModel) {
+  func configure(with comment: FlattenCommentModel, writerNickname: String) {
     nicknameLabel.text = comment.writerNickname
     contentLabel.text = comment.content
+    writerNicknameLabel.text = writerNickname == comment.writerNickname ? "작성자" : ""
     
     if let timeText = timeAgo(from: comment.createdAt) {
       timeLabel.text = timeText
     } else {
       timeLabel.text = comment.createdAt
     }
-    
-//    if let imageUrl = URL(string: comment.writerProfileImageURL) {
-//      profileImageView.kf.setImage(with: imageUrl)
-//    }
     
     if let defaultImage =  DefaultProfile(rawValue: comment.writerProfileImageURL) {
       profileImageView.image = defaultImage.image

@@ -34,13 +34,14 @@ public protocol CommentDependencyFactory {
   func injectFlattenCommentsUsecase() -> FlattenCommentsUsecase
   
   // MARK: - Reactor
-  
+ 
   func injectCommentReactor<T: CommentCoordinator>(
     coordinator: T,
     getCommentsUsecase: GetCommentsUsecase,
     postCommentUsecase: PostCommentUsecase,
     flattenCommentUsecase: FlattenCommentsUsecase,
-    recordId: Int
+    recordId: Int,
+    writerNickname: String
   ) -> any CommentReactor
   
   // MARK: - ViewController
