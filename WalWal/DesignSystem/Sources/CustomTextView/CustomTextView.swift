@@ -18,7 +18,7 @@ public final class CustomTextView: UITextView {
   public let textRelay = BehaviorRelay<String>(value: "")
   
   /// PlaceHolder 보여줄지에 대한 여부
-  private let isplaceHolderVisible = BehaviorRelay<Bool>(value: true)
+  public let isplaceHolderVisible = BehaviorRelay<Bool>(value: true)
   
   /// PlaceHolder 스타일
   private let placeHolderText: String?
