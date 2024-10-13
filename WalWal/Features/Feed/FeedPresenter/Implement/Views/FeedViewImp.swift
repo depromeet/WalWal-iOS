@@ -192,7 +192,6 @@ extension FeedViewControllerImp: View {
     
     reactor.state
       .map { $0.updatedFeed }
-      .distinctUntilChanged()
       .observe(on: MainScheduler.instance)
       .subscribe(with: self) { owner, updatedFeed in
         if let updatedFeed {
