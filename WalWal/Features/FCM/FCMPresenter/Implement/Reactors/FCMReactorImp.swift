@@ -135,10 +135,11 @@ extension FCMReactorImp {
   private func selectedItemAction(item: FCMItemModel) -> Observable<Mutation> {
     return readFCMItem(item: item)
       .flatMap {
-        self.moveOtherTab(
+        let isComment = item.type == .comment || item.type == .recomment
+        return self.moveOtherTab(
           type: item.type,
           recordId: item.recordID,
-          isComment: item.type == .comment
+          isComment: isComment
         )
       }
   }
