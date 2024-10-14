@@ -330,6 +330,7 @@ extension CommentViewControllerImp: View {
       .map { Reactor.Action.postComment(content: $0) }
       .do(onNext: { [weak self] _ in
         self?.inputBox.rx.textEndEditing.onNext(())
+        self?.inputBox.clearText()
       })
       .bind(to: reactor.action)
       .disposed(by: disposeBag)

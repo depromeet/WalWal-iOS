@@ -197,6 +197,12 @@ public final class CustomInputBox: UIView {
       }
       .disposed(by: disposeBag)
   }
+
+  public func clearText() {
+    textView.textRelay.accept("")
+    textView.isplaceHolderVisible.accept(true)
+  }
+  
 }
 
 extension Reactive where Base: CustomInputBox {
