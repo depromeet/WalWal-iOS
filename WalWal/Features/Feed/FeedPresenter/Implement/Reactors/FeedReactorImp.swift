@@ -171,7 +171,7 @@ extension FeedReactorImp {
         if isComment, let id = id {
           return .concat([
             .just(.scrollToFeedItem(id: id)),
-            self.moveToComment(recordId: id)
+            self.moveToCommentwithWriter(recordId: id)
           ])
         } else {
           return .just(.scrollToFeedItem(id: id))
@@ -179,7 +179,7 @@ extension FeedReactorImp {
       }
   }
   
-  private func moveToComment(recordId: Int) -> Observable<Mutation> {
+  private func moveToCommentwithWriter(recordId: Int) -> Observable<Mutation> {
     if let item = currentState.feedData.first(where: {$0.recordId == recordId }) {
       return .just(.moveToComment(recordId: recordId, writerNickname: item.nickname))
     } else {
