@@ -35,8 +35,7 @@ public enum FeedReactorMutation {
   case feedLoadEnded(nextCursor: String?, feedData: [WalWalFeedModel])
   case moveToProfile(memberId: Int, nickName: String)
   case scrollToFeedItem(id: Int?)
-  case scrollToTop(Bool)
-  case resetTabEvent
+  case scrollToTop
   case showMenu(recordId: Int)
   case moveToComment(recordId: Int, writerNickname: String)
   case updateFeed(record: WalWalFeedModel?)
@@ -49,10 +48,10 @@ public struct FeedReactorState {
   public var nextCursor: String? = nil
   public var feedFetchEnded: Bool = false
   @Pulse public var scrollToFeedItem: Int? = nil
-  public var isDoubleTap: Bool = false
+  @Pulse public var tabBarTapped: Void? = nil
   public init() {  }
 }
-
+ 
 public protocol FeedReactor: Reactor where Action == FeedReactorAction, Mutation == FeedReactorMutation, State == FeedReactorState {
   
   var coordinator: any FeedCoordinator { get }

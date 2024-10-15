@@ -180,10 +180,7 @@ extension FeedViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
-    reactor.state
-      .map{ $0.isDoubleTap }
-      .distinctUntilChanged()
-      .filter { $0 }
+    reactor.pulse(\.$tabBarTapped)
       .observe(on: MainScheduler.instance)
       .subscribe(with: self, onNext: { owner, isTapped in
         owner.feed.collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true)

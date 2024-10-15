@@ -77,9 +77,7 @@ public final class FeedReactorImp: FeedReactor {
     case .checkScrollItem:
       return checkScrollEvent()
     case let .doubleTap(index):
-      let scrollObservable = Observable.just(Mutation.scrollToTop(index == 1))
-      let resetTabObservable = Observable.just(Mutation.resetTabEvent)
-      return Observable.concat([scrollObservable, resetTabObservable])
+      return (index == 1 ? Observable.just(Mutation.scrollToTop) : .empty())
     case let .menuTapped(recordId):
       return .just(.showMenu(recordId: recordId))
     case let .commentTapped(recordId, writerNickname):
@@ -105,10 +103,8 @@ public final class FeedReactorImp: FeedReactor {
       coordinator.startProfile(memberId: memberId, nickName: nickName)
     case let .scrollToFeedItem(id):
       newState.scrollToFeedItem = id
-    case let .scrollToTop(isDoubleTapped):
-      newState.isDoubleTap = isDoubleTapped
-    case .resetTabEvent:
-      newState.isDoubleTap = false
+    case .scrollToTop:
+      newState.tabBarTapped = ()
     case let .showMenu(recordId):
       coordinator.destination.accept(.showFeedMenu(recordId: recordId))
     case let .moveToComment(recordId, writerNickname):
