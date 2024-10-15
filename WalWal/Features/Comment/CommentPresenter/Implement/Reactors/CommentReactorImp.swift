@@ -94,6 +94,8 @@ public final class CommentReactorImp: CommentReactor {
       return Observable.just(.setReplyMode(parentId, isReply))
     case .resetParentId:
       return Observable.just(.setReplyMode(nil, false))
+    case .resetFocusing:
+      return .just(.isNeedFocusing(false))
     }
   }
   
@@ -111,6 +113,8 @@ public final class CommentReactorImp: CommentReactor {
     case let .setReplyMode(parentId, isReply):
       newState.parentId = parentId
       newState.isReply = isReply
+    case let .isNeedFocusing(isNeed):
+      newState.isNeedFocusing = isNeed
     }
     return newState
     
@@ -127,8 +131,11 @@ extension CommentReactorImp {
         owner.flattenCommentUsecase.execute(comments: model.comments)
       }
       .observe(on: MainScheduler.instance)
-      .map {
-        Mutation.setComments($0)
+      .flatMap { item -> Observable<Mutation> in
+        return .concat([
+          .just(.setComments(item)),
+          .just(.isNeedFocusing(self.currentState.focusCommentId != nil ))
+        ])
       }
   }
 }

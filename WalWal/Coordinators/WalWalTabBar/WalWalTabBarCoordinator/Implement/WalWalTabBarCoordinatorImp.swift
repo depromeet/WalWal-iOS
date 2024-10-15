@@ -169,7 +169,6 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   
   private func bindDeepLinkObserver() {
     deepLinkObservable
-      .distinctUntilChanged()
       .filter { _ in
         UserDefaults.bool(forUserDefaultsKey: .enterDeepLink)
       }

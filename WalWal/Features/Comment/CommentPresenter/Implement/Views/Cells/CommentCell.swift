@@ -115,6 +115,7 @@ final class CommentCell: UITableViewCell, ReusableView {
     contentLabel.text = nil
     timeLabel.text = nil
     replyButton.isHidden = false
+    disposeBag = DisposeBag()
   }
   
   private func setAttribute() {
@@ -127,13 +128,12 @@ final class CommentCell: UITableViewCell, ReusableView {
     
     rootContainerView.flex
       .justifyContent(.spaceBetween)
+      .paddingVertical(10)
       .define { flex in
         flex.addItem(profileImageAndBodyContainer)
         flex.addItem(replyButtonContainer)
           .marginTop(8)
           .marginLeft(42)
-        flex.addItem()
-          .height(20)
       }
     
     replyButtonContainer.flex
@@ -232,7 +232,7 @@ final class CommentCell: UITableViewCell, ReusableView {
     UIView.animate(withDuration: 0.3, animations: {
       self.contentView.backgroundColor = AssetColor.gray150.color
     }, completion: { _ in
-      UIView.animate(withDuration: 0.6) {
+      UIView.animate(withDuration: 0.8) {
         self.contentView.backgroundColor = AssetColor.white.color
       }
     })

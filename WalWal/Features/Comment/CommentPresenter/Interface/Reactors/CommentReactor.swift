@@ -22,6 +22,7 @@ public enum CommentReactorAction {
   case postComment(content: String) /// 댓글을 추가하는 액션
   case setReplyMode(isReply: Bool, parentId: Int?) /// 대댓글 모드 설정 액션
   case resetParentId /// 대댓글 모드 해제 액션
+  case resetFocusing
 }
 
 
@@ -31,6 +32,7 @@ public enum CommentReactorMutation {
   // 바텀 시트 관련 Mutation
   case setSheetPosition(CGFloat)
   case dismissSheet
+  case isNeedFocusing(Bool)
 }
 
 
@@ -43,7 +45,8 @@ public struct CommentReactorState {
   public var isSheetDismissed: Bool = false
   public let recordId: Int
   public let writerNickname: String
-  public let focusCommentId: Int?
+  public var focusCommentId: Int?
+  public var isNeedFocusing: Bool = false
   
   public init(
     recordId: Int,

@@ -105,10 +105,9 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     rootContainerView.flex
       .width(100%)
       .justifyContent(.spaceBetween)
+      .paddingVertical(10)
       .define { flex in
         flex.addItem(profileImageAndBodyContainer)
-        flex.addItem()
-          .height(20)
       }
     
     profileImageAndBodyContainer.flex
@@ -197,7 +196,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     UIView.animate(withDuration: 0.3, animations: {
       self.contentView.backgroundColor = AssetColor.gray150.color
     }, completion: { _ in
-      UIView.animate(withDuration: 0.6) {
+      UIView.animate(withDuration: 0.8) {
         self.contentView.backgroundColor = AssetColor.white.color
       }
     })
