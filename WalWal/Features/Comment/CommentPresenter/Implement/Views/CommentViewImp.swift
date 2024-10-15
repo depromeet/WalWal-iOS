@@ -67,6 +67,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   private var dataSource: UITableViewDiffableDataSource<Section, FlattenCommentModel>!
   private var parentIdRelay = BehaviorRelay<Int?>(value: nil)
+  private let checkScrollComment = PublishRelay<Void>()
   
   public init(reactor: R) {
     self.commentReactor = reactor
@@ -78,6 +79,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   // MARK: - Lifecycle
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     setAttribute()
@@ -219,6 +221,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     })
   }
   
+  // MARK: - TableView
+  
   private func setupTableView() {
     tableView.delegate = self
   }
@@ -263,6 +267,23 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return UITableView.automaticDimension
   }
+  
+  /// commentId값으로 스크롤 이동
+  private func scrollFocusComment(id: Int) {
+    if let index = reactor?.currentState.comments.firstIndex(where: {$0.commentID == id}) {
+      let indexPath = IndexPath(item: index, section: 0)
+      tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+      configFocusCell(index: indexPath)
+    }
+  }
+  
+  private func configFocusCell(index: IndexPath) {
+    if let cell = tableView.cellForRow(at: index) as? CommentCell {
+      cell.configFocusing()
+    } else if let cell = tableView.cellForRow(at: index) as? ReplyCommentCell {
+      cell.configFocusing()
+    }
+  }
 }
 
 extension CommentViewControllerImp: View {
@@ -284,15 +305,26 @@ extension CommentViewControllerImp: View {
       .subscribe(onNext: { [weak self] comments in
         guard let self = self else { return }
         self.updateSnapshot(with: comments)
+        self.checkScrollComment.accept(())
       })
       .disposed(by: disposeBag)
     
-    reactor.state.map { $0.sheetPosition }
+    reactor.state
+      .map { $0.sheetPosition }
       .distinctUntilChanged()
       .subscribe(onNext: { [weak self] position in
         guard let self = self else { return }
         self.updateSheetPosition(position)
       })
+      .disposed(by: disposeBag)
+    
+    checkScrollComment
+      .map { reactor.currentState.focusCommentId }
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, commentId in
+        owner.scrollFocusComment(id: commentId)
+      }
       .disposed(by: disposeBag)
   }
   
@@ -372,6 +404,8 @@ extension CommentViewControllerImp: View {
         }
       })
       .disposed(by: disposeBag)
+    
+    
   }
   
 }

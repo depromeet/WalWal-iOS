@@ -31,7 +31,6 @@ public enum CommentReactorMutation {
   // 바텀 시트 관련 Mutation
   case setSheetPosition(CGFloat)
   case dismissSheet
-  
 }
 
 
@@ -44,13 +43,16 @@ public struct CommentReactorState {
   public var isSheetDismissed: Bool = false
   public let recordId: Int
   public let writerNickname: String
+  public let focusCommentId: Int?
   
   public init(
     recordId: Int,
-    writerNickname: String
+    writerNickname: String,
+    focusCommentId: Int?
   ) {
     self.recordId = recordId
     self.writerNickname = writerNickname
+    self.focusCommentId = focusCommentId
   }
 }
 
@@ -64,6 +66,7 @@ public protocol CommentReactor: Reactor where Action == CommentReactorAction, Mu
     postCommentUsecase: PostCommentUsecase,
     flattenCommentUsecase: FlattenCommentsUsecase,
     recordId: Int,
-    writerNickname: String
+    writerNickname: String,
+    focusCommentId: Int?
   )
 }

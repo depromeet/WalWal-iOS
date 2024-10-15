@@ -35,7 +35,8 @@ public final class CommentReactorImp: CommentReactor {
     postCommentUsecase: PostCommentUsecase,
     flattenCommentUsecase: FlattenCommentsUsecase,
     recordId: Int,
-    writerNickname: String
+    writerNickname: String,
+    focusCommentId: Int?
   ) {
     self.coordinator = coordinator
     
@@ -45,7 +46,11 @@ public final class CommentReactorImp: CommentReactor {
     
     self.recordId = recordId
     self.writerNickname = writerNickname
-    self.initialState = State(recordId: recordId, writerNickname: writerNickname)
+    self.initialState = State(
+      recordId: recordId,
+      writerNickname: writerNickname,
+      focusCommentId: focusCommentId
+    )
   }
   
   /// `transform` 메서드를 사용하여 액션 스트림을 변형합니다.
@@ -61,14 +66,7 @@ public final class CommentReactorImp: CommentReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .fetchComments:
-      let recordId = initialState.recordId
-      return getCommentsUsecase.execute(recordId: recordId)
-        .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-        .asObservable()
-        .withUnretained(self)
-        .map { owner, model in owner.flattenCommentUsecase.execute(comments: model.comments)}
-        .observe(on: MainScheduler.instance)
-        .map { Mutation.setComments($0) }
+      return fetchCommentData()
     case .postComment(let content):
       let recordId = currentState.recordId
       let parentId = currentState.parentId
@@ -116,5 +114,21 @@ public final class CommentReactorImp: CommentReactor {
     }
     return newState
     
+  }
+}
+
+extension CommentReactorImp {
+  private func fetchCommentData() -> Observable<Mutation> {
+    return getCommentsUsecase.execute(recordId: recordId)
+      .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+      .asObservable()
+      .withUnretained(self)
+      .map { owner, model in
+        owner.flattenCommentUsecase.execute(comments: model.comments)
+      }
+      .observe(on: MainScheduler.instance)
+      .map {
+        Mutation.setComments($0)
+      }
   }
 }

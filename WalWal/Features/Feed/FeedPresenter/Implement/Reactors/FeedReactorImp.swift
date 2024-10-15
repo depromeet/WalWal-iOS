@@ -111,8 +111,12 @@ public final class FeedReactorImp: FeedReactor {
       newState.isDoubleTap = false
     case let .showMenu(recordId):
       coordinator.destination.accept(.showFeedMenu(recordId: recordId))
-    case let .moveToComment(recordId, writerNickname):
-      coordinator.destination.accept(.showCommentView(recordId: recordId, writerNickname: writerNickname))
+    case let .moveToComment(recordId, writerNickname, commentId):
+      coordinator.destination.accept(.showCommentView(
+        recordId: recordId,
+        writerNickname: writerNickname,
+        commentId: commentId
+      ))
     case let .updateFeed(record: updatedFeed):
       if let updatedFeed {
         newState.updatedFeed = updatedFeed
@@ -172,7 +176,7 @@ extension FeedReactorImp {
            let id = id {
           return .concat([
             .just(.scrollToFeedItem(id: id)),
-            self.moveToCommentwithWriter(recordId: id)
+            self.moveToCommentwithWriter(recordId: id, commentId: commentId)
           ])
         } else {
           return .just(.scrollToFeedItem(id: id))
@@ -180,11 +184,18 @@ extension FeedReactorImp {
       }
   }
   
-  private func moveToCommentwithWriter(recordId: Int) -> Observable<Mutation> {
+  private func moveToCommentwithWriter(recordId: Int, commentId: Int) -> Observable<Mutation> {
     if let item = currentState.feedData.first(where: {$0.recordId == recordId }) {
-      return .just(.moveToComment(recordId: recordId, writerNickname: item.nickname))
+      return .just(.moveToComment(
+        recordId: recordId,
+        writerNickname: item.nickname,
+        commentId: commentId))
     } else {
-      return .just(.moveToComment(recordId: recordId, writerNickname: ""))
+      return .just(.moveToComment(
+        recordId: recordId,
+        writerNickname: "",
+        commentId: commentId
+      ))
     }
   }
   

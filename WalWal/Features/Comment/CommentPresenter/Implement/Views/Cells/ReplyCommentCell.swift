@@ -75,6 +75,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
       .bottom(0)
     rootContainerView.flex
       .layout(mode: .adjustHeight)
+    
   }
   
   override func sizeThatFits(_ size: CGSize) -> CGSize {
@@ -191,5 +192,14 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     } else {
       return "조금 전"
     }
+  }
+  public func configFocusing() {
+    UIView.animate(withDuration: 0.3, animations: {
+      self.contentView.backgroundColor = AssetColor.gray150.color
+    }, completion: { _ in
+      UIView.animate(withDuration: 0.6) {
+        self.contentView.backgroundColor = AssetColor.white.color
+      }
+    })
   }
 }
