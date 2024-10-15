@@ -258,13 +258,15 @@ extension FCMViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
-    reactor.state
-      .map{ $0.isDoubleTap }
-      .distinctUntilChanged()
-      .filter { $0 } // 여기서 true인 값만 거르고
+    reactor.pulse(\.$tabBarTapped)
       .observe(on: MainScheduler.instance)
       .subscribe(with: self, onNext: { owner, isTapped in
-        owner.collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true) // true인 경우에는 상단 이동
+        guard owner.collectionView.numberOfSections > 0,
+              owner.collectionView.numberOfItems(inSection: 0) > 0 else {
+          return
+        }
+        let lastItemIndex = owner.collectionView.numberOfItems(inSection: 0) - 1
+        owner.collectionView.scrollToItem(at: IndexPath(item: lastItemIndex, section: 0), at: .top, animated: true)
       })
       .disposed(by: disposeBag)
   }
