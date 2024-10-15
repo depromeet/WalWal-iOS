@@ -31,16 +31,20 @@ public struct FCMItemModel: Hashable {
   public let recordID: Int?
   public let createdAt: String
   public var image: UIImage?
+  public var commentId: Int?
   
   public init(dto: FCMItemDTO) {
+    let type = FCMTypes(rawValue: dto.type) ?? .boost
+    
     self.notificationID = dto.notificationID
-    self.type = FCMTypes(rawValue: dto.type) ?? .boost
+    self.type = type
     self.title = dto.title
     self.message = dto.message
     self.imageURL = dto.imageURL
     self.isRead = dto.isRead
     self.recordID = dto.recordID
     self.createdAt = dto.createdAt
+    self.commentId = checkCommentId(type: type, link: dto.deepLink)
   }
   public init(global: GlobalFCMListModel) {
     self.notificationID = global.notificationID
@@ -52,24 +56,30 @@ public struct FCMItemModel: Hashable {
     self.recordID = global.recordID
     self.createdAt = global.createdAt
     self.image = GlobalState.shared.imageStore.object(forKey: (global.imageURL ?? "") as NSString)
+    self.commentId = global.commentId
   }
-  public init(
-    id: Int,
-    type: FCMTypes,
-    title: String,
-    message: String,
-    imageURL: String?,
-    isRead: Bool,
-    recordID: Int,
-    createdAt: String
-  ) {
-    self.notificationID = id
-    self.type = type
-    self.title = title
-    self.message = message
-    self.imageURL = imageURL
-    self.isRead = isRead
-    self.recordID = recordID
-    self.createdAt = createdAt
+}
+
+extension FCMItemModel {
+  private func checkCommentId(type: FCMTypes, link: String?) -> Int? {
+    
+    guard type == .comment || type == .recomment,
+          let link = link,
+          let url = URL(string: link)
+    else { return nil }
+    
+    let urlString = url.absoluteString
+    guard urlString.contains("commentId") else { return nil }
+    let components = URLComponents(string: urlString)
+    
+    let urlQueryItems = components?.queryItems ?? []
+    var dictionaryData = [String: String]()
+    urlQueryItems.forEach { dictionaryData[$0.name] = $0.value }
+    
+    guard let id = dictionaryData["commentId"],
+            let commentId = Int(id)
+    else { return nil }
+    
+    return commentId
   }
 }

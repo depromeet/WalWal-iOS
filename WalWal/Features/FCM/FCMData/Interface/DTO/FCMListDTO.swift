@@ -22,6 +22,7 @@ public struct FCMItemDTO: Decodable {
   public let isRead: Bool
   public let recordID: Int?
   public let createdAt: String
+  public var deepLink: String?
   
   enum CodingKeys: String, CodingKey {
     case notificationID = "notificationId"
@@ -30,5 +31,6 @@ public struct FCMItemDTO: Decodable {
     case isRead
     case recordID = "targetId"
     case createdAt
+    case deepLink
   }
 }
