@@ -27,7 +27,7 @@ extension FeedEndpoint {
   var path: String{
     switch self {
     case .fetchFeed(let query):
-      return "/feed"
+      return "/feed/v2"
     case .reports:
       return "/reports"
     case let .fetchSingleFeed(recordId):
