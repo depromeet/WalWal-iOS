@@ -92,6 +92,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     nicknameLabel.text = nil
     contentLabel.text = nil
     timeLabel.text = nil
+    writerNicknameLabel.text = ""
   }
   
   private func setAttribute() {

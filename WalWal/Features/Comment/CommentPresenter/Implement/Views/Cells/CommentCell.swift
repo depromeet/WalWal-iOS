@@ -115,6 +115,7 @@ final class CommentCell: UITableViewCell, ReusableView {
     contentLabel.text = nil
     timeLabel.text = nil
     replyButton.isHidden = false
+    writerNicknameLabel.text = ""
     disposeBag = DisposeBag()
   }
   

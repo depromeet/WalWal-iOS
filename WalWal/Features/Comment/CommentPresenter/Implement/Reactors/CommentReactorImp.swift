@@ -67,27 +67,12 @@ public final class CommentReactorImp: CommentReactor {
     switch action {
     case .fetchComments:
       return fetchCommentData()
-    case .postComment(let content):
-      let recordId = currentState.recordId
-      let parentId = currentState.parentId
-      return postCommentUsecase.execute(content: content, recordId: recordId, parentId: parentId)
-        .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-        .asObservable()
-        .withUnretained(self)
-        .flatMap { owner, _ in owner.getCommentsUsecase.execute(recordId: recordId) }
-        .withUnretained(self)
-        .map { owner, model in owner.flattenCommentUsecase.execute(comments: model.comments)}
-        .asObservable()
-        .observe(on: MainScheduler.instance)
-        .map { Mutation.setComments($0) }
+    case let .postComment(content):
+      return postComment(content: content)
     case let .didPan(translation, _):
       return Observable.just(.setSheetPosition(translation.y))
     case let .didEndPan(velocity):
-      if velocity.y > 1000 {
-        return Observable.just(.dismissSheet)
-      } else {
-        return Observable.just(.setSheetPosition(0))
-      }
+      return configSheetPosition(yVelocity: velocity.y)
     case .tapDimView:
       return Observable.just(.dismissSheet)
     case let .setReplyMode(isReply, parentId):
@@ -122,6 +107,8 @@ public final class CommentReactorImp: CommentReactor {
 }
 
 extension CommentReactorImp {
+  
+  /// 댓글 리스트 가져오기
   private func fetchCommentData() -> Observable<Mutation> {
     return getCommentsUsecase.execute(recordId: recordId)
       .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
@@ -137,5 +124,38 @@ extension CommentReactorImp {
           .just(.isNeedFocusing(self.currentState.focusCommentId != nil ))
         ])
       }
+  }
+  
+  /// 댓글 작성
+  private func postComment(content: String) -> Observable<Mutation> {
+    let recordId = currentState.recordId
+    let parentId = currentState.parentId
+    return postCommentUsecase.execute(
+      content: content,
+      recordId: recordId,
+      parentId: parentId
+    )
+    .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+    .asObservable()
+    .withUnretained(self)
+    .flatMap { owner, _ in
+      owner.getCommentsUsecase.execute(recordId: recordId)
+    }
+    .withUnretained(self)
+    .map { owner, model in
+      owner.flattenCommentUsecase.execute(comments: model.comments)
+    }
+    .asObservable()
+    .observe(on: MainScheduler.instance)
+    .map { Mutation.setComments($0) }
+  }
+  
+  /// 바텀시트 위치 조절
+  private func configSheetPosition(yVelocity: Double) -> Observable<Mutation> {
+    if yVelocity > 1000 {
+      return Observable.just(.dismissSheet)
+    } else {
+      return Observable.just(.setSheetPosition(0))
+    }
   }
 }
