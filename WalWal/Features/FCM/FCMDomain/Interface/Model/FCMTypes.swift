@@ -11,4 +11,6 @@ import Foundation
 public enum FCMTypes: String {
   case mission = "MISSION"
   case boost = "BOOSTER"
+  case comment = "COMMENT"
+  case recomment = "RE_COMMENT"
 }

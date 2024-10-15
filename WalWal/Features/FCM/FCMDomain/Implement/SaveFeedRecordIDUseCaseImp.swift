@@ -15,8 +15,8 @@ import RxSwift
 public final class SaveFeedRecordIDUseCaseImp: SaveFeedRecordIDUseCase {
   public init() { }
   
-  public func execute(recordId: Int?) -> Observable<Void> {
-    GlobalState.shared.updateRecordId(recordId)
+  public func execute(recordId: Int?, isComment: Bool) -> Observable<Void> {
+    GlobalState.shared.updateRecordId(recordId, isComment: isComment)
     return .just(())
   }
 }

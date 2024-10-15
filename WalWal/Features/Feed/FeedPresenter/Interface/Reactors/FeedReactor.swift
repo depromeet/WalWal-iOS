@@ -33,7 +33,6 @@ public enum FeedReactorMutation {
   case feedFetchFailed(error: String)
   case feedReachEnd(feedData: [WalWalFeedModel])
   case feedLoadEnded(nextCursor: String?, feedData: [WalWalFeedModel])
-  case updateBoost
   case moveToProfile(memberId: Int, nickName: String)
   case scrollToFeedItem(id: Int?)
   case scrollToTop(Bool)
@@ -46,7 +45,7 @@ public enum FeedReactorMutation {
 public struct FeedReactorState {
   @Pulse public var feedErrorMessage: String = ""
   public var feedData: [WalWalFeedModel] = []
-  public var updatedFeed: WalWalFeedModel? = nil
+  @Pulse public var updatedFeed: WalWalFeedModel? = nil
   public var nextCursor: String? = nil
   public var feedFetchEnded: Bool = false
   @Pulse public var scrollToFeedItem: Int? = nil

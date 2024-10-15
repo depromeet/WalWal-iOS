@@ -190,8 +190,7 @@ extension FeedViewControllerImp: View {
       })
       .disposed(by: disposeBag)
     
-    reactor.state
-      .map { $0.updatedFeed }
+    reactor.pulse(\.$updatedFeed)
       .observe(on: MainScheduler.instance)
       .subscribe(with: self) { owner, updatedFeed in
         if let updatedFeed {

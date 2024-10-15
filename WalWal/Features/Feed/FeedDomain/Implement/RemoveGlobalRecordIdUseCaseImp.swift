@@ -16,6 +16,6 @@ public final class RemoveGlobalRecordIdUseCaseImp: RemoveGlobalRecordIdUseCase {
   public init() { }
   
   public func execute() {
-    GlobalState.shared.updateRecordId(nil)
+    GlobalState.shared.updateRecordId(nil, isComment: false)
   }
 }
