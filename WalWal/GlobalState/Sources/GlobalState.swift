@@ -24,7 +24,7 @@ public final class GlobalState {
   public private(set) var feedList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
   public private(set) var recordList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
   public let fcmList = BehaviorRelay<[GlobalFCMListModel]>(value: [])
-  public let moveToFeedRecord = BehaviorRelay<(Int?, Bool)?>(value: nil)
+  public let moveToFeedRecord = BehaviorRelay<(Int?, Int?)?>(value: nil)
   
   /// 이미지 저장소 (캐시된 이미지를 저장하는 딕셔너리)
   public private(set) var imageStore = NSCache<NSString, UIImage>()
@@ -87,8 +87,9 @@ public final class GlobalState {
   }
   
   // MARK: - Save RecordID
-  public func updateRecordId(_ recordId: Int?, isComment: Bool) {
-    moveToFeedRecord.accept((recordId, isComment))
+  
+  public func updateRecordId(_ recordId: Int?, commentId: Int? = nil) {
+    moveToFeedRecord.accept((recordId, commentId))
   }
   
   // MARK: - Profile

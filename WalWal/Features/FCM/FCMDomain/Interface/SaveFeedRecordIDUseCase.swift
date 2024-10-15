@@ -12,5 +12,5 @@ import GlobalState
 import RxSwift
 
 public protocol SaveFeedRecordIDUseCase {
-  func execute(recordId: Int?, isComment: Bool) -> Observable<Void>
+  func execute(recordId: Int?, commentId: Int?) -> Observable<Void>
 }

@@ -163,12 +163,13 @@ extension FeedReactorImp {
       .compactMap { $0 }
       .filter { $0.0 != nil }
       .withUnretained(self)
-      .map { owner, fcmData -> (Int?, Bool) in
+      .map { owner, fcmData -> (Int?, Int?) in
         owner.removeGlobalRecordIdUseCase.execute()
         return fcmData
       }
-      .flatMap { id, isComment -> Observable<Mutation> in
-        if isComment, let id = id {
+      .flatMap { id, commentId -> Observable<Mutation> in
+        if let commentId = commentId,
+           let id = id {
           return .concat([
             .just(.scrollToFeedItem(id: id)),
             self.moveToCommentwithWriter(recordId: id)
