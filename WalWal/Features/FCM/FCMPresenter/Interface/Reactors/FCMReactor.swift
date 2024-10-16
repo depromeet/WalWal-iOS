@@ -30,8 +30,7 @@ public enum FCMReactorMutation {
   case nextCursor(cursor: String?)
   case isLastPage(Bool)
   case isHiddenEdgePage(Bool)
-  case scrollToTop(Bool)
-  case resetTabEvent
+  case scrollToTop
   case showIndicator(Bool)
 }
 
@@ -39,10 +38,10 @@ public struct FCMReactorState {
   public init() { }
   @Pulse public var listData: [FCMSection] = []
   @Pulse public var stopRefreshControl: Bool = false
+  @Pulse public var tabBarTapped: Void? = nil
   public var nextCursor: String? = nil
   public var isLastPage: Bool = false
   public var isHiddenEdgePage: Bool = true
-  public var isDoubleTap: Bool = false
   public var showIndicator: Bool = false
 }
 
