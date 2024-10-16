@@ -48,6 +48,7 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
     $0.numberOfLines = 2
     $0.textColor = Color.black.color
   }
+  private let selectButtonView = UIView()
   private let dogView = PetView(petType: .dog)
   private let catView = PetView(petType: .cat)
   private let nextButton = WalWalButton(type: .disabled, title: "다음")
@@ -111,24 +112,31 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
     
     contentContainer.flex
       .marginHorizontal(20.adjustedWidth)
-      .justifyContent(.start)
+      .marginTop(40.adjustedHeight)
+      .justifyContent(.spaceBetween)
       .grow(1)
       .define {
         $0.addItem(titleLabel)
-          .marginTop(40.adjustedHeight)
+          .height(58.adjustedHeight)
+        $0.addItem(selectButtonView)
+          .marginTop(80.adjustedHeight)
         $0.addItem()
-          .direction(.row)
-          .justifyContent(.spaceBetween)
-          .marginTop(81.adjustedHeight)
-          .define {
-            $0.addItem(dogView)
-            $0.addItem(catView)
-          }
+          .grow(1)
       }
+    selectButtonView.flex
+      .direction(.row)
+      .justifyContent(.center)
+      .alignItems(.start)
+      .define {
+        $0.addItem(dogView)
+          .marginRight(15.adjustedWidth)
+        $0.addItem(catView)
+      }
+    
     nextButton.flex
       .marginHorizontal(20.adjustedWidth)
-      .marginBottom(30.adjustedHeight)
-      .height(58)
+      .marginBottom(32.adjustedHeight)
+      .height(56.adjustedHeight)
   }
 }
 

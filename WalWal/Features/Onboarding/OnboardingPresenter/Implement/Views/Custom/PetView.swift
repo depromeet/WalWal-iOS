@@ -76,7 +76,6 @@ final class PetView: UIView {
     typeLabel.text = petType.title
     petImage.image = petType.image
     addSubview(containerView)
-    petView.addSubview(petImage)
     setLayout()
   }
   
@@ -91,9 +90,19 @@ final class PetView: UIView {
       .alignItems(.center)
       .define { flex in
         flex.addItem(petView)
-          .size(161.adjustedWidth)
+          .size(162.adjustedWidth)
         flex.addItem(typeLabel)
-          .marginTop(20.adjustedHeight)
+          .marginTop(16.adjustedHeight)
+      }
+    
+    petView.flex
+      .define {
+        $0.addItem(petImage)
+          .size(149.adjusted)
+          .marginTop(8.adjustedHeight)
+          .marginBottom(5.adjustedHeight)
+          .marginRight(6.adjustedWidth)
+          .marginLeft(7.adjustedWidth)
       }
   }
   
@@ -101,9 +110,6 @@ final class PetView: UIView {
     super.layoutSubviews()
     containerView.pin
       .all()
-    petImage.pin
-      .center()
-      .size(90%)
     containerView.flex
       .layout(mode: .adjustHeight)
     
@@ -111,8 +117,6 @@ final class PetView: UIView {
     petView.layer.borderColor = Color.gray200.color.cgColor
     petView.layer.borderWidth = 1
   }
-  
-  // TODO: 디자인 확정시 변경 스타일 변경 필요
   
   /// 반려동물 선택 여부에 따른 스타일 변경
   /// - Parameters:
