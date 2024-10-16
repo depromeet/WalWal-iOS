@@ -267,6 +267,15 @@ extension FCMViewControllerImp: View {
         owner.collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true) // true인 경우에는 상단 이동
       })
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.showIndicator }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, isShow in
+        ActivityIndicator.shared.showIndicator.accept(isShow)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

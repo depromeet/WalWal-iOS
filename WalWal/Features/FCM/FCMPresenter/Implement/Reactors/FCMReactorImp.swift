@@ -51,7 +51,10 @@ public final class FCMReactorImp: FCMReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .loadFCMList(cursor, limit):
-      return fetchFCMListData(cursor: cursor, limit: limit)
+      return .concat([
+        .just(.showIndicator(true)),
+        fetchFCMListData(cursor: cursor, limit: limit)
+      ])
     case .refreshList:
       return refreshFCMListData()
     case let .selectItem(item):
@@ -89,6 +92,8 @@ public final class FCMReactorImp: FCMReactor {
       newState.isDoubleTap = isDoubleTapped
     case .resetTabEvent:
       newState.isDoubleTap = false
+    case let .showIndicator(show):
+      newState.showIndicator = show
     }
     return newState
   }
@@ -106,12 +111,13 @@ extension FCMReactorImp {
         return .concat([
           owner.loadSavedFCMListData(),
           .just(.nextCursor(cursor: item.nextCursor)),
-          .just(.isLastPage(item.nextCursor == nil))
+          .just(.isLastPage(item.nextCursor == nil)),
+          .just(.showIndicator(false))
         ])
       }
       .catch { error in
         print(error.localizedDescription)
-        return .never()
+        return .just(.showIndicator(false))
       }
   }
   

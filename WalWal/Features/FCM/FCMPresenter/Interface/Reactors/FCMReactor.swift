@@ -32,6 +32,7 @@ public enum FCMReactorMutation {
   case isHiddenEdgePage(Bool)
   case scrollToTop(Bool)
   case resetTabEvent
+  case showIndicator(Bool)
 }
 
 public struct FCMReactorState {
@@ -42,6 +43,7 @@ public struct FCMReactorState {
   public var isLastPage: Bool = false
   public var isHiddenEdgePage: Bool = true
   public var isDoubleTap: Bool = false
+  public var showIndicator: Bool = false
 }
 
 public protocol FCMReactor: Reactor where Action == FCMReactorAction, Mutation == FCMReactorMutation, State == FCMReactorState {
