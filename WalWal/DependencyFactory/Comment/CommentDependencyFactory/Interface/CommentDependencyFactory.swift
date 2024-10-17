@@ -23,7 +23,8 @@ public protocol CommentDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     recordId: Int,
-    writerNickname: String
+    writerNickname: String,
+    commentId: Int?
   ) -> any CommentCoordinator
   
   func injectCommentRepository() -> CommentRepository
@@ -42,7 +43,8 @@ public protocol CommentDependencyFactory {
     postCommentUsecase: PostCommentUsecase,
     flattenCommentUsecase: FlattenCommentsUsecase,
     recordId: Int,
-    writerNickname: String
+    writerNickname: String,
+    focusCommentId: Int?
   ) -> any CommentReactor
   
   // MARK: - ViewController

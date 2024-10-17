@@ -37,7 +37,7 @@ public enum FeedReactorMutation {
   case scrollToFeedItem(id: Int?)
   case scrollToTop
   case showMenu(recordId: Int)
-  case moveToComment(recordId: Int, writerNickname: String)
+  case moveToComment(recordId: Int, writerNickname: String, commentId: Int?=nil)
   case updateFeed(record: WalWalFeedModel?)
 }
 

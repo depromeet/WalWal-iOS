@@ -269,6 +269,15 @@ extension FCMViewControllerImp: View {
         owner.collectionView.scrollToItem(at: IndexPath(item: lastItemIndex, section: 0), at: .top, animated: true)
       })
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.showIndicator }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive(with: self) { owner, isShow in
+        ActivityIndicator.shared.showIndicator.accept(isShow)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

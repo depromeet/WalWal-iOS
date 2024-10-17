@@ -27,7 +27,8 @@ public class SaveFCMListGlobalStateUseCaseImp: SaveFCMListGlobalStateUseCase {
         imageURL: $0.imageURL,
         isRead: $0.isRead,
         recordID: $0.recordID,
-        createdAt: $0.createdAt
+        createdAt: $0.createdAt,
+        commentId: $0.commentId
       )
     }
     globalState.updateFCMList(newList: globalList)

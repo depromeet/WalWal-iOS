@@ -169,7 +169,6 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
   
   private func bindDeepLinkObserver() {
     deepLinkObservable
-      .distinctUntilChanged()
       .filter { _ in
         UserDefaults.bool(forUserDefaultsKey: .enterDeepLink)
       }
@@ -201,18 +200,34 @@ public final class WalWalTabBarCoordinatorImp: WalWalTabBarCoordinator {
     }
   }
   
+  /// 딥링크를 딕셔너리로 디코딩
   private func decodeDeepLink(_ url: URL, type: DeepLinkTarget) {
     
     let urlString = url.absoluteString
-    guard urlString.contains("id") else { return }
     
     let components = URLComponents(string: urlString)
     let urlQueryItems = components?.queryItems ?? []
     var dictionaryData = [String: String]()
     urlQueryItems.forEach { dictionaryData[$0.name] = $0.value }
     
-    guard let recordId = dictionaryData["id"] else { return }
-    GlobalState.shared.updateRecordId(Int(recordId), isComment: type == .comment)
+    saveDeeplinkData(items: dictionaryData, type: type)
+  }
+  
+  /// 딥링크 타입 별 디코딩 처리
+  private func saveDeeplinkData(items: [String: String], type: DeepLinkTarget) {
+    switch type {
+    case .booster:
+      if let recordId = items["id"] {
+        GlobalState.shared.updateRecordId(Int(recordId))
+      }
+    case .comment:
+      if let recordId = items["recordId"],
+         let commentId = items["commentId"] {
+        GlobalState.shared.updateRecordId(Int(recordId), commentId: Int(commentId))
+      }
+    default:
+      break
+    }
   }
 }
 
@@ -399,5 +414,4 @@ fileprivate enum DeepLinkTarget: String {
   case mission = "mission"
   case booster = "boost"
   case comment = "comment"
-  case recomment = "recomment"
 }

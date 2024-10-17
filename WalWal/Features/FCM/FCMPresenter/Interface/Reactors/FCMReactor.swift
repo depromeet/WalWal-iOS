@@ -31,6 +31,7 @@ public enum FCMReactorMutation {
   case isLastPage(Bool)
   case isHiddenEdgePage(Bool)
   case scrollToTop
+  case showIndicator(Bool)
 }
 
 public struct FCMReactorState {
@@ -41,6 +42,7 @@ public struct FCMReactorState {
   public var nextCursor: String? = nil
   public var isLastPage: Bool = false
   public var isHiddenEdgePage: Bool = true
+  public var showIndicator: Bool = false
 }
 
 public protocol FCMReactor: Reactor where Action == FCMReactorAction, Mutation == FCMReactorMutation, State == FCMReactorState {

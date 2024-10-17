@@ -51,7 +51,10 @@ public final class FCMReactorImp: FCMReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .loadFCMList(cursor, limit):
-      return fetchFCMListData(cursor: cursor, limit: limit)
+      return .concat([
+        .just(.showIndicator(true)),
+        fetchFCMListData(cursor: cursor, limit: limit)
+      ])
     case .refreshList:
       return refreshFCMListData()
     case let .selectItem(item):
@@ -85,6 +88,10 @@ public final class FCMReactorImp: FCMReactor {
       newState.isHiddenEdgePage = isHidden
     case .scrollToTop:
       newState.tabBarTapped = ()
+    case .resetTabEvent:
+      newState.isDoubleTap = false
+    case let .showIndicator(show):
+      newState.showIndicator = show
     }
     return newState
   }
@@ -102,12 +109,13 @@ extension FCMReactorImp {
         return .concat([
           owner.loadSavedFCMListData(),
           .just(.nextCursor(cursor: item.nextCursor)),
-          .just(.isLastPage(item.nextCursor == nil))
+          .just(.isLastPage(item.nextCursor == nil)),
+          .just(.showIndicator(false))
         ])
       }
       .catch { error in
         print(error.localizedDescription)
-        return .never()
+        return .just(.showIndicator(false))
       }
   }
   
@@ -131,11 +139,10 @@ extension FCMReactorImp {
   private func selectedItemAction(item: FCMItemModel) -> Observable<Mutation> {
     return readFCMItem(item: item)
       .flatMap {
-        let isComment = item.type == .comment || item.type == .recomment
-        return self.moveOtherTab(
+        self.moveOtherTab(
           type: item.type,
           recordId: item.recordID,
-          isComment: isComment
+          commentId: item.commentId
         )
       }
   }
@@ -149,11 +156,11 @@ extension FCMReactorImp {
   }
   
   /// 알림 탭 시 화면 이동 요청
-  private func moveOtherTab(type: FCMTypes, recordId: Int?, isComment: Bool = false) -> Observable<Mutation> {
+  private func moveOtherTab(type: FCMTypes, recordId: Int?, commentId: Int? = nil) -> Observable<Mutation> {
     if type == .mission {
       return  .just(.moveMission)
     } else {
-      return saveFeedRecordIDUseCase.execute(recordId: recordId, isComment: isComment)
+      return saveFeedRecordIDUseCase.execute(recordId: recordId, commentId: commentId)
         .flatMap { _ -> Observable<Mutation> in
             .just(.moveFeed)
         }

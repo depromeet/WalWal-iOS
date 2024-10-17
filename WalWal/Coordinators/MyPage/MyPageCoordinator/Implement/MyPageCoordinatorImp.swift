@@ -305,7 +305,8 @@ extension MyPageCoordinatorImp {
       navigationController: navigationController,
       parentCoordinator: self,
       recordId: recordId,
-      writerNickname: writerNickname
+      writerNickname: writerNickname,
+      commentId: nil
     )
     childCoordinator = coordinator
     coordinator.start()

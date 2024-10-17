@@ -32,14 +32,16 @@ public class CommentDependencyFactoryImp: CommentDependencyFactory {
     navigationController: UINavigationController,
     parentCoordinator: any BaseCoordinator,
     recordId: Int,
-    writerNickname: String
+    writerNickname: String,
+    commentId: Int?
   ) -> any CommentCoordinator {
     return CommentCoordinatorImp (
       navigationController: navigationController,
       parentCoordinator: parentCoordinator,
       commentDependencyFactory: self,
       recordId: recordId,
-      writerNickname: writerNickname
+      writerNickname: writerNickname,
+      commentId: commentId
     )
   }
   
@@ -66,7 +68,8 @@ public class CommentDependencyFactoryImp: CommentDependencyFactory {
     postCommentUsecase: any PostCommentUsecase,
     flattenCommentUsecase: any FlattenCommentsUsecase,
     recordId: Int,
-    writerNickname: String
+    writerNickname: String,
+    focusCommentId: Int?
   ) -> any CommentReactor {
     return CommentReactorImp(
       coordinator: coordinator,
@@ -74,7 +77,8 @@ public class CommentDependencyFactoryImp: CommentDependencyFactory {
       postCommentUsecase: postCommentUsecase,
       flattenCommentUsecase: flattenCommentUsecase,
       recordId: recordId,
-      writerNickname: writerNickname
+      writerNickname: writerNickname,
+      focusCommentId: focusCommentId
     )
   }
   

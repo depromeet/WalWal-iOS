@@ -65,8 +65,19 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     buttonActiveColor: AssetColor.walwalOrange.color
   )
   
+  // MARK: - Properties
+  
   private var dataSource: UITableViewDiffableDataSource<Section, FlattenCommentModel>!
+  
   private var parentIdRelay = BehaviorRelay<Int?>(value: nil)
+  
+  private let checkScrollComment = BehaviorRelay<Bool>(value: false)
+  
+  private let resetFocusing = PublishRelay<Void>()
+  
+  private let completedLoading = PublishRelay<Void>()
+  
+  private var focusCommentId: Int? = nil
   
   public init(reactor: R) {
     self.commentReactor = reactor
@@ -78,6 +89,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   // MARK: - Lifecycle
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     setAttribute()
@@ -219,6 +231,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     })
   }
   
+  // MARK: - TableView
+  
   private func setupTableView() {
     tableView.delegate = self
   }
@@ -263,6 +277,29 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return UITableView.automaticDimension
   }
+  
+  /// commentId값으로 스크롤 이동
+  private func scrollFocusComment(id: Int) {
+    
+    if let index = reactor?.currentState.comments.firstIndex(where: {$0.commentID == id}) {
+      let indexPath = IndexPath(item: index, section: 0)
+      tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+      
+      /// 포커스 주려면 스크롤 완료 후 보여줘야 함
+      DispatchQueue.main.asyncAfter(deadline: .now()+0.3) {
+        self.configFocusCell(index: indexPath)
+      }
+    }
+  }
+  
+  private func configFocusCell(index: IndexPath) {
+    if let cell = tableView.cellForRow(at: index) as? CommentCell {
+      cell.configFocusing()
+    } else if let cell = tableView.cellForRow(at: index) as? ReplyCommentCell {
+      cell.configFocusing()
+    }
+    resetFocusing.accept(())
+  }
 }
 
 extension CommentViewControllerImp: View {
@@ -284,15 +321,33 @@ extension CommentViewControllerImp: View {
       .subscribe(onNext: { [weak self] comments in
         guard let self = self else { return }
         self.updateSnapshot(with: comments)
+        self.completedLoading.accept(())
       })
       .disposed(by: disposeBag)
-    
-    reactor.state.map { $0.sheetPosition }
+      
+    reactor.state
+      .map { $0.sheetPosition }
       .distinctUntilChanged()
       .subscribe(onNext: { [weak self] position in
         guard let self = self else { return }
         self.updateSheetPosition(position)
       })
+      .disposed(by: disposeBag)
+    
+    
+    reactor.state
+      .map { $0.isNeedFocusing }
+      .bind(to: checkScrollComment)
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.focusCommentId }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, commentId in
+        owner.focusCommentId = commentId
+      }
       .disposed(by: disposeBag)
   }
   
@@ -341,6 +396,21 @@ extension CommentViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
+    resetFocusing
+      .map { Reactor.Action.resetFocusing }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
+    completedLoading
+      .withLatestFrom(checkScrollComment)
+      .filter { $0 }
+      .map { _ in self.focusCommentId }
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, commentId in
+        owner.scrollFocusComment(id: commentId)
+      }
+      .disposed(by: disposeBag)
   }
   
   public func bindEvent() {

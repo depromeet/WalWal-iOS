@@ -17,6 +17,7 @@ public struct GlobalFCMListModel {
   public let isRead: Bool
   public let recordID: Int?
   public let createdAt: String
+  public let commentId: Int?
   
   public init(
     notificationID: Int,
@@ -26,7 +27,8 @@ public struct GlobalFCMListModel {
     imageURL: String?,
     isRead: Bool,
     recordID: Int?,
-    createdAt: String
+    createdAt: String,
+    commentId: Int?
   ) {
     self.notificationID = notificationID
     self.type = type
@@ -36,5 +38,6 @@ public struct GlobalFCMListModel {
     self.isRead = isRead
     self.recordID = recordID
     self.createdAt = createdAt
+    self.commentId = commentId
   }
 }
