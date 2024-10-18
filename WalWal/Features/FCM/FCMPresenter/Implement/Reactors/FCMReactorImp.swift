@@ -88,8 +88,6 @@ public final class FCMReactorImp: FCMReactor {
       newState.isHiddenEdgePage = isHidden
     case .scrollToTop:
       newState.tabBarTapped = ()
-    case .resetTabEvent:
-      newState.isDoubleTap = false
     case let .showIndicator(show):
       newState.showIndicator = show
     }
