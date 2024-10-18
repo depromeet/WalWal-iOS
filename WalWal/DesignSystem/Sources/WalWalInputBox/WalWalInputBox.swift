@@ -44,7 +44,7 @@ public final class WalWalInputBox: UIView {
     var selectedImage: UIImage? {
       switch self {
       case .close:
-        return Images.closeL.image
+        return Images.closeL.image.withTintColor(Colors.gray500.color)
       case .show:
         return Images.settingL.image.withTintColor(.blue)
       case .none:
@@ -62,6 +62,8 @@ public final class WalWalInputBox: UIView {
   // MARK: - UI
   
   fileprivate let containerView = UIView()
+  private let textFieldContainer = UIView()
+  private let inputContainer = UIView()
   
   fileprivate let textField = UITextField().then {
     $0.textAlignment = .center
@@ -146,33 +148,45 @@ public final class WalWalInputBox: UIView {
   
   private func configureLayouts() {
     addSubview(containerView)
-    containerView.flex.define { flex in
-      flex.addItem()
-        .direction(.row)
-        .justifyContent(.end)
-        .paddingLeft(24)
-        .marginTop(17)
-        .define { flex in
-          flex.addItem()
-            .direction(.column)
-            .alignSelf(.end)
+    containerView.flex.define {
+      $0.addItem()
+        .justifyContent(.spaceBetween)
+        .height(52.adjustedHeight)
+        .define {
+          $0.addItem(textFieldContainer)
+            .marginTop(15.adjustedHeight)
             .grow(1)
-            .define { flex in
-              flex.addItem(textField)
-              flex.addItem(placeholderLabel)
-                .position(.absolute)
-                .all(0)
-            }
-          flex.addItem(rightButton)
-            .size(24)
+          $0.addItem(separatorView)
+            .height(1)
+            .marginTop(15.adjustedHeight)
         }
-      flex.addItem(separatorView)
-        .height(1)
-        .marginTop(15)
-      flex.addItem(errorLabel)
-        .marginTop(3)
-        .height(17)
+      
+      $0.addItem(errorLabel)
+        .marginTop(3.adjustedHeight)
+        .height(17.adjustedHeight)
     }
+    
+    textFieldContainer.flex
+      .direction(.row)
+      .justifyContent(.center)
+      .alignItems(.center)
+      .paddingLeft(24.adjustedWidth)
+      .paddingRight(2.adjustedWidth)
+      .define {
+        $0.addItem(inputContainer)
+          .grow(1)
+        $0.addItem(rightButton)
+          .size(20.adjusted)
+      }
+    
+    inputContainer.flex
+      .direction(.column)
+      .define {
+        $0.addItem(textField)
+        $0.addItem(placeholderLabel)
+          .position(.absolute)
+          .all(0)
+      }
   }
   
   private func bind() {
@@ -186,8 +200,7 @@ public final class WalWalInputBox: UIView {
       .distinctUntilChanged()
       .share(replay: 1)
     
-    textField.rx.text.orEmpty
-      .map{ $0.isEmpty}
+    isTextFieldEmpty
       .bind(to: rightButton.rx.isHidden)
       .disposed(by: disposeBag)
     
@@ -217,7 +230,7 @@ public final class WalWalInputBox: UIView {
     case .close:
       rightButton.rx.tapped
         .subscribe(with: self, onNext: { owner, _ in
-          owner.textField.text = ""
+          owner.textField.text = nil
           owner.textField.sendActions(for: .valueChanged)
           owner.errorRelay.accept(nil)
         })
@@ -290,5 +303,9 @@ extension Reactive where Base: WalWalInputBox {
   public func controlEvent(_ events: UIControl.Event) -> ControlEvent<Void> {
     let source = self.base.textField.rx.controlEvent(events).map { _ in }
     return ControlEvent(events: source)
+  }
+  
+  public var errorMessageChanged: Observable<String?> {
+    return base.errorRelay.asObservable()
   }
 }

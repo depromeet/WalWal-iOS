@@ -37,7 +37,7 @@ final class DescriptionCell: UICollectionViewCell, ReusableView {
     $0.textAlignment = .center
   }
   private let imageView = UIImageView().then {
-    $0.contentMode = .scaleAspectFit
+    $0.contentMode = .scaleAspectFill
   }
   
   // MARK: - Initialize
@@ -63,7 +63,8 @@ final class DescriptionCell: UICollectionViewCell, ReusableView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    contentView.pin.all()
+    contentView.pin
+      .all()
     contentView.flex
       .layout(mode: .adjustHeight)
   }
@@ -76,18 +77,17 @@ final class DescriptionCell: UICollectionViewCell, ReusableView {
   
   private func configLayout() {
     contentView.flex
-      .justifyContent(.center)
+      .justifyContent(.start)
       .define {
         $0.addItem(mainTitleLabel)
-          .height(100%)
         $0.addItem(subTextLabel)
-          .height(100%)
-          .marginTop(4.adjustedHeight)
+          .marginTop(5.adjustedHeight)
+          .marginBottom(9.adjustedHeight)
         $0.addItem(imageView)
           .alignSelf(.center)
-          .width(100%)
-          .marginTop(8)
-          .aspectRatio(375.adjustedWidth/280.adjustedHeight)
+          .width(375.adjustedWidth)
+          .height(280.adjustedHeight)
+          
       }
   }
   

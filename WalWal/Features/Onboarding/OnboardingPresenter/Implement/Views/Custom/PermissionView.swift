@@ -76,14 +76,13 @@ final class PermissionView {
     containerView.flex
       .justifyContent(.spaceBetween)
       .marginHorizontal(30.adjustedWidth)
-      .paddingTop(44.adjustedHeight)
-      .paddingBottom(20.adjustedHeight)
+      .marginVertical(205.adjustedHeight)
       .define {
         $0.addItem(titleLabel)
-          .height(26)
+          .marginTop(45.adjustedHeight)
         
         $0.addItem(contentLabel)
-          .marginTop(4)
+          .marginTop(4.adjustedHeight)
         
         $0.addItem()
           .justifyContent(.center)
@@ -102,11 +101,14 @@ final class PermissionView {
           }
         $0.addItem(confirmButton)
           .marginHorizontal(20.adjustedHeight)
-          .height(56)
+          .marginBottom(20.adjustedHeight)
+          .height(56.adjustedHeight)
       }
     
     containerView.flex
-      .layout(mode: .adjustHeight)
+      .layout()
+    containerView.pin
+      .all()
     alertContainer.pin
       .all()
     alertContainer.flex

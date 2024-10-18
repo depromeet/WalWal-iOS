@@ -136,9 +136,6 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
       contentContainer.addSubview($0)
     }
     
-    [titleLabel, subTitleLabel].forEach {
-      titleView.addSubview($0)
-    }
   }
   
   public func configureLayout() {
@@ -157,46 +154,54 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     
     titleView.flex
       .marginHorizontal(20.adjustedWidth)
-      .marginTop(40.adjustedHeight)
+      .marginTop(39.adjustedHeight)
       .define {
         $0.addItem(titleLabel)
+          .height(58.adjustedHeight)
         $0.addItem(subTitleLabel)
-          .marginTop(4)
+          .marginTop(4.adjusted)
+          .height(17.adjustedHeight)
       }
       
     profileContainer.flex
-      .justifyContent(.start)
-      .marginTop(70.adjustedHeight)
+      .justifyContent(.spaceBetween)
+      .marginTop(69.adjustedHeight)
       .grow(1)
       .define {
         $0.addItem(profileSelectView)
           .alignItems(.center)
           .width(100%)
         $0.addItem(nicknameTextField)
-          .marginTop(31.adjustedHeight)
+          .marginTop(30.adjustedHeight)
           .marginHorizontal(20.adjustedWidth)
-        
       }
     nextButton.flex
       .marginHorizontal(20.adjustedWidth)
   }
   
+  /// 키보드 나타났을 경우 레이아웃 조절
   private func updateKeyboardLayout() {
     
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
-    let scrollOffset = titleView.frame.height + 40.adjustedHeight + 71.adjustedHeight/2
+    let scrollOffset = titleView.frame.height + 40.adjustedHeight + 15
     keyboardHeight = keyboardTop
     
     nextButton.pin
       .bottom(keyboardTop + 20.adjustedHeight)
     
     scrollView.contentOffset.y += scrollOffset
+    
     profileContainer.pin
       .above(of: nextButton)
+    
+    profileSelectView.pin
+      .above(of: nicknameTextField)
+      .marginBottom(29.adjustedHeight)
     
     view.layoutIfNeeded()
   }
   
+  /// 키보드 사라졌을 경우 레이아웃 조절
   private func hideKeyboardLayout() {
     keyboardHeight = 0
     if scrollView.contentOffset.y > 0 {
@@ -208,8 +213,23 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     }
     nextButton.pin
       .bottom(30.adjustedHeight)
-      .height(56)
+      .height(56.adjustedHeight)
     view.layoutIfNeeded()
+  }
+  
+  /// 에러 라벨 나타남에 따라 레이아웃 조절
+  private func configErrorLabelLayout(isVisibleError: Bool) {
+    if isVisibleError {
+      nicknameTextField.pin
+        .height(52.adjustedHeight)
+        .bottom(17.adjustedHeight)
+      view.layoutIfNeeded()
+    } else {
+      nicknameTextField.pin
+        .height(72.adjustedHeight)
+        .bottom(17.adjustedHeight)
+      view.layoutIfNeeded()
+    }
   }
 }
 
@@ -260,9 +280,7 @@ extension OnboardingProfileViewControllerImp: View {
   public func bindState(reactor: R) {
     reactor.pulse(\.$invalidMessage)
       .asDriver(onErrorJustReturn: "")
-      .filter {
-        !$0.isEmpty
-      }
+      .filter { !$0.isEmpty }
       .drive(nicknameTextField.rx.errorMessage)
       .disposed(by: disposeBag)
     
@@ -293,7 +311,11 @@ extension OnboardingProfileViewControllerImp: View {
       .asDriver(onErrorJustReturn: "")
       .filter { !$0.isEmpty }
       .drive(with: self) { owner, message in
-        WalWalToast.shared.show(type: .error, message: message, keyboardHeight: owner.keyboardHeight)
+        WalWalToast.shared.show(
+          type: .error,
+          message: message,
+          keyboardHeight: owner.keyboardHeight
+        )
       }
       .disposed(by: disposeBag)
     
@@ -346,5 +368,14 @@ extension OnboardingProfileViewControllerImp: View {
       .observe(on: MainScheduler.instance)
       .bind(to: WalWalAlert.shared.closeAlert)
       .disposed(by: disposeBag)
+    
+    nicknameTextField.rx.errorMessageChanged
+      .map { $0?.isEmpty ?? true }
+      .distinctUntilChanged()
+      .bind(with: self) { owner, isEmpty in
+        owner.configErrorLabelLayout(isVisibleError: isEmpty)
+      }
+      .disposed(by: disposeBag)
+    
   }
 }

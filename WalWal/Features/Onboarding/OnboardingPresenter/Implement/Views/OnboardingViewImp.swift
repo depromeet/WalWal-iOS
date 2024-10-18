@@ -119,11 +119,11 @@ public final class OnboardingViewControllerImp<R: OnboardingReactor>:
               .height(367.adjustedHeight)
             $0.addItem(pageControl)
               .height(5)
-              .marginTop(20.adjustedHeight)
+              .marginTop(22.adjustedHeight)
           }
         $0.addItem(nextButton)
-          .height(58)
-          .marginBottom(34)
+          .height(56.adjustedHeight)
+          .marginBottom(32)
           .marginHorizontal(20)
       }
   }
