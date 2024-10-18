@@ -136,9 +136,6 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
       contentContainer.addSubview($0)
     }
     
-    [titleLabel, subTitleLabel].forEach {
-      titleView.addSubview($0)
-    }
   }
   
   public func configureLayout() {
@@ -157,7 +154,7 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
     
     titleView.flex
       .marginHorizontal(20.adjustedWidth)
-      .marginTop(40.adjustedHeight)
+      .marginTop(39.adjustedHeight)
       .define {
         $0.addItem(titleLabel)
           .height(58.adjustedHeight)
@@ -168,14 +165,14 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
       
     profileContainer.flex
       .justifyContent(.spaceBetween)
-      .marginTop(67.adjustedHeight)
+      .marginTop(69.adjustedHeight)
       .grow(1)
       .define {
         $0.addItem(profileSelectView)
           .alignItems(.center)
           .width(100%)
         $0.addItem(nicknameTextField)
-          .marginTop(29.adjustedHeight)
+          .marginTop(30.adjustedHeight)
           .marginHorizontal(20.adjustedWidth)
       }
     nextButton.flex
@@ -186,15 +183,20 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
   private func updateKeyboardLayout() {
     
     let keyboardTop = view.pin.keyboardArea.height - view.pin.safeArea.bottom
-    let scrollOffset = titleView.frame.height + 40.adjustedHeight + 71.adjustedHeight/2
+    let scrollOffset = titleView.frame.height + 40.adjustedHeight + 15
     keyboardHeight = keyboardTop
     
     nextButton.pin
       .bottom(keyboardTop + 20.adjustedHeight)
     
     scrollView.contentOffset.y += scrollOffset
+    
     profileContainer.pin
       .above(of: nextButton)
+    
+    profileSelectView.pin
+      .above(of: nicknameTextField)
+      .marginBottom(29.adjustedHeight)
     
     view.layoutIfNeeded()
   }

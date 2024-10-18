@@ -44,7 +44,7 @@ public final class WalWalInputBox: UIView {
     var selectedImage: UIImage? {
       switch self {
       case .close:
-        return Images.closeL.image
+        return Images.closeL.image.withTintColor(Colors.gray500.color)
       case .show:
         return Images.settingL.image.withTintColor(.blue)
       case .none:
@@ -163,7 +163,7 @@ public final class WalWalInputBox: UIView {
       
       $0.addItem(errorLabel)
         .marginTop(3.adjustedHeight)
-        .height(17)
+        .height(17.adjustedHeight)
     }
     
     textFieldContainer.flex
@@ -200,8 +200,7 @@ public final class WalWalInputBox: UIView {
       .distinctUntilChanged()
       .share(replay: 1)
     
-    textField.rx.text.orEmpty
-      .map{ $0.isEmpty}
+    isTextFieldEmpty
       .bind(to: rightButton.rx.isHidden)
       .disposed(by: disposeBag)
     
@@ -231,7 +230,7 @@ public final class WalWalInputBox: UIView {
     case .close:
       rightButton.rx.tapped
         .subscribe(with: self, onNext: { owner, _ in
-          owner.textField.text = ""
+          owner.textField.text = nil
           owner.textField.sendActions(for: .valueChanged)
           owner.errorRelay.accept(nil)
         })
