@@ -180,7 +180,7 @@ public final class ReportDetailViewControllerImp<R: ReportDetailReactor>:
       }
     
     discriptionLabel.flex
-      .paddingVertical(30.adjustedHeight)
+      .paddingVertical(20.adjustedHeight)
       .marginHorizontal(20.adjustedWidth)
     
     submitButton.flex
