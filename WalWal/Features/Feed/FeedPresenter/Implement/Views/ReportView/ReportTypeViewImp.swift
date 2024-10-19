@@ -149,20 +149,20 @@ public final class ReportTypeViewControllerImp<R: ReportTypeReactor>:
         $0.addItem(navTitle)
           .marginTop(24.adjustedHeight)
         $0.addItem(headerView)
+          .marginTop(12.adjustedHeight)
         $0.addItem(tableView)
-          .marginBottom(43.adjustedHeight)
+          .marginBottom(51.adjustedHeight)
           .marginTop(11.adjustedHeight)
       }
     
     headerView.flex
-      .paddingTop(30.adjustedHeight)
-      .paddingBottom(30.adjustedHeight)
+      .paddingVertical(20.adjustedHeight)
       .define {
         $0.addItem(titleLabel)
           .width(100%)
         $0.addItem(descriptionLabel)
           .width(100%)
-          .marginTop(8.adjusted)
+          .marginTop(8.adjustedHeight)
       }
   }
   
