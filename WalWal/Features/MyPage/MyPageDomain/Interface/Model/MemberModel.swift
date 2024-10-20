@@ -26,7 +26,7 @@ public struct MemberModel {
     if let defaultProfile = DefaultProfile(rawValue: global.profileURL) {
       defaultImageName = defaultProfile.rawValue
     } else {
-      GlobalState.shared.imageStore.object(forKey: global.profileURL as NSString)
+      self.profileImage = GlobalState.shared.imageStore.object(forKey: global.profileURL as NSString)
     }
   }
   
