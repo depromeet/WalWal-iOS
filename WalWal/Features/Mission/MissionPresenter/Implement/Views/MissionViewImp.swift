@@ -33,7 +33,6 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private let rootContainer = UIView()
   private let missionContainerWrapper = UIView()
   private let buttonContainerWrapper = UIView()
-  private let bubbleContainerWrapper = UIView()
   
   private let splashContainer = UIView().then {
     $0.backgroundColor = Colors.walwalOrange.color
@@ -114,6 +113,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     super.viewDidLayoutSubviews()
     rootContainer.pin
       .all(view.pin.safeArea)
+    
     rootContainer.flex
       .layout()
     
@@ -140,10 +140,9 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
           .width(100%)
           .position(.absolute)
           .bottom(30.adjusted)
-        flex.addItem(bubbleContainerWrapper)
-          .width(100%)
-          .height(60.adjusted)
+        flex.addItem(bubbleContainer)
           .position(.absolute)
+          .alignSelf(.center)
           .bottom(70.adjusted)
       }
     
@@ -172,18 +171,10 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
           .marginHorizontal(20.adjusted)
       }
     
-    bubbleContainerWrapper.flex
-      .define { flex in
-        flex.addItem(bubbleContainer)
-          .grow(1)
-      }
-    
     bubbleContainer.flex
       .define { flex in
         flex.addItem(missionCountBubbleView)
-          .position(.absolute)
           .alignSelf(.center)
-          .bottom(0)
       }
     
     splashContainer.flex

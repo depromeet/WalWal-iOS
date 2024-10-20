@@ -35,8 +35,8 @@ public final class BubbleView: UIView {
   
   // MARK: - Property
   private var tipView: CAShapeLayer? = nil
-  private var tipWidth: CGFloat = 16
-  private var tipHeight: CGFloat = 16
+  private var tipWidth: CGFloat = 14.adjusted
+  private var tipHeight: CGFloat = 14.adjusted
   public var missionCount = BehaviorRelay<Int>(value: 0)
   public var isCompleted = BehaviorRelay<Bool>(value: false)
   private let disposeBag = DisposeBag()
@@ -60,10 +60,12 @@ public final class BubbleView: UIView {
   override public func layoutSubviews() {
     super.layoutSubviews()
     layer.cornerRadius = containerView.bounds.height / 2
-    containerView.pin
-      .all()
-    containerView.flex
-      .layout()
+    
+    containerView.sizeToFit()
+
+    self.flex.layout()
+    
+    containerView.flex.layout()
     
     setTipShape(viewColor: self.backgroundColor ?? .clear, tipWidth: tipWidth, tipHeight: tipHeight)
   }
@@ -85,14 +87,14 @@ public final class BubbleView: UIView {
       .direction(.row)
       .alignItems(.center)
       .justifyContent(.center)
-      .paddingVertical(9.5)
-      .shrink(1)
+      .paddingVertical(8.5)
+      .paddingHorizontal(22.adjusted)
     
     iconImageView.flex
-      .marginRight(4)
-      .marginLeft(20)
+      .marginRight(4.adjusted)
+    
     titleLabel.flex
-      .marginRight(20)
+      .grow(1)
   }
   
   private func bind() {
@@ -119,7 +121,7 @@ public final class BubbleView: UIView {
     let point2 = CGPoint(x: tipStartX + tipWidth, y: tipStartY - 7.0)
     let point3 = CGPoint(x: tipStartX + tipWidth / 2.0, y: tipStartY + tipHeight - 7.0)
     
-    path.move(to: CGPoint(x: tipStartX, y: tipStartY - 5.0))
+    path.move(to: CGPoint(x: tipStartX, y: tipStartY - 2.0))
     path.addArc(tangent1End: point1, tangent2End: point2, radius: radius)
     path.addArc(tangent1End: point2, tangent2End: point3, radius: radius)
     path.addArc(tangent1End: point3, tangent2End: point1, radius: radius)
