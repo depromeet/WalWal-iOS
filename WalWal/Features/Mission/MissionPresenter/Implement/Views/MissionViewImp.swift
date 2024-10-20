@@ -33,6 +33,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private let rootContainer = UIView()
   private let missionContainerWrapper = UIView()
   private let buttonContainerWrapper = UIView()
+  private let bubbleContainerWrapper = UIView()
   
   private let splashContainer = UIView().then {
     $0.backgroundColor = Colors.walwalOrange.color
@@ -111,6 +112,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    
     rootContainer.pin
       .all(view.pin.safeArea)
     
@@ -140,10 +142,11 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
           .width(100%)
           .position(.absolute)
           .bottom(30.adjusted)
-        flex.addItem(bubbleContainer)
+        flex.addItem(bubbleContainerWrapper)
+          .width(100%)
+          .height(60.adjusted)
+          .bottom(72.adjusted)
           .position(.absolute)
-          .alignSelf(.center)
-          .bottom(70.adjusted)
       }
     
     missionContainer.flex
@@ -171,10 +174,18 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
           .marginHorizontal(20.adjusted)
       }
     
+    bubbleContainerWrapper.flex
+      .define { flex in
+        flex.addItem(bubbleContainer)
+          .grow(1)
+      }
+    
     bubbleContainer.flex
       .define { flex in
         flex.addItem(missionCountBubbleView)
+          .position(.absolute)
           .alignSelf(.center)
+          .bottom(0)
       }
     
     splashContainer.flex
@@ -239,6 +250,10 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private func updateBubbleViewTitle(for status: StatusMessage?) {
     let isCompleted = status == .completed ? true : false
     missionCountBubbleView.isCompleted.accept(isCompleted)
+    
+    bubbleContainer.flex.markDirty()
+    
+    bubbleContainer.flex.layout()
   }
   
   private func showCoachView() {

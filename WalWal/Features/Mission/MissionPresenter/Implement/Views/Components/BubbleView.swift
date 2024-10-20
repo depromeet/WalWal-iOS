@@ -13,8 +13,6 @@ import PinLayout
 import Then
 import RxSwift
 import RxCocoa
-
-
 public final class BubbleView: UIView {
   
   private typealias Images = ResourceKitAsset.Images
@@ -24,6 +22,7 @@ public final class BubbleView: UIView {
   // MARK: - UI
   
   private let containerView = UIView()
+  private let contentContainerView = UIView() // 새로운 컨테이너 추가
   private let iconImageView = UIImageView().then {
     $0.image = Images.missionStartIcon.image
   }
@@ -45,10 +44,12 @@ public final class BubbleView: UIView {
   
   public init() {
     super.init(frame: .zero)
-    self.backgroundColor =  Colors.gray150.color
-    bind()
+    self.backgroundColor = Colors.gray150.color
+    
     configureAttribute()
     configureLayout()
+    
+    bind()
   }
   
   required init?(coder: NSCoder) {
@@ -62,9 +63,8 @@ public final class BubbleView: UIView {
     layer.cornerRadius = containerView.bounds.height / 2
     
     containerView.sizeToFit()
-
-    self.flex.layout()
     
+    self.flex.layout()
     containerView.flex.layout()
     
     setTipShape(viewColor: self.backgroundColor ?? .clear, tipWidth: tipWidth, tipHeight: tipHeight)
@@ -73,23 +73,31 @@ public final class BubbleView: UIView {
   // MARK: - Method
   
   override public func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-    return false 
+    return false
   }
   
   private func configureAttribute() {
     self.addSubview(containerView)
-    containerView.addSubview(iconImageView)
-    containerView.addSubview(titleLabel)
+    containerView.addSubview(contentContainerView) // 새로운 컨테이너를 containerView에 추가
+    contentContainerView.addSubview(iconImageView)
+    contentContainerView.addSubview(titleLabel)
   }
   
   private func configureLayout() {
+    // containerView 레이아웃 설정
     containerView.flex
+      .paddingVertical(8.5.adjusted)
+      .paddingHorizontal(20.adjusted)
+      .alignItems(.center)
+      .justifyContent(.center)
+    
+    // contentContainerView 레이아웃 설정 (수평 정렬)
+    contentContainerView.flex
       .direction(.row)
       .alignItems(.center)
       .justifyContent(.center)
-      .paddingVertical(8.5)
-      .paddingHorizontal(22.adjusted)
     
+    // iconImageView와 titleLabel 레이아웃 설정
     iconImageView.flex
       .marginRight(4.adjusted)
     
@@ -103,8 +111,11 @@ public final class BubbleView: UIView {
       .bind(with: self) { owner, data in
         let (count, completed) = data
         owner.titleLabel.text = completed ? "\(count)번째 미션을 완료했어요!" : "\(count+1)번째 미션을 함께 수행해볼까요?"
+        
         owner.titleLabel.flex.markDirty()
+        owner.contentContainerView.flex.markDirty()
         owner.containerView.flex.markDirty()
+        
         owner.setNeedsLayout()
       }
       .disposed(by: disposeBag)
@@ -129,7 +140,8 @@ public final class BubbleView: UIView {
     
     let shape = CAShapeLayer()
     shape.path = path
-    shape.fillColor = viewColor.cgColor   
+    shape.fillColor = viewColor.cgColor
+    
     if tipView == nil {
       tipView = shape
       self.layer.insertSublayer(shape, at: 0)
@@ -154,7 +166,6 @@ public final class BubbleView: UIView {
     
     self.layer.add(moveAnimation, forKey: "moveUpDown")
   }
-  
   
   func stopFloatingAnimation() {
     self.layer.removeAnimation(forKey: "moveUp")
