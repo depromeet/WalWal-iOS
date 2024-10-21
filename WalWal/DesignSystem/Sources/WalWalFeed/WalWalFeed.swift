@@ -100,7 +100,7 @@ public final class WalWalFeed: UIView {
     isFeed: Bool = true
   ) {
     self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
-    self.headerHeight = isFeed ? 66.adjusted : 0
+    self.headerHeight = isFeed ? 71.adjusted : 0
     super.init(frame: .zero)
     
     self.collectionView.backgroundColor = isFeed ? Colors.gray150.color : Colors.gray100.color
@@ -216,6 +216,12 @@ public final class WalWalFeed: UIView {
       .bind(to: scrollEndReached )
       .disposed(by: disposeBag)
     
+    collectionView.rx.contentOffset
+      .map { $0.y < -59 }
+      .map { !$0 }
+      .bind(to: walwalIndicator.indicatorView.rx.isHidden)
+      .disposed(by: disposeBag)
+
     collectionView.rx
       .setDelegate(self)
       .disposed(by: disposeBag)
