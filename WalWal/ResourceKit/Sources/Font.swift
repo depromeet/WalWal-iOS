@@ -14,39 +14,55 @@ extension ResourceKitFontFamily {
   /// $0.font = ResourceKitFontFamily.KR.H1
   public struct KR {
     /// 32px bold
-    public static let H1 = UIFont.systemFont(ofSize: 32, weight: .bold)
+    /// public static let H1 = UIFont.systemFont(ofSize: 32, weight: .bold)
+    public static let H1 = UIFont(name: "AppleSDGothicNeo-Bold", size: 32)!
     /// 28px bold
-    public static let H2 = UIFont.systemFont(ofSize: 28, weight: .bold)
+    /// public static let H2 = UIFont.systemFont(ofSize: 28, weight: .bold)
+    public static let H2 = UIFont(name: "AppleSDGothicNeo-Bold", size: 28)!
     /// 24px bold
-    public static let H3 = UIFont.systemFont(ofSize: 24, weight: .bold)
+    /// public static let H3 = UIFont.systemFont(ofSize: 24, weight: .bold)
+    public static let H3 = UIFont(name: "AppleSDGothicNeo-Bold", size: 24)!
     /// 20px bold
-    public static let H4 = UIFont.systemFont(ofSize: 20, weight: .bold)
+    /// public static let H4 = UIFont.systemFont(ofSize: 20, weight: .bold)
+    public static let H4 = UIFont(name: "AppleSDGothicNeo-Bold", size: 20)!
     /// 18px
     public struct H5 {
-      public static let B = UIFont.systemFont(ofSize: 18, weight: .bold)
-      public static let M = UIFont.systemFont(ofSize: 18, weight: .medium)
+      /// public static let B = UIFont.systemFont(ofSize: 18, weight: .bold)
+      /// public static let M = UIFont.systemFont(ofSize: 18, weight: .medium)
+      public static let B = UIFont(name: "AppleSDGothicNeo-Bold", size: 18)!
+      public static let M = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)!
     }
     /// 16px
     public struct H6 {
-      public static let B = UIFont.systemFont(ofSize: 16, weight: .bold)
-      public static let M = UIFont.systemFont(ofSize: 16, weight: .medium)
+      /// public static let B = UIFont.systemFont(ofSize: 16, weight: .bold)
+      /// public static let M = UIFont.systemFont(ofSize: 16, weight: .medium)
+      public static let B = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)!
+      public static let M = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)!
     }
     /// 14px
     public struct H7 {
-      public static let B = UIFont.systemFont(ofSize: 14, weight: .bold)
-      public static let SB = UIFont.systemFont(ofSize: 14, weight: .semibold)
-      public static let M = UIFont.systemFont(ofSize: 14, weight: .medium)
+      /// public static let B = UIFont.systemFont(ofSize: 14, weight: .bold)
+      /// public static let SB = UIFont.systemFont(ofSize: 14, weight: .semibold)
+      /// public static let M = UIFont.systemFont(ofSize: 14, weight: .medium)
+      public static let B = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)!
+      public static let SB = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 14)!
+      public static let M = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)!
     }
     /// 12px medium
-    public static let M1 = UIFont.systemFont(ofSize: 12, weight: .medium)
+    /// public static let M1 = UIFont.systemFont(ofSize: 12, weight: .medium)
+    public static let M1 = UIFont(name: "AppleSDGothicNeo-Medium", size: 12)!
     /// 14px regular
-    public static let B1 = UIFont.systemFont(ofSize: 14, weight: .regular)
+    /// public static let B1 = UIFont.systemFont(ofSize: 14, weight: .regular)
+    public static let B1 = UIFont(name: "AppleSDGothicNeo-Regular", size: 14)!
     /// 13px regular
-    public static let B3 = UIFont.systemFont(ofSize: 13, weight: .regular)
+    /// public static let B3 = UIFont.systemFont(ofSize: 13, weight: .regular)
+    public static let B3 = UIFont(name: "AppleSDGothicNeo-Regular", size: 13)!
     /// 12px regular
-    public static let B2 = UIFont.systemFont(ofSize: 12, weight: .regular)
+    /// public static let B2 = UIFont.systemFont(ofSize: 12, weight: .regular)
+    public static let B2 = UIFont(name: "AppleSDGothicNeo-Regular", size: 12)!
     /// 10px regular
-    public static let Caption = UIFont.systemFont(ofSize: 10, weight: .regular)
+    /// public static let Caption = UIFont.systemFont(ofSize: 10, weight: .regular)
+    public static let Caption = UIFont(name: "AppleSDGothicNeo-Regular", size: 10)!
   }
   
   /// 사용 방법

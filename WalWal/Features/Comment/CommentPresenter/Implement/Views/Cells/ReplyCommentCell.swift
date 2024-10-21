@@ -70,7 +70,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     super.layoutSubviews()
     rootContainerView.pin
       .top(0)
-      .left(44 + 15)
+      .left(44.adjustedWidth + 15.adjustedWidth)
       .right(0)
       .bottom(0)
     rootContainerView.flex
@@ -106,7 +106,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     rootContainerView.flex
       .width(100%)
       .justifyContent(.spaceBetween)
-      .paddingVertical(10)
+      .paddingVertical(10.adjustedHeight)
       .define { flex in
         flex.addItem(profileImageAndBodyContainer)
       }
@@ -115,13 +115,14 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
       .direction(.row)
       .define { flex in
         flex.addItem(profileImageView)
-          .size(34)
+          .width(34.adjustedWidth)
+          .height(34.adjustedHeight)
         flex.addItem(bodyContainer)
-          .marginLeft(8)
+          .marginLeft(8.adjustedWidth)
           .grow(1)
           .shrink(1)
         flex.addItem()
-          .width(15)
+          .width(15.adjustedWidth)
       }
     
     
@@ -129,7 +130,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
       .define { flex in
         flex.addItem(nicknameAndTimeContainer)
         flex.addItem(contentLabel)
-          .marginTop(2)
+          .marginTop(2.adjustedHeight)
           .grow(1)
       }
     
@@ -138,13 +139,17 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
       .define { flex in
         flex.addItem(nicknameLabel)
         flex.addItem(timeLabel)
-          .marginLeft(4)
+          .marginLeft(4.adjustedWidth)
         flex.addItem(writerNicknameLabel)
-          .marginLeft(8)
+          .marginLeft(8.adjustedWidth)
       }
   }
   
-  func configure(with comment: FlattenCommentModel, writerNickname: String) {
+  func configure(
+    with comment: FlattenCommentModel,
+    writerNickname: String,
+    writerId: Int?
+  ) {
     nicknameLabel.text = comment.writerNickname
     contentLabel.text = comment.content
     writerNicknameLabel.text = writerNickname == comment.writerNickname ? "작성자" : ""
@@ -161,7 +166,10 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
       profileImageView.kf.setImage(with: imageUrl)
     } else {
       profileImageView.image = DefaultProfile.yellowDog.image
-      
+    }
+    
+    if writerId == nil {
+      nicknameLabel.textColor = AssetColor.gray300.color
     }
     
     contentLabel.flex.markDirty()

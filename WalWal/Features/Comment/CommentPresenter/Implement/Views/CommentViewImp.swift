@@ -30,7 +30,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public var commentReactor: R
   
   private let dimView = UIView().then {
-    $0.backgroundColor = Colors.black30.color
+    $0.backgroundColor = Colors.black70.color
   }
   
   private let rootContainerView = UIView().then {
@@ -57,9 +57,9 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   private let inputBox = CustomInputBox(
     placeHolderText: "댓글을 입력하세요!",
-    placeHolderFont: FontKR.H7.M,
+    placeHolderFont: FontKR.B1,
     placeHolderColor: AssetColor.gray500.color,
-    inputTextFont: FontKR.H7.M,
+    inputTextFont: FontKR.B1,
     inputTextColor: AssetColor.black.color,
     inputTintColor: AssetColor.blue.color,
     buttonActiveColor: AssetColor.walwalOrange.color
@@ -111,10 +111,9 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       .layout()
     
     rootContainerView.pin
-      .bottom(-rootContainerView.frame.height)
-      .horizontally()
-    inputBox.pin
-      .height(58)
+      .left()
+      .right()
+      .bottom()
     rootContainerView.flex
       .layout()
   }
@@ -135,21 +134,21 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func setLayout() {
     
     rootContainerView.flex
-      .height(456.adjustedHeight)
+      .height(548.adjustedHeight)
       .define { flex in
         flex.addItem(headerContainerView)
         flex.addItem(tableViewContainerView)
         flex.addItem(inputBox)
-          .height(58)
+          .height(58.adjustedHeight)
       }
     
     headerContainerView.flex
-      .height(58)
+      .height(58.adjustedHeight)
       .width(100%)
-      .justifyContent(.center)
       .alignItems(.center)
       .define { flex in
         flex.addItem(commentLabel)
+          .marginTop(24.adjustedHeight)
       }
     
     tableViewContainerView.flex
@@ -178,8 +177,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   private func animateSheetDown(completion: (() -> Void)? = nil) {
+    self.dimView.alpha = 0
     UIView.animate(withDuration: 0.3, animations: {
-      self.dimView.alpha = 0
       self.rootContainerView.pin
         .bottom(-self.rootContainerView.frame.height)
       self.rootContainerView.flex
@@ -191,6 +190,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   private func updateSheetPosition(_ position: CGFloat) {
     if position > 0 {
+      self.dimView.alpha = 0
       rootContainerView.pin
         .bottom(-position)
     } else {
@@ -211,8 +211,10 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    delay: 0,
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
-      self.rootContainerView.pin
-        .bottom(keyboardHeight - self.view.pin.safeArea.bottom)
+      self.rootContainerView.flex
+            .height(456.adjustedHeight + self.view.pin.safeArea.bottom)
+            .bottom(keyboardHeight - self.view.pin.safeArea.bottom)
+      self.rootContainerView.flex.layout()
     })
   }
   
@@ -226,8 +228,10 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    delay: 0,
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
-      self.rootContainerView.pin
-        .bottom()
+      self.rootContainerView.flex
+        .height(548.adjustedHeight)
+        .bottom(0)
+      self.rootContainerView.flex.layout()
     })
   }
   
@@ -242,7 +246,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       guard let owner = self else { return nil }
       if comment.parentID == nil {
         let cell = tableView.dequeue(CommentCell.self, for: indexPath)
-        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname)
+        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname, writerId: comment.writerID)
         
         cell.parentIdGetted
           .bind(to: owner.parentIdRelay)
@@ -257,7 +261,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
         return cell
       } else {
         let cell = tableView.dequeue(ReplyCommentCell.self, for: indexPath)
-        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname)
+        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname, writerId: comment.writerID)
         return cell
       }
     }
