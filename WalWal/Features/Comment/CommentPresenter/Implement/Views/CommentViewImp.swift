@@ -111,10 +111,9 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       .layout()
     
     rootContainerView.pin
-      .bottom(-rootContainerView.frame.height)
-      .horizontally()
-    inputBox.pin
-      .height(58)
+      .left()
+      .right()
+      .bottom()
     rootContainerView.flex
       .layout()
   }
@@ -135,12 +134,12 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func setLayout() {
     
     rootContainerView.flex
-      .height(456.adjustedHeight)
+      .height(548.adjustedHeight)
       .define { flex in
         flex.addItem(headerContainerView)
         flex.addItem(tableViewContainerView)
         flex.addItem(inputBox)
-          .height(58)
+          .height(58.adjustedHeight)
       }
     
     headerContainerView.flex
@@ -149,7 +148,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       .alignItems(.center)
       .define { flex in
         flex.addItem(commentLabel)
-          .marginTop(24)
+          .marginTop(24.adjustedHeight)
       }
     
     tableViewContainerView.flex
@@ -191,6 +190,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   private func updateSheetPosition(_ position: CGFloat) {
     if position > 0 {
+      self.dimView.alpha = 0
       rootContainerView.pin
         .bottom(-position)
     } else {
@@ -211,8 +211,10 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    delay: 0,
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
-      self.rootContainerView.pin
-        .bottom(keyboardHeight - self.view.pin.safeArea.bottom)
+      self.rootContainerView.flex
+            .height(456.adjustedHeight + self.view.pin.safeArea.bottom)
+            .bottom(keyboardHeight - self.view.pin.safeArea.bottom)
+      self.rootContainerView.flex.layout()
     })
   }
   
@@ -226,8 +228,10 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    delay: 0,
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
-      self.rootContainerView.pin
-        .bottom()
+      self.rootContainerView.flex
+        .height(548.adjustedHeight)
+        .bottom(0)
+      self.rootContainerView.flex.layout()
     })
   }
   
