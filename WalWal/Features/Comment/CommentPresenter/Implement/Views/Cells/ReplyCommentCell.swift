@@ -145,7 +145,11 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
       }
   }
   
-  func configure(with comment: FlattenCommentModel, writerNickname: String) {
+  func configure(
+    with comment: FlattenCommentModel,
+    writerNickname: String,
+    writerId: Int?
+  ) {
     nicknameLabel.text = comment.writerNickname
     contentLabel.text = comment.content
     writerNicknameLabel.text = writerNickname == comment.writerNickname ? "작성자" : ""
@@ -162,7 +166,10 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
       profileImageView.kf.setImage(with: imageUrl)
     } else {
       profileImageView.image = DefaultProfile.yellowDog.image
-      
+    }
+    
+    if writerId == nil {
+      nicknameLabel.textColor = AssetColor.gray300.color
     }
     
     contentLabel.flex.markDirty()

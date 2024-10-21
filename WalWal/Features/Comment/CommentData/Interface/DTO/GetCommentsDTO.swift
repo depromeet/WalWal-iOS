@@ -18,7 +18,7 @@ public struct Comment: Codable {
   public let parentID: Int?
   public let commentID: Int
   public let content: String
-  public let writerID: Int
+  public let writerID: Int?
   public let writerNickname, writerProfileImageURL, createdAt: String
   public let replyComments: [Comment]
   

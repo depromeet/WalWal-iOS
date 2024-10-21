@@ -179,7 +179,11 @@ final class CommentCell: UITableViewCell, ReusableView {
       }
   }
   
-  func configure(with comment: FlattenCommentModel, writerNickname: String) {
+  func configure(
+    with comment: FlattenCommentModel,
+    writerNickname: String,
+    writerId: Int?
+  ) {
     nicknameLabel.text = comment.writerNickname
     contentLabel.text = comment.content
     parentId = comment.commentID
@@ -197,7 +201,10 @@ final class CommentCell: UITableViewCell, ReusableView {
       profileImageView.kf.setImage(with: imageUrl)
     } else {
       profileImageView.image = DefaultProfile.yellowDog.image
-      
+    }
+    
+    if writerId == nil {
+      nicknameLabel.textColor = AssetColor.gray300.color
     }
     
     contentLabel.flex.markDirty()

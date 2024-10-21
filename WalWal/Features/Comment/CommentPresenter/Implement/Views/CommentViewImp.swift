@@ -246,7 +246,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       guard let owner = self else { return nil }
       if comment.parentID == nil {
         let cell = tableView.dequeue(CommentCell.self, for: indexPath)
-        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname)
+        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname, writerId: comment.writerID)
         
         cell.parentIdGetted
           .bind(to: owner.parentIdRelay)
@@ -261,7 +261,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
         return cell
       } else {
         let cell = tableView.dequeue(ReplyCommentCell.self, for: indexPath)
-        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname)
+        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname, writerId: comment.writerID)
         return cell
       }
     }

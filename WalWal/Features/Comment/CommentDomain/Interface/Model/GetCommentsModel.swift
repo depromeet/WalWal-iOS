@@ -23,7 +23,7 @@ public struct CommentModel: Hashable {
   public let parentID: Int?
   public let commentID: Int
   public let content: String
-  public let writerID: Int
+  public let writerID: Int?
   public let writerNickname: String
   public let writerProfileImageURL: String
   public let createdAt: String
@@ -44,7 +44,7 @@ public struct CommentModel: Hashable {
     parentID: Int?,
     commentID: Int,
     content: String,
-    writerID: Int,
+    writerID: Int?,
     writerNickname: String,
     writerProfileImageURL: String,
     createdAt: String,
