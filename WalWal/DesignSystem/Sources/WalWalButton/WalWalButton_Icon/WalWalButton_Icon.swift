@@ -115,7 +115,7 @@ public class WalWalButton_Icon: UIControl {
     rootView.flex
       .justifyContent(.center)
       .alignItems(.center)
-      .height(50)
+      .height(50.adjusted)
       .define { flex in
         flex.addItem(subContainer)
           .direction(.row)
@@ -123,7 +123,7 @@ public class WalWalButton_Icon: UIControl {
           .alignItems(.center)
           .define { flex in
             flex.addItem(iconImageView)
-              .size(20)
+              .size(20.adjusted)
               .marginRight(2)
             flex.addItem(titleLabel)
           }

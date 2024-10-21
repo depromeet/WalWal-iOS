@@ -112,8 +112,10 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    
     rootContainer.pin
       .all(view.pin.safeArea)
+    
     rootContainer.flex
       .layout()
     
@@ -143,8 +145,8 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
         flex.addItem(bubbleContainerWrapper)
           .width(100%)
           .height(60.adjusted)
+          .bottom(72.adjusted)
           .position(.absolute)
-          .bottom(70.adjusted)
       }
     
     missionContainer.flex
@@ -155,7 +157,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
           .alignSelf(.center)
         flex.addItem(missionCompletedView)
           .position(.absolute)
-          .top(39.adjusted)
+          .top(17.adjusted)
           .width(100%)
           .alignSelf(.center)
       }
@@ -248,6 +250,10 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private func updateBubbleViewTitle(for status: StatusMessage?) {
     let isCompleted = status == .completed ? true : false
     missionCountBubbleView.isCompleted.accept(isCompleted)
+    
+    bubbleContainer.flex.markDirty()
+    
+    bubbleContainer.flex.layout()
   }
   
   private func showCoachView() {

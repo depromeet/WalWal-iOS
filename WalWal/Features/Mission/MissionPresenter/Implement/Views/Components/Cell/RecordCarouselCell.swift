@@ -88,7 +88,6 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
   /// 미션 정보 보기
   private let todayMissionLabel = CustomLabel(font: Fonts.KR.H7.B).then {
     $0.text = "오늘의 미션"
-    $0.font = Fonts.KR.H7.B
     $0.textColor = Colors.walwalOrange.color
   }
   private let missionTitleLabel = CustomLabel(font: Fonts.KR.H4).then {

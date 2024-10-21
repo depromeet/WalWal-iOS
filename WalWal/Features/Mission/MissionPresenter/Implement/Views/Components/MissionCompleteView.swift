@@ -48,7 +48,7 @@ final class MissionCompleteView: UIView {
   private let missionCompletedLabel = CustomLabel(font: Fonts.KR.H2).then {
     $0.text = "📮 이번 달 함께한 추억이에요!"
     $0.textAlignment = .center
-    $0.font = Fonts.KR.H6.B
+    $0.font = UIFont.systemFont(ofSize: 16.adjusted, weight: .bold)
     $0.textColor = Colors.black.color
     $0.numberOfLines = 2
     $0.textAlignment = .center
@@ -140,7 +140,7 @@ final class MissionCompleteView: UIView {
           .marginTop(0)
           .marginHorizontal(24.adjusted)
         $0.addItem(missionRecordCollectionView)
-          .height(496.adjusted)
+          .height(480.adjusted)
           .grow(1)
           .shrink(1)
       }
@@ -180,7 +180,7 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
     
     scrollDirection = .horizontal
     
-    minimumLineSpacing = 30 - (itemSize.width - itemSize.width*0.7)/2
+    minimumLineSpacing = 30.adjusted - (itemSize.width - itemSize.width * (216/255))/2
     
     isInit = true
   }
@@ -202,8 +202,10 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
       let maxDis = self.itemSize.width + self.minimumLineSpacing
       let dis = min(abs(collectionViewCenter-center), maxDis)
       
+      let maxScale: CGFloat = 1.0
+      let minScale: CGFloat = 216 / 255
       let ratio = (maxDis - dis)/maxDis
-      let scale = ratio * (1-0.7) + 0.7
+      let scale = ratio * (maxScale - minScale) + minScale
       
       attributes.transform = CGAffineTransform(scaleX: scale, y: scale)
     }
