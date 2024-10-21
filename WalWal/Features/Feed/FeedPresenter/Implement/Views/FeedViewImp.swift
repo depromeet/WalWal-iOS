@@ -187,14 +187,15 @@ extension FeedViewControllerImp: View {
       })
       .disposed(by: disposeBag)
     
-    reactor.pulse(\.$updatedFeed)
+    reactor.pulse(\.$updatedCommentCount)
       .observe(on: MainScheduler.instance)
-      .subscribe(with: self) { owner, updatedFeed in
-        if let updatedFeed {
-          owner.feed.updateRecord(at: updatedFeed.recordId, updatedFeed: updatedFeed)
+      .subscribe(with: self) { owner, updatedData in
+        if let (recordId, commentCount) = updatedData {
+          owner.feed.updateCommentCount(at: recordId, commentCount: commentCount)
         }
       }
       .disposed(by: disposeBag)
+    
   }
   
   public func bindEvent() {
