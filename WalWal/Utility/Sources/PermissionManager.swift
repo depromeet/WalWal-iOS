@@ -128,13 +128,13 @@ public final class PermissionManager {
   ///   .disposed(by: disposBag())
   ///
   public func requestNotificationPermission() -> Observable<Bool> {
-    Observable<Bool>.create { observable in
+    return Observable<Bool>.create { observable in
       UNUserNotificationCenter.current()
-        .requestAuthorization(
-          options: [.alert, .sound, .badge]
-        ) { isAllow, _ in
-          observable.onNext(isAllow)
-          observable.onCompleted()
+        .requestAuthorization(options: [.alert, .sound, .badge]) { isAllow, _ in
+          DispatchQueue.main.async {
+            observable.onNext(isAllow)
+            observable.onCompleted()
+          }
         }
       return Disposables.create()
     }
