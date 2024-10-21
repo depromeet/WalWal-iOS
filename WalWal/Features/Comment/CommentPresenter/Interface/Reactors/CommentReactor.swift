@@ -17,7 +17,7 @@ public enum CommentReactorAction {
   // 바텀 시트 관련 Action
   case didPan(translation: CGPoint, velocity: CGPoint)
   case didEndPan(velocity: CGPoint)
-  case tapDimView
+  case tapDimView(commentCount: Int)
   case fetchComments /// 전체 댓글을 불러오는 액션
   case postComment(content: String) /// 댓글을 추가하는 액션
   case setReplyMode(isReply: Bool, parentId: Int?) /// 대댓글 모드 설정 액션
@@ -31,7 +31,7 @@ public enum CommentReactorMutation {
   case setReplyMode(Int?, Bool)
   // 바텀 시트 관련 Mutation
   case setSheetPosition(CGFloat)
-  case dismissSheet
+  case dismissSheet(Int) /// int - 댓글 개수
   case isNeedFocusing(Bool)
 }
 
@@ -47,6 +47,7 @@ public struct CommentReactorState {
   public let writerNickname: String
   public var focusCommentId: Int?
   public var isNeedFocusing: Bool = false
+  public var totalComment: Int = 0
   
   public init(
     recordId: Int,

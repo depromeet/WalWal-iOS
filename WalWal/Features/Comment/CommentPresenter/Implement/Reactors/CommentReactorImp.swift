@@ -25,6 +25,8 @@ public final class CommentReactorImp: CommentReactor {
   private var recordId: Int
   private var writerNickname: String
   
+  private var totalCommentcount: Int = 0
+  
   private let getCommentsUsecase: GetCommentsUsecase
   private let postCommentUsecase: PostCommentUsecase
   private let flattenCommentUsecase: FlattenCommentsUsecase
@@ -73,8 +75,8 @@ public final class CommentReactorImp: CommentReactor {
       return Observable.just(.setSheetPosition(translation.y))
     case let .didEndPan(velocity):
       return configSheetPosition(yVelocity: velocity.y)
-    case .tapDimView:
-      return Observable.just(.dismissSheet)
+    case let .tapDimView(commentCount: count):
+      return Observable.just(.dismissSheet(count))
     case let .setReplyMode(isReply, parentId):
       return Observable.just(.setReplyMode(parentId, isReply))
     case .resetParentId:
@@ -88,13 +90,14 @@ public final class CommentReactorImp: CommentReactor {
     var newState = state
     switch mutation {
     case let .setComments(comments):
+      newState.totalComment = comments.count
       newState.comments = comments
       newState.isReply = false // 한번 보내면 대댓글 상태 초기화 하자
       newState.parentId = nil // 한번 보내면 parentID도 초기화
     case let .setSheetPosition(position):
       newState.sheetPosition = position
-    case .dismissSheet:
-      coordinator.reloadFeedAt(recordId)
+    case let .dismissSheet(count):
+      coordinator.reloadFeedAt(at: recordId, commentCount: count)
     case let .setReplyMode(parentId, isReply):
       newState.parentId = parentId
       newState.isReply = isReply
@@ -153,7 +156,7 @@ extension CommentReactorImp {
   /// 바텀시트 위치 조절
   private func configSheetPosition(yVelocity: Double) -> Observable<Mutation> {
     if yVelocity > 1000 {
-      return Observable.just(.dismissSheet)
+      return Observable.just(.dismissSheet(currentState.totalComment))
     } else {
       return Observable.just(.setSheetPosition(0))
     }

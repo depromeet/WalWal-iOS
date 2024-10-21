@@ -378,7 +378,7 @@ extension CommentViewControllerImp: View {
     .subscribe(with: self, onNext: { owner, _ in
       owner.inputBox.rx.textEndEditing.onNext(())
       owner.animateSheetDown {
-        reactor.action.onNext(.tapDimView)
+        reactor.action.onNext(.tapDimView(commentCount: reactor.currentState.totalComment))
       }
     })
     .disposed(by: disposeBag)
