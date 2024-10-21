@@ -10,7 +10,7 @@ import UIKit
 import BaseCoordinator
 
 public enum CommentCoordinatorAction: ParentAction {
-  case dismissComment(Int)
+  case dismissComment(Int, Int) /// recordId, commentCount
 }
 
 public enum CommentCoordinatorFlow: CoordinatorFlow {
@@ -20,5 +20,5 @@ public enum CommentCoordinatorFlow: CoordinatorFlow {
 public protocol CommentCoordinator: BaseCoordinator
 where Flow == CommentCoordinatorFlow,
       Action == CommentCoordinatorAction {
-  func reloadFeedAt(_ recordId: Int)
+  func reloadFeedAt(at recordId: Int, commentCount: Int)
 }
