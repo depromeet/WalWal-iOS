@@ -129,9 +129,9 @@ extension FeedCoordinatorImp {
       childCoordinator = nil
     case .requireParentAction(let action):
       switch action {
-      case .dismissComment(let recordId):
+      case .dismissComment(let recordId, let commentCount):
         self.childCoordinator = nil
-        self.baseReactor?.action.onNext(.refreshFeedData(recordId: recordId))
+        self.baseReactor?.action.onNext(.refreshFeedData(recordId: recordId, commentCount: commentCount))
       }
     }
   }
