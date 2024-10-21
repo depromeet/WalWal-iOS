@@ -164,7 +164,6 @@ final class StyledTextInputView: UIView {
     textView.rx.didChange
       .asDriver()
       .drive(with: self) { owner, _ in
-        owner.textView.endEditingWithDeleteNewLines()
         owner.textView.configureAttributeText()
       }
       .disposed(by: disposeBag)
@@ -173,6 +172,9 @@ final class StyledTextInputView: UIView {
     textRelay
       .map { "\($0.count)/80"}
       .bind(to: characterCountLabel.rx.text)
+      .disposed(by: disposeBag)
+    
+    textView.rx.setDelegate(self)
       .disposed(by: disposeBag)
   }
   
@@ -190,7 +192,20 @@ final class StyledTextInputView: UIView {
     textView.text = cutting
   }
   
+}
+
+// MARK: - UITextFieldDelegate
+
+extension StyledTextInputView: UITextViewDelegate {
   
+  /// 엔터 입력 시 입력 종료
+  public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+    if text == "\n" {
+      textView.endEditing(true)
+      return false
+    }
+    return true
+  }
 }
 
 extension String {

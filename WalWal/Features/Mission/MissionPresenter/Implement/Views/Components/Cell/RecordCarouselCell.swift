@@ -151,7 +151,6 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     
     recordimageView.addSubview(dateChipView)
     
-    textView.endEditingWithDeleteNewLines()
     textView.configureAttributeText()
   }
   
