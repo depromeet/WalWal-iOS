@@ -57,9 +57,9 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   private let inputBox = CustomInputBox(
     placeHolderText: "댓글을 입력하세요!",
-    placeHolderFont: FontKR.H7.M,
+    placeHolderFont: FontKR.B1,
     placeHolderColor: AssetColor.gray500.color,
-    inputTextFont: FontKR.H7.M,
+    inputTextFont: FontKR.B1,
     inputTextColor: AssetColor.black.color,
     inputTintColor: AssetColor.blue.color,
     buttonActiveColor: AssetColor.walwalOrange.color

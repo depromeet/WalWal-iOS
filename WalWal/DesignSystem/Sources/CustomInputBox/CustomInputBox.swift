@@ -153,7 +153,8 @@ public final class CustomInputBox: UIView {
           .grow(1)
           .define {
             $0.addItem(inputContainer)
-              .marginVertical(9.adjustedHeight)
+              .height(40.adjustedHeight)
+              .marginTop(9.adjustedHeight)
               .marginLeft(15.adjustedWidth)
               .marginRight(14.adjustedWidth)
           }
@@ -168,8 +169,10 @@ public final class CustomInputBox: UIView {
           .marginLeft(17.adjustedWidth)
           .grow(1)
         $0.addItem(postButton)
-          .margin(5.adjusted)
           .width(46.adjustedWidth)
+          .height(30.adjustedHeight)
+          .justifyContent(.center)
+          .marginHorizontal(5.adjustedWidth)
       }
     
     postButton.flex
