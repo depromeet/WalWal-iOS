@@ -30,7 +30,7 @@ public final class WalWalFeed: UIView {
     let flowLayout = UICollectionViewFlowLayout()
     
     flowLayout.sectionInset = .init(top: 25.adjusted, left: 0, bottom: 20.adjusted, right: 0)
-    flowLayout.minimumLineSpacing = 13.adjusted
+    flowLayout.minimumLineSpacing = 14.adjusted
     flowLayout.headerReferenceSize = .init(width: 0, height: headerHeight)
     
     $0.collectionViewLayout = flowLayout
@@ -363,21 +363,21 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
     _ collectionView: UICollectionView,
     layout collectionViewLayout: UICollectionViewLayout,
     sizeForItemAt indexPath: IndexPath) -> CGSize {
-      let width = collectionView.bounds.width - 32.adjusted
+      let width = collectionView.bounds.width - 32.adjustedWidth
       let model = currentFeedData[indexPath.row]
       let cell = collectionView.cellForItem(at: indexPath) as? WalWalFeedCell
       let isExpanded = cell?.feedView.isExpanded ?? false
       
       let content = model.contents
       
-      let baseHeight: CGFloat = 516.adjusted
+      let baseHeight: CGFloat = 516.adjustedWidth
       let numberOfLine = content.lineNumber(
         forWidth: width - 40,
         font: Fonts.B3
       )
-      let lineHeight = isExpanded ? numberOfLine : max(1,min(2, numberOfLine))
-      
-      let height: CGFloat =  baseHeight + (17 * (lineHeight - 1)).adjusted
+      let lineCount = isExpanded ? numberOfLine : max(1,min(2, numberOfLine))
+      let lineHeight = (17 * (lineCount - 1)).adjusted
+      let height: CGFloat =  baseHeight + lineHeight
       
       return CGSize(width: width, height: height)
     }

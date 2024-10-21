@@ -41,7 +41,7 @@ public final class WalWalFeedCellView: UIView {
   private let reactionView = UIView()
   
   private let profileImageView = UIImageView().then {
-    $0.layer.cornerRadius = 20.adjusted
+    $0.layer.cornerRadius = 20.adjustedWidth
     $0.contentMode = .scaleAspectFill
     $0.clipsToBounds = true
     $0.isUserInteractionEnabled = false
@@ -244,20 +244,20 @@ public final class WalWalFeedCellView: UIView {
       .define {
         $0.addItem(headerView)
           .marginHorizontal(16.adjusted)
-          .marginVertical(15.adjusted)
+          .marginVertical(15.adjustedWidth)
         $0.addItem(imageContentView)
         $0.addItem(reactionView)
-          .height(24.adjusted)
-          .marginTop(12.adjusted)
+          .height(24.adjustedWidth)
+          .marginTop(12.adjustedHeight)
           .marginHorizontal(12.adjusted)
         $0.addItem(feedContentView)
-          .minHeight(16.adjusted)
+          .minHeight(16.adjustedWidth)
           .marginHorizontal(16.adjusted)
           .marginTop(9.adjusted)
           .marginBottom(9.adjusted)
         $0.addItem(missionDateLabel)
           .marginHorizontal(16.adjusted)
-          .marginBottom(20.adjusted)
+          .marginBottom(20.adjustedWidth)
       }
     
     headerView.flex
@@ -286,7 +286,7 @@ public final class WalWalFeedCellView: UIView {
       .define {
         $0.addItem(userNickNameLabel)
         $0.addItem(missionLabel)
-          .marginTop(2)
+          .marginTop(2.adjustedWidth)
           .grow(1)
       }
     
@@ -294,7 +294,7 @@ public final class WalWalFeedCellView: UIView {
       .width(100%)
       .define({
         $0.addItem(missionImageView)
-          .height(343.adjusted)
+          .height(343.adjustedWidth)
         
       })
     
