@@ -113,6 +113,10 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     
+    bubbleContainer.flex.markDirty()
+    bubbleContainer.flex.layout()
+    bubbleContainerWrapper.flex.layout()
+    
     rootContainer.pin
       .all(view.pin.safeArea)
     
@@ -145,8 +149,8 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
         flex.addItem(bubbleContainerWrapper)
           .width(100%)
           .height(60.adjusted)
-          .bottom(72.adjusted)
           .position(.absolute)
+          .bottom(72.adjusted)
       }
     
     missionContainer.flex
@@ -183,8 +187,8 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
     bubbleContainer.flex
       .define { flex in
         flex.addItem(missionCountBubbleView)
-          .position(.absolute)
           .alignSelf(.center)
+          .position(.absolute)
           .bottom(0)
       }
     
@@ -250,9 +254,8 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private func updateBubbleViewTitle(for status: StatusMessage?) {
     let isCompleted = status == .completed ? true : false
     missionCountBubbleView.isCompleted.accept(isCompleted)
-    
+    /// 버블뷰의 타이틀이 변할 때 마다 다시 계산해야 하므로 필요
     bubbleContainer.flex.markDirty()
-    
     bubbleContainer.flex.layout()
   }
   
