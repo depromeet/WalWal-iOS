@@ -144,12 +144,12 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       }
     
     headerContainerView.flex
-      .height(58)
+      .height(58.adjustedHeight)
       .width(100%)
-      .justifyContent(.center)
       .alignItems(.center)
       .define { flex in
         flex.addItem(commentLabel)
+          .marginTop(24)
       }
     
     tableViewContainerView.flex
