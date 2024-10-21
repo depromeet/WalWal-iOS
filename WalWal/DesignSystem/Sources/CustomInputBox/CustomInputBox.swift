@@ -154,7 +154,7 @@ public final class CustomInputBox: UIView {
           .define {
             $0.addItem(inputContainer)
               .height(40.adjustedHeight)
-              .marginTop(9.adjustedHeight)
+              .marginVertical(9.adjustedHeight)
               .marginLeft(15.adjustedWidth)
               .marginRight(14.adjustedWidth)
           }
