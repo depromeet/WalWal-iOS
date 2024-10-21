@@ -61,7 +61,8 @@ public final class MissionReactorImp: MissionReactor {
   
   public func transform(action: Observable<Action>) -> Observable<Action> {
     let initialAction = Observable.just(Action.loadInitialData)
-    return Observable.merge(action, initialAction)
+    let checkPermissionAction = Observable.just(Action.checkNotificationPermission)
+    return Observable.merge(action, initialAction, checkPermissionAction)
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -86,6 +87,9 @@ public final class MissionReactorImp: MissionReactor {
       return checkAndUpdateMissionIfNeeded()
     case .moveToMissionGallery(let image):
       return Observable.just(.startMissionUploadProcess(image))
+    case .checkNotificationPermission:
+      return checkNotificationPermission()
+        .map{ Mutation.setNotificationPermission($0) }
     }
   }
   
@@ -119,6 +123,8 @@ public final class MissionReactorImp: MissionReactor {
       newState.loadInitialDataFlowEnded = true
     case .loadInitialDataFlowFailed(let loadInitialDataFlowFailed):
       newState.loadInitialDataFlowFailed = loadInitialDataFlowFailed
+    case let .setNotificationPermission(isGranted):
+      newState.isGrantedNotification = isGranted
       
       // MARK: - 미션 시작하기를 누르면 실행되는 Flow!
     case let .fetchRecordId(recordId):
@@ -292,6 +298,7 @@ public final class MissionReactorImp: MissionReactor {
       .flatMap { isGranted in
         if !isGranted {
           return PermissionManager.shared.requestNotificationPermission()
+            .observe(on: MainScheduler.instance)
         }
         return Observable.just(isGranted)
       }
