@@ -30,7 +30,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public var commentReactor: R
   
   private let dimView = UIView().then {
-    $0.backgroundColor = Colors.black30.color
+    $0.backgroundColor = Colors.black70.color
   }
   
   private let rootContainerView = UIView().then {
@@ -178,8 +178,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   }
   
   private func animateSheetDown(completion: (() -> Void)? = nil) {
+    self.dimView.alpha = 0
     UIView.animate(withDuration: 0.3, animations: {
-      self.dimView.alpha = 0
       self.rootContainerView.pin
         .bottom(-self.rootContainerView.frame.height)
       self.rootContainerView.flex
