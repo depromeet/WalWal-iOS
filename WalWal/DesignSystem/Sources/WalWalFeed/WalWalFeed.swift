@@ -29,7 +29,7 @@ public final class WalWalFeed: UIView {
     
     let flowLayout = UICollectionViewFlowLayout()
     
-    flowLayout.sectionInset = .init(top: 20.adjusted, left: 0, bottom: 20.adjusted, right: 0)
+    flowLayout.sectionInset = .init(top: 25.adjusted, left: 0, bottom: 20.adjusted, right: 0)
     flowLayout.minimumLineSpacing = 13.adjusted
     flowLayout.headerReferenceSize = .init(width: 0, height: headerHeight)
     
