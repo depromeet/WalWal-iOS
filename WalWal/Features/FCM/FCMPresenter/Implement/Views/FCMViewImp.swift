@@ -265,8 +265,8 @@ extension FCMViewControllerImp: View {
               owner.collectionView.numberOfItems(inSection: 0) > 0 else {
           return
         }
-        let lastItemIndex = owner.collectionView.numberOfItems(inSection: 0) - 1
-        owner.collectionView.scrollToItem(at: IndexPath(item: lastItemIndex, section: 0), at: .top, animated: true)
+        
+        owner.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
       })
       .disposed(by: disposeBag)
     
