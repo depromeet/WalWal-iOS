@@ -69,7 +69,7 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     $0.textColor = Colors.white.color
   }
   public private(set) var textView = UnderlinedTextView(
-    font: Fonts.KR.H7.SB,
+    font: UIFont(name: "AppleSDGothicNeo-SemiBold", size: 14.adjusted)!,
     textColor: Colors.gray600.color,
     tintColor: Colors.walwalOrange.color,
     underLineColor: Colors.gray150.color,
