@@ -81,10 +81,11 @@ public final class WalWalAlert {
     $0.numberOfLines = 2
     $0.textAlignment = .center
   }
+  private let bodyLabelContainer = UIView()
   private let bodyLabel = CustomLabel(font: FontsKR.B1).then {
     $0.font = FontsKR.B1
     $0.textColor = Colors.gray600.color
-    $0.numberOfLines = 2
+    $0.numberOfLines = 0
     $0.textAlignment = .center
   }
   private let cancelButton =  WalWalButton(
@@ -121,17 +122,20 @@ public final class WalWalAlert {
     title: String,
     bodyMessage: String,
     cancelTitle: String,
-    okTitle: String
+    okTitle: String,
+    tintColor: UIColor? = nil
   ) {
     titleLabel.text = title
     bodyLabel.text = bodyMessage
     cancelButton.title = cancelTitle
     okButton.title = okTitle
+    cancelButton.backgroundColor = tintColor ?? Colors.walwalOrange.color
+    isOneButtonAlert = false
     
     guard let window = UIWindow.key else { return }
     window.addSubview(rootContainer)
     configureLayout()
-    
+    okButton.isHidden = false
   }
   
   /// 얼럿 뷰를 보여주기 위한 메서드
@@ -158,10 +162,8 @@ public final class WalWalAlert {
     bodyLabel.text = bodyMessage
     cancelButton.title = okTitle
     isOneButtonAlert = true
+    cancelButton.backgroundColor = tintColor ?? Colors.walwalOrange.color
     
-    if let tintColor = tintColor {
-      cancelButton.backgroundColor = tintColor
-    }
     guard let window = UIWindow.key else { return }
     window.addSubview(rootContainer)
     configureLayout()
@@ -170,10 +172,12 @@ public final class WalWalAlert {
   
   private func configureLayout() {
     
+    initLayout()
     closeButtonMargin = isOneButtonAlert ? 20 : 8
     okButton.flex.isIncludedInLayout = !isOneButtonAlert
     
     rootContainer.addSubview(alertView)
+    
     rootContainer.pin
       .all()
     
@@ -181,20 +185,31 @@ public final class WalWalAlert {
       .width(315.adjustedWidth)
       .define {
         $0.addItem(titleLabel)
-          .marginTop(44.adjustedHeight)
-          .marginHorizontal(30)
-        $0.addItem(bodyLabel)
+          .height(24.adjustedHeight)
+          .marginTop(43.adjustedHeight)
+          .marginHorizontal(30.adjustedWidth)
+        $0.addItem(bodyLabelContainer)
+          .grow(1)
           .marginTop(6.adjustedHeight)
           .marginHorizontal(30.adjustedWidth)
         $0.addItem(cancelButton)
-          .height(58)
+          .height(56.adjustedHeight)
           .marginTop(30.adjustedHeight)
-          .marginHorizontal(20)
+          .marginHorizontal(20.adjustedWidth)
           .marginBottom(closeButtonMargin)
         $0.addItem(okButton)
-          .height(58)
-          .marginBottom(20)
-          .marginHorizontal(20)
+          .height(56.adjustedHeight)
+          .marginBottom(20.adjustedWidth)
+          .marginHorizontal(20.adjustedWidth)
+      }
+    
+    bodyLabelContainer.flex
+      .minHeight(34.adjustedHeight)
+      .justifyContent(.end)
+      .define {
+        $0.addItem()
+          .grow(1)
+        $0.addItem(bodyLabel)
       }
     
     rootContainer.flex
@@ -223,4 +238,9 @@ public final class WalWalAlert {
       .disposed(by: disposeBag)
   }
   
+  private func initLayout() {
+    bodyLabelContainer.subviews.forEach { $0.removeFromSuperview() }
+    alertView.subviews.forEach { $0.removeFromSuperview() }
+    rootContainer.subviews.forEach { $0.removeFromSuperview() }
+  }
 }
