@@ -116,4 +116,11 @@ extension CommentCoordinatorImp {
       )
     }
   }
+  
+  public func moveToWriterPage(_ writerId: Int, _ nickname: String) {
+    print("작성자 페이지로 이동, 부모 이밴트 요청")
+    self.dismissViewController { [weak self] in
+      self?.requireFromChild.onNext(.requireParentAction(.moveToWriterPage(writerId, nickname)))
+    }
+  }
 }

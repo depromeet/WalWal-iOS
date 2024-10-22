@@ -28,7 +28,7 @@ final class MissionCompleteView: UIView {
   // MARK: Property
   private enum Const {
     static let itemSize = CGSize(width: 255.adjusted, height: 436.adjusted)
-    static let itemSpacing = 30.0
+    static let itemSpacing = 30.0.adjusted
     
     static var insetX: CGFloat {
       (UIScreen.main.bounds.width - Self.itemSize.width) / 2.0
@@ -48,24 +48,15 @@ final class MissionCompleteView: UIView {
   private let missionCompletedLabel = CustomLabel(font: Fonts.KR.H2).then {
     $0.text = "📮 이번 달 함께한 추억이에요!"
     $0.textAlignment = .center
-    $0.font = UIFont.systemFont(ofSize: 16.adjusted, weight: .bold)
+    $0.font = Fonts.KR.H6.B
     $0.textColor = Colors.black.color
     $0.numberOfLines = 2
     $0.textAlignment = .center
   }
   
-  private let collectionViewFlowLayout: UICollectionViewFlowLayout = {
-    let layout = UICollectionViewFlowLayout()
-    layout.scrollDirection = .horizontal
-    layout.itemSize = Const.itemSize
-    layout.minimumLineSpacing = Const.itemSpacing
-    layout.minimumInteritemSpacing = 0
-    return layout
-  }()
-  
   private lazy var missionRecordCollectionView = UICollectionView(
     frame: .zero,
-    collectionViewLayout: collectionViewFlowLayout
+    collectionViewLayout: CarouselFlowLayout()
   ).then {
     $0.backgroundColor = .clear
     $0.register(RecordCarouselCell.self)
@@ -139,6 +130,7 @@ final class MissionCompleteView: UIView {
         $0.addItem(missionCompletedLabel)
           .marginTop(0)
           .marginHorizontal(24.adjusted)
+          .marginBottom(10.adjusted)
         $0.addItem(missionRecordCollectionView)
           .height(480.adjusted)
           .grow(1)

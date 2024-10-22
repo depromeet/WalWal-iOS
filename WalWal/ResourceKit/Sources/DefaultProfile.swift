@@ -24,6 +24,7 @@ public enum DefaultProfile: String, Equatable {
   case skyDog = "SKY_DOG"
   case blueDog = "BLUE_DOG"
   case purpleDog = "PURPLE_DOG"
+  case inactiveDog = "INACTIVE_DOG"
   
   case yellowCat = "YELLOW_CAT"
   case pinkCat = "PINK_CAT"
@@ -31,6 +32,7 @@ public enum DefaultProfile: String, Equatable {
   case skyCat = "SKY_CAT"
   case blueCat = "BLUE_CAT"
   case purpleCat = "PURPLE_CAT"
+  case inactiveCat = "INACTIVE_CAT"
   
   /// DefaultProfile 케이스에 대한 이미지 정보
   public var image: ResourceKitImages.Image {
@@ -47,6 +49,8 @@ public enum DefaultProfile: String, Equatable {
       return ResourceKitAsset.Assets.blueDog.image
     case .purpleDog:
       return ResourceKitAsset.Assets.purpleDog.image
+    case .inactiveDog:
+      return ResourceKitAsset.Assets.inactiveDog.image
     
     // TODO: - 고양이 이미지 수정 필요
     case .yellowCat:
@@ -61,7 +65,8 @@ public enum DefaultProfile: String, Equatable {
       return ResourceKitAsset.Assets.blueCat.image
     case .purpleCat:
       return ResourceKitAsset.Assets.purpleCat.image
-      
+    case .inactiveCat:
+      return ResourceKitAsset.Assets.inactiveCat.image
     }
   }
   
