@@ -109,7 +109,11 @@ extension CommentCoordinatorImp {
   public func reloadFeedAt(at recordId: Int, commentCount: Int) {
     print("피드 업데이트, 부모 이밴트 요청")
     self.dismissViewController { [weak self] in
-      self?.requireFromChild.onNext(.requireParentAction(.dismissComment(recordId, commentCount)))
+      self?.requireFromChild.onNext(.requireParentAction(.dismissComment(
+          recordId,
+          commentCount
+        ))
+      )
     }
   }
 }
