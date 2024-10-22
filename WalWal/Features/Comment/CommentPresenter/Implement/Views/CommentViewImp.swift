@@ -73,6 +73,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   private let checkScrollComment = BehaviorRelay<Bool>(value: false)
   
+  private let writerRelay = PublishRelay<(writerId: Int?, nickname: String)>()
+  
   private let resetFocusing = PublishRelay<Void>()
   
   private let completedLoading = PublishRelay<Void>()
@@ -246,7 +248,11 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       guard let owner = self else { return nil }
       if comment.parentID == nil {
         let cell = tableView.dequeue(CommentCell.self, for: indexPath)
-        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname, writerId: comment.writerID)
+        cell.configure(
+          with: comment,
+          writerNickname: owner.commentReactor.initialState.writerNickname,
+          writerId: comment.writerID
+        )
         
         cell.parentIdGetted
           .bind(to: owner.parentIdRelay)
@@ -258,10 +264,25 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
           })
           .disposed(by: cell.disposeBag)
         
+        cell.profileImageView.rx.tapped
+          .map{ (comment.writerID, comment.writerNickname) }
+          .bind(to: owner.writerRelay)
+          .disposed(by: cell.disposeBag)
+        
         return cell
       } else {
         let cell = tableView.dequeue(ReplyCommentCell.self, for: indexPath)
-        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname, writerId: comment.writerID)
+        cell.configure(
+          with: comment,
+          writerNickname: owner.commentReactor.initialState.writerNickname,
+          writerId: comment.writerID
+        )
+        
+        cell.profileImageView.rx.tapped
+          .map{ (comment.writerID, comment.writerNickname) }
+          .bind(to: owner.writerRelay)
+          .disposed(by: cell.disposeBag)
+        
         return cell
       }
     }
@@ -338,7 +359,6 @@ extension CommentViewControllerImp: View {
       })
       .disposed(by: disposeBag)
     
-    
     reactor.state
       .map { $0.isNeedFocusing }
       .bind(to: checkScrollComment)
@@ -351,6 +371,35 @@ extension CommentViewControllerImp: View {
       .compactMap { $0 }
       .drive(with: self) { owner, commentId in
         owner.focusCommentId = commentId
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.pulse(\.$toastMessage)
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, message in
+        WalWalToast.shared.show(
+          type: .error,
+          message: message
+        )
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map{ $0.isSheetDismissed }
+      .filter { $0 }
+      .observe(on: MainScheduler.instance)
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.dimView.alpha = 0
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.isLoading }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive { isLoading in
+        ActivityIndicator.shared.showIndicator.accept(isLoading)
       }
       .disposed(by: disposeBag)
   }
@@ -414,6 +463,11 @@ extension CommentViewControllerImp: View {
       .drive(with: self) { owner, commentId in
         owner.scrollFocusComment(id: commentId)
       }
+      .disposed(by: disposeBag)
+    
+    writerRelay.asObservable()
+      .map { Reactor.Action.setWriter(writerId: $0.writerId, nickname: $0.nickname) }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
   

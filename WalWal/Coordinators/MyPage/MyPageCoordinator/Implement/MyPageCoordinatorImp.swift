@@ -186,6 +186,7 @@ extension MyPageCoordinatorImp {
       case .dismissComment(let recordId):
         self.childCoordinator = nil
         self.baseReactor?.action.onNext(.refreshFeedData(recordId: recordId))
+      case .moveToWriterPage(_, _): return /// 그냥 댓글에서 넘어 온 케이스는, 추가 동작 따로 없는걸루
       }
     }
   }

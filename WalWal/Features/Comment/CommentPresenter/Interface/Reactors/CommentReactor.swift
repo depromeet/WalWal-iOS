@@ -23,14 +23,18 @@ public enum CommentReactorAction {
   case setReplyMode(isReply: Bool, parentId: Int?) /// 대댓글 모드 설정 액션
   case resetParentId /// 대댓글 모드 해제 액션
   case resetFocusing
+  case setWriter(writerId: Int?, nickname: String)
 }
 
 
 public enum CommentReactorMutation {
+  case setLoading(isLoading: Bool)
   case setComments([FlattenCommentModel]) /// 댓글 데이터를 설정하는 Mutation
   case setReplyMode(Int?, Bool)
+  case dismissAndMoveWriter(Int, String)
   // 바텀 시트 관련 Mutation
   case setSheetPosition(CGFloat)
+  case showToast(message: String)
   case dismissSheet
   case isNeedFocusing(Bool)
 }
@@ -43,10 +47,12 @@ public struct CommentReactorState {
   public var isLoading: Bool = false
   public var sheetPosition: CGFloat = 0
   public var isSheetDismissed: Bool = false
+  public var writerId: Int?
   public let recordId: Int
   public let writerNickname: String
   public var focusCommentId: Int?
   public var isNeedFocusing: Bool = false
+  @Pulse public var toastMessage: String? = nil
   
   public init(
     recordId: Int,
