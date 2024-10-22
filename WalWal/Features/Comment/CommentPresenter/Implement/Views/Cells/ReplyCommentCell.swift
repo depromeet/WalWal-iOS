@@ -173,7 +173,8 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     }
     
     if writerId == nil {
-      nicknameLabel.textColor = AssetColor.gray300.color
+      nicknameLabel.textColor = AssetColor.gray400.color
+      timeLabel.textColor = AssetColor.gray400.color
     }
     
     contentLabel.flex.markDirty()
