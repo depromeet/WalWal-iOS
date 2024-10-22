@@ -134,7 +134,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func setLayout() {
     
     rootContainerView.flex
-      .height(548.adjustedHeight)
+      .height((Int(view.frame.height) - 232).adjustedHeight)
       .define { flex in
         flex.addItem(headerContainerView)
         flex.addItem(tableViewContainerView)
@@ -203,7 +203,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     guard let userInfo = notification.userInfo,
           let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
     
-    let keyboardHeight = keyboardFrame.height
+    let keyboardHeight = Int(keyboardFrame.height)
     let animationDuration = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double) ?? 0.3
     let animationCurve = (userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt) ?? UIView.AnimationOptions.curveEaseInOut.rawValue
     
@@ -212,8 +212,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
       self.rootContainerView.flex
-            .height(456.adjustedHeight + self.view.pin.safeArea.bottom)
-            .bottom(keyboardHeight - self.view.pin.safeArea.bottom)
+        .height((Int(self.view.frame.height) - 65 - keyboardHeight + Int(self.view.pin.safeArea.bottom)).adjustedHeight)
+        .bottom((keyboardHeight - Int(self.view.pin.safeArea.bottom)).adjustedHeight)
       self.rootContainerView.flex.layout()
     })
   }
@@ -229,7 +229,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
       self.rootContainerView.flex
-        .height(548.adjustedHeight)
+        .height((Int(self.view.frame.height) - 232).adjustedHeight)
         .bottom(0)
       self.rootContainerView.flex.layout()
     })
@@ -328,7 +328,7 @@ extension CommentViewControllerImp: View {
         self.completedLoading.accept(())
       })
       .disposed(by: disposeBag)
-      
+    
     reactor.state
       .map { $0.sheetPosition }
       .distinctUntilChanged()
@@ -375,13 +375,13 @@ extension CommentViewControllerImp: View {
       .disposed(by: disposeBag)
     
     dimView.rx.tapped
-    .subscribe(with: self, onNext: { owner, _ in
-      owner.inputBox.rx.textEndEditing.onNext(())
-      owner.animateSheetDown {
-        reactor.action.onNext(.tapDimView)
-      }
-    })
-    .disposed(by: disposeBag)
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.inputBox.rx.textEndEditing.onNext(())
+        owner.animateSheetDown {
+          reactor.action.onNext(.tapDimView)
+        }
+      })
+      .disposed(by: disposeBag)
     
     // 댓글 작성 시 액션
     inputBox.rx.postButtonTap
