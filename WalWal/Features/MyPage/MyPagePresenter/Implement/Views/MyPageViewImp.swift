@@ -61,7 +61,6 @@ public final class MyPageViewControllerImp<R: MyPageReactor>: UIViewController, 
   private var missionCount = 0
   private let refreshProfileInfo = PublishRelay<Void>()
   
-  private var memberInfo: MemberModel = .init(global: GlobalState.shared.profileInfo.value)
   private var nickname: String = ""
   private var memberId: Int = 0
   
