@@ -20,7 +20,7 @@ public final class GlobalState {
   public static let shared = GlobalState()
   
   public private(set) var calendarRecords = BehaviorRelay<[GlobalMissonRecordListModel]>(value: [])
-  public private(set) var profileInfo = BehaviorRelay<GlobalProfileModel>(value: .init(memberId: 0, nickname: "", profileURL: "", raisePet: "DOG"))
+  public private(set) var profileInfo = BehaviorRelay<GlobalProfileModel>(value: .init(memberId: 0, nickname: "", profileURL: "INACTIVE_DOG", raisePet: "DOG"))
   public private(set) var feedList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
   public private(set) var recordList = BehaviorRelay<[GlobalFeedListModel]>(value: [])
   public let fcmList = BehaviorRelay<[GlobalFCMListModel]>(value: [])
