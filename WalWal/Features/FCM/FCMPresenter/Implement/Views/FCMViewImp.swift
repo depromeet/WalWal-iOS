@@ -222,6 +222,11 @@ extension FCMViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
+    collectionView.rx.contentOffset
+      .map { $0.y < -68 }
+      .map { !$0 }
+      .bind(to: walwalIndicator.indicatorIsHidden)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {

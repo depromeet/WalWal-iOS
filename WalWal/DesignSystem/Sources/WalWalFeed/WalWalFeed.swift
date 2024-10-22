@@ -219,7 +219,7 @@ public final class WalWalFeed: UIView {
     collectionView.rx.contentOffset
       .map { $0.y < -59 }
       .map { !$0 }
-      .bind(to: walwalIndicator.indicatorView.rx.isHidden)
+      .bind(to: walwalIndicator.indicatorIsHidden)
       .disposed(by: disposeBag)
 
     collectionView.rx
