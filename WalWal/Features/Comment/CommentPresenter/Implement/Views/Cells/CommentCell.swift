@@ -41,7 +41,7 @@ final class CommentCell: UITableViewCell, ReusableView {
   public var disposeBag = DisposeBag()
   public var parentIdGetted = BehaviorRelay<Int?>(value: nil)
   
-  private let profileImageView = UIImageView().then {
+  public let profileImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFill
     $0.backgroundColor = AssetColor.gray200.color
     $0.layer.cornerRadius = 17

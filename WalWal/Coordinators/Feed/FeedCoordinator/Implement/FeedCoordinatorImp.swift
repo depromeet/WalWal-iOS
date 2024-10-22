@@ -132,6 +132,9 @@ extension FeedCoordinatorImp {
       case .dismissComment(let recordId):
         self.childCoordinator = nil
         self.baseReactor?.action.onNext(.refreshFeedData(recordId: recordId))
+      case let .moveToWriterPage(writerId, nickname):
+        self.childCoordinator = nil
+        startProfile(memberId: writerId, nickName: nickname)
       }
     }
   }
