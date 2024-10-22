@@ -131,7 +131,7 @@ extension FeedCoordinatorImp {
       switch action {
       case .dismissComment(let recordId, let commentCount):
         self.childCoordinator = nil
-        self.baseReactor?.action.onNext(.refreshFeedData(recordId: recordId, commentCount: commentCount))
+        self.baseReactor?.action.onNext(.refreshFeedData(recordId, commentCount))
       }
     }
   }

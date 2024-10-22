@@ -75,8 +75,8 @@ public final class CommentReactorImp: CommentReactor {
       return Observable.just(.setSheetPosition(translation.y))
     case let .didEndPan(velocity):
       return configSheetPosition(yVelocity: velocity.y)
-    case let .tapDimView(commentCount: count):
-      return Observable.just(.dismissSheet(count))
+    case .tapDimView:
+      return Observable.just(.dismissSheet)
     case let .setReplyMode(isReply, parentId):
       return Observable.just(.setReplyMode(parentId, isReply))
     case .resetParentId:
@@ -96,8 +96,8 @@ public final class CommentReactorImp: CommentReactor {
       newState.parentId = nil // 한번 보내면 parentID도 초기화
     case let .setSheetPosition(position):
       newState.sheetPosition = position
-    case let .dismissSheet(count):
-      coordinator.reloadFeedAt(at: recordId, commentCount: count)
+    case .dismissSheet:
+      coordinator.reloadFeedAt(at: recordId, commentCount: newState.totalComment)
     case let .setReplyMode(parentId, isReply):
       newState.parentId = parentId
       newState.isReply = isReply
@@ -156,7 +156,7 @@ extension CommentReactorImp {
   /// 바텀시트 위치 조절
   private func configSheetPosition(yVelocity: Double) -> Observable<Mutation> {
     if yVelocity > 1000 {
-      return Observable.just(.dismissSheet(currentState.totalComment))
+      return Observable.just(.dismissSheet)
     } else {
       return Observable.just(.setSheetPosition(0))
     }
