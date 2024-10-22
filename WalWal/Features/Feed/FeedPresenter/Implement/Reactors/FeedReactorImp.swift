@@ -82,7 +82,7 @@ public final class FeedReactorImp: FeedReactor {
       return .just(.showMenu(recordId: recordId))
     case let .commentTapped(recordId, writerNickname):
       return .just(.moveToComment(recordId: recordId, writerNickname: writerNickname))
-    case .refreshFeedData(recordId: let recordId,  commentCount: let count):
+    case .refreshFeedData(let recordId, let count):
       return .just(.updateFeed(recordId: recordId, commentCount: count))
     }
   }

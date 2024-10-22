@@ -26,7 +26,7 @@ public enum FeedReactorAction {
   case doubleTap(Int?)
   case menuTapped(recordId: Int)
   case commentTapped(recordId: Int, writerNickname: String)
-  case refreshFeedData(recordId: Int, commentCount: Int)
+  case refreshFeedData(Int, Int)
 }
 
 public enum FeedReactorMutation {
