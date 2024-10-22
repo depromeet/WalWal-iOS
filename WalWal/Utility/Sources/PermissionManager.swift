@@ -85,7 +85,7 @@ public final class PermissionManager {
         observable.onNext(false)
         observable.onCompleted()
       }
-     
+      
       return Disposables.create()
     }
   }
@@ -131,10 +131,8 @@ public final class PermissionManager {
     return Observable<Bool>.create { observable in
       UNUserNotificationCenter.current()
         .requestAuthorization(options: [.alert, .sound, .badge]) { isAllow, _ in
-          DispatchQueue.main.async {
-            observable.onNext(isAllow)
-            observable.onCompleted()
-          }
+          observable.onNext(isAllow)
+          observable.onCompleted()
         }
       return Disposables.create()
     }

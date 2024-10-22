@@ -295,10 +295,10 @@ public final class MissionReactorImp: MissionReactor {
   /// 알림 권한 확인
   private func checkNotificationPermission() -> Observable<Bool> {
     return PermissionManager.shared.checkPermission(for: .notification)
+      .observe(on: MainScheduler.instance)
       .flatMap { isGranted in
         if !isGranted {
           return PermissionManager.shared.requestNotificationPermission()
-            .observe(on: MainScheduler.instance)
         }
         return Observable.just(isGranted)
       }
