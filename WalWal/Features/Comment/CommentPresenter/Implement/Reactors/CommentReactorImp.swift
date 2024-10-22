@@ -25,6 +25,8 @@ public final class CommentReactorImp: CommentReactor {
   private var recordId: Int
   private var writerNickname: String
   
+  private var totalCommentcount: Int = 0
+  
   private let getCommentsUsecase: GetCommentsUsecase
   private let postCommentUsecase: PostCommentUsecase
   private let flattenCommentUsecase: FlattenCommentsUsecase
@@ -90,6 +92,7 @@ public final class CommentReactorImp: CommentReactor {
     var newState = state
     switch mutation {
     case let .setComments(comments):
+      newState.totalComment = comments.count
       newState.comments = comments
       newState.isReply = false // 한번 보내면 대댓글 상태 초기화 하자
       newState.parentId = nil // 한번 보내면 parentID도 초기화
@@ -101,7 +104,7 @@ public final class CommentReactorImp: CommentReactor {
     case let .showToast(toastMessage):
       newState.toastMessage = toastMessage
     case .dismissSheet:
-      coordinator.reloadFeedAt(recordId)
+      coordinator.reloadFeedAt(at: recordId, commentCount: newState.totalComment)
     case let .setReplyMode(parentId, isReply):
       newState.parentId = parentId
       newState.isReply = isReply

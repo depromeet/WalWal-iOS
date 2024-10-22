@@ -82,8 +82,8 @@ public final class FeedReactorImp: FeedReactor {
       return .just(.showMenu(recordId: recordId))
     case let .commentTapped(recordId, writerNickname):
       return .just(.moveToComment(recordId: recordId, writerNickname: writerNickname))
-    case .refreshFeedData(recordId: let recordId):
-      return fetchUpdatedFeedAt(recordId: recordId)
+    case .refreshFeedData(let recordId, let count):
+      return .just(.updateFeed(recordId: recordId, commentCount: count))
     }
   }
   
@@ -113,10 +113,8 @@ public final class FeedReactorImp: FeedReactor {
         writerNickname: writerNickname,
         commentId: commentId
       ))
-    case let .updateFeed(record: updatedFeed):
-      if let updatedFeed {
-        newState.updatedFeed = updatedFeed
-      }
+    case let .updateFeed(recordId: id, commentCount: count):
+      newState.updatedCommentCount = (id, count)
     }
     return newState
   }
@@ -225,19 +223,6 @@ extension FeedReactorImp {
       }
   }
   
-  private func fetchUpdatedFeedAt(recordId: Int) -> Observable<Mutation> {
-    // 여기 특정 피드만 불러오는 걸로 수정 필요
-    return fetchSingleFeedUseCase.execute(recordId: recordId)
-      .asObservable()
-      .withUnretained(self)
-      .flatMap { owner, singleFeed -> Observable<Mutation> in
-        return owner.convertFeedModel(feedList: [singleFeed])
-          .withUnretained(self)
-          .flatMap { owner, feed -> Observable<Mutation> in
-            return .just(.updateFeed(record: feed.first))
-          }
-      }
-  }
   
   // MARK: - Helper
   

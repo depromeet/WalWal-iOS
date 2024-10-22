@@ -52,6 +52,7 @@ public struct CommentReactorState {
   public let writerNickname: String
   public var focusCommentId: Int?
   public var isNeedFocusing: Bool = false
+  public var totalComment: Int = 0
   @Pulse public var toastMessage: String? = nil
   
   public init(
