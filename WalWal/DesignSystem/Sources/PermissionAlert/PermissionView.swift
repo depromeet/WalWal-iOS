@@ -9,7 +9,6 @@
 import UIKit
 import Utility
 import ResourceKit
-import DesignSystem
 
 import FlexLayout
 import PinLayout
@@ -17,13 +16,16 @@ import RxSwift
 import RxCocoa
 
 /// 권한 확인을 받기 위한 얼럿 뷰
-final class PermissionView {
+public final class PermissionView {
   private typealias Images = ResourceKitAsset.Images
   private typealias Color = ResourceKitAsset.Colors
   private typealias Font = ResourceKitFontFamily.KR
   
   private let disposeBag = DisposeBag()
-  private var window: UIWindow?
+  private var window: UIWindow? = nil
+  
+  public init() { }
+  
   
   // MARK: - UI
   
@@ -46,7 +48,7 @@ final class PermissionView {
     $0.numberOfLines = 2
     $0.textColor = Color.gray600.color
   }
-  private let confirmButton = WalWalButton(type: .active, title: "확인했어요")
+  private let confirmButton = WalWalButton(type: .active, title: "동의합니다")
   
   private let notiPermissionView = PermissionListView(
     icon: Images.noticeL.image.withTintColor(Color.gray800.color),
@@ -63,6 +65,10 @@ final class PermissionView {
     type: "사진",
     content: "프로필 이미지 첨부"
   )
+  private let snsPermissionView = PermissionListView(
+    icon: Images.commentL.image.withTintColor(Color.gray800.color),
+    type: "소셜",
+    content: "SNS 이미지 사용 동의")
   private let permissionView = UIView()
   
   // MARK: - Layout
@@ -76,7 +82,8 @@ final class PermissionView {
     containerView.flex
       .justifyContent(.spaceBetween)
       .marginHorizontal(30.adjustedWidth)
-      .marginVertical(205.adjustedHeight)
+      .marginTop(207.adjustedHeight)
+      .marginBottom(179.adjustedHeight)
       .define {
         $0.addItem(titleLabel)
           .marginTop(45.adjustedHeight)
@@ -88,7 +95,7 @@ final class PermissionView {
           .justifyContent(.center)
           .alignItems(.start)
           .marginTop(37.adjustedHeight)
-          .marginBottom(51.adjustedHeight)
+          .marginBottom(31.adjustedHeight)
           .marginLeft(57.adjustedWidth)
           .define {
             $0.addItem(notiPermissionView)
@@ -98,6 +105,9 @@ final class PermissionView {
               .height(32.adjustedHeight)
             $0.addItem(photoPermissionView)
               .height(32.adjustedHeight)
+            $0.addItem(snsPermissionView)
+              .height(32.adjustedHeight)
+              .marginTop(16.adjustedHeight)
           }
         $0.addItem(confirmButton)
           .marginHorizontal(20.adjustedHeight)
@@ -122,7 +132,7 @@ final class PermissionView {
   /// let permissionView = PermissionView()
   /// permissionView.showAlert()
   /// ```
-  func showAlert() {
+  public func showAlert() {
     guard let window = UIWindow.key else { return }
     self.window = window
     window.addSubview(alertContainer)
@@ -200,7 +210,7 @@ fileprivate final class PermissionListView: UIView {
       .alignItems(.end)
       .define {
         $0.addItem(typeLabel)
-          .marginRight(8.adjustedWidth)
+          .marginRight(10.adjustedWidth)
         $0.addItem(contentLabel)
       }
     
