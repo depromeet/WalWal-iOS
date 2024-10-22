@@ -21,6 +21,7 @@ public extension UserDefaults {
     case isFirstFeedAppear
     case isFirstMissionAppear
     case enterDeepLink
+    case checkPermission
   }
   
   // MARK: - GET

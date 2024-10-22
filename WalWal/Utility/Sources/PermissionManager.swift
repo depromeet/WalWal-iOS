@@ -115,6 +115,18 @@ public final class PermissionManager {
   
   // MARK: - 권한 요청
   
+  /// 모든 권한 한 번에 요청
+  public func requestAllPermission() -> Observable<Void> {
+    return Observable<Void>.concat(
+      requestNotificationPermission()
+        .map { _ in Void() },
+      requestCameraPermission()
+        .map { _ in Void() },
+      requestPhotoPermission()
+        .map { _ in Void() }
+    )
+  }
+  
   /// 알림 권한 요청 메서드
   ///
   /// 사용예시:

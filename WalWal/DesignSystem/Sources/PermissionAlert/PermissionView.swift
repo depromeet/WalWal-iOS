@@ -23,6 +23,7 @@ public final class PermissionView {
   
   private let disposeBag = DisposeBag()
   private var window: UIWindow? = nil
+  public let agreeButtonTapped = PublishSubject<Void>()
   
   public init() { }
   
@@ -141,31 +142,12 @@ public final class PermissionView {
   }
   
   private func bind() {
-    let requestPermission = PublishSubject<Void>()
     confirmButton.rx.tapped
       .asDriver()
       .drive(with: self) { owner, _ in
         owner.alertContainer.removeFromSuperview()
-        requestPermission.onNext(())
+        owner.agreeButtonTapped.onNext(())
       }
-      .disposed(by: disposeBag)
-    
-    requestPermission
-      .withUnretained(self)
-      .concatMap{ owner, _ in
-        Observable<Void>.concat(
-          PermissionManager.shared.requestNotificationPermission()
-            .map { _ in Void() },
-          PermissionManager.shared.requestCameraPermission()
-            .map { _ in Void() },
-          PermissionManager.shared.requestPhotoPermission()
-            .map { _ in Void() }
-        )
-      }
-      .asDriver(onErrorJustReturn: ())
-      .drive(with: self, onNext: { owner, _ in
-        
-      })
       .disposed(by: disposeBag)
   }
 }

@@ -10,6 +10,7 @@ import UIKit
 import OnboardingPresenter
 import DesignSystem
 import ResourceKit
+import Utility
 
 import Then
 import PinLayout
@@ -217,6 +218,15 @@ extension OnboardingSelectViewControllerImp: View {
         owner.dogView.isSelected = false
         owner.catView.isSelected = true
       }
+      .disposed(by: disposeBag)
+    
+    permissionView.agreeButtonTapped
+      .concatMap {
+        PermissionManager.shared.requestAllPermission()
+      }
+      .bind(onNext: { 
+        UserDefaults.setValue(value: true, forUserDefaultKey: .checkPermission)
+      })
       .disposed(by: disposeBag)
     
   }
