@@ -29,7 +29,7 @@ extension FeedEndpoint {
     case .fetchFeed(let query):
       return "/feed/v2"
     case .reports:
-      return "/reports"
+      return "/reports/feed"
     case let .fetchSingleFeed(recordId):
       return "/feed/\(recordId)"
     }
