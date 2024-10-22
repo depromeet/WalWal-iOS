@@ -61,6 +61,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private let bubbleContainer = UIView()
   private lazy var missionCountBubbleView = BubbleView()
   private let missionMarkView = MissionCoachMarkView()
+  private var permissionView: PermissionView? = PermissionView()
   
   // MARK: - Properties
   
@@ -423,6 +424,21 @@ extension MissionViewControllerImp: View {
         WalWalToast.shared.show(type: .error, message: error.localizedDescription)
       })
       .disposed(by: disposeBag)
+    
+    reactor.pulse(\.$isNeedRequestPermission)
+      .skip(1)
+      .distinctUntilChanged()
+      .debug()
+      .bind(with: self) { owner, isNeed in
+        if isNeed {
+          owner.permissionView?.showAlert()
+        } else {
+          owner.permissionView = nil
+        }
+      }
+      .disposed(by: disposeBag)
+    
+    
   }
   
   public func bindEvent() {
@@ -430,6 +446,16 @@ extension MissionViewControllerImp: View {
       .map { _ in Void() }
       .observe(on: MainScheduler.instance)
       .bind(to: WalWalAlert.shared.closeAlert)
+      .disposed(by: disposeBag)
+    
+    permissionView?.agreeButtonTapped
+      .concatMap {
+        PermissionManager.shared.requestAllPermission()
+      }
+      .bind(onNext: {
+        UserDefaults.setValue(value: true, forUserDefaultKey: .checkPermission)
+        self.permissionView = nil
+      })
       .disposed(by: disposeBag)
   }
 }

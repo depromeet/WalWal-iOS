@@ -135,8 +135,7 @@ public final class MissionReactorImp: MissionReactor {
         recordId: newState.recordId,
         missionId: mission.id,
         missionTitle: mission.title.replacingNewlinesWithSpaces()
-      )
-      )
+      ))
     case .startMissionUploadProcess(let image):
       guard let mission = newState.mission else { return newState }
       coordinator.dismissViewController(animated: false) {
@@ -154,10 +153,15 @@ public final class MissionReactorImp: MissionReactor {
       newState.missionUploadError = error
     case .moveToMyPage:
       coordinator.startMyPage()
+    case let .isNeedRequestPermission(isNeed):
+      newState.isNeedRequestPermission = isNeed
     }
     return newState
   }
   
+}
+
+extension MissionReactorImp {
   private func loadAllMissionData() -> Observable<Mutation> {
     lastUpdateDate = Date()
     return checkRecordCalendar()
@@ -169,7 +173,8 @@ public final class MissionReactorImp: MissionReactor {
           .just(Mutation.fetchTodayMissionData(mission)),
           owner.fetchRecordStatus(missionId: mission.id),
           owner.fetchCompletedTotalRecordsCount(),
-          .just(Mutation.loadInitialDataFlowEnded)
+          .just(Mutation.loadInitialDataFlowEnded),
+          owner.checkPermissionAgree()
         ])
       }
       .catch { error in
@@ -302,5 +307,14 @@ public final class MissionReactorImp: MissionReactor {
         }
         return Observable.just(isGranted)
       }
+  }
+  
+  private func checkPermissionAgree() -> Observable<Mutation> {
+    if UserDefaults.bool(forUserDefaultsKey: .checkPermission) {
+      // TODO: - 알림 권한 체크
+      return .never()
+    } else {
+      return .just(.isNeedRequestPermission(true))
+    }
   }
 }

@@ -44,6 +44,7 @@ public enum MissionReactorMutation {
   case startMissionUploadProcess(UIImage)
   case moveToMissionUploadFailed(Error) /// 미션 업로드 화면으로 이동 실패
   case moveToMyPage
+  case isNeedRequestPermission(Bool)
 }
 
 
@@ -58,9 +59,9 @@ public struct MissionReactorState {
   
   public var isTimerRunning: Bool = false
   public var buttonTitle: String = "미션 시작하기"
-
+  
   @Pulse public var isGrantedNotification: Bool = false
-    
+  @Pulse public var isNeedRequestPermission: Bool = false
   public init() {
     
   }
