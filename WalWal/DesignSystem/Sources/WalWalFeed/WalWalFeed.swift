@@ -267,7 +267,7 @@ public final class WalWalFeed: UIView {
   public func scrollToRecord(withId recordId: Int, animated: Bool = true) {
     if let index = currentFeedData.firstIndex(where: { $0.recordId == recordId }) {
       let indexPath = IndexPath(item: index, section: 0)
-      collectionView.scrollToItem(at: indexPath, at: .top, animated: animated)
+      collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: animated)
     }
   }
   

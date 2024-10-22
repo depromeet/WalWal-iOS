@@ -76,6 +76,8 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       return .just(.moveToComment(recordId: recordId, writerNickname: writerNickname))
     case .refreshFeedData(recordId: let recordId):
       return fetchUpdatedFeedAt(recordId: recordId)
+    case let .refresh(cursor):
+      return fetchFeedData(memberId: memberId, cursor: cursor, limit: 30)
     }
   }
   

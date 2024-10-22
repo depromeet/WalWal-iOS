@@ -24,6 +24,7 @@ public enum RecordDetailReactorAction {
   case isHiddenTabBar(Bool)
   case commentTapped(recordId: Int, writerNickname: String)
   case refreshFeedData(recordId: Int)
+  case refresh(cursor: String?) // 전체 데이터 reload
 }
 
 public enum RecordDetailReactorMutation {
