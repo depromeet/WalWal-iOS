@@ -25,7 +25,6 @@ public enum MissionReactorAction {
   case refreshMissionData
   case appWillEnterForeground
   case moveToMissionGallery(UIImage)
-  case checkNotificationPermission
 }
 
 public enum MissionReactorMutation {
@@ -34,7 +33,6 @@ public enum MissionReactorMutation {
   case fetchCompletedRecordsTotalCountData(Int)
   case loadInitialDataFlowEnded /// 최초 네트워크 통신 흐름 종료
   case loadInitialDataFlowFailed(Error) /// 최초 네트워크 통신 흐름 실패 여부
-  case setNotificationPermission(Bool)
   
   case updateTimerText(String)
   case stopTimer
