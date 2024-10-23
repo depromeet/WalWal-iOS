@@ -58,8 +58,7 @@ public struct MissionReactorState {
   public var isTimerRunning: Bool = false
   public var buttonTitle: String = "미션 시작하기"
   
-  @Pulse public var isGrantedNotification: Bool = false
-  @Pulse public var isNeedRequestPermission: Bool = false
+  @Pulse public var isNeedRequestPermission: Bool? = nil
   public init() {
     
   }

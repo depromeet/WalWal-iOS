@@ -426,9 +426,7 @@ extension MissionViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.pulse(\.$isNeedRequestPermission)
-      .skip(1)
-      .distinctUntilChanged()
-      .debug()
+      .compactMap { $0 }
       .bind(with: self) { owner, isNeed in
         if isNeed {
           owner.permissionView?.showAlert()
@@ -437,7 +435,6 @@ extension MissionViewControllerImp: View {
         }
       }
       .disposed(by: disposeBag)
-    
     
   }
   
@@ -449,12 +446,12 @@ extension MissionViewControllerImp: View {
       .disposed(by: disposeBag)
     
     permissionView?.agreeButtonTapped
-      .concatMap {
+      .flatMap {
         PermissionManager.shared.requestAllPermission()
       }
-      .bind(onNext: {
+      .bind(with: self, onNext: { owner, _ in
         UserDefaults.setValue(value: true, forUserDefaultKey: .checkPermission)
-        self.permissionView = nil
+        owner.permissionView = nil
       })
       .disposed(by: disposeBag)
   }
