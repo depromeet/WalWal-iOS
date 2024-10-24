@@ -61,7 +61,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
   private let bubbleContainer = UIView()
   private lazy var missionCountBubbleView = BubbleView()
   private let missionMarkView = MissionCoachMarkView()
-  private var permissionView: PermissionView? = PermissionView()
+  private var permissionView: PermissionView?
   
   // MARK: - Properties
   
@@ -426,13 +426,17 @@ extension MissionViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.pulse(\.$isNeedRequestPermission)
-      .compactMap { $0 }
-      .bind(with: self) { owner, isNeed in
-        if isNeed {
-          owner.permissionView?.showAlert()
-        } else {
-          owner.permissionView = nil
-        }
+      .filter { $0 }
+      .withUnretained(self)
+      .flatMapLatest { owner, _ -> Observable<Void> in
+        owner.permissionView = PermissionView()
+        guard let permissionView = owner.permissionView else { return .empty() }
+        return permissionView.showAlert()
+          .flatMap { PermissionManager.shared.requestAllPermission() }
+          .do(onDispose: { owner.permissionView = nil })
+      }
+      .subscribe { _ in
+        UserDefaults.setValue(value: true, forUserDefaultKey: .checkPermission)
       }
       .disposed(by: disposeBag)
     
@@ -445,14 +449,5 @@ extension MissionViewControllerImp: View {
       .bind(to: WalWalAlert.shared.closeAlert)
       .disposed(by: disposeBag)
     
-    permissionView?.agreeButtonTapped
-      .flatMap {
-        PermissionManager.shared.requestAllPermission()
-      }
-      .bind(with: self, onNext: { owner, _ in
-        UserDefaults.setValue(value: true, forUserDefaultKey: .checkPermission)
-        owner.permissionView = nil
-      })
-      .disposed(by: disposeBag)
   }
 }

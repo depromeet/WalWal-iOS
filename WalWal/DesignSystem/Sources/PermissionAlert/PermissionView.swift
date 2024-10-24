@@ -131,23 +131,20 @@ public final class PermissionView {
   /// ```swift
   /// let permissionView = PermissionView()
   /// permissionView.showAlert()
+  ///   .subscribe(onNext: {
+  ///     ...
+  ///   })
   /// ```
-  public func showAlert() {
-    guard let window = UIWindow.key else { return }
+  public func showAlert() -> Observable<Void> {
+    guard let window = UIWindow.key else { return .never()}
     self.window = window
     window.addSubview(alertContainer)
     self.configureLayout()
-    bind()
-  }
-  
-  private func bind() {
-    confirmButton.rx.tapped
-      .asDriver()
-      .drive(with: self) { owner, _ in
-        owner.alertContainer.removeFromSuperview()
-        owner.agreeButtonTapped.onNext(())
-      }
-      .disposed(by: disposeBag)
+    return confirmButton.rx.tapped
+      .observe(on: MainScheduler.instance)
+      .do (onNext: {
+        self.alertContainer.removeFromSuperview()
+      })
   }
 }
 

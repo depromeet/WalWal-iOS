@@ -78,7 +78,7 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   public override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     if self.isMovingToParent {
-      permissionView.showAlert()
+//      permissionView.showAlert()
     }
   }
   
