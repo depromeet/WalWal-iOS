@@ -30,7 +30,7 @@ public final class WalWalFeed: UIView {
     let flowLayout = UICollectionViewFlowLayout()
     
     flowLayout.sectionInset = .init(top: 25.adjusted, left: 0, bottom: 20.adjusted, right: 0)
-    flowLayout.minimumLineSpacing = 13.adjusted
+    flowLayout.minimumLineSpacing = 14.adjusted
     flowLayout.headerReferenceSize = .init(width: 0, height: headerHeight)
     
     $0.collectionViewLayout = flowLayout
@@ -102,7 +102,7 @@ public final class WalWalFeed: UIView {
     isFeed: Bool = true
   ) {
     self.gestureHandler = isFeed ? WalWalBoostGestureHandler() : nil
-    self.headerHeight = isFeed ? 66.adjusted : 0
+    self.headerHeight = isFeed ? 71.adjusted : 0
     super.init(frame: .zero)
     
     self.collectionView.backgroundColor = isFeed ? Colors.gray150.color : Colors.gray100.color
@@ -218,6 +218,12 @@ public final class WalWalFeed: UIView {
       .bind(to: scrollEndReached )
       .disposed(by: disposeBag)
     
+    collectionView.rx.contentOffset
+      .map { $0.y < -59 }
+      .map { !$0 }
+      .bind(to: walwalIndicator.indicatorIsHidden)
+      .disposed(by: disposeBag)
+
     collectionView.rx
       .setDelegate(self)
       .disposed(by: disposeBag)
@@ -279,7 +285,7 @@ public final class WalWalFeed: UIView {
   public func scrollToRecord(withId recordId: Int, animated: Bool = true) {
     if let index = currentFeedData.firstIndex(where: { $0.recordId == recordId }) {
       let indexPath = IndexPath(item: index, section: 0)
-      collectionView.scrollToItem(at: indexPath, at: .top, animated: animated)
+      collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: animated)
     }
   }
   
@@ -375,21 +381,21 @@ extension WalWalFeed: UICollectionViewDelegateFlowLayout {
     _ collectionView: UICollectionView,
     layout collectionViewLayout: UICollectionViewLayout,
     sizeForItemAt indexPath: IndexPath) -> CGSize {
-      let width = collectionView.bounds.width - 32.adjusted
+      let width = collectionView.bounds.width - 32.adjustedWidth
       let model = currentFeedData[indexPath.row]
       let cell = collectionView.cellForItem(at: indexPath) as? WalWalFeedCell
       let isExpanded = cell?.feedView.isExpanded ?? false
       
       let content = model.contents
       
-      let baseHeight: CGFloat = 516.adjusted
+      let baseHeight: CGFloat = 516.adjustedWidth
       let numberOfLine = content.lineNumber(
         forWidth: width - 40,
         font: Fonts.B3
       )
-      let lineHeight = isExpanded ? numberOfLine : max(1,min(2, numberOfLine))
-      
-      let height: CGFloat =  baseHeight + (17 * (lineHeight - 1)).adjusted
+      let lineCount = isExpanded ? numberOfLine : max(1,min(2, numberOfLine))
+      let lineHeight = (17 * (lineCount - 1)).adjusted
+      let height: CGFloat =  baseHeight + lineHeight
       
       return CGSize(width: width, height: height)
     }

@@ -48,7 +48,6 @@ final class FeedHeaderView: UICollectionReusableView {
       .define {
         $0.addItem(guideLabel)
           .marginTop(29.adjusted)
-          .marginBottom(12.adjusted)
       }
   }
 }

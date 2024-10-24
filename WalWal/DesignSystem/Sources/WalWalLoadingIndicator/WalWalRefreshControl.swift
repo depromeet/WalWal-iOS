@@ -17,6 +17,10 @@ import RxSwift
 import RxCocoa
 
 public final class WalWalRefreshControl: UIRefreshControl {
+  
+  public var indicatorIsHidden = PublishRelay<Bool>()
+  private let disposeBag = DisposeBag()
+  
   let indicatorView: LottieAnimationView = {
     let animationView = LottieAnimationView(animation: AnimationAsset.refersh.animation)
     animationView.contentMode = .scaleAspectFit
@@ -26,6 +30,7 @@ public final class WalWalRefreshControl: UIRefreshControl {
   
   public override init(frame: CGRect) {
     super.init(frame: frame)
+    bind()
     setupAnimationViews()
   }
   
@@ -37,6 +42,13 @@ public final class WalWalRefreshControl: UIRefreshControl {
     self.tintColor = .clear
     self.addSubview(indicatorView)
     self.clipsToBounds = true
+  }
+  
+  private func bind() {
+    indicatorIsHidden
+      .distinctUntilChanged()
+      .bind(to: indicatorView.rx.isHidden)
+      .disposed(by: disposeBag)
   }
   
   public override func layoutSubviews() {

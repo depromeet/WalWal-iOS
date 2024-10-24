@@ -74,6 +74,8 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       return configTabBar(isHidden)
     case let .commentTapped(recordId, writerNickname):
       return .just(.moveToComment(recordId: recordId, writerNickname: writerNickname))
+    case let .refresh(cursor):
+      return fetchFeedData(memberId: memberId, cursor: cursor, limit: 30)
     case .refreshFeedData(recordId: let recordId,  commentCount: let count):
       return .just(.updateFeed(recordId: recordId, commentCount: count))
     }

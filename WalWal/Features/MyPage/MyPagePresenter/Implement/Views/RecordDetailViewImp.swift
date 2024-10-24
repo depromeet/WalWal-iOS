@@ -148,6 +148,13 @@ extension RecordDetailViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
+    feed.refreshLoading
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+      .filter { $0 }
+      .map { _ in Reactor.Action.refresh(cursor: nil) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
     feed.scrollEndReached
       .skip(1)
       .withLatestFrom(reactor.state.map { $0.feedFetchEnded })
@@ -172,7 +179,6 @@ extension RecordDetailViewControllerImp: View {
   public func bindState(reactor: R) {
     reactor.state
       .map {  $0.feedData }
-      .distinctUntilChanged()
       .observe(on: MainScheduler.instance)
       .subscribe(with: self, onNext: { owner, feed in
         owner.feed.addNewData(feed)
