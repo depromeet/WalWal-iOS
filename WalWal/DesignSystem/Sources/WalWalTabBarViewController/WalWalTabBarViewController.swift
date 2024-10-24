@@ -74,7 +74,7 @@ public final class WalWalTabBarViewController: UITabBarController {
   public func showCustomTabBar() {
     self.tabBar.isHidden = true
     containerView.isHidden = false
-    additionalSafeAreaInsets.bottom = 78.adjusted
+    additionalSafeAreaInsets.bottom = 71.adjusted
   }
 }
 

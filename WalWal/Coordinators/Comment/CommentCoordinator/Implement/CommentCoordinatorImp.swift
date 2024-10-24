@@ -106,10 +106,21 @@ extension CommentCoordinatorImp {
 // MARK: - Comment(자식)의 동작 결과, __(부모)에게 특정 Action을 요청합니다. 실제 사용은 reactor에서 호출
 
 extension CommentCoordinatorImp {
-  public func reloadFeedAt(_ recordId: Int) {
+  public func reloadFeedAt(at recordId: Int, commentCount: Int) {
     print("피드 업데이트, 부모 이밴트 요청")
     self.dismissViewController { [weak self] in
-      self?.requireFromChild.onNext(.requireParentAction(.dismissComment(recordId)))
+      self?.requireFromChild.onNext(.requireParentAction(.dismissComment(
+          recordId,
+          commentCount
+        ))
+      )
+    }
+  }
+  
+  public func moveToWriterPage(_ writerId: Int, _ nickname: String) {
+    print("작성자 페이지로 이동, 부모 이밴트 요청")
+    self.dismissViewController { [weak self] in
+      self?.requireFromChild.onNext(.requireParentAction(.moveToWriterPage(writerId, nickname)))
     }
   }
 }

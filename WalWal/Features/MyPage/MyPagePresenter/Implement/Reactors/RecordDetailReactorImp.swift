@@ -74,10 +74,10 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
       return configTabBar(isHidden)
     case let .commentTapped(recordId, writerNickname):
       return .just(.moveToComment(recordId: recordId, writerNickname: writerNickname))
-    case .refreshFeedData(recordId: let recordId):
-      return fetchUpdatedFeedAt(recordId: recordId)
     case let .refresh(cursor):
       return fetchFeedData(memberId: memberId, cursor: cursor, limit: 30)
+    case .refreshFeedData(recordId: let recordId,  commentCount: let count):
+      return .just(.updateFeed(recordId: recordId, commentCount: count))
     }
   }
   
@@ -95,11 +95,9 @@ public final class RecordDetailReactorImp: RecordDetailReactor {
     case .moveToBack:
       coordinator.popViewController(animated: true)
     case let .moveToComment(recordId, writerNickname):
-      coordinator.destination.accept(.showCommentView(recordId: recordId, writerNickname: writerNickname)) 
-    case .updateFeed(record: let record):
-      if let record {
-        newState.updatedFeed = record
-      }
+      coordinator.destination.accept(.showCommentView(recordId: recordId, writerNickname: writerNickname))
+    case let .updateFeed(recordId: id, commentCount: count):
+      newState.updatedCommentCount = (id, count)
     }
     
     return newState
@@ -162,20 +160,6 @@ extension RecordDetailReactorImp {
       .catch{ error in
         return .just(Mutation.userFeedFetchFailed(errorMessage: error.localizedDescription))}
   }
-  
-  private func fetchUpdatedFeedAt(recordId: Int) -> Observable<Mutation> {
-    return fetchSingleFeedUseCase.execute(recordId: recordId)
-      .asObservable()
-      .withUnretained(self)
-      .flatMap { owner, Singlefeed -> Observable<Mutation> in
-        return owner.convertGlobaltoFeedModel(feedList: [Singlefeed])
-          .withUnretained(self)
-          .flatMap { owner, feed -> Observable<Mutation> in
-            return .just(.updateFeed(record: feed.first))
-          }
-      }
-  }
-  
   
   private func convertRawFeedtoFeedModel(feedList: [FeedListModel]) -> Observable<[WalWalFeedModel]> {
     let feedObservables = feedList.map { feed -> Observable<WalWalFeedModel?> in

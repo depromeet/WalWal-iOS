@@ -14,11 +14,14 @@ import CommentDomain
 import Then
 import FlexLayout
 import PinLayout
+import RxSwift
 
 final class ReplyCommentCell: UITableViewCell, ReusableView {
   
   private typealias FontKR = ResourceKitFontFamily.KR
   private typealias AssetColor = ResourceKitAsset.Colors
+  
+  public var disposeBag = DisposeBag()
   
   // 컨테이너 뷰 추가
   private let rootContainerView = UIView()
@@ -32,7 +35,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
   private let timeLabelContainer = UIView()
   private let contentLabelContainer = UIView()
   
-  private let profileImageView = UIImageView().then {
+  public let profileImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFill
     $0.backgroundColor = AssetColor.gray200.color
     $0.layer.cornerRadius = 17
@@ -55,6 +58,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     $0.textColor = AssetColor.black.color
     $0.numberOfLines = 0
   }
+  
   
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -169,7 +173,8 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
     }
     
     if writerId == nil {
-      nicknameLabel.textColor = AssetColor.gray300.color
+      nicknameLabel.textColor = AssetColor.gray400.color
+      timeLabel.textColor = AssetColor.gray400.color
     }
     
     contentLabel.flex.markDirty()

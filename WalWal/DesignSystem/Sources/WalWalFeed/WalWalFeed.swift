@@ -61,6 +61,8 @@ public final class WalWalFeed: UIView {
   
   public var updatedBoost = PublishRelay<(recordId: Int, count: Int)>()
   
+  public var updatedComment = PublishRelay<(recordId: Int, count: Int)>()
+  
   public let refreshLoading = PublishRelay<Bool>()
   
   public let scrollEndReached = PublishRelay<Bool>()
@@ -258,6 +260,22 @@ public final class WalWalFeed: UIView {
         collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
       }, completion: nil)
       
+      collectionView.collectionViewLayout.invalidateLayout()
+    }
+  }
+  
+  /// 특정 피드만 업데이트
+  public func updateCommentCount(at recordId: Int, commentCount: Int) {
+    if let index = currentFeedData.firstIndex(where: { $0.recordId == recordId }) {
+      currentFeedData[index].commentCount = commentCount
+      feedData.accept(currentFeedData)
+      
+      UIView.performWithoutAnimation {
+          collectionView.performBatchUpdates({
+              collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
+          }, completion: nil)
+      }
+
       collectionView.collectionViewLayout.invalidateLayout()
     }
   }

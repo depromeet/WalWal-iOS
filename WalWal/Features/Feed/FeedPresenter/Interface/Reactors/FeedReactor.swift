@@ -26,7 +26,7 @@ public enum FeedReactorAction {
   case doubleTap(Int?)
   case menuTapped(recordId: Int)
   case commentTapped(recordId: Int, writerNickname: String)
-  case refreshFeedData(recordId: Int)
+  case refreshFeedData(Int, Int)
 }
 
 public enum FeedReactorMutation {
@@ -38,7 +38,7 @@ public enum FeedReactorMutation {
   case scrollToTop
   case showMenu(recordId: Int)
   case moveToComment(recordId: Int, writerNickname: String, commentId: Int?=nil)
-  case updateFeed(record: WalWalFeedModel?)
+  case updateFeed(recordId: Int, commentCount: Int)
 }
 
 public struct FeedReactorState {
@@ -49,6 +49,7 @@ public struct FeedReactorState {
   public var feedFetchEnded: Bool = false
   @Pulse public var scrollToFeedItem: Int? = nil
   @Pulse public var tabBarTapped: Void? = nil
+  @Pulse public var updatedCommentCount: (Int, Int)? = nil
   public init() {  }
 }
  

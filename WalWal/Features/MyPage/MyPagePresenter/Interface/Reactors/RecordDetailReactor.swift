@@ -23,8 +23,8 @@ public enum RecordDetailReactorAction {
   case tapBackButton
   case isHiddenTabBar(Bool)
   case commentTapped(recordId: Int, writerNickname: String)
-  case refreshFeedData(recordId: Int)
   case refresh(cursor: String?) // 전체 데이터 reload
+  case refreshFeedData(recordId: Int, commentCount: Int)
 }
 
 public enum RecordDetailReactorMutation {
@@ -33,7 +33,7 @@ public enum RecordDetailReactorMutation {
   case userFeedFetchFailed(errorMessage: String)
   case moveToBack
   case moveToComment(recordId: Int, writerNickname: String)
-  case updateFeed(record: WalWalFeedModel?)
+  case updateFeed(recordId: Int, commentCount: Int)
 }
 
 public struct RecordDetailReactorState {
@@ -42,7 +42,7 @@ public struct RecordDetailReactorState {
   public var nextCursor: String? = nil
   public var feedFetchEnded: Bool = false
   public var memberId: Int
-  public var updatedFeed: WalWalFeedModel? = nil
+  @Pulse public var updatedCommentCount: (Int, Int)? = nil
   
   public init(memberId: Int) {
     self.memberId = memberId

@@ -25,6 +25,8 @@ public final class CommentReactorImp: CommentReactor {
   private var recordId: Int
   private var writerNickname: String
   
+  private var totalCommentcount: Int = 0
+  
   private let getCommentsUsecase: GetCommentsUsecase
   private let postCommentUsecase: PostCommentUsecase
   private let flattenCommentUsecase: FlattenCommentsUsecase
@@ -77,6 +79,8 @@ public final class CommentReactorImp: CommentReactor {
       return Observable.just(.dismissSheet)
     case let .setReplyMode(isReply, parentId):
       return Observable.just(.setReplyMode(parentId, isReply))
+    case let .setWriter(writerId, nickname):
+      return dismissAndMoveWriter(writerId: writerId, nickname: nickname)
     case .resetParentId:
       return Observable.just(.setReplyMode(nil, false))
     case .resetFocusing:
@@ -88,18 +92,26 @@ public final class CommentReactorImp: CommentReactor {
     var newState = state
     switch mutation {
     case let .setComments(comments):
+      newState.totalComment = comments.count
       newState.comments = comments
       newState.isReply = false // 한번 보내면 대댓글 상태 초기화 하자
       newState.parentId = nil // 한번 보내면 parentID도 초기화
+    case let .dismissAndMoveWriter(writerId, nickname):
+      newState.isSheetDismissed = true
+      coordinator.moveToWriterPage(writerId, nickname)
     case let .setSheetPosition(position):
       newState.sheetPosition = position
+    case let .showToast(toastMessage):
+      newState.toastMessage = toastMessage
     case .dismissSheet:
-      coordinator.reloadFeedAt(recordId)
+      coordinator.reloadFeedAt(at: recordId, commentCount: newState.totalComment)
     case let .setReplyMode(parentId, isReply):
       newState.parentId = parentId
       newState.isReply = isReply
     case let .isNeedFocusing(isNeed):
       newState.isNeedFocusing = isNeed
+    case let .setLoading(isLoading):
+      newState.isLoading = isLoading
     }
     return newState
     
@@ -107,6 +119,17 @@ public final class CommentReactorImp: CommentReactor {
 }
 
 extension CommentReactorImp {
+  
+  private func dismissAndMoveWriter(writerId: Int?, nickname: String) -> Observable<Mutation> {
+    if let writerId = writerId {
+      return .concat([
+        .just(.setLoading(isLoading: true)),
+        .just(.dismissAndMoveWriter(writerId, nickname))
+      ])
+    } else {
+      return .just(.showToast(message: "탈퇴한 회원의 프로필이에요"))
+    }
+  }
   
   /// 댓글 리스트 가져오기
   private func fetchCommentData() -> Observable<Mutation> {

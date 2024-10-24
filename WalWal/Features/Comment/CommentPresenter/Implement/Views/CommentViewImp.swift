@@ -73,6 +73,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   private let checkScrollComment = BehaviorRelay<Bool>(value: false)
   
+  private let writerRelay = PublishRelay<(writerId: Int?, nickname: String)>()
+  
   private let resetFocusing = PublishRelay<Void>()
   
   private let completedLoading = PublishRelay<Void>()
@@ -134,7 +136,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func setLayout() {
     
     rootContainerView.flex
-      .height(548.adjustedHeight)
+      .height((Int(view.frame.height) - 232).adjustedHeight)
       .define { flex in
         flex.addItem(headerContainerView)
         flex.addItem(tableViewContainerView)
@@ -203,7 +205,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     guard let userInfo = notification.userInfo,
           let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
     
-    let keyboardHeight = keyboardFrame.height
+    let keyboardHeight = Int(keyboardFrame.height)
     let animationDuration = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double) ?? 0.3
     let animationCurve = (userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt) ?? UIView.AnimationOptions.curveEaseInOut.rawValue
     
@@ -212,8 +214,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
       self.rootContainerView.flex
-            .height(456.adjustedHeight + self.view.pin.safeArea.bottom)
-            .bottom(keyboardHeight - self.view.pin.safeArea.bottom)
+        .height((Int(self.view.frame.height) - 65 - keyboardHeight + Int(self.view.pin.safeArea.bottom)).adjustedHeight)
+        .bottom((keyboardHeight - Int(self.view.pin.safeArea.bottom)).adjustedHeight)
       self.rootContainerView.flex.layout()
     })
   }
@@ -229,7 +231,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
       self.rootContainerView.flex
-        .height(548.adjustedHeight)
+        .height((Int(self.view.frame.height) - 232).adjustedHeight)
         .bottom(0)
       self.rootContainerView.flex.layout()
     })
@@ -246,7 +248,11 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
       guard let owner = self else { return nil }
       if comment.parentID == nil {
         let cell = tableView.dequeue(CommentCell.self, for: indexPath)
-        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname, writerId: comment.writerID)
+        cell.configure(
+          with: comment,
+          writerNickname: owner.commentReactor.initialState.writerNickname,
+          writerId: comment.writerID
+        )
         
         cell.parentIdGetted
           .bind(to: owner.parentIdRelay)
@@ -258,10 +264,25 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
           })
           .disposed(by: cell.disposeBag)
         
+        cell.profileImageView.rx.tapped
+          .map{ (comment.writerID, comment.writerNickname) }
+          .bind(to: owner.writerRelay)
+          .disposed(by: cell.disposeBag)
+        
         return cell
       } else {
         let cell = tableView.dequeue(ReplyCommentCell.self, for: indexPath)
-        cell.configure(with: comment, writerNickname: owner.commentReactor.initialState.writerNickname, writerId: comment.writerID)
+        cell.configure(
+          with: comment,
+          writerNickname: owner.commentReactor.initialState.writerNickname,
+          writerId: comment.writerID
+        )
+        
+        cell.profileImageView.rx.tapped
+          .map{ (comment.writerID, comment.writerNickname) }
+          .bind(to: owner.writerRelay)
+          .disposed(by: cell.disposeBag)
+        
         return cell
       }
     }
@@ -328,7 +349,7 @@ extension CommentViewControllerImp: View {
         self.completedLoading.accept(())
       })
       .disposed(by: disposeBag)
-      
+    
     reactor.state
       .map { $0.sheetPosition }
       .distinctUntilChanged()
@@ -337,7 +358,6 @@ extension CommentViewControllerImp: View {
         self.updateSheetPosition(position)
       })
       .disposed(by: disposeBag)
-    
     
     reactor.state
       .map { $0.isNeedFocusing }
@@ -351,6 +371,35 @@ extension CommentViewControllerImp: View {
       .compactMap { $0 }
       .drive(with: self) { owner, commentId in
         owner.focusCommentId = commentId
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.pulse(\.$toastMessage)
+      .asDriver(onErrorJustReturn: nil)
+      .compactMap { $0 }
+      .drive(with: self) { owner, message in
+        WalWalToast.shared.show(
+          type: .error,
+          message: message
+        )
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map{ $0.isSheetDismissed }
+      .filter { $0 }
+      .observe(on: MainScheduler.instance)
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.dimView.alpha = 0
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map { $0.isLoading }
+      .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
+      .drive { isLoading in
+        ActivityIndicator.shared.showIndicator.accept(isLoading)
       }
       .disposed(by: disposeBag)
   }
@@ -375,13 +424,13 @@ extension CommentViewControllerImp: View {
       .disposed(by: disposeBag)
     
     dimView.rx.tapped
-    .subscribe(with: self, onNext: { owner, _ in
-      owner.inputBox.rx.textEndEditing.onNext(())
-      owner.animateSheetDown {
-        reactor.action.onNext(.tapDimView)
-      }
-    })
-    .disposed(by: disposeBag)
+      .subscribe(with: self, onNext: { owner, _ in
+        owner.inputBox.rx.textEndEditing.onNext(())
+        owner.animateSheetDown {
+          reactor.action.onNext(.tapDimView)
+        }
+      })
+      .disposed(by: disposeBag)
     
     // 댓글 작성 시 액션
     inputBox.rx.postButtonTap
@@ -414,6 +463,11 @@ extension CommentViewControllerImp: View {
       .drive(with: self) { owner, commentId in
         owner.scrollFocusComment(id: commentId)
       }
+      .disposed(by: disposeBag)
+    
+    writerRelay.asObservable()
+      .map { Reactor.Action.setWriter(writerId: $0.writerId, nickname: $0.nickname) }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
   
