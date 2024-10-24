@@ -25,7 +25,6 @@ public enum MissionReactorAction {
   case refreshMissionData
   case appWillEnterForeground
   case moveToMissionGallery(UIImage)
-  case checkNotificationPermission
 }
 
 public enum MissionReactorMutation {
@@ -34,7 +33,6 @@ public enum MissionReactorMutation {
   case fetchCompletedRecordsTotalCountData(Int)
   case loadInitialDataFlowEnded /// 최초 네트워크 통신 흐름 종료
   case loadInitialDataFlowFailed(Error) /// 최초 네트워크 통신 흐름 실패 여부
-  case setNotificationPermission(Bool)
   
   case updateTimerText(String)
   case stopTimer
@@ -44,6 +42,7 @@ public enum MissionReactorMutation {
   case startMissionUploadProcess(UIImage)
   case moveToMissionUploadFailed(Error) /// 미션 업로드 화면으로 이동 실패
   case moveToMyPage
+  case isNeedRequestPermission(Bool)
 }
 
 
@@ -58,9 +57,8 @@ public struct MissionReactorState {
   
   public var isTimerRunning: Bool = false
   public var buttonTitle: String = "미션 시작하기"
-
-  @Pulse public var isGrantedNotification: Bool = false
-    
+  
+  @Pulse public var isNeedRequestPermission: Bool = false
   public init() {
     
   }

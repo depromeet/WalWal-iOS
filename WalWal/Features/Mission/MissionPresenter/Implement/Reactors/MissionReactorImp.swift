@@ -61,8 +61,7 @@ public final class MissionReactorImp: MissionReactor {
   
   public func transform(action: Observable<Action>) -> Observable<Action> {
     let initialAction = Observable.just(Action.loadInitialData)
-    let checkPermissionAction = Observable.just(Action.checkNotificationPermission)
-    return Observable.merge(action, initialAction, checkPermissionAction)
+    return Observable.merge(action, initialAction)
   }
   
   public func mutate(action: Action) -> Observable<Mutation> {
@@ -87,9 +86,6 @@ public final class MissionReactorImp: MissionReactor {
       return checkAndUpdateMissionIfNeeded()
     case .moveToMissionGallery(let image):
       return Observable.just(.startMissionUploadProcess(image))
-    case .checkNotificationPermission:
-      return checkNotificationPermission()
-        .map{ Mutation.setNotificationPermission($0) }
     }
   }
   
@@ -123,8 +119,6 @@ public final class MissionReactorImp: MissionReactor {
       newState.loadInitialDataFlowEnded = true
     case .loadInitialDataFlowFailed(let loadInitialDataFlowFailed):
       newState.loadInitialDataFlowFailed = loadInitialDataFlowFailed
-    case let .setNotificationPermission(isGranted):
-      newState.isGrantedNotification = isGranted
       
       // MARK: - 미션 시작하기를 누르면 실행되는 Flow!
     case let .fetchRecordId(recordId):
@@ -135,8 +129,7 @@ public final class MissionReactorImp: MissionReactor {
         recordId: newState.recordId,
         missionId: mission.id,
         missionTitle: mission.title.replacingNewlinesWithSpaces()
-      )
-      )
+      ))
     case .startMissionUploadProcess(let image):
       guard let mission = newState.mission else { return newState }
       coordinator.dismissViewController(animated: false) {
@@ -154,10 +147,15 @@ public final class MissionReactorImp: MissionReactor {
       newState.missionUploadError = error
     case .moveToMyPage:
       coordinator.startMyPage()
+    case let .isNeedRequestPermission(isNeed):
+      newState.isNeedRequestPermission = isNeed
     }
     return newState
   }
   
+}
+
+extension MissionReactorImp {
   private func loadAllMissionData() -> Observable<Mutation> {
     lastUpdateDate = Date()
     return checkRecordCalendar()
@@ -169,7 +167,8 @@ public final class MissionReactorImp: MissionReactor {
           .just(Mutation.fetchTodayMissionData(mission)),
           owner.fetchRecordStatus(missionId: mission.id),
           owner.fetchCompletedTotalRecordsCount(),
-          .just(Mutation.loadInitialDataFlowEnded)
+          .just(Mutation.loadInitialDataFlowEnded),
+          owner.checkPermissionAgree()
         ])
       }
       .catch { error in
@@ -292,15 +291,9 @@ public final class MissionReactorImp: MissionReactor {
       })
   }
   
-  /// 알림 권한 확인
-  private func checkNotificationPermission() -> Observable<Bool> {
-    return PermissionManager.shared.checkPermission(for: .notification)
-      .observe(on: MainScheduler.instance)
-      .flatMap { isGranted in
-        if !isGranted {
-          return PermissionManager.shared.requestNotificationPermission()
-        }
-        return Observable.just(isGranted)
-      }
+  /// 권한 동의 여부 확인
+  private func checkPermissionAgree() -> Observable<Mutation> {
+    let isCheckPermission: Bool = UserDefaults.bool(forUserDefaultsKey: .checkPermission)
+    return .just(.isNeedRequestPermission(!isCheckPermission))
   }
 }
