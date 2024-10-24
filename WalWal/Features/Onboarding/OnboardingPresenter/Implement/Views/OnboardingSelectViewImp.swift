@@ -78,7 +78,7 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
   public override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     if self.isMovingToParent {
-//      permissionView.showAlert()
+      showPermissionAlert()
     }
   }
   
@@ -138,6 +138,17 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
       .marginHorizontal(20.adjustedWidth)
       .marginBottom(32.adjustedHeight)
       .height(56.adjustedHeight)
+  }
+  
+  private func showPermissionAlert() {
+    permissionView.showAlert()
+      .flatMap {
+        PermissionManager.shared.requestAllPermission()
+      }
+      .subscribe { _ in
+        UserDefaults.setValue(value: true, forUserDefaultKey: .checkPermission)
+      }
+      .disposed(by: disposeBag)
   }
 }
 
@@ -218,15 +229,6 @@ extension OnboardingSelectViewControllerImp: View {
         owner.dogView.isSelected = false
         owner.catView.isSelected = true
       }
-      .disposed(by: disposeBag)
-    
-    permissionView.agreeButtonTapped
-      .concatMap {
-        PermissionManager.shared.requestAllPermission()
-      }
-      .bind(onNext: { 
-        UserDefaults.setValue(value: true, forUserDefaultKey: .checkPermission)
-      })
       .disposed(by: disposeBag)
     
   }

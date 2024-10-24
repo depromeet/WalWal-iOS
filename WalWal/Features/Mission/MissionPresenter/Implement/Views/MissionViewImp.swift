@@ -432,7 +432,9 @@ extension MissionViewControllerImp: View {
         owner.permissionView = PermissionView()
         guard let permissionView = owner.permissionView else { return .empty() }
         return permissionView.showAlert()
-          .flatMap { PermissionManager.shared.requestAllPermission() }
+          .flatMap {
+            PermissionManager.shared.requestAllPermission()
+          }
           .do(onDispose: { owner.permissionView = nil })
       }
       .subscribe { _ in
