@@ -67,14 +67,14 @@ public final class WalWalAlert: NSObject {
     $0.numberOfLines = 0
     $0.textAlignment = .center
   }
-  public let cancelButton =  WalWalButton(
+  private let cancelButton =  WalWalButton(
     type: .custom(
       backgroundColor: Colors.walwalOrange.color,
       titleColor: Colors.white.color,
       font: FontsKR.H6.B, isEnable: true),
     title: ""
   )
-  public let okButton = WalWalButton(
+  private let okButton = WalWalButton(
     type: .custom(
       backgroundColor: Colors.white.color,
       titleColor: Colors.gray500.color,
@@ -198,20 +198,14 @@ public final class WalWalAlert: NSObject {
   }
   
   private func bind() {
-    eventSubject
-      .subscribe(with: self, onNext: { owner, event in
-        event.contents.cancelTitle == nil
-        ? owner.showOkAlert(eventType: event)
-        : owner.show(eventType: event)
-      })
-      .disposed(by: disposeBag)
-    
+    /// cancel버튼은 이벤트 처리 X
     cancelButton.rx.tapped
       .bind(with: self) { owner, _ in
         owner.rootContainer.removeFromSuperview()
       }
       .disposed(by: disposeBag)
     
+    /// 이벤트 처리는 무조건 okButton (버튼이 단일이라면, cancel의 역할을 할 수도 있음)
     okButton.rx.tapped
       .bind(with: self) { owner, _ in
         if let eventType = owner.currentEventType {
@@ -230,17 +224,28 @@ public final class WalWalAlert: NSObject {
 }
 
 public extension Reactive where Base: WalWalAlert {
+  var showAlert: Binder<AlertEventType> {
+    return Binder(self.base) { owner, event in
+      event.contents.cancelTitle == nil ? owner.showOkAlert(eventType: event) : owner.show(eventType: event)
+    }
+  }
+  
   var event: PublishSubject<AlertEventType> {
     return base.eventSubject
   }
 }
 
 public enum AlertEventType {
-  case updateRequest /// 앱 업데이트 요청 이벤트
-  case grantedCameraAccess /// 카메라 접근 권한 허용 이벤트
-  case grantedPhotoLibraryAccess /// 포토 라이브러리 접근 권한 허용 이벤트
-  case report /// 신고 이벤트
-  case deleteMissionRecord /// 미션 기록 삭제 이벤트
+  /// 앱 업데이트 요청 이벤트
+  case updateRequest
+  /// 카메라 접근 권한 허용 이벤트
+  case grantedCameraAccess
+  /// 포토 라이브러리 접근 권한 허용 이벤트
+  case grantedPhotoLibraryAccess
+  /// 신고 이벤트
+  case report
+  /// 미션 기록 삭제 이벤트
+  case deleteMissionRecord
   
   var contents: (title: String, bodyMessage: String, cancelTitle: String?, okTitle: String, tintColor: UIColor?) {
     switch self {
