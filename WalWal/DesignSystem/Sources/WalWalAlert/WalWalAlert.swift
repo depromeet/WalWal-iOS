@@ -230,8 +230,8 @@ public extension Reactive where Base: WalWalAlert {
     }
   }
   
-  var okEvent: PublishSubject<AlertEventType> {
-    return base.eventSubject
+  var okEvent: Observable<AlertEventType> {
+    return base.eventSubject.asObservable()
   }
 }
 
