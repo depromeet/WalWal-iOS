@@ -32,37 +32,20 @@ public final class WalWalAlert {
   /// 얼럿 버튼 탭 시 어떤 버튼이 눌렸는지에 대한 값을 리턴
   ///
   /// ### 사용 예시
-  /// - show()
   /// ```swift
   /// WalWalAlert.shared.resultRelay
   ///  .bind(with: self) { owner, result in
   ///    switch result {
   ///    case .cancel:
   ///      print("cancel")
-  ///      WalWalAlert.shared.closeAlert.accept(())
   ///    case .ok:
   ///      print("ok")
-  ///      WalWalAlert.shared.closeAlert.accept(())
   ///    }
   ///  }
-  ///  .disposed(by: disposeBag)
-  /// ```
-  /// 또는
-  /// - showOKAlert()
-  /// ```swift
-  /// WalWalAlert.shared.resultRelay
-  ///   .map { _ in Void() }
-  ///   .bind(to: WalWalAlert.shared.closeAlert)
-  ///   .disposed(by: disposeBag)
   /// ```
   /// - Returns: .cancel 또는 .ok
   public let resultRelay = PublishRelay<AlertResultType>()
   
-  /// 얼럿 화면을 닫기 위한 이벤트
-  ///
-  /// ### 사용 예시
-  /// `WalWalAlert.shared.closeAlert.accept(())`
-  public let closeAlert = PublishRelay<Void>()
   private var isOneButtonAlert: Bool = false
   private var closeButtonMargin: CGFloat = 8
   
@@ -222,20 +205,21 @@ public final class WalWalAlert {
   }
   
   private func bind() {
-    Observable.merge(
-      cancelButton.rx.tapped
-        .map { AlertResultType.cancel},
-      okButton.rx.tapped
-        .map { AlertResultType.ok}
-    )
-    .bind(to: resultRelay)
-    .disposed(by: disposeBag)
     
-    closeAlert
+    cancelButton.rx.tapped
       .bind(with: self) { owner, _ in
+        owner.resultRelay.accept(.cancel)
         owner.rootContainer.removeFromSuperview()
       }
       .disposed(by: disposeBag)
+    
+    okButton.rx.tapped
+      .bind(with: self) { owner, _ in
+        owner.resultRelay.accept(.ok)
+        owner.rootContainer.removeFromSuperview()
+      }
+      .disposed(by: disposeBag)
+    
   }
   
   private func initLayout() {
