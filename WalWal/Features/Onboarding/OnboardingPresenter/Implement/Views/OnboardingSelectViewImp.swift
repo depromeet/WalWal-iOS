@@ -118,7 +118,6 @@ public final class OnboardingSelectViewControllerImp<R: OnboardingSelectReactor>
       .grow(1)
       .define {
         $0.addItem(titleLabel)
-          .height(58.adjustedHeight)
         $0.addItem(selectButtonView)
           .marginTop(80.adjustedHeight)
         $0.addItem()

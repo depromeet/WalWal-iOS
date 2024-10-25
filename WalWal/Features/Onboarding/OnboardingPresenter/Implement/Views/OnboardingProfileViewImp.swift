@@ -157,10 +157,8 @@ public final class OnboardingProfileViewControllerImp<R: OnboardingProfileReacto
       .marginTop(39.adjustedHeight)
       .define {
         $0.addItem(titleLabel)
-          .height(58.adjustedHeight)
         $0.addItem(subTitleLabel)
           .marginTop(4.adjusted)
-          .height(17.adjustedHeight)
       }
       
     profileContainer.flex
