@@ -27,15 +27,14 @@ public final class AppUpdateManager {
         return
       }
       
-      let isNewVersionAvailable = appStoreVersion > currentVersion /// 앱 스토어 버전이 현재 보다 높을 때
-      self.updateRequest.onNext(())
+      if appStoreVersion > currentVersion { updateRequest.onNext(()) }
     }
   }
   
   private func fetchAppStoreVersion(bundleID: String) async -> String? {
     let url = URL(string: "https://itunes.apple.com/lookup?bundleId=\(bundleID)")!
     do {
-      let (data, urlResponse) = try await URLSession.shared.data(from: url)
+      let (data, _) = try await URLSession.shared.data(from: url)
       if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
          let results = json["results"] as? [[String: Any]],
          let appStoreVersion = results.first?["version"] as? String {
