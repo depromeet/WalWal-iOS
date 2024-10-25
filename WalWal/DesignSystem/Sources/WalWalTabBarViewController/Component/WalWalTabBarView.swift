@@ -81,15 +81,16 @@ extension WalWalTabBarView {
           .height(1)
         flex.addItem()
           .direction(.row)
-          .justifyContent(.spaceEvenly)
-          .alignItems(.center)
+          .marginTop(5.adjustedHeight)
+          .marginLeft(33.adjustedWidth)
+          .marginRight(32.adjustedWidth)
+          .justifyContent(.spaceBetween)
+          .alignItems(.start)
           .height(67)
           .define { flex in
             tabBarItems.forEach { itemView in
               flex.addItem(itemView)
-                .grow(1)
-                .shrink(1)
-                .basis(0)
+                .justifyContent(.center)
             }
           }
       }
