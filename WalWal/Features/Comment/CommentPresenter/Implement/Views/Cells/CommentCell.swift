@@ -44,7 +44,6 @@ final class CommentCell: UITableViewCell, ReusableView {
   public let profileImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFill
     $0.backgroundColor = AssetColor.gray200.color
-    $0.layer.cornerRadius = 17
     $0.clipsToBounds = true
   }
   
@@ -91,6 +90,7 @@ final class CommentCell: UITableViewCell, ReusableView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
+    profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
     rootContainerView.pin
       .top(0)
       .left(15.adjustedWidth)
@@ -150,8 +150,7 @@ final class CommentCell: UITableViewCell, ReusableView {
       .direction(.row)
       .define { flex in
         flex.addItem(profileImageView)
-          .width(34.adjustedWidth)
-          .height(34.adjustedHeight)
+          .size(34.adjusted)
         flex.addItem(bodyContainer)
           .marginLeft(8.adjustedWidth)
           .grow(1)

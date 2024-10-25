@@ -72,6 +72,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
+    profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
     rootContainerView.pin
       .top(0)
       .left(44.adjustedWidth + 15.adjustedWidth)
@@ -119,8 +120,7 @@ final class ReplyCommentCell: UITableViewCell, ReusableView {
       .direction(.row)
       .define { flex in
         flex.addItem(profileImageView)
-          .width(34.adjustedWidth)
-          .height(34.adjustedHeight)
+          .size(34.adjusted)
         flex.addItem(bodyContainer)
           .marginLeft(8.adjustedWidth)
           .grow(1)

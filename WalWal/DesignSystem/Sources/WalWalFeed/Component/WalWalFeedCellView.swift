@@ -41,7 +41,6 @@ public final class WalWalFeedCellView: UIView {
   private let reactionView = UIView()
   
   private let profileImageView = UIImageView().then {
-    $0.layer.cornerRadius = 20.adjustedWidth
     $0.contentMode = .scaleAspectFill
     $0.clipsToBounds = true
     $0.isUserInteractionEnabled = false
@@ -165,6 +164,7 @@ public final class WalWalFeedCellView: UIView {
   // MARK: - Methods
   
   func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false, isAlreadyExpanded: Bool = false) {
+    profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = sanitizeContent(feedData.missionTitle)
     profileImageView.image = feedData.profileImage
