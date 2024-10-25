@@ -226,13 +226,10 @@ public final class WalWalAlert: NSObject {
 public extension Reactive where Base: WalWalAlert {
   var showAlert: Binder<(String, String, String, String?)> {
     return Binder(self.base) { owner, value in
-      owner.show(title: value.0, bodyMessage: value.1, cancelTitle: value.2, okTitle: value.3)
-    }
-  }
-  
-  var showOkAlert: Binder<(String, String, String)> {
-    return Binder(self.base) { owner, value in
-      owner.showOkAlert(title: value.0, bodyMessage: value.1, okTitle: value.2)
+      guard let okTitle = value.3 else {
+        return owner.showOkAlert(title: value.0, bodyMessage: value.1, okTitle: value.2)
+      }
+      return owner.show(title: value.0, bodyMessage: value.1, cancelTitle: value.2, okTitle: okTitle)
     }
   }
   
