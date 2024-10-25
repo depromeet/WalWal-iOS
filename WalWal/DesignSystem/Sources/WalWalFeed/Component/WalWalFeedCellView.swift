@@ -137,6 +137,7 @@ public final class WalWalFeedCellView: UIView {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
     
     missionDateLabel.flex
       .markDirty()
@@ -164,7 +165,7 @@ public final class WalWalFeedCellView: UIView {
   // MARK: - Methods
   
   func configureFeed(feedData: WalWalFeedModel, isBoost: Bool = false, isAlreadyExpanded: Bool = false) {
-    profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
+    
     userNickNameLabel.text = feedData.nickname
     missionLabel.text = sanitizeContent(feedData.missionTitle)
     profileImageView.image = feedData.profileImage
