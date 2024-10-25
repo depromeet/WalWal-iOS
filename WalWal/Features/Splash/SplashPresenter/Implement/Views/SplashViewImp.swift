@@ -111,7 +111,6 @@ extension SplashViewControllerImp: View {
       .disposed(by: disposeBag)
     
     WalWalAlert.shared.rx.okEvent
-      .debug()
       .filter { $0 == .updateRequest }
       .map { _ in Reactor.Action.moveUpdate }
       .bind(to: reactor.action)
