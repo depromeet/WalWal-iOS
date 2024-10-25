@@ -81,6 +81,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   private var focusCommentId: Int? = nil
   
+  private var isFirstLoadedUI = true
+  
   public init(reactor: R) {
     self.commentReactor = reactor
     super.init(nibName: nil, bundle: nil)
@@ -106,7 +108,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    
+    let bottom = isFirstLoadedUI ? -rootContainerView.frame.height : 0
     dimView.pin
       .all()
     dimView.flex
@@ -115,9 +117,11 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     rootContainerView.pin
       .left()
       .right()
-      .bottom()
+      .bottom(bottom)
     rootContainerView.flex
       .layout()
+    
+    isFirstLoadedUI = false
   }
   
   // MARK: - UI Setup
@@ -205,7 +209,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     guard let userInfo = notification.userInfo,
           let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
     
-    let keyboardHeight = Int(keyboardFrame.height)
+    let keyboardHeight = keyboardFrame.height
     let animationDuration = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double) ?? 0.3
     let animationCurve = (userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt) ?? UIView.AnimationOptions.curveEaseInOut.rawValue
     
@@ -214,8 +218,8 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
       self.rootContainerView.flex
-        .height((Int(self.view.frame.height) - 65 - keyboardHeight + Int(self.view.pin.safeArea.bottom)).adjustedHeight)
-        .bottom((keyboardHeight - Int(self.view.pin.safeArea.bottom)).adjustedHeight)
+        .height((Int(self.view.frame.height) - 65 - Int(keyboardHeight)).adjustedHeight)
+        .bottom(keyboardHeight - self.view.pin.safeArea.bottom)
       self.rootContainerView.flex.layout()
     })
   }
