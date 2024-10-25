@@ -209,7 +209,7 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
       .alignItems(.center)
       .justifyContent(.center)
       .height(30.adjusted)
-      .bottom(20.adjusted)
+      .bottom(10.adjusted)
       .paddingHorizontal(12.adjusted)
       .define { flex in
         flex.addItem(dateLabel)
