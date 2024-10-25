@@ -35,9 +35,8 @@ public class WalWalButton_Icon: UIControl {
   
   private let subContainer = UIView()
   
-  private lazy var titleLabel = UILabel().then {
+  private lazy var titleLabel = CustomLabel(font: Fonts.KR.H7.B).then {
     $0.textAlignment = .center
-    $0.font = Fonts.KR.H7.B
     $0.textColor = Colors.white.color
     $0.text = title
   }
@@ -126,6 +125,7 @@ public class WalWalButton_Icon: UIControl {
               .size(20.adjusted)
               .marginRight(2)
             flex.addItem(titleLabel)
+              .height(20.adjusted)
           }
       }
   }

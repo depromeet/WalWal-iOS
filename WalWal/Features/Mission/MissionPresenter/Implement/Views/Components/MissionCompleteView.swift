@@ -128,11 +128,11 @@ final class MissionCompleteView: UIView {
       .width(100%)
       .define {
         $0.addItem(missionCompletedLabel)
-          .marginTop(0)
+          .marginTop(14.adjusted)
           .marginHorizontal(24.adjusted)
-          .marginBottom(10.adjusted)
+          .marginBottom(0)
         $0.addItem(missionRecordCollectionView)
-          .height(480.adjusted)
+          .height(476.adjusted) // 그림자 보정, 상단 20 하단 20 여백
           .grow(1)
           .shrink(1)
       }

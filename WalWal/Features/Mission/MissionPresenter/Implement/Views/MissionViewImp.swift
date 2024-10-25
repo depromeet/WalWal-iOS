@@ -162,7 +162,7 @@ public final class MissionViewControllerImp<R: MissionReactor>: UIViewController
           .alignSelf(.center)
         flex.addItem(missionCompletedView)
           .position(.absolute)
-          .top(17.adjusted)
+          .top(0)
           .width(100%)
           .alignSelf(.center)
       }
