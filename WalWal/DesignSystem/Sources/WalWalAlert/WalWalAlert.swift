@@ -15,36 +15,34 @@ import Then
 import RxSwift
 import RxCocoa
 
-public enum AlertResultType {
-  case cancel, ok
+public enum AlertEventType {
+  case updateRequest /// 앱 업데이트 요청 이벤트
 }
 
-public final class WalWalAlert {
+public final class WalWalAlert: NSObject {
   private typealias Colors = ResourceKitAsset.Colors
   private typealias FontsKR = ResourceKitFontFamily.KR
   
   private let disposeBag = DisposeBag()
   public static let shared = WalWalAlert()
-  private init() {
+  private override init() {
+    super.init()
     bind()
   }
   
   /// 얼럿 버튼 탭 시 어떤 버튼이 눌렸는지에 대한 값을 리턴
+  /// 얼럿의 이벤트 기반의 동작
   ///
   /// ### 사용 예시
   /// ```swift
   /// WalWalAlert.shared.resultRelay
+  ///  .filter { $0 == `이벤트 타입` }
   ///  .bind(with: self) { owner, result in
-  ///    switch result {
-  ///    case .cancel:
-  ///      print("cancel")
-  ///    case .ok:
-  ///      print("ok")
-  ///    }
+  ///    print("이벤트 타입: \(result.rawValue)")
   ///  }
   /// ```
-  /// - Returns: .cancel 또는 .ok
-  public let resultRelay = PublishRelay<AlertResultType>()
+  /// - Returns: `AlertEventType` 타입의 이벤트 -> 사용자 정의 이벤트
+  fileprivate let eventRelay = PublishRelay<AlertEventType>()
   
   private var isOneButtonAlert: Bool = false
   private var closeButtonMargin: CGFloat = 8
@@ -101,7 +99,7 @@ public final class WalWalAlert {
   ///   - bodyMessage: 얼럿에 대한 내용
   ///   - cancelTitle: 얼럿 내용에 대한 취소 버튼 타이틀
   ///   - okTitle:얼럿 내용에 대한 확인 버튼 타이틀
-  public func show(
+  fileprivate func show(
     title: String,
     bodyMessage: String,
     cancelTitle: String,
@@ -135,7 +133,7 @@ public final class WalWalAlert {
   ///   - bodyMessage: 얼럿에 대한 내용
   ///   - okTitle:얼럿 내용에 대한 확인 버튼 타이틀
   ///   - tintColor: 하이라이팅 컬러 (default: WalWalOrange)
-  public func showOkAlert(
+  fileprivate func showOkAlert(
     title: String,
     bodyMessage: String,
     okTitle: String,
@@ -205,26 +203,40 @@ public final class WalWalAlert {
   }
   
   private func bind() {
-    
     cancelButton.rx.tapped
       .bind(with: self) { owner, _ in
-        owner.resultRelay.accept(.cancel)
         owner.rootContainer.removeFromSuperview()
       }
       .disposed(by: disposeBag)
     
     okButton.rx.tapped
       .bind(with: self) { owner, _ in
-        owner.resultRelay.accept(.ok)
         owner.rootContainer.removeFromSuperview()
       }
       .disposed(by: disposeBag)
-    
   }
   
   private func initLayout() {
     bodyLabelContainer.subviews.forEach { $0.removeFromSuperview() }
     alertView.subviews.forEach { $0.removeFromSuperview() }
     rootContainer.subviews.forEach { $0.removeFromSuperview() }
+  }
+}
+
+public extension Reactive where Base: WalWalAlert {
+  var showAlert: Binder<(String, String, String, String?)> {
+    return Binder(self.base) { owner, value in
+      owner.show(title: value.0, bodyMessage: value.1, cancelTitle: value.2, okTitle: value.3)
+    }
+  }
+  
+  var showOkAlert: Binder<(String, String, String)> {
+    return Binder(self.base) { owner, value in
+      owner.showOkAlert(title: value.0, bodyMessage: value.1, okTitle: value.2)
+    }
+  }
+  
+  var event: ControlEvent<AlertEventType> {
+    return ControlEvent(events: base.eventRelay.asObservable())
   }
 }
