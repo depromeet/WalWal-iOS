@@ -137,7 +137,6 @@ public final class WalWalFeedCellView: UIView {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
     
     missionDateLabel.flex
       .markDirty()
@@ -160,6 +159,7 @@ public final class WalWalFeedCellView: UIView {
     containerView.flex
       .layout(mode: .adjustHeight)
     
+    profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
   }
   
   // MARK: - Methods
