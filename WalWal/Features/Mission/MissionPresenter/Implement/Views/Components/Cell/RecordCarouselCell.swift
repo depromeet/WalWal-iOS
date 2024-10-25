@@ -75,8 +75,8 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     underLineColor: Colors.gray150.color,
     numberOfLines: 4,
     underLineHeight: 30.adjusted,
-    lineSpacing: 4.adjusted,
-    enterSpacing: 18.adjusted
+    lineSpacing: 0,
+    enterSpacing: 14.adjusted
   ).then {
     $0.backgroundColor = Colors.white.color
     $0.isEditable = false
