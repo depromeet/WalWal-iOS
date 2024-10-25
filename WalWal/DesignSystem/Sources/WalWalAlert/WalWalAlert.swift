@@ -15,13 +15,11 @@ import Then
 import RxSwift
 import RxCocoa
 
-public enum AlertEventType {
-  case updateRequest /// 앱 업데이트 요청 이벤트
-}
-
 public final class WalWalAlert: NSObject {
-  private typealias Colors = ResourceKitAsset.Colors
-  private typealias FontsKR = ResourceKitFontFamily.KR
+  fileprivate typealias Colors = ResourceKitAsset.Colors
+  fileprivate typealias FontsKR = ResourceKitFontFamily.KR
+  
+  private var currentEventType: AlertEventType?
   
   private let disposeBag = DisposeBag()
   public static let shared = WalWalAlert()
@@ -69,14 +67,14 @@ public final class WalWalAlert: NSObject {
     $0.numberOfLines = 0
     $0.textAlignment = .center
   }
-  private let cancelButton =  WalWalButton(
+  public let cancelButton =  WalWalButton(
     type: .custom(
       backgroundColor: Colors.walwalOrange.color,
       titleColor: Colors.white.color,
       font: FontsKR.H6.B, isEnable: true),
     title: ""
   )
-  private let okButton = WalWalButton(
+  public let okButton = WalWalButton(
     type: .custom(
       backgroundColor: Colors.white.color,
       titleColor: Colors.gray500.color,
@@ -100,18 +98,16 @@ public final class WalWalAlert: NSObject {
   ///   - cancelTitle: 얼럿 내용에 대한 취소 버튼 타이틀
   ///   - okTitle:얼럿 내용에 대한 확인 버튼 타이틀
   fileprivate func show(
-    title: String,
-    bodyMessage: String,
-    cancelTitle: String,
-    okTitle: String,
-    tintColor: UIColor? = nil
+    eventType: AlertEventType
   ) {
-    titleLabel.text = title
-    bodyLabel.text = bodyMessage
-    cancelButton.title = cancelTitle
-    okButton.title = okTitle
-    cancelButton.backgroundColor = tintColor ?? Colors.walwalOrange.color
+    titleLabel.text = eventType.contents.title
+    bodyLabel.text = eventType.contents.bodyMessage
+    cancelButton.title = eventType.contents.cancelTitle
+    okButton.title = eventType.contents.okTitle
+    cancelButton.backgroundColor = eventType.contents.tintColor ?? Colors.walwalOrange.color
     isOneButtonAlert = false
+    
+    currentEventType = eventType
     
     guard let window = UIWindow.key else { return }
     window.addSubview(rootContainer)
@@ -134,16 +130,15 @@ public final class WalWalAlert: NSObject {
   ///   - okTitle:얼럿 내용에 대한 확인 버튼 타이틀
   ///   - tintColor: 하이라이팅 컬러 (default: WalWalOrange)
   fileprivate func showOkAlert(
-    title: String,
-    bodyMessage: String,
-    okTitle: String,
-    tintColor: UIColor? = nil
+    eventType: AlertEventType
   ) {
-    titleLabel.text = title
-    bodyLabel.text = bodyMessage
-    cancelButton.title = okTitle
+    titleLabel.text = eventType.contents.title
+    bodyLabel.text = eventType.contents.bodyMessage
+    cancelButton.title = eventType.contents.okTitle
     isOneButtonAlert = true
-    cancelButton.backgroundColor = tintColor ?? Colors.walwalOrange.color
+    cancelButton.backgroundColor = eventType.contents.tintColor ?? Colors.walwalOrange.color
+    
+    currentEventType = eventType
     
     guard let window = UIWindow.key else { return }
     window.addSubview(rootContainer)
@@ -203,6 +198,14 @@ public final class WalWalAlert: NSObject {
   }
   
   private func bind() {
+    eventSubject
+      .subscribe(with: self, onNext: { owner, event in
+        event.contents.cancelTitle == nil
+        ? owner.showOkAlert(eventType: event)
+        : owner.show(eventType: event)
+      })
+      .disposed(by: disposeBag)
+    
     cancelButton.rx.tapped
       .bind(with: self) { owner, _ in
         owner.rootContainer.removeFromSuperview()
@@ -211,6 +214,9 @@ public final class WalWalAlert: NSObject {
     
     okButton.rx.tapped
       .bind(with: self) { owner, _ in
+        if let eventType = owner.currentEventType {
+          owner.eventSubject.onNext(eventType)
+        }
         owner.rootContainer.removeFromSuperview()
       }
       .disposed(by: disposeBag)
@@ -224,16 +230,60 @@ public final class WalWalAlert: NSObject {
 }
 
 public extension Reactive where Base: WalWalAlert {
-  var showAlert: Binder<(String, String, String, String?)> {
-    return Binder(self.base) { owner, value in
-      guard let okTitle = value.3 else {
-        return owner.showOkAlert(title: value.0, bodyMessage: value.1, okTitle: value.2)
-      }
-      return owner.show(title: value.0, bodyMessage: value.1, cancelTitle: value.2, okTitle: okTitle)
-    }
-  }
-  
   var event: PublishSubject<AlertEventType> {
     return base.eventSubject
+  }
+}
+
+public enum AlertEventType {
+  case updateRequest /// 앱 업데이트 요청 이벤트
+  case grantedCameraAccess /// 카메라 접근 권한 허용 이벤트
+  case grantedPhotoLibraryAccess /// 포토 라이브러리 접근 권한 허용 이벤트
+  case report /// 신고 이벤트
+  case deleteMissionRecord /// 미션 기록 삭제 이벤트
+  
+  var contents: (title: String, bodyMessage: String, cancelTitle: String?, okTitle: String, tintColor: UIColor?) {
+    switch self {
+    case .updateRequest:
+      return (
+        title: "신규 기능 업데이트",
+        bodyMessage: "왈왈에서 더 재밌게 소통할 수 있도록\n신규 기능을 업데이트 해보세요!",
+        cancelTitle: nil,
+        okTitle: "업데이트",
+        tintColor: ResourceKitAsset.Colors.walwalOrange.color
+      )
+    case .grantedCameraAccess:
+      return (
+        title: "카메라에 대한 접근 권한이 없습니다",
+        bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
+        cancelTitle: nil,
+        okTitle: "확인",
+        tintColor: ResourceKitAsset.Colors.walwalOrange.color
+      )
+    case .grantedPhotoLibraryAccess:
+      return (
+        title: "앨범에 대한 접근 권한이 없습니다",
+        bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
+        cancelTitle: nil,
+        okTitle: "확인",
+        tintColor: ResourceKitAsset.Colors.walwalOrange.color
+      )
+    case .report:
+      return (
+        title: "소중한 정보 고마워요!",
+        bodyMessage: "더 귀여운 왈왈을 위해 열심히 노력할게요?",
+        cancelTitle: nil,
+        okTitle: "완료",
+        tintColor: ResourceKitAsset.Colors.black.color
+        )
+    case .deleteMissionRecord:
+      return (
+        title: "기록을 삭제하시겠어요?",
+        bodyMessage: "지금 돌아가면 입력하신 내용이 모두\n삭제됩니다.",
+        cancelTitle: "계속 작성하기",
+        okTitle: "삭제하기",
+        tintColor: ResourceKitAsset.Colors.walwalOrange.color
+        )
+    }
   }
 }
