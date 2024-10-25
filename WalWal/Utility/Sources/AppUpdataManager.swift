@@ -12,7 +12,7 @@ import RxSwift
 public final class AppUpdateManager {
   
   public static let shared = AppUpdateManager()
-  public private(set) var updateRequest = PublishSubject<Bool>()
+  public private(set) var updateRequest = PublishSubject<Void>()
   
   private init() {}
   
