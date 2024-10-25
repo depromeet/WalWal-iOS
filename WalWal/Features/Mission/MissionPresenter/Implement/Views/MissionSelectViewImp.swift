@@ -227,33 +227,17 @@ extension MissionSelectViewControllerImp: View {
       .disposed(by: disposeBag)
     
     reactor.pulse(\.$isGrantedPhoto)
-      .observe(on: MainScheduler.instance)
-      .asDriver(onErrorJustReturn: false)
       .skip(1)
-      .drive(with: self) { owner, isAllowed in
-        if !isAllowed {
-          WalWalAlert.shared.showOkAlert(
-            title: "앨범에 대한 접근 권한이 없습니다",
-            bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
-            okTitle: "확인"
-          )
-        }
-      }
+      .filter { !$0 }
+      .map { _ in AlertEventType.grantedPhotoLibraryAccess }
+      .bind(to: WalWalAlert.shared.rx.showAlert)
       .disposed(by: disposeBag)
     
     reactor.pulse(\.$isGrantedCamera)
-      .observe(on: MainScheduler.instance)
-      .asDriver(onErrorJustReturn: false)
       .skip(1)
-      .drive(with: self) { owner, isAllowed in
-        if !isAllowed {
-          WalWalAlert.shared.showOkAlert(
-            title: "카메라에 대한 접근 권한이 없습니다",
-            bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
-            okTitle: "확인"
-          )
-        }
-      }
+      .filter { !$0 }
+      .map { _ in AlertEventType.grantedCameraAccess }
+      .bind(to: WalWalAlert.shared.rx.showAlert)
       .disposed(by: disposeBag)
   }
   

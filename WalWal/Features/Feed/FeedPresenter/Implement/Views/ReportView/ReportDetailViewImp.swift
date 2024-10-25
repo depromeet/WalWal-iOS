@@ -380,16 +380,9 @@ extension ReportDetailViewControllerImp: View {
     reactor.state
       .map { $0.showAlert }
       .distinctUntilChanged()
-      .asDriver(onErrorJustReturn: false)
       .filter { $0 }
-      .drive(with: self) { owner, _ in
-        WalWalAlert.shared.showOkAlert(
-          title: "소중한 정보 고마워요!",
-          bodyMessage: "더 귀여운 왈왈을 위해 열심히 노력할게요",
-          okTitle: "완료",
-          tintColor: Colors.black.color
-        )
-      }
+      .map { _ in AlertEventType.report }
+      .bind(to: WalWalAlert.shared.rx.showAlert)
       .disposed(by: disposeBag)
     
     reactor.state
@@ -470,9 +463,8 @@ extension ReportDetailViewControllerImp: View {
       }
       .disposed(by: disposeBag)
     
-    /// 제출 완료 얼럿 닫은 후 dismiss 액션 수행
-    WalWalAlert.shared.resultRelay
-      .map { _ in Void() }
+    WalWalAlert.shared.rx.okEvent
+      .filter { $0 == .report }
       .bind(with: self) { owner, _ in
         owner.dismissView.accept(())
       }

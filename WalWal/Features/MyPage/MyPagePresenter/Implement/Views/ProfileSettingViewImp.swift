@@ -181,29 +181,18 @@ extension ProfileSettingViewControllerImp: View {
   public func bindEvent() {
     settingTableView.rx.modelSelected(ProfileSettingItemModel.self)
       .bind(with: self) { owner, item in
-        if item.type == .withdraw {
-          WalWalAlert.shared.show(
-            title: "회원 탈퇴",
-            bodyMessage: "회원 탈퇴 시, 계정은 삭제되며 기록된 내용은\n복구되지 않습니다.",
-            cancelTitle: "계속 이용하기",
-            okTitle: "회원 탈퇴"
-          )
-        } else {
-          owner.settingAction.accept(item.type)
+        switch item.type {
+        case .withdraw:
+          WalWalAlert.shared.rx.showAlert.onNext(AlertEventType.withdraw)
+        default: owner.settingAction.accept(item.type)
         }
       }
       .disposed(by: disposeBag)
     
-    WalWalAlert.shared.resultRelay
-      .bind(with: self) { owner, result in
-        switch result {
-        case .cancel:
-          WalWalAlert.shared.closeAlert.accept(())
-        case .ok:
-          owner.withdrawAction.accept(())
-          WalWalAlert.shared.closeAlert.accept(())
-        }
-      }
+    WalWalAlert.shared.rx.okEvent
+      .filter { $0 == .withdraw }
+      .map { _ in }
+      .bind(to: withdrawAction)
       .disposed(by: disposeBag)
   }
 }
