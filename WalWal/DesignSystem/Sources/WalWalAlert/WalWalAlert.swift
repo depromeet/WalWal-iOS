@@ -67,7 +67,7 @@ public final class WalWalAlert: NSObject {
     $0.numberOfLines = 0
     $0.textAlignment = .center
   }
-  private let cancelButton =  WalWalButton(
+  private let cancelButton = WalWalButton(
     type: .custom(
       backgroundColor: Colors.walwalOrange.color,
       titleColor: Colors.white.color,
@@ -76,8 +76,8 @@ public final class WalWalAlert: NSObject {
   )
   private let okButton = WalWalButton(
     type: .custom(
-      backgroundColor: Colors.white.color,
-      titleColor: Colors.gray500.color,
+      backgroundColor: Colors.walwalOrange.color,
+      titleColor: Colors.white.color,
       font: FontsKR.H6.B, isEnable: true),
     title: ""
   )
@@ -104,7 +104,13 @@ public final class WalWalAlert: NSObject {
     bodyLabel.text = eventType.contents.bodyMessage
     cancelButton.title = eventType.contents.cancelTitle
     okButton.title = eventType.contents.okTitle
-    cancelButton.backgroundColor = eventType.contents.tintColor ?? Colors.walwalOrange.color
+    
+    cancelButton.backgroundColor = eventType.alertColorSet.cancelColorSet.backgroundColor
+    cancelButton.titleColor = eventType.alertColorSet.cancelColorSet.textColor
+    
+    okButton.backgroundColor = eventType.alertColorSet.okColorSet.backgroundColor
+    okButton.titleColor = eventType.alertColorSet.okColorSet.textColor
+    
     isOneButtonAlert = false
     
     currentEventType = eventType
@@ -112,7 +118,7 @@ public final class WalWalAlert: NSObject {
     guard let window = UIWindow.key else { return }
     window.addSubview(rootContainer)
     configureLayout()
-    okButton.isHidden = false
+    cancelButton.isHidden = false
   }
   
   /// 얼럿 뷰를 보여주기 위한 메서드
@@ -134,23 +140,29 @@ public final class WalWalAlert: NSObject {
   ) {
     titleLabel.text = eventType.contents.title
     bodyLabel.text = eventType.contents.bodyMessage
-    cancelButton.title = eventType.contents.okTitle
+    okButton.title = eventType.contents.okTitle
+    
+    cancelButton.backgroundColor = eventType.alertColorSet.cancelColorSet.backgroundColor
+    cancelButton.titleColor = eventType.alertColorSet.cancelColorSet.textColor
+    
+    okButton.backgroundColor = eventType.alertColorSet.okColorSet.backgroundColor
+    okButton.titleColor = eventType.alertColorSet.okColorSet.textColor
+    
     isOneButtonAlert = true
-    cancelButton.backgroundColor = eventType.contents.tintColor ?? Colors.walwalOrange.color
     
     currentEventType = eventType
     
     guard let window = UIWindow.key else { return }
     window.addSubview(rootContainer)
     configureLayout()
-    okButton.isHidden = true
+    cancelButton.isHidden = true
   }
   
   private func configureLayout() {
     
     initLayout()
     closeButtonMargin = isOneButtonAlert ? 20 : 8
-    okButton.flex.isIncludedInLayout = !isOneButtonAlert
+    cancelButton.flex.isIncludedInLayout = !isOneButtonAlert
     
     rootContainer.addSubview(alertView)
     
@@ -172,9 +184,9 @@ public final class WalWalAlert: NSObject {
           .height(56.adjustedHeight)
           .marginTop(30.adjustedHeight)
           .marginHorizontal(20.adjustedWidth)
-          .marginBottom(closeButtonMargin)
         $0.addItem(okButton)
           .height(56.adjustedHeight)
+          .marginTop(closeButtonMargin)
           .marginBottom(20.adjustedWidth)
           .marginHorizontal(20.adjustedWidth)
       }
@@ -246,8 +258,10 @@ public enum AlertEventType {
   case report
   /// 미션 기록 삭제 이벤트
   case deleteMissionRecord
+  /// 회원 탈퇴 이벤트
+  case withdraw
   
-  var contents: (title: String, bodyMessage: String, cancelTitle: String?, okTitle: String, tintColor: UIColor?) {
+  var contents: (title: String, bodyMessage: String, cancelTitle: String?, okTitle: String, tintColor: AlertColorSet) {
     switch self {
     case .updateRequest:
       return (
@@ -255,7 +269,7 @@ public enum AlertEventType {
         bodyMessage: "왈왈에서 더 재밌게 소통할 수 있도록\n신규 기능을 업데이트 해보세요!",
         cancelTitle: nil,
         okTitle: "업데이트",
-        tintColor: ResourceKitAsset.Colors.walwalOrange.color
+        tintColor: self.alertColorSet
       )
     case .grantedCameraAccess:
       return (
@@ -263,7 +277,7 @@ public enum AlertEventType {
         bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
         cancelTitle: nil,
         okTitle: "확인",
-        tintColor: ResourceKitAsset.Colors.walwalOrange.color
+        tintColor: self.alertColorSet
       )
     case .grantedPhotoLibraryAccess:
       return (
@@ -271,7 +285,7 @@ public enum AlertEventType {
         bodyMessage: "설정 > 왈왈 탭에서 접근을 활성화 할 수 있습니다.",
         cancelTitle: nil,
         okTitle: "확인",
-        tintColor: ResourceKitAsset.Colors.walwalOrange.color
+        tintColor: self.alertColorSet
       )
     case .report:
       return (
@@ -279,7 +293,7 @@ public enum AlertEventType {
         bodyMessage: "더 귀여운 왈왈을 위해 열심히 노력할게요?",
         cancelTitle: nil,
         okTitle: "완료",
-        tintColor: ResourceKitAsset.Colors.black.color
+        tintColor: self.alertColorSet
         )
     case .deleteMissionRecord:
       return (
@@ -287,8 +301,62 @@ public enum AlertEventType {
         bodyMessage: "지금 돌아가면 입력하신 내용이 모두\n삭제됩니다.",
         cancelTitle: "계속 작성하기",
         okTitle: "삭제하기",
-        tintColor: ResourceKitAsset.Colors.walwalOrange.color
+        tintColor: self.alertColorSet
+        )
+    case .withdraw:
+      return (
+        title: "회원 탈퇴",
+        bodyMessage: "회원 탈퇴 시, 계정은 삭제되며 기록된 내용은\n복구되지 않습니다.",
+        cancelTitle: "계속 이용하기",
+        okTitle: "회원 탈퇴",
+        tintColor: self.alertColorSet
         )
     }
+  }
+  
+  var alertColorSet: AlertColorSet {
+    let orange = ResourceKitAsset.Colors.walwalOrange.color
+    let white = ResourceKitAsset.Colors.white.color
+    
+    let black = ResourceKitAsset.Colors.black.color
+    let gray = ResourceKitAsset.Colors.gray500.color
+    
+    switch self {
+    case .updateRequest:
+      return AlertColorSet(
+        cancelColorSet: (backgroundColor: nil, textColor: nil),
+        okColorSet: (backgroundColor: orange, textColor: white)
+      )
+    case .grantedCameraAccess:
+      return AlertColorSet(
+        cancelColorSet: (backgroundColor: nil, textColor: nil),
+        okColorSet: (backgroundColor: orange, textColor: white)
+      )
+    case .grantedPhotoLibraryAccess:
+      return AlertColorSet(
+        cancelColorSet: (backgroundColor: nil, textColor: nil),
+        okColorSet: (backgroundColor: orange, textColor: white)
+      )
+    case .report:
+      return AlertColorSet(
+        cancelColorSet: (backgroundColor: nil, textColor: nil),
+        okColorSet: (backgroundColor: black, textColor: white)
+      )
+    case .deleteMissionRecord:
+      return AlertColorSet(
+        cancelColorSet: (backgroundColor: orange, textColor: white),
+        okColorSet: (backgroundColor: white, textColor: gray)
+      )
+    case .withdraw:
+      return AlertColorSet(
+        cancelColorSet: (backgroundColor: orange, textColor: white),
+        okColorSet: (backgroundColor: white, textColor: gray)
+      )
+    }
+  }
+  
+  struct AlertColorSet {
+    var cancelColorSet: (backgroundColor: UIColor?, textColor: UIColor?)
+    var okColorSet: (backgroundColor: UIColor?, textColor: UIColor?)
   }
 }
