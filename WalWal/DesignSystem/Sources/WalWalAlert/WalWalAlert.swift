@@ -35,14 +35,14 @@ public final class WalWalAlert: NSObject {
   ///
   /// ### 사용 예시
   /// ```swift
-  /// WalWalAlert.shared.resultRelay
-  ///  .filter { $0 == `이벤트 타입` }
-  ///  .bind(with: self) { owner, result in
-  ///    print("이벤트 타입: \(result.rawValue)")
-  ///  }
+  /// WalWalAlert.shared.rx.event
+  ///   .filter { $0 == .updateRequest }
+  ///   .map { _ in Reactor.Action.moveUpdate }
+  ///   .bind(to: reactor.action)
+  ///   .disposed(by: disposeBag)
   /// ```
   /// - Returns: `AlertEventType` 타입의 이벤트 -> 사용자 정의 이벤트
-  fileprivate let eventRelay = PublishRelay<AlertEventType>()
+  fileprivate let eventSubject = PublishSubject<AlertEventType>()
   
   private var isOneButtonAlert: Bool = false
   private var closeButtonMargin: CGFloat = 8
@@ -233,7 +233,7 @@ public extension Reactive where Base: WalWalAlert {
     }
   }
   
-  var event: ControlEvent<AlertEventType> {
-    return ControlEvent(events: base.eventRelay.asObservable())
+  var event: PublishSubject<AlertEventType> {
+    return base.eventSubject
   }
 }
