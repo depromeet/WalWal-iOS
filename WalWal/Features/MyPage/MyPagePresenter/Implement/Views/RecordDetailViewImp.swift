@@ -179,6 +179,7 @@ extension RecordDetailViewControllerImp: View {
   public func bindState(reactor: R) {
     reactor.state
       .map {  $0.feedData }
+      .distinctUntilChanged()
       .observe(on: MainScheduler.instance)
       .subscribe(with: self, onNext: { owner, feed in
         owner.feed.addNewData(feed)

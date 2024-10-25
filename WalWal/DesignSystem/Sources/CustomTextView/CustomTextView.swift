@@ -60,6 +60,9 @@ public final class CustomTextView: UITextView {
     
     super.init(frame: .zero, textContainer: nil)
     bind()
+    
+    self.autocorrectionType = .no
+    self.spellCheckingType = .no
   }
   
   required init?(coder: NSCoder) {
