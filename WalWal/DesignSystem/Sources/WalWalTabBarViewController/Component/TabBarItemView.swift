@@ -30,7 +30,7 @@ class TabBarItemView: UIView {
     $0.contentMode = .scaleAspectFit
   }
   
-  private let titleLabel = UILabel().then {
+  private let titleLabel = CustomLabel(font: Fonts.KR.Caption).then {
     $0.font = Fonts.KR.Caption
     $0.textAlignment = .center
   }
@@ -91,10 +91,10 @@ extension TabBarItemView {
         .grow(1)
         .define { flex in
           flex.addItem(iconImageView)
-            .size(40)
+            .size(40.adjusted)
             .marginBottom(-3)
           flex.addItem(titleLabel)
-            .width(100%)
+            .width(40.adjustedWidth)
         }
     }
   }
