@@ -140,7 +140,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
   public func setLayout() {
     
     rootContainerView.flex
-      .height((Int(view.frame.height) - 232).adjustedHeight)
+      .height(self.view.frame.height - 232.adjustedHeight)
       .define { flex in
         flex.addItem(headerContainerView)
         flex.addItem(tableViewContainerView)
@@ -186,7 +186,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
     self.dimView.alpha = 0
     UIView.animate(withDuration: 0.3, animations: {
       self.rootContainerView.pin
-        .bottom(-self.rootContainerView.frame.height)
+        .bottom(0)
       self.rootContainerView.flex
         .layout()
     }, completion: { _ in
@@ -218,7 +218,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
       self.rootContainerView.flex
-        .height((Int(self.view.frame.height) - 65 - Int(keyboardHeight)).adjustedHeight)
+        .height(self.view.frame.height - 65.adjustedHeight - keyboardHeight + self.view.pin.safeArea.bottom)
         .bottom(keyboardHeight - self.view.pin.safeArea.bottom)
       self.rootContainerView.flex.layout()
     })
@@ -235,7 +235,7 @@ public final class CommentViewControllerImp<R: CommentReactor>: UIViewController
                    options: UIView.AnimationOptions(rawValue: animationCurve),
                    animations: {
       self.rootContainerView.flex
-        .height((Int(self.view.frame.height) - 232).adjustedHeight)
+        .height(self.view.frame.height - 232.adjustedHeight)
         .bottom(0)
       self.rootContainerView.flex.layout()
     })
@@ -415,6 +415,7 @@ extension CommentViewControllerImp: View {
       .subscribe(with: self, onNext: { owner, gesture in
         let translation = gesture.translation(in: owner.rootContainerView)
         let velocity = gesture.velocity(in: owner.rootContainerView)
+        self.inputBox.endEditing(true)
         
         switch gesture.state {
         case .changed:
@@ -429,7 +430,7 @@ extension CommentViewControllerImp: View {
     
     dimView.rx.tapped
       .subscribe(with: self, onNext: { owner, _ in
-        owner.inputBox.rx.textEndEditing.onNext(())
+        owner.inputBox.endEditing(true)
         owner.animateSheetDown {
           reactor.action.onNext(.tapDimView)
         }
