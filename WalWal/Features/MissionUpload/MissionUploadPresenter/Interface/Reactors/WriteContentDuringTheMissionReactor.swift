@@ -17,14 +17,11 @@ import ReactorKit
 import RxSwift
 
 public enum WriteContentDuringTheMissionReactorAction {
-  case backButtonTapped
   case uploadButtonTapped(capturedImage: UIImage, content: String)
   case deleteThisContent
-  case keepThisContent
 }
 
 public enum WriteContentDuringTheMissionReactorMutation {
-  case showMeTheAlert(show: Bool) /// 뒤로가기 버튼을 누르고, 얼럿을 띄우고 지우기 (isAlertWillPresent)
   case uploadProcessEnded /// 업로드 프로세스가 끝났어요~
   case uploadFailed(message: String)
   case moveToMain /// 미션으로 돌아가자~
@@ -32,7 +29,6 @@ public enum WriteContentDuringTheMissionReactorMutation {
 }
 
 public struct WriteContentDuringTheMissionReactorState {
-  public var isAlertWillPresent: Bool = false
   @Pulse public var uploadErrorMessage: String = ""
   public var showLottie: Bool = false
   

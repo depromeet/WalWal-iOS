@@ -245,11 +245,6 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
   }
   
   public func bindAction(reactor: R) {
-    navigationBar.leftItems![0].rx.tapped
-      .map { Reactor.Action.backButtonTapped }
-      .bind(to: reactor.action)
-      .disposed(by: disposeBag)
-    
     uploadContainer.rx.tapped
       .withLatestFrom(contentTextView.rx.text)
       .withUnretained(self)
@@ -262,34 +257,15 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    WalWalAlert.shared.resultRelay
-      .map {
-        $0 == .ok
-        ? Reactor.Action.deleteThisContent
-        : Reactor.Action.keepThisContent
-      }
+    WalWalAlert.shared.rx.okEvent
+      .filter { $0 == .deleteMissionRecord }
+      .map { _ in Reactor.Action.deleteThisContent }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+    
   }
   
   public func bindState(reactor: R) {
-    reactor.state
-      .map { $0.isAlertWillPresent }
-      .distinctUntilChanged()
-      .subscribe(onNext: { isAlertWillPresent in
-        if isAlertWillPresent {
-          WalWalAlert.shared.show(
-            title: "기록을 삭제하시겠어요?",
-            bodyMessage: "지금 돌아가면 입력하신 내용이 모두\n삭제됩니다.",
-            cancelTitle: "계속 작성하기",
-            okTitle: "삭제하기"
-          )
-        } else {
-          WalWalAlert.shared.closeAlert.accept(())
-        }
-      })
-      .disposed(by: disposeBag)
-    
     reactor.pulse(\.$uploadErrorMessage)
       .asDriver(onErrorJustReturn: "")
       .filter { !$0.isEmpty }
@@ -311,6 +287,11 @@ extension WriteContentDuringTheMissionViewControllerImp: View {
   }
   
   public func bindEvent() {
+    navigationBar.leftItems![0].rx.tapped
+      .map { _ in AlertEventType.deleteMissionRecord }
+      .bind(to: WalWalAlert.shared.rx.showAlert)
+      .disposed(by: disposeBag)
+    
     NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
       .bind(with: self) { owner, _ in
         owner.keyboardHeight = 1

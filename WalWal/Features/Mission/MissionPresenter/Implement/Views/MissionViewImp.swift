@@ -444,12 +444,5 @@ extension MissionViewControllerImp: View {
     
   }
   
-  public func bindEvent() {
-    WalWalAlert.shared.resultRelay
-      .map { _ in Void() }
-      .observe(on: MainScheduler.instance)
-      .bind(to: WalWalAlert.shared.closeAlert)
-      .disposed(by: disposeBag)
-    
-  }
+  public func bindEvent() { }
 }

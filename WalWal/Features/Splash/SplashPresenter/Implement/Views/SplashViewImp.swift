@@ -110,17 +110,12 @@ extension SplashViewControllerImp: View {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
-    Observable.combineLatest(
-      WalWalAlert.shared.resultRelay,
-      AppUpdateManager.shared.updateRequest
-    )
-    .map { $0.1 }
-    .distinctUntilChanged()
-    .filter { $0 }
-    .map { _ in Reactor.Action.moveUpdate }
-    .bind(to: reactor.action)
-    .disposed(by: disposeBag)
-      
+    WalWalAlert.shared.rx.okEvent
+      .debug()
+      .filter { $0 == .updateRequest }
+      .map { _ in Reactor.Action.moveUpdate }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
   
   public func bindState(reactor: R) {
@@ -136,21 +131,9 @@ extension SplashViewControllerImp: View {
   
   public func bindEvent() {
     AppUpdateManager.shared.updateRequest
-      .bind(with: self) { owner, _ in
-        owner.showAlert()
-      }
+      .map { AlertEventType.updateRequest }
+      .bind(to: WalWalAlert.shared.rx.showAlert)
       .disposed(by: disposeBag)
   }
   
-  private func showAlert() {
-    let title = "신규 기능 업데이트"
-    let message = "왈왈에서 더 재밌게 소통할 수 있도록\n신규 기능을 업데이트 해보세요!"
-    let buttonTitle = "업데이트"
-    
-    WalWalAlert.shared.showOkAlert(
-      title: title,
-      bodyMessage: message,
-      okTitle: buttonTitle
-    )
-  }
 }

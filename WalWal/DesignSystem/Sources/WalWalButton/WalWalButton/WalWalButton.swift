@@ -35,7 +35,7 @@ public class WalWalButton: UIControl {
   
   private let rootView = UIView()
   
-  private lazy var titleLabel = UILabel().then {
+  fileprivate lazy var titleLabel = UILabel().then {
     $0.textAlignment = .center
     $0.font = Fonts.KR.H5.B
     $0.text = title
@@ -46,6 +46,12 @@ public class WalWalButton: UIControl {
   public var title: String? {
     didSet {
       titleLabel.text = title
+    }
+  }
+  
+  public var titleColor: UIColor? {
+    didSet {
+      titleLabel.textColor = titleColor ?? Colors.white.color
     }
   }
   

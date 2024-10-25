@@ -52,15 +52,8 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
   
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .backButtonTapped: /// 뒤로가기 버튼을 눌렀어
-      return .just(Mutation.showMeTheAlert(show: true))
-    case .deleteThisContent: /// 얼럿에서 삭제하기 눌렀어
-      return .concat([
-        .just(Mutation.showMeTheAlert(show: false)),
-        .just(Mutation.moveToMain)
-      ])
-    case .keepThisContent: /// 얼럿에서 취소하기 눌렀어
-      return .just(Mutation.showMeTheAlert(show: false))
+    case .deleteThisContent:
+      return .just(Mutation.moveToMain)
     case .uploadButtonTapped(let image, let content): /// 피드 공유하기 버튼 눌렀어
       return .concat([
         .just(Mutation.showLottie(show: true)),
@@ -72,8 +65,6 @@ public final class WriteContentDuringTheMissionReactorImp: WriteContentDuringThe
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
-    case .showMeTheAlert(let isShow):
-      newState.isAlertWillPresent = isShow
     case let .showLottie(show):
       newState.showLottie = show
     case .uploadFailed(message: let message):
