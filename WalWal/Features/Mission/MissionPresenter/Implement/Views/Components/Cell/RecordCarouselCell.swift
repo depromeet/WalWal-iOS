@@ -193,7 +193,7 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
           .position(.absolute)
           .alignSelf(.center)
           .top(89.adjusted)
-          .marginHorizontal(20.adjusted)
+          .width(100%)
       }
     
     swapButton.flex
