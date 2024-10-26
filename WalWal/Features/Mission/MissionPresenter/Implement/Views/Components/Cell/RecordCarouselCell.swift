@@ -112,7 +112,7 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
   
   override func prepareForReuse() {
     super.prepareForReuse()
-    isRecordContainerVisible = true
+    resetCell()
   }
   
   override func layoutSubviews() {
@@ -193,7 +193,7 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
           .position(.absolute)
           .alignSelf(.center)
           .top(89.adjusted)
-          .marginHorizontal(20.adjusted)
+          .width(100%)
       }
     
     swapButton.flex
@@ -220,6 +220,11 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
   
   private func bind() {
     swapButton.rx.tap
+      .throttle(
+        .milliseconds(300),
+        latest: false,
+        scheduler: MainScheduler.instance
+      )
       .bind(with: self) { owner, _ in
         owner.toggleContainers()
       }
@@ -263,6 +268,16 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
         self.setNeedsLayout()
       }
     }
+  }
+  
+  private func resetCell() {
+    isRecordContainerVisible = true
+    recordContainer.isHidden = false
+    missionInfoContainer.isHidden = true
+    
+    rootContainer.layer.transform = CATransform3DIdentity
+    recordContainer.alpha = 1.0
+    missionInfoContainer.alpha = 0.0
   }
   
   func configureCell(record: RecordList) {
