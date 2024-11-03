@@ -34,8 +34,8 @@ public final class BubbleView: UIView {
   
   // MARK: - Property
   private var tipView: CAShapeLayer? = nil
-  private var tipWidth: CGFloat = 14.adjusted
-  private var tipHeight: CGFloat = 14.adjusted
+  private var tipWidth: CGFloat = Const.tipHeight
+  private var tipHeight: CGFloat = Const.tipHeight
   public var missionCount = BehaviorRelay<Int>(value: 0)
   public var isCompleted = BehaviorRelay<Bool>(value: false)
   private let disposeBag = DisposeBag()
@@ -86,8 +86,8 @@ public final class BubbleView: UIView {
   private func configureLayout() {
     // containerView 레이아웃 설정
     containerView.flex
-      .paddingVertical(8.5.adjusted)
-      .paddingHorizontal(20.adjusted)
+      .paddingVertical(Const.verticalPadding)
+      .paddingHorizontal(20.adjustedWidth)
       .alignItems(.center)
       .justifyContent(.center)
     
@@ -99,9 +99,11 @@ public final class BubbleView: UIView {
     
     // iconImageView와 titleLabel 레이아웃 설정
     iconImageView.flex
-      .marginRight(4.adjusted)
+      .size(Const.iconSize)
+      .marginRight(4.adjustedWidth)
     
     titleLabel.flex
+      .height(Const.iconSize)
       .grow(1)
   }
   
