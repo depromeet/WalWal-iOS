@@ -29,6 +29,9 @@ public class WalWalButton_Icon: UIControl {
     var isEnabled: Bool
   }
   
+  private let buttonHeight = UIDevice.isSESizeDevice ? 40.adjustedSE : 50.adjusted
+  private let itemSize = UIDevice.isSESizeDevice ? 20.adjustedSE : 20.adjusted
+  
   // MARK: - UI
   
   private let rootView = UIView()
@@ -114,7 +117,7 @@ public class WalWalButton_Icon: UIControl {
     rootView.flex
       .justifyContent(.center)
       .alignItems(.center)
-      .height(50.adjusted)
+      .height(buttonHeight)
       .define { flex in
         flex.addItem(subContainer)
           .direction(.row)
@@ -122,7 +125,7 @@ public class WalWalButton_Icon: UIControl {
           .alignItems(.center)
           .define { flex in
             flex.addItem(iconImageView)
-              .size(20.adjusted)
+              .size(itemSize)
               .marginRight(2)
             flex.addItem(titleLabel)
               .height(20.adjusted)
