@@ -14,7 +14,7 @@ enum Const {
   private typealias Fonts = ResourceKitFontFamily
   
   // MARK: MissionCompleteView
-  static let topMargin = UIDevice.isSESizeDevice ? 32.adjustedSE : 14.adjusted
+  static let topMargin = UIDevice.isSESizeDevice ? 32.adjustedSE : 39.adjusted
   static let containerHeight = UIDevice.isSESizeDevice ? 336.adjustedSE : 476.adjusted
   static let itemSize = UIDevice.isSESizeDevice ? CGSize(width: 180.adjustedWidthSE, height: 296.adjustedHeightSE) : CGSize(width: 255.adjusted, height: 436.adjusted)
   static let itemSpacing = UIDevice.isSESizeDevice ? 20.adjustedSE : 30.adjusted
