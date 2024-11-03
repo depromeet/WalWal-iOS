@@ -39,6 +39,8 @@ class TabBarItemView: UIView {
   
   let item: TabBarItem
   
+  private let iconHeight = UIDevice.isSESizeDevice ? 40.adjustedHeightSE : 40.adjustedHeight
+  
   private let isSelectedRelay = BehaviorRelay<Bool>(value: false)
   
   private let disposeBag = DisposeBag()
@@ -91,7 +93,7 @@ extension TabBarItemView {
         .grow(1)
         .define { flex in
           flex.addItem(iconImageView)
-            .size(40.adjusted)
+            .size(iconHeight)
             .marginBottom(-3)
           flex.addItem(titleLabel)
             .width(40.adjustedWidth)

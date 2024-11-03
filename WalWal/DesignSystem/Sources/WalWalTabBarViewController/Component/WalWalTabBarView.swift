@@ -41,6 +41,8 @@ final class WalWalTabBarView: UIView {
   
   let selectedIndex = BehaviorRelay<Int>(value: 0)
   let moveIndex = PublishRelay<Int>()
+  private let tabBarHeight = UIDevice.isSESizeDevice ? 68.adjustedHeightSE : 67.adjusted
+  private let marginTop = UIDevice.isSESizeDevice ? 6.adjustedSE : 5.adjusted
   
   private let disposeBag = DisposeBag()
   
@@ -81,12 +83,12 @@ extension WalWalTabBarView {
           .height(1)
         flex.addItem()
           .direction(.row)
-          .marginTop(5.adjustedHeight)
+          .marginTop(marginTop)
           .marginLeft(33.adjustedWidth)
           .marginRight(32.adjustedWidth)
           .justifyContent(.spaceBetween)
           .alignItems(.start)
-          .height(67)
+          .height(tabBarHeight)
           .define { flex in
             tabBarItems.forEach { itemView in
               flex.addItem(itemView)

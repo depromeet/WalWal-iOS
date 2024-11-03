@@ -31,6 +31,8 @@ public final class WalWalTabBarViewController: UITabBarController {
   
   // MARK: - Properties
   
+  private let bottomHeight = UIDevice.isSESizeDevice ? 68.adjustedSE : 71.adjusted
+  
   public private(set) var selectedFlow = PublishRelay<Int>()
   
   public let forceMoveTab = PublishRelay<Int>()
@@ -74,7 +76,7 @@ public final class WalWalTabBarViewController: UITabBarController {
   public func showCustomTabBar() {
     self.tabBar.isHidden = true
     containerView.isHidden = false
-    additionalSafeAreaInsets.bottom = 71.adjusted
+    additionalSafeAreaInsets.bottom = bottomHeight
   }
 }
 
