@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Utility
 import ResourceKit
 
 import FlexLayout
@@ -39,7 +40,7 @@ class TabBarItemView: UIView {
   
   let item: TabBarItem
   
-  private let iconHeight = UIDevice.isSESizeDevice ? 40.adjustedHeightSE : 40.adjustedHeight
+  private let iconHeight = Device.isTouchIDCapableDevice ? 40.adjustedHeightSE : 40.adjustedHeight
   
   private let isSelectedRelay = BehaviorRelay<Bool>(value: false)
   

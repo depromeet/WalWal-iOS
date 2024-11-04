@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Utility
 import ResourceKit
 
 import RxSwift
@@ -31,7 +32,7 @@ public final class WalWalTabBarViewController: UITabBarController {
   
   // MARK: - Properties
   
-  private let bottomHeight = UIDevice.isSESizeDevice ? 68.adjustedSE : 71.adjusted
+  private let bottomHeight = Device.isTouchIDCapableDevice ? 68.adjustedSE : 71.adjusted
   
   public private(set) var selectedFlow = PublishRelay<Int>()
   

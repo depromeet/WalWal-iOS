@@ -225,6 +225,14 @@ public enum Device {
   
   /// Gets the identifier from the system, such as "iPhone7,1".
   public static var identifier: String = {
+#if targetEnvironment(simulator)
+    // 시뮬레이터의 경우 환경 변수를 통해 모델 식별자를 가져옴
+    if let simulatorIdentifier = ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"] {
+      return simulatorIdentifier
+    }
+#endif
+    
+    // 실 기기의 경우 기기에서의 identifier 가져오기
     var systemInfo = utsname()
     uname(&systemInfo)
     let mirror = Mirror(reflecting: systemInfo.machine)
@@ -847,6 +855,10 @@ extension Device: CustomStringConvertible {
     }
   }
   
+  public static var isTouchIDCapableDevice: Bool {
+    let device = Device.current
+    return Device.allTouchIDCapableDevices.contains(device)
+  }
 }
 
 // MARK: Equatable

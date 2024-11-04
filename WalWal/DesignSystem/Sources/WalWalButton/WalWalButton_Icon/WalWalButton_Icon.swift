@@ -6,8 +6,8 @@
 //  Copyright © 2024 olderStoneBed.io. All rights reserved.
 //
 
-import Foundation
 import UIKit
+import Utility
 import ResourceKit
 
 import PinLayout
@@ -29,8 +29,8 @@ public class WalWalButton_Icon: UIControl {
     var isEnabled: Bool
   }
   
-  private let buttonHeight = UIDevice.isSESizeDevice ? 40.adjustedSE : 50.adjusted
-  private let itemSize = UIDevice.isSESizeDevice ? 20.adjustedSE : 20.adjusted
+  private let buttonHeight = Device.isTouchIDCapableDevice ? 40.adjustedSE : 50.adjusted
+  private let itemSize = Device.isTouchIDCapableDevice ? 20.adjustedSE : 20.adjusted
   
   // MARK: - UI
   

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Utility
 import ResourceKit
 
 import RxSwift
@@ -41,8 +42,9 @@ final class WalWalTabBarView: UIView {
   
   let selectedIndex = BehaviorRelay<Int>(value: 0)
   let moveIndex = PublishRelay<Int>()
-  private let tabBarHeight = UIDevice.isSESizeDevice ? 68.adjustedHeightSE : 67.adjusted
-  private let marginTop = UIDevice.isSESizeDevice ? 6.adjustedSE : 5.adjusted
+  
+  private let tabBarHeight = Device.isTouchIDCapableDevice ? 68.adjustedHeightSE : 67.adjusted
+  private let marginTop = Device.isTouchIDCapableDevice ? 6.adjustedSE : 5.adjusted
   
   private let disposeBag = DisposeBag()
   
