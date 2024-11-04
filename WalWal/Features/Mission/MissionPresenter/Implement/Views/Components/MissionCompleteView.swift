@@ -24,19 +24,9 @@ final class MissionCompleteView: UIView {
   private typealias Images = ResourceKitAsset.Images
   private typealias Colors = ResourceKitAsset.Colors
   private typealias Fonts = ResourceKitFontFamily
+
+  // MARK: - Property
   
-  // MARK: Property
-  private enum Const {
-    static let itemSize = CGSize(width: 255.adjusted, height: 436.adjusted)
-    static let itemSpacing = 30.0.adjusted
-    
-    static var insetX: CGFloat {
-      (UIScreen.main.bounds.width - Self.itemSize.width) / 2.0
-    }
-    static var collectionViewContentInset: UIEdgeInsets {
-      UIEdgeInsets(top: 0, left: Self.insetX, bottom: 0, right: Self.insetX)
-    }
-  }
   private var focusIndex = BehaviorRelay<IndexPath>(value: IndexPath(item: 0, section: 0))
   private let disposeBag = DisposeBag()
   private let missionRecordListRelay = BehaviorRelay<[RecordList]>(value: [])
@@ -45,10 +35,10 @@ final class MissionCompleteView: UIView {
   
   private let rootContainer = UIView()
   
-  private let missionCompletedLabel = CustomLabel(font: Fonts.KR.H2).then {
+  private let missionCompletedLabel = CustomLabel(font: Fonts.KR.H7.B).then {
     $0.text = "📮 이번 달 함께한 추억이에요!"
     $0.textAlignment = .center
-    $0.font = Fonts.KR.H6.B
+    $0.font = Const.completeLabelFont
     $0.textColor = Colors.black.color
     $0.numberOfLines = 2
     $0.textAlignment = .center
@@ -128,11 +118,11 @@ final class MissionCompleteView: UIView {
       .width(100%)
       .define {
         $0.addItem(missionCompletedLabel)
-          .marginTop(14.adjusted)
+          .marginTop(Const.topMargin)
           .marginHorizontal(24.adjusted)
           .marginBottom(0)
         $0.addItem(missionRecordCollectionView)
-          .height(476.adjusted) // 그림자 보정, 상단 20 하단 20 여백
+          .height(Const.containerHeight) // 그림자 보정, 상단 20 하단 20 여백
           .grow(1)
           .shrink(1)
       }
@@ -166,13 +156,13 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
     super.prepare()
     guard !isInit else { return }
     
-    itemSize = CGSize(width: 255.adjusted, height: 436.adjusted)
+    itemSize = Const.itemSize
     
     self.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     
     scrollDirection = .horizontal
     
-    minimumLineSpacing = 30.adjusted - (itemSize.width - itemSize.width * (216/255))/2
+    minimumLineSpacing = Const.itemSpacing - (itemSize.width - itemSize.width * Const.spacingRatio)/2
     
     isInit = true
   }
@@ -195,7 +185,7 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
       let dis = min(abs(collectionViewCenter-center), maxDis)
       
       let maxScale: CGFloat = 1.0
-      let minScale: CGFloat = 216 / 255
+      let minScale: CGFloat = 216 / 255 // 여기는 동일하게 85%
       let ratio = (maxDis - dis)/maxDis
       let scale = ratio * (maxScale - minScale) + minScale
       

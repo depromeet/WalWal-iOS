@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Utility
 import ResourceKit
 
 import RxSwift
@@ -30,6 +31,8 @@ public final class WalWalTabBarViewController: UITabBarController {
   private let customTabBar = WalWalTabBarView()
   
   // MARK: - Properties
+  
+  private let bottomHeight = Device.isTouchIDCapableDevice ? 68.adjustedSE : 71.adjusted
   
   public private(set) var selectedFlow = PublishRelay<Int>()
   
@@ -74,7 +77,7 @@ public final class WalWalTabBarViewController: UITabBarController {
   public func showCustomTabBar() {
     self.tabBar.isHidden = true
     containerView.isHidden = false
-    additionalSafeAreaInsets.bottom = 71.adjusted
+    additionalSafeAreaInsets.bottom = bottomHeight
   }
 }
 

@@ -48,6 +48,12 @@ extension ResourceKitFontFamily {
       public static let SB = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 14)!
       public static let M = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)!
     }
+    /// medium 12px
+    public struct H8 {
+      public static let M = UIFont(name: "AppleSDGothicNeo-Medium", size: 12)!
+    }
+    /// bold 10px
+    public static let H9 = UIFont(name: "AppleSDGothicNeo-Bold", size: 10)!
     /// 12px medium
     /// public static let M1 = UIFont.systemFont(ofSize: 12, weight: .medium)
     public static let M1 = UIFont(name: "AppleSDGothicNeo-Medium", size: 12)!

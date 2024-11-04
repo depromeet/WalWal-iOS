@@ -55,7 +55,6 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
   let swapButton = UIButton().then {
     $0.setImage(Images.swapL.image.withTintColor(Colors.walwalOrange.color), for: .normal)
     $0.backgroundColor = Colors.white.color
-    $0.layer.cornerRadius = 15.adjusted
   }
   private let recordimageView = UIImageView().then {
     $0.contentMode = .scaleAspectFill
@@ -63,20 +62,19 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
   }
   private let dateChipView = UIView().then {
     $0.backgroundColor = Colors.black60.color
-    $0.layer.cornerRadius = 15.adjusted
   }
   private let dateLabel = CustomLabel(font: Fonts.EN.H2).then {
     $0.textColor = Colors.white.color
   }
   public private(set) var textView = UnderlinedTextView(
-    font: UIFont(name: "AppleSDGothicNeo-SemiBold", size: 14.adjusted)!,
+    font: Fonts.KR.M1,
     textColor: Colors.gray600.color,
     tintColor: Colors.walwalOrange.color,
     underLineColor: Colors.gray150.color,
-    numberOfLines: 4,
-    underLineHeight: 30.adjusted,
+    numberOfLines: Const.numberOfLines,
+    underLineHeight: Const.lineHeight,
     lineSpacing: 0,
-    enterSpacing: 14.adjusted
+    enterSpacing: Const.enterSpace
   ).then {
     $0.backgroundColor = Colors.white.color
     $0.isEditable = false
@@ -86,11 +84,11 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     $0.returnKeyType = .done
   }
   /// 미션 정보 보기
-  private let todayMissionLabel = CustomLabel(font: Fonts.KR.H7.B).then {
+  private let todayMissionLabel = CustomLabel(font: Const.todayMissionFont).then {
     $0.text = "오늘의 미션"
     $0.textColor = Colors.walwalOrange.color
   }
-  private let missionTitleLabel = CustomLabel(font: Fonts.KR.H4).then {
+  private let missionTitleLabel = CustomLabel(font: Const.missionTitleFont).then {
     $0.textColor = Colors.black.color
     $0.textAlignment = .center
     $0.numberOfLines = 5
@@ -119,6 +117,9 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     shadowContainer.pin.all()
     rootContainer.pin.all()
     rootContainer.flex.layout()
+    
+    swapButton.layer.cornerRadius = swapButton.frame.width / 2
+    dateChipView.layer.cornerRadius = dateChipView.frame.height / 2
   }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -199,7 +200,7 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
     swapButton.flex
       .position(.absolute)
       .alignSelf(.end)
-      .size(30.adjusted)
+      .size(Const.swapButtonSize)
       .marginTop(18.adjusted)
       .right(18.adjusted)
     
@@ -208,9 +209,9 @@ final class RecordCarouselCell: UICollectionViewCell, ReusableView {
       .alignSelf(.center)
       .alignItems(.center)
       .justifyContent(.center)
-      .height(30.adjusted)
-      .bottom(10.adjusted)
-      .paddingHorizontal(12.adjusted)
+      .height(Const.dateChipHeight)
+      .bottom(Const.bottomMargin)
+      .paddingHorizontal(12.adjustedWidth)
       .define { flex in
         flex.addItem(dateLabel)
       }

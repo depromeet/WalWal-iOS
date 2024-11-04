@@ -32,6 +32,23 @@ public extension Int {
     let ratio: CGFloat = UIScreen.main.bounds.height / 812
     return CGFloat(self) * ratio
   }
+  
+  /// SE를 위한 보정 값
+  var adjustedSE: CGFloat {
+    let ratio: CGFloat = UIScreen.main.bounds.width / 320
+    let ratioH: CGFloat = UIScreen.main.bounds.height / 568
+    return ratio <= ratioH ? CGFloat(self) * ratio : CGFloat(self) * ratioH
+  }
+  
+  var adjustedWidthSE: CGFloat {
+    let ratio: CGFloat = UIScreen.main.bounds.width / 320
+    return CGFloat(self) * ratio
+  }
+  
+  var adjustedHeightSE: CGFloat {
+    let ratio: CGFloat = UIScreen.main.bounds.height / 568
+    return CGFloat(self) * ratio
+  }
 }
 
 public extension Float {
@@ -50,6 +67,22 @@ public extension Float {
     let ratio: CGFloat = UIScreen.main.bounds.height / 812
     return CGFloat(self) * ratio
   }
+  
+  var adjustedSE: CGFloat {
+    let ratio: CGFloat = UIScreen.main.bounds.width / 320
+    let ratioH: CGFloat = UIScreen.main.bounds.height / 568
+    return ratio <= ratioH ? CGFloat(self) * ratio : CGFloat(self) * ratioH
+  }
+  
+  var adjustedWidthSE: CGFloat {
+    let ratio: CGFloat = UIScreen.main.bounds.width / 320
+    return CGFloat(self) * ratio
+  }
+  
+  var adjustedHeightSE: CGFloat {
+    let ratio: CGFloat = UIScreen.main.bounds.height / 568
+    return CGFloat(self) * ratio
+  }
 }
 
 public extension Double {
@@ -66,6 +99,22 @@ public extension Double {
   
   var adjustedHeight: CGFloat {
     let ratio: CGFloat = UIScreen.main.bounds.height / 812
+    return CGFloat(self) * ratio
+  }
+  
+  var adjustedSE: CGFloat {
+    let ratio: CGFloat = UIScreen.main.bounds.width / 320
+    let ratioH: CGFloat = UIScreen.main.bounds.height / 568
+    return ratio <= ratioH ? CGFloat(self) * ratio : CGFloat(self) * ratioH
+  }
+  
+  var adjustedWidthSE: CGFloat {
+    let ratio: CGFloat = UIScreen.main.bounds.width / 320
+    return CGFloat(self) * ratio
+  }
+  
+  var adjustedHeightSE: CGFloat {
+    let ratio: CGFloat = UIScreen.main.bounds.height / 568
     return CGFloat(self) * ratio
   }
 }
